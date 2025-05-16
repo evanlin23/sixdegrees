@@ -158,7 +158,7 @@ if __name__ == "__main__":
     fetch_wikidata_connections()
 
     # Process data from IMDb
-    process_imdb_data()
+    # process_imdb_data()
 
     # --- Step 4: Combine Data (Implicitly done by add_connection) ---
     # NetworkX automatically handles merging nodes if their names are the same.
