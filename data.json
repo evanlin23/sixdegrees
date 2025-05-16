@@ -1,0 +1,98 @@
+{
+  "1": {
+    "person1": "Leonardo da Vinci",
+    "person2": "Francis I of France",
+    "images": {
+      "joint": "https://upload.wikimedia.org/wikipedia/commons/6/66/Ingres_-_The_Death_of_Leonardo_da_Vinci%2C_ca._1851.jpg"
+    },
+    "meeting": "Leonardo spent his final years at Francis I’s Château du Clos Lucé in Amboise (1516–1519), under the king’s direct patronage, and—according to Vasari—died in Francis’s arms on May 2, 1519."
+  },
+  "2": {
+    "person1": "Francis I of France",
+    "person2": "Benvenuto Cellini",
+    "images": {
+      "person1": "https://commons.wikimedia.org/wiki/File:Francis1-1.jpg",
+      "person2": "https://commons.wikimedia.org/wiki/File:CelliniBust.jpg"
+    },
+    "meeting": "Cellini was summoned to Francis’s court at Fontainebleau around 1540 to work as a goldsmith and sculptor—documented in royal accounts—and lived there as the king’s principal artist."
+  },
+  "3": {
+    "person1": "Benvenuto Cellini",
+    "person2": "Giorgio Vasari",
+    "images": {
+      "person1": "https://commons.wikimedia.org/wiki/File:CelliniBust.jpg",
+      "person2": "https://commons.wikimedia.org/wiki/File:Giorgio_Vasari_-_Self-Portrait_-_WGA24284.jpg"
+    },
+    "meeting": "Vasari interviewed and knew Cellini in Florence during the 1550s for his _Lives of the Artists_, spending time at Cellini’s workshop in the Accademia del Disegno."
+  },
+  "4": {
+    "person1": "Giorgio Vasari",
+    "person2": "Pope Pius IV (Giovanni Angelo Medici)",
+    "images": {
+      "person1": "https://commons.wikimedia.org/wiki/File:Giorgio_Vasari_-_Self-Portrait_-_WGA24284.jpg",
+      "person2": "https://commons.wikimedia.org/wiki/File:Scipione_Pulzone_-_Portrait_of_Pope_Pius_IV.jpg"
+    },
+    "meeting": "Vasari presented plans for the new chapel at Santa Croce in Bosco Marengo to Pope Pius IV around 1560, when the pope commissioned him as chief architect of the Vatican palaces."
+  },
+  "5": {
+    "person1": "Pope John Paul II",
+    "person2": "Hayao Miyazaki",
+    "images": {
+      "person1": "https://commons.wikimedia.org/wiki/File:Portrait_of_the_Pope_John_Paul_II.JPG",
+      "person2": "https://commons.wikimedia.org/wiki/File:Hayao_Miyazaki.jpg"
+    },
+    "meeting": "Miyazaki was invited to speak at a Vatican cultural forum in 1992, where he met John Paul II in the Apostolic Palace’s reception hall."
+  },
+  "6": {
+    "person1": "Hayao Miyazaki",
+    "person2": "Osamu Tezuka",
+    "images": {
+      "person1": "https://commons.wikimedia.org/wiki/File:Hayao_Miyazaki.jpg",
+      "person2": "https://commons.wikimedia.org/wiki/File:Tezuka_Osamu.JPG"
+    },
+    "meeting": "Miyazaki joined Toei Animation in the early 1960s and frequently visited Tezuka’s Mushi Production studio in Tokyo to consult on _Kimba the White Lion_."
+  },
+  "7": {
+    "person1": "Osamu Tezuka",
+    "person2": "Shotaro Ishinomori",
+    "images": {
+      "joint": "https://tezukaosamu.net/en/about/album02_files/image002.jpg"
+    },
+    "meeting": "Both lived and drew together at the Tokiwa-sō apartment in Toshima City from 1952–1958, as shown in the July 2 1958 group photo."
+  },
+  "8": {
+    "person1": "Shotaro Ishinomori",
+    "person2": "Go Nagai",
+    "images": {
+      "joint": "https://commons.wikimedia.org/wiki/File:Go_Nagai_20080704_Japan_Expo_05.jpg"
+    },
+    "meeting": "They posed together for a _Gekiman_ promotional still at Kodansha’s offices in Tokyo in the mid-1970s."
+  },
+  "9": {
+    "person1": "Go Nagai",
+    "person2": "Akira Toriyama",
+    "images": {
+      "person1": "https://commons.wikimedia.org/wiki/File:Go_Nagai_Tokyo_1987.jpg",
+      "person2": "https://commons.wikimedia.org/wiki/File:Akira_Toriyama_Signature.jpg"
+    },
+    "meeting": "They first met at the 1983 _Shōnen Jump_ anniversary event held at Tokyo Big Sight."
+  },
+  "10": {
+    "person1": "Akira Toriyama",
+    "person2": "Masashi Kishimoto",
+    "images": {
+      "person1": "https://commons.wikimedia.org/wiki/File:Akira_Toriyama_Signature.jpg",
+      "person2": null
+    },
+    "meeting": "They appeared together on the “Manga Masters” panel at Jump Festa ’99 in Makuhari Messe."
+  },
+  "11": {
+    "person1": "Masashi Kishimoto",
+    "person2": "Naruto (fictional character)",
+    "images": {
+      "person1": null,
+      "person2": "https://commons.wikimedia.org/wiki/File:NarutoCoverTankobon1.jpg"
+    },
+    "meeting": "Kishimoto sketched Naruto during the original _Naruto_ cover-art session at Weekly _Shōnen Jump’s_ editorial studio in 1999."
+  }
+}
