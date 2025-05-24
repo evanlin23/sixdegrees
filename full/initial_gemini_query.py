@@ -1,8 +1,26 @@
+# initial_gemini_query.py
 import google.generativeai as genai
 import os
 import xml.etree.ElementTree as ET
 
 TEXT_MODEL_NAME = "gemini-1.5-flash-latest"
+GEMINI_TASK_HEADER_FILE_PATH = os.path.join("prompts", "gemini_task_header.txt") # New
+
+def _load_gemini_task_header(logger_obj):
+    try:
+        with open(GEMINI_TASK_HEADER_FILE_PATH, "r", encoding="utf-8") as f:
+            header = f.read()
+        logger_obj.info(f"Gemini task header loaded from {GEMINI_TASK_HEADER_FILE_PATH}")
+        return header
+    except FileNotFoundError:
+        logger_obj.error(f"FATAL: Gemini task header file '{GEMINI_TASK_HEADER_FILE_PATH}' not found. Using default.")
+        return ("## Task Execution\nNow, using the rules, input format, and output formats defined above, "
+                "please process the following connection request to find a full chain:\n\n") # Fallback
+    except Exception as e:
+        logger_obj.error(f"Error loading Gemini task header file '{GEMINI_TASK_HEADER_FILE_PATH}': {e}. Using default.")
+        return ("## Task Execution\nNow, using the rules, input format, and output formats defined above, "
+                "please process the following connection request to find a full chain:\n\n") # Fallback
+
 
 def clean_gemini_xml_response(ai_output, logger):
     logger.debug(f"Raw AI output before cleaning (first 300 chars): {ai_output[:300]}")
@@ -89,9 +107,6 @@ def get_initial_chain_from_gemini_direct(system_prompt_content, user_input_xml_f
         return f"<error><type>APIError</type><message>Gemini API call failed: {str(e)}</message>{prompt_feedback_info}</error>"
 
 def get_initial_chain(person_a, person_b, system_prompt_content, user_input_template_str, api_key, logger, exclusion_instruction=""):
-    """
-    Gets a chain suggestion. Can include an exclusion instruction for sub-chain regeneration.
-    """
     logger.info(f"Requesting chain: {person_a} -> ... -> {person_b}.")
     if exclusion_instruction:
         logger.info(f"With exclusion instruction: {exclusion_instruction}")
@@ -100,14 +115,13 @@ def get_initial_chain(person_a, person_b, system_prompt_content, user_input_temp
         user_input_xml_content = user_input_template_str.format(
             person1_name=person_a, 
             person2_name=person_b,
-            additional_instructions=exclusion_instruction # This will be empty if no exclusion
+            additional_instructions=exclusion_instruction 
         )
     except KeyError as e_format:
         logger.error(f"Failed to format user input template. Missing key: {e_format}. Template: {user_input_template_str}")
         return f"<error><type>TemplateFormatError</type><message>Failed to format user input template: {e_format}</message></error>"
     
-    task_header = ("## Task Execution\nNow, using the rules, input format, and output formats defined above, "
-                   "please process the following connection request to find a full chain:\n\n")
+    task_header = _load_gemini_task_header(logger) # Load from file
     user_input_xml_for_gemini = task_header + user_input_xml_content
 
     return get_initial_chain_from_gemini_direct(system_prompt_content, user_input_xml_for_gemini, api_key, logger)

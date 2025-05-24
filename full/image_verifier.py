@@ -1,43 +1,72 @@
+# image_verifier.py
 import google.generativeai as genai
 import os
 import xml.etree.ElementTree as ET
-from PIL import Image
+# from PIL import Image # Retained for future use, not directly for DeepFace verify
 from deepface import DeepFace
 import logging
 import time
 
-import image_downloader # Assuming image_downloader.py is in the same directory or accessible
+import image_downloader 
 
 TEXT_MODEL_NAME_GEMINI = "gemini-1.5-flash-latest"
-VISION_MODEL_NAME_GEMINI = "gemini-1.5-flash-latest"
 
 REFERENCE_IMAGES_BASE_DIR = "reference_faces"
-DEEPFACE_MODEL_NAME = "ArcFace"
+REFERENCE_IMAGE_QUERY_PATTERNS_PATH = os.path.join("prompts", "reference_image_query_patterns.txt")
+
+
+DEEPFACE_MODELS_TO_USE = ["ArcFace", "VGG-Face", "Facenet"] 
 DEEPFACE_DETECTOR_BACKEND = "retinaface"
-DEEPFACE_DISTANCE_METRIC = "cosine" # Explicitly define, ArcFace typically uses cosine
-# To make DeepFace "less strict", we accept a slightly HIGHER distance value as a match.
-# Default ArcFace cosine threshold is ~0.68. A value like 0.72 here is more lenient.
-# Lower distance = more similar. We check if distance <= threshold.
+DEEPFACE_DISTANCE_METRIC = "cosine" 
+
 DEEPFACE_CUSTOM_THRESHOLDS = {
-    "ArcFace": { # Model name
-        "cosine": 0.74,  # distance_metric: threshold_value for match
-        "euclidean_l2": 1.18 # Example if euclidean_l2 was used (ArcFace default is ~1.13)
+    "ArcFace": {
+        "cosine": 0.68, 
+        "euclidean_l2": 1.13
     },
-    "VGG-Face": { # Example for another model
-        "cosine": 0.45 # Default is ~0.40
+    "VGG-Face": {
+        "cosine": 0.45, 
+        "euclidean_l2": 0.80 
+    },
+    "Facenet": {
+        "cosine": 0.40, 
+        "euclidean_l2": 1.0 
+    },
+    "Facenet512": { 
+        "cosine": 0.30, 
+        "euclidean_l2": 0.80 
+    },
+    "SFace": { 
+        "cosine": 0.593 
     }
-    # Add other models and metrics as needed if you change DEEPFACE_MODEL_NAME
 }
+DEEPFACE_VOTING_THRESHOLD_PERCENT = 50
 
-DEEPFACE_REFERENCE_DOWNLOAD_DELAY = 5
-NUM_REFERENCE_IMAGES_TO_USE = 5 # Number of reference images to try and use
 
-# Placeholder for API call delays - ensure this is defined appropriately in your main execution context
+DEEPFACE_REFERENCE_DOWNLOAD_DELAY = 3 
+NUM_REFERENCE_IMAGES_TO_USE = 5 
+
 API_CALL_DELAY_SECONDS_CONFIG = {
-    "gemini_vision": 10,
-    "gemini_text_retry": 15, # Added for query_gemini_text_for_retry
+    "gemini_text_retry": 15,
     "default": 5
 }
+
+def _load_reference_query_patterns(logger_obj):
+    try:
+        with open(REFERENCE_IMAGE_QUERY_PATTERNS_PATH, "r", encoding="utf-8") as f:
+            patterns = [line.strip() for line in f if line.strip()]
+        if not patterns:
+            logger_obj.warning(f"Reference image query patterns file '{REFERENCE_IMAGE_QUERY_PATTERNS_PATH}' is empty or contains no valid patterns. Falling back to default.")
+            return ['"{person_name}" clear face photo', '"{person_name}" headshot'] # Fallback
+        logger_obj.info(f"Loaded {len(patterns)} reference image query patterns from {REFERENCE_IMAGE_QUERY_PATTERNS_PATH}")
+        return patterns
+    except FileNotFoundError:
+        logger_obj.error(f"Reference image query patterns file not found: {REFERENCE_IMAGE_QUERY_PATTERNS_PATH}. Falling back to default.")
+        return ['"{person_name}" clear face photo', '"{person_name}" headshot'] # Fallback
+    except Exception as e:
+        logger_obj.error(f"Error loading reference image query patterns from {REFERENCE_IMAGE_QUERY_PATTERNS_PATH}: {e}. Falling back to default.")
+        return ['"{person_name}" clear face photo', '"{person_name}" headshot'] # Fallback
+
 
 def clean_gemini_xml_response_verifier(ai_output, logger):
     logger.debug(f"Raw AI output before cleaning (verifier response) (first 300 chars): {ai_output[:300]}")
@@ -65,7 +94,6 @@ def query_gemini_text_for_retry(system_prompt, user_prompt_xml, logger_obj):
         return f"<error><type>APIError</type><message>Gemini text API call (verifier retry) failed: {str(e)}</message>{prompt_feedback_info}</error>"
 
 def _ensure_reference_folder(person_name, logger):
-    """Ensures the base and person-specific reference folders exist. Returns person_ref_folder_path or None."""
     if not os.path.exists(REFERENCE_IMAGES_BASE_DIR):
         try:
             os.makedirs(REFERENCE_IMAGES_BASE_DIR)
@@ -87,56 +115,36 @@ def _ensure_reference_folder(person_name, logger):
     return person_ref_folder_path
 
 def _get_existing_reference_images(person_folder_path, logger):
-    """Lists existing valid image files in a given folder, sorted."""
     if not os.path.isdir(person_folder_path):
         return []
     try:
         image_files = [os.path.join(person_folder_path, f)
                        for f in os.listdir(person_folder_path)
                        if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
-        image_files.sort()  # Ensure consistent order
+        image_files.sort() 
         return image_files
     except Exception as e:
         logger.error(f"Error listing files in {person_folder_path}: {e}")
         return []
 
 
-def _download_additional_reference_images(person_name, person_ref_folder_path, num_to_download, logger_obj):
-    """Attempts to download a specific number of additional reference images."""
+def _download_additional_reference_images(person_name, person_ref_folder_path, num_to_download, logger_obj, query_patterns):
     logger = logger_obj
     if num_to_download <= 0:
         logger.debug(f"No additional reference images needed for {person_name}.")
-        return True # Nothing to download
+        return True 
 
     logger.info(f"Attempting download of {num_to_download} additional reference image(s) for {person_name} into {person_ref_folder_path}.")
     
-    # --- MODIFIED QUERY for diverse poses ---
-    # This query attempts to get a mix of frontal, profile, and 3/4 views.
-    # "headshot" is also a good general term.
-    # The effectiveness of "OR" depends on how Google interprets it in image search via icrawler.
-    # Often, Google might prioritize the first terms more.
-    # For truly diverse sets, multiple separate crawls with specific pose queries might be needed,
-    # but that would require more significant logic changes. This is a good first step.
-    ref_query_terms = [
-        f'"{person_name}" clear face photo',
-        f'"{person_name}" profile face photo', # Tries to get side views
-        f'"{person_name}" 3/4 face view',    # Tries to get angled views
-        f'"{person_name}" headshot',
-        f'"{person_name}" official photo' # Often yields good quality frontal shots
-    ]
-    # Join with OR. You might experiment with just one or two of these if the "OR" isn't effective.
-    # For now, let's try combining them.
-    ref_query = " OR ".join(ref_query_terms)
+    formatted_query_terms = [pattern.format(person_name=person_name) for pattern in query_patterns]
+    ref_query = " OR ".join(formatted_query_terms)
     
     logger.info(f"Using diversified reference query for {person_name}: {ref_query}")
-    # --- END MODIFICATION ---
 
-    # image_downloader.fetch_images_for_link will download into person_ref_folder_path
-    # It's crucial that image_downloader.py uses file_idx_offset='auto'
     download_result_folder = image_downloader.fetch_images_for_link(
-        subjects_str_or_person_name=person_name, # For logging inside downloader
+        subjects_str_or_person_name=person_name, 
         google_query_str=ref_query,
-        root_dl_folder=person_ref_folder_path, # Downloader puts files directly here for ref
+        root_dl_folder=person_ref_folder_path, 
         num_images_to_dl=num_to_download,
         logger=logger,
         is_reference_download=True
@@ -144,8 +152,7 @@ def _download_additional_reference_images(person_name, person_ref_folder_path, n
 
     if download_result_folder and os.path.isdir(download_result_folder):
         logger.info(f"Download process potentially added images for {person_name}. Folder: {download_result_folder}.")
-        # The actual number of new files will be checked by re-listing in find_reference_image
-        time.sleep(DEEPFACE_REFERENCE_DOWNLOAD_DELAY) # Still useful
+        time.sleep(DEEPFACE_REFERENCE_DOWNLOAD_DELAY) 
         return True
     else:
         logger.warning(f"Failed to download additional reference images for {person_name} or download folder not confirmed by downloader.")
@@ -170,9 +177,12 @@ def find_reference_image(person_name, logger_obj, auto_download=True):
     if auto_download:
         num_needed_to_download = NUM_REFERENCE_IMAGES_TO_USE - len(existing_images)
         logger.info(f"Need {num_needed_to_download} more reference images for '{person_name}'. Triggering download.")
+        
+        # Load query patterns each time for flexibility, though could be cached
+        query_patterns = _load_reference_query_patterns(logger)
 
         download_successful = _download_additional_reference_images(
-            person_name, person_ref_folder_path, num_needed_to_download, logger
+            person_name, person_ref_folder_path, num_needed_to_download, logger, query_patterns
         )
 
         all_images_after_attempt = _get_existing_reference_images(person_ref_folder_path, logger)
@@ -189,108 +199,112 @@ def find_reference_image(person_name, logger_obj, auto_download=True):
         return existing_images[:NUM_REFERENCE_IMAGES_TO_USE]
 
 
-def verify_image_with_vision_api(
-    image_path, person1_name, person2_name,
-    vision_prompt_template_str, logger_obj,
-    api_provider="gemini"
+def verify_image_with_deepface_models(
+    image_path, person1_name, person2_name, logger_obj
     ):
     logger = logger_obj
+    logger.info(f"  Verifying image: {os.path.basename(image_path)} for '{person1_name}' and '{person2_name}' using DeepFace (multiple models: {', '.join(DEEPFACE_MODELS_TO_USE)}).")
 
-    if api_provider == "gemini":
-        time.sleep(API_CALL_DELAY_SECONDS_CONFIG.get("gemini_vision", 10))
-        if not vision_prompt_template_str: logger.error(f"Vision API prompt template is missing for {api_provider}."); return "ERROR"
-        try: p1_str = str(person1_name); p2_str = str(person2_name); vision_api_formatted_prompt = vision_prompt_template_str.format(person1_name=p1_str, person2_name=p2_str)
-        except KeyError as e_format: logger.error(f"Failed to format Vision API prompt for {api_provider}. Missing key: {e_format}. P1: {p1_str}, P2: {p2_str}"); return "ERROR"
-        logger.debug(f"  Formatted Vision API prompt for {api_provider}: {vision_api_formatted_prompt}")
-    elif api_provider == "local_deepface":
-        pass 
-    else:
-        logger.error(f"Unsupported API provider '{api_provider}' for prompt formatting step.")
+    if not DEEPFACE_MODELS_TO_USE:
+        logger.error("  DEEPFACE_MODELS_TO_USE list is empty. Cannot perform DeepFace verification.")
         return "ERROR"
 
-    logger.info(f"  Verifying image: {os.path.basename(image_path)} for '{person1_name}' and '{person2_name}' using {api_provider.upper()} API.")
-    api_response_text = "" # Initialize for Gemini case
-
     try:
-        if api_provider == "local_deepface":
-            ref1_paths = find_reference_image(person1_name, logger, auto_download=True)
-            ref2_paths = find_reference_image(person2_name, logger, auto_download=True)
+        ref1_paths = find_reference_image(person1_name, logger, auto_download=True)
+        ref2_paths = find_reference_image(person2_name, logger, auto_download=True)
 
-            if not ref1_paths:
-                logger.error(f"No reference images available for DeepFace verification for P1 '{person1_name}' after auto-download attempt.")
-                return "ERROR" # Changed from NO to ERROR as it's a prerequisite failure
-            if not ref2_paths:
-                logger.error(f"No reference images available for DeepFace verification for P2 '{person2_name}' after auto-download attempt.")
-                return "ERROR" # Changed from NO to ERROR
+        if not ref1_paths:
+            logger.error(f"No reference images available for DeepFace verification for P1 '{person1_name}' after auto-download attempt.")
+            return "ERROR"
+        if not ref2_paths:
+            logger.error(f"No reference images available for DeepFace verification for P2 '{person2_name}' after auto-download attempt.")
+            return "ERROR"
 
-            # Determine the custom threshold to use for DeepFace
-            model_specific_custom_thresholds = DEEPFACE_CUSTOM_THRESHOLDS.get(DEEPFACE_MODEL_NAME)
+        p1_model_votes = {} 
+        logger.info(f"  DeepFace: Verifying P1 '{person1_name}' using {len(ref1_paths)} reference image(s) across {len(DEEPFACE_MODELS_TO_USE)} model(s).")
+        for model_idx, current_model_name in enumerate(DEEPFACE_MODELS_TO_USE):
+            logger.debug(f"    P1 Model {model_idx+1}/{len(DEEPFACE_MODELS_TO_USE)}: '{current_model_name}'")
+            person1_verified_by_current_model = False
+            
             custom_threshold_to_use = None
-            use_default_verified_flag_logic = True # Fallback to original logic
-
+            use_default_verified_flag_logic = True
+            model_specific_custom_thresholds = DEEPFACE_CUSTOM_THRESHOLDS.get(current_model_name)
             if model_specific_custom_thresholds:
                 custom_threshold_to_use = model_specific_custom_thresholds.get(DEEPFACE_DISTANCE_METRIC)
             
             if custom_threshold_to_use is not None:
                 use_default_verified_flag_logic = False
-                logger.info(f"Using custom DeepFace threshold {custom_threshold_to_use} for model '{DEEPFACE_MODEL_NAME}' with distance metric '{DEEPFACE_DISTANCE_METRIC}'.")
+                logger.debug(f"      Using custom threshold {custom_threshold_to_use} for model '{current_model_name}' with metric '{DEEPFACE_DISTANCE_METRIC}'.")
             else:
-                logger.warning(f"No custom DeepFace threshold defined for model '{DEEPFACE_MODEL_NAME}' and metric '{DEEPFACE_DISTANCE_METRIC}'. Will rely on DeepFace's default 'verified' flag.")
+                logger.debug(f"      No custom threshold for model '{current_model_name}' / metric '{DEEPFACE_DISTANCE_METRIC}'. Using DeepFace default 'verified' flag.")
 
-            person1_verified = False
-            logger.debug(f"DeepFace: Verifying P1 '{person1_name}' using {len(ref1_paths)} reference image(s).")
             for i, ref1_path in enumerate(ref1_paths):
                 if not isinstance(ref1_path, str) or not os.path.exists(ref1_path):
-                    logger.warning(f"Invalid or non-existent reference path for {person1_name}: {ref1_path}. Skipping.")
+                    logger.warning(f"      Invalid or non-existent reference path for {person1_name} with {current_model_name}: {ref1_path}. Skipping.")
                     continue
                 try:
-                    logger.debug(f"  P1 Check {i+1}/{len(ref1_paths)}: {os.path.basename(image_path)} vs {os.path.basename(ref1_path)}")
+                    logger.debug(f"        P1 Check (Model: {current_model_name}, Ref {i+1}/{len(ref1_paths)}): {os.path.basename(image_path)} vs {os.path.basename(ref1_path)}")
                     result1 = DeepFace.verify(
                         img1_path=image_path, img2_path=ref1_path,
-                        model_name=DEEPFACE_MODEL_NAME, 
+                        model_name=current_model_name, 
                         detector_backend=DEEPFACE_DETECTOR_BACKEND,
-                        distance_metric=DEEPFACE_DISTANCE_METRIC, # Specify for consistency
+                        distance_metric=DEEPFACE_DISTANCE_METRIC,
                         enforce_detection=True, align=True
                     )
                     
                     current_check_verified = False
                     distance = result1.get('distance', float('inf'))
-                    default_model_threshold = result1.get('threshold', 'N/A') # DeepFace's own threshold for this model/metric
+                    default_model_threshold = result1.get('threshold', 'N/A')
 
                     if use_default_verified_flag_logic:
-                        if result1.get("verified", False):
-                            current_check_verified = True
-                        log_suffix = f"(Dist: {distance:.4f}, Model Thr: {default_model_threshold}, Decision: DeepFace default)"
-                    else: # Use custom threshold
-                        if distance <= custom_threshold_to_use:
-                            current_check_verified = True
-                        log_suffix = f"(Dist: {distance:.4f}, Model Thr: {default_model_threshold}, Custom Thr: {custom_threshold_to_use}, Decision: Custom)"
+                        if result1.get("verified", False): current_check_verified = True
+                        log_suffix = f"(Dist: {distance:.4f}, ModelThr: {default_model_threshold}, Decision: DeepFace default)"
+                    else: 
+                        if distance <= custom_threshold_to_use: current_check_verified = True
+                        log_suffix = f"(Dist: {distance:.4f}, ModelThr: {default_model_threshold}, CustomThr: {custom_threshold_to_use}, Decision: Custom)"
                     
                     if current_check_verified:
-                        person1_verified = True
-                        logger.info(f"  DeepFace verification for {person1_name} SUCCEEDED with ref '{os.path.basename(ref1_path)}' {log_suffix}")
+                        person1_verified_by_current_model = True
+                        logger.info(f"      P1 verification with {current_model_name} SUCCEEDED (Ref: '{os.path.basename(ref1_path)}') {log_suffix}")
                         break 
                     else:
-                        logger.debug(f"  DeepFace verification for {person1_name} FAILED with ref '{os.path.basename(ref1_path)}' {log_suffix}")
-
-                except Exception as e_df_p1:
-                    logger.warning(f"  DeepFace.verify call failed for {person1_name} (ref: {os.path.basename(ref1_path)}) against {image_path}: {str(e_df_p1)[:200]}")
+                        logger.debug(f"      P1 verification with {current_model_name} FAILED (Ref: '{os.path.basename(ref1_path)}') {log_suffix}")
+                except Exception as e_df_p1_model:
+                    logger.warning(f"      DeepFace.verify call failed for P1 {person1_name} with model {current_model_name} (Ref: {os.path.basename(ref1_path)}) against {image_path}: {str(e_df_p1_model)[:200]}")
             
-            if not person1_verified:
-                logger.info(f"DeepFace: {person1_name} NOT verified with any of their {len(ref1_paths)} reference images.")
+            p1_model_votes[current_model_name] = person1_verified_by_current_model
+            logger.info(f"    P1 Result for model '{current_model_name}': {'VERIFIED' if person1_verified_by_current_model else 'NOT VERIFIED'}")
 
-            person2_verified = False
-            if person1_verified: # Only check P2 if P1 was verified
-                logger.debug(f"DeepFace: P1 '{person1_name}' verified. Verifying P2 '{person2_name}' using {len(ref2_paths)} reference image(s).")
+        num_p1_yes_votes = sum(1 for vote in p1_model_votes.values() if vote)
+        final_p1_verified = (num_p1_yes_votes * 100.0 / len(DEEPFACE_MODELS_TO_USE)) > DEEPFACE_VOTING_THRESHOLD_PERCENT if DEEPFACE_MODELS_TO_USE else False
+        logger.info(f"  DeepFace P1 '{person1_name}' Voting: {num_p1_yes_votes}/{len(DEEPFACE_MODELS_TO_USE)} models voted YES. Final P1 Verified: {final_p1_verified} (Threshold: >{DEEPFACE_VOTING_THRESHOLD_PERCENT}%)")
+
+        p2_model_votes = {}
+        final_p2_verified = False
+        if final_p1_verified:
+            logger.info(f"  DeepFace: P1 '{person1_name}' verified by vote. Verifying P2 '{person2_name}' using {len(ref2_paths)} reference image(s) across {len(DEEPFACE_MODELS_TO_USE)} model(s).")
+            for model_idx, current_model_name in enumerate(DEEPFACE_MODELS_TO_USE):
+                logger.debug(f"    P2 Model {model_idx+1}/{len(DEEPFACE_MODELS_TO_USE)}: '{current_model_name}'")
+                person2_verified_by_current_model = False
+
+                custom_threshold_to_use = None
+                use_default_verified_flag_logic = True
+                model_specific_custom_thresholds = DEEPFACE_CUSTOM_THRESHOLDS.get(current_model_name)
+                if model_specific_custom_thresholds:
+                    custom_threshold_to_use = model_specific_custom_thresholds.get(DEEPFACE_DISTANCE_METRIC)
+                
+                if custom_threshold_to_use is not None:
+                    use_default_verified_flag_logic = False 
+                
                 for i, ref2_path in enumerate(ref2_paths):
                     if not isinstance(ref2_path, str) or not os.path.exists(ref2_path):
-                        logger.warning(f"Invalid or non-existent reference path for {person2_name}: {ref2_path}. Skipping.")
+                        logger.warning(f"      Invalid or non-existent reference path for {person2_name} with {current_model_name}: {ref2_path}. Skipping.")
                         continue
                     try:
-                        logger.debug(f"  P2 Check {i+1}/{len(ref2_paths)}: {os.path.basename(image_path)} vs {os.path.basename(ref2_path)}")
+                        logger.debug(f"        P2 Check (Model: {current_model_name}, Ref {i+1}/{len(ref2_paths)}): {os.path.basename(image_path)} vs {os.path.basename(ref2_path)}")
                         result2 = DeepFace.verify(
                             img1_path=image_path, img2_path=ref2_path,
-                            model_name=DEEPFACE_MODEL_NAME, 
+                            model_name=current_model_name, 
                             detector_backend=DEEPFACE_DETECTOR_BACKEND,
                             distance_metric=DEEPFACE_DISTANCE_METRIC,
                             enforce_detection=True, align=True
@@ -301,94 +315,52 @@ def verify_image_with_vision_api(
                         default_model_threshold_p2 = result2.get('threshold', 'N/A')
 
                         if use_default_verified_flag_logic:
-                            if result2.get("verified", False):
-                                current_check_verified_p2 = True
-                            log_suffix_p2 = f"(Dist: {distance_p2:.4f}, Model Thr: {default_model_threshold_p2}, Decision: DeepFace default)"
-                        else: # Use custom threshold
-                            if distance_p2 <= custom_threshold_to_use:
-                                current_check_verified_p2 = True
-                            log_suffix_p2 = f"(Dist: {distance_p2:.4f}, Model Thr: {default_model_threshold_p2}, Custom Thr: {custom_threshold_to_use}, Decision: Custom)"
+                            if result2.get("verified", False): current_check_verified_p2 = True
+                            log_suffix_p2 = f"(Dist: {distance_p2:.4f}, ModelThr: {default_model_threshold_p2}, Decision: DeepFace default)"
+                        else: 
+                            if distance_p2 <= custom_threshold_to_use: current_check_verified_p2 = True
+                            log_suffix_p2 = f"(Dist: {distance_p2:.4f}, ModelThr: {default_model_threshold_p2}, CustomThr: {custom_threshold_to_use}, Decision: Custom)"
 
                         if current_check_verified_p2:
-                            person2_verified = True
-                            logger.info(f"  DeepFace verification for {person2_name} SUCCEEDED with ref '{os.path.basename(ref2_path)}' {log_suffix_p2}")
+                            person2_verified_by_current_model = True
+                            logger.info(f"      P2 verification with {current_model_name} SUCCEEDED (Ref: '{os.path.basename(ref2_path)}') {log_suffix_p2}")
                             break
                         else:
-                            logger.debug(f"  DeepFace verification for {person2_name} FAILED with ref '{os.path.basename(ref2_path)}' {log_suffix_p2}")
-                            
-                    except Exception as e_df_p2:
-                        logger.warning(f"  DeepFace.verify call failed for {person2_name} (ref: {os.path.basename(ref2_path)}) against {image_path}: {str(e_df_p2)[:200]}")
+                            logger.debug(f"      P2 verification with {current_model_name} FAILED (Ref: '{os.path.basename(ref2_path)}') {log_suffix_p2}")
+                    except Exception as e_df_p2_model:
+                        logger.warning(f"      DeepFace.verify call failed for P2 {person2_name} with model {current_model_name} (Ref: {os.path.basename(ref2_path)}) against {image_path}: {str(e_df_p2_model)[:200]}")
                 
-                if not person2_verified:
-                    logger.info(f"DeepFace: {person2_name} NOT verified with any of their {len(ref2_paths)} reference images (though {person1_name} was).")
-            else: # P1 not verified
-                 logger.info(f"DeepFace: Skipping P2 '{person2_name}' check as P1 '{person1_name}' was not verified.")
+                p2_model_votes[current_model_name] = person2_verified_by_current_model
+                logger.info(f"    P2 Result for model '{current_model_name}': {'VERIFIED' if person2_verified_by_current_model else 'NOT VERIFIED'}")
 
-            if person1_verified and person2_verified:
-                logger.info(f"DeepFace: Both {person1_name} and {person2_name} successfully verified in {os.path.basename(image_path)} using their respective reference sets.")
-                return "YES"
-            else:
-                logger.info(f"DeepFace: One or both not verified. P1_verified: {person1_verified}, P2_verified: {person2_verified}")
-                return "NO"
-
-        elif api_provider == "gemini":
-            img = Image.open(image_path); model = genai.GenerativeModel(VISION_MODEL_NAME_GEMINI)
-            response = model.generate_content([vision_api_formatted_prompt, img])
-            
-            # Extract text response
-            api_response_text = "" # Initialize
-            if response.parts:
-                for part in response.parts:
-                    if hasattr(part, 'text'): 
-                        api_response_text = part.text # Keep original for logging
-                        break
-            elif hasattr(response, 'text'): 
-                api_response_text = response.text
-            else: 
-                logger.warning(f"    {api_provider.upper()} Vision API returned no parsable text part for {os.path.basename(image_path)}.")
-                # api_response_text remains ""
-
-            logger.info(f"    {api_provider.upper()} Vision API raw response for {os.path.basename(image_path)}: '{api_response_text}'")
-            
-            processed_response_text = api_response_text.strip().upper()
-            
-            if processed_response_text == "YES":
-                return "YES"
-            if processed_response_text == "NO":
-                return "NO"
-            
-            # Allow for simple variations like "YES." or "NO," but not longer phrases
-            if processed_response_text.startswith("YES") and len(processed_response_text) <= 5: 
-                 if all(c in "YES.!, " for c in processed_response_text): # check for only allowed chars
-                    logger.debug(f"Interpreting '{api_response_text}' as YES due to simple fuzzy match.")
-                    return "YES"
-            if processed_response_text.startswith("NO") and len(processed_response_text) <= 4: 
-                 if all(c in "NO.!, " for c in processed_response_text):
-                    logger.debug(f"Interpreting '{api_response_text}' as NO due to simple fuzzy match.")
-                    return "NO"
-
-            # If still ambiguous, treat as NO (less strict than ERROR which might halt chain)
-            logger.warning(f"    {api_provider.upper()} Vision API gave ambiguous answer: '{api_response_text}' for {os.path.basename(image_path)} (did not clearly parse to YES/NO). Treating as NO."); 
-            return "NO" 
+            num_p2_yes_votes = sum(1 for vote in p2_model_votes.values() if vote)
+            final_p2_verified = (num_p2_yes_votes * 100.0 / len(DEEPFACE_MODELS_TO_USE)) > DEEPFACE_VOTING_THRESHOLD_PERCENT if DEEPFACE_MODELS_TO_USE else False
+            logger.info(f"  DeepFace P2 '{person2_name}' Voting: {num_p2_yes_votes}/{len(DEEPFACE_MODELS_TO_USE)} models voted YES. Final P2 Verified: {final_p2_verified} (Threshold: >{DEEPFACE_VOTING_THRESHOLD_PERCENT}%)")
         else:
-            logger.error(f"Unsupported API provider during call: {api_provider}"); return "ERROR"
+            logger.info(f"  DeepFace: Skipping P2 '{person2_name}' check as P1 '{person1_name}' was not verified by vote.")
 
-    except FileNotFoundError: logger.error(f"  Image file not found for Vision API: {image_path}"); return "ERROR"
+        if final_p1_verified and final_p2_verified:
+            logger.info(f"  DeepFace Multi-Model Verification: Both {person1_name} and {person2_name} successfully verified by vote in {os.path.basename(image_path)}.")
+            return "YES"
+        else:
+            logger.info(f"  DeepFace Multi-Model Verification: One or both not verified by vote. P1_verified: {final_p1_verified}, P2_verified: {final_p2_verified}")
+            return "NO"
+
+    except FileNotFoundError: 
+        logger.error(f"  Image file not found for DeepFace verification: {image_path}"); return "ERROR"
     except Exception as e:
-        logger.error(f"  Error during {api_provider.upper()} Vision call for {image_path}: {e}", exc_info=True)
-        if api_provider == "gemini" and 'response' in locals() and hasattr(response, 'prompt_feedback') and response.prompt_feedback:
-            logger.warning(f"    Prompt Feedback from Gemini Vision API: {response.prompt_feedback}")
-        return "ERROR" # Keep as ERROR for unexpected exceptions
+        logger.error(f"  Error during DeepFace Multi-Model verification for {image_path}: {e}", exc_info=True)
+        return "ERROR"
+
 
 def verify_and_potentially_reprompt_link(
     person1_in_link, person2_in_link, images_folder_path,
     original_link_xml_node, system_prompt_content,
-    retry_user_input_template_str, vision_api_prompt_template_str,
-    logger_obj, max_images_to_check_vision = 3,
-    vision_api_provider = "gemini" 
+    retry_user_input_template_str, 
+    logger_obj, max_images_to_check_vision = 3
     ):
     logger = logger_obj
-    logger.info(f"--- Verifying link segment: '{person1_in_link}' <-> '{person2_in_link}' (using {vision_api_provider.upper()}) ---")
+    logger.info(f"--- Verifying link segment: '{person1_in_link}' <-> '{person2_in_link}' (using DeepFace Multi-Model) ---")
 
     def format_retry_prompt(p1, p2, failed_details_dict, template_str):
         try: p1_str_fmt = str(p1); p2_str_fmt = str(p2); return template_str.format(person1_name=p1_str_fmt, person2_name=p2_str_fmt, failed_event_description=failed_details_dict.get('event_description', 'Previously suggested event'), failed_google_query=failed_details_dict.get('google_query', 'Previously suggested query'))
@@ -411,26 +383,27 @@ def verify_and_potentially_reprompt_link(
 
     image_files = [os.path.join(images_folder_path, f) for f in os.listdir(images_folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.webp'))]
     image_files_to_check = image_files[:max_images_to_check_vision]
-    logger.info(f"  Found {len(image_files)} images in '{images_folder_path}'. Will check up to {len(image_files_to_check)} with {vision_api_provider.upper()} Vision API.")
+    logger.info(f"  Found {len(image_files)} images in '{images_folder_path}'. Will check up to {len(image_files_to_check)} with DeepFace Multi-Model.")
 
     verified_image_path = None
     for img_path in image_files_to_check:
-        verification_result = verify_image_with_vision_api(img_path, person1_in_link, person2_in_link, vision_api_prompt_template_str, logger, api_provider=vision_api_provider)
+        verification_result = verify_image_with_deepface_models(
+            img_path, person1_in_link, person2_in_link, logger
+        )
         if verification_result == "YES":
-            verified_image_path = img_path; logger.info(f"  SUCCESS: Verified '{person1_in_link}' and '{person2_in_link}' in {os.path.basename(img_path)} using {vision_api_provider.upper()}"); break
+            verified_image_path = img_path; logger.info(f"  SUCCESS: Verified '{person1_in_link}' and '{person2_in_link}' in {os.path.basename(img_path)} using DeepFace Multi-Model"); break
         elif verification_result == "ERROR": 
-            logger.warning(f"  Vision API error or file issue for image {os.path.basename(img_path)} using {vision_api_provider.upper()}. This image will be skipped. An alternative link might be sought if all images fail.")
-        # Implicit: if "NO", continue to next image
+            logger.warning(f"  DeepFace Multi-Model error or file issue for image {os.path.basename(img_path)}. This image will be skipped. An alternative link might be sought if all images fail.")
 
     original_link_xml_string = ET.tostring(original_link_xml_node, encoding='unicode')
     if verified_image_path:
         return "VERIFIED_OK", (verified_image_path, original_link_xml_string)
     else:
-        logger.warning(f"  Verification FAILED for all {len(image_files_to_check)} checked images for '{person1_in_link}' and '{person2_in_link}' using {vision_api_provider.upper()}.")
+        logger.warning(f"  Verification FAILED for all {len(image_files_to_check)} checked images for '{person1_in_link}' and '{person2_in_link}' using DeepFace Multi-Model.")
         failed_event_desc = original_link_xml_node.findtext('evidence', 'Previously suggested event'); failed_google_query = original_link_xml_node.findtext('google', 'Previously suggested query'); failed_details = {"event_description": failed_event_desc, "google_query": failed_google_query}
         formatted_retry_user_prompt_xml = format_retry_prompt(person1_in_link, person2_in_link, failed_details, retry_user_input_template_str)
         if not formatted_retry_user_prompt_xml: return "FAILED_VERIFICATION_NO_ALTERNATIVE", original_link_xml_string
-        logger.info(f"  Reprompting Gemini for an alternative link (due to image verification failure with {vision_api_provider.upper()}).")
+        logger.info(f"  Reprompting Gemini for an alternative link (due to image verification failure with DeepFace Multi-Model).")
         new_link_suggestion_xml = query_gemini_text_for_retry(system_prompt_content, formatted_retry_user_prompt_xml, logger)
         try:
             if not isinstance(new_link_suggestion_xml, str) or new_link_suggestion_xml.strip().startswith("<error>"):

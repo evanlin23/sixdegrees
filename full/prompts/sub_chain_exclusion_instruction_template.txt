@@ -1,0 +1,4 @@
+IMPORTANT: You are building a new sub-chain from '{last_verified_person_name}' to '{target_person_name}'.
+1. Crucially, DO NOT suggest '{immediate_next_step_to_avoid}' as the immediate next connection from '{last_verified_person_name}'. That path just failed.
+{avoid_intermediaries_instruction}
+3. The goal is to find a NEW, fresh path from '{last_verified_person_name}' to '{target_person_name}'.

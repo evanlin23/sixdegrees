@@ -58,7 +58,7 @@ If a connection is found, your entire response MUST be XML in this format, start
 <subjects>[Person A] → [Person B]</subjects>
 <evidence>[Specific description of the documented co-occurrence or meeting. This should clearly state *how* they were documented together, e.g., 'Listed as attendees at the G8 Summit 2005', 'Joint press conference reported by Reuters', 'Both participated in a panel discussion at Event X'. The evidence must be credible and strongly suggest a photograph or video *could* exist from this co-occurrence.]</evidence>
 <source>[Primary source of documentation for the co-occurrence. This could be a URL to a news article, official report, event page, or a textual description if a direct URL is not available (e.g., 'New York Times, 2008-05-15, article titled "Leaders Meet"'). The focus is on the *documentation of the event*, not necessarily a direct link to an image.]</source>
-<google>[An optimized Google search query designed to help the user manually find a photograph or video still of the subjects at the documented co-occurrence.]</google>
+<google>["{Full Name of Person A from this link's subjects tag}" AND "{Full Name of Person B from this link's subjects tag}"]</google>
 <source_type>[Tier 1/2/3 - See Source Tier definitions below. Strive for Tier 1. Use Tier 2 only if exhaustive Tier 1 search for this link and for intermediary paths fails. Use Tier 3 only as an absolute last resort for a segment if all Tier 1 and Tier 2 options are exhausted.]</source_type>
 <context>[Event/occasion/circumstances of the documented co-occurrence]</context>
 <date_range>[Approximate timeframe of the co-occurrence, e.g., YYYY-MM-DD, YYYY-MM, YYYY]</date_range>

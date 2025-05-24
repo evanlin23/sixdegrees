@@ -1,0 +1,5 @@
+"{person_name}" clear face photo
+"{person_name}" profile face photo
+"{person_name}" 3/4 face view
+"{person_name}" headshot
+"{person_name}" official photo
