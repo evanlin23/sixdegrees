@@ -1,3 +1,0 @@
-1. Prompt deep research for the connections. You can give a hint using the networked pantheon. 
-2. Download all of the images, add text with canva (this can be automated, probably)
-3. Upload all of the images to the ioctl multi and choose points

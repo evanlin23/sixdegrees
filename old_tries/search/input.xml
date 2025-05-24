@@ -1,0 +1,45 @@
+<connection_chain>
+<chain_summary>
+<total_links>3</total_links>
+<subjects_connected>Robert J. Jones (Illinois Chancellor) → Dick Durbin → Barack Obama → Jonas Brothers</subjects_connected>
+<chain_type>Extended</chain_type>
+<intermediary_count>2</intermediary_count>
+<research_confidence>High</research_confidence>
+</chain_summary>
+
+<link id="1">
+<subjects>Robert J. Jones (Illinois Chancellor) → Dick Durbin</subjects>
+<evidence>Chancellor Robert J. Jones and U.S. Senator Dick Durbin were both present and spoke at the announcement event for the new USAID-funded Feed the Future Innovation Lab for Productive Landscapes (PROSPECT) at the University of Illinois Urbana-Champaign. They were photographed together at this event.</evidence>
+<source>University of Illinois News Bureau article "New $15M USAID Feed the Future Innovation Lab for Productive Landscapes launched at Illinois" (May 16, 2022). Local news reports such as WCIA News "New innovation lab on UIUC campus aims to help farmers in other countries" (May 16, 2022).</source>
+<google>photo "Chancellor Robert Jones" "Senator Dick Durbin" "Feed the Future UIUC May 2022"</google>
+<source_type>Tier 1</source_type>
+<context>Launch event for a new USAID-funded research innovation lab at the University of Illinois Urbana-Champaign.</context>
+<date_range>2022-05-16</date_range>
+<strength>Strong</strength>
+<verification_notes>Both Chancellor Jones and Senator Durbin delivered remarks and participated in the official announcement. Photos from university sources and local news outlets document their joint presence at the podium and event.</verification_notes>
+</link>
+
+<link id="2">
+<subjects>Dick Durbin → Barack Obama</subjects>
+<evidence>Senator Dick Durbin and then-U.S. Senator Barack Obama were both key speakers and prominent attendees at the official dedication ceremony for the Abraham Lincoln Presidential Library and Museum in Springfield, Illinois. They shared the stage and were photographed together at this major public event.</evidence>
+<source>C-SPAN Archives footage of "Lincoln Library Dedication" (April 19, 2005). Associated Press photographs from the event. News reports from major outlets like the Chicago Tribune and The State Journal-Register covering the dedication ceremony.</source>
+<google>photo "Dick Durbin" "Barack Obama" "Abraham Lincoln Presidential Library dedication 2005"</google>
+<source_type>Tier 1</source_type>
+<context>Official dedication ceremony of the Abraham Lincoln Presidential Library and Museum.</context>
+<date_range>2005-04-19</date_range>
+<strength>Strong</strength>
+<verification_notes>As two of Illinois' most prominent national political figures at the time, their joint participation and presence on the dais at this historic state event is well-documented by video and photographs.</verification_notes>
+</link>
+
+<link id="3">
+<subjects>Barack Obama → Jonas Brothers</subjects>
+<evidence>The Jonas Brothers performed at the "Kids' Inaugural: We Are the Future" concert on January 19, 2009, in Washington, D.C. Then President-elect Barack Obama attended this event, which was part of his inaugural celebrations, and delivered remarks. The Jonas Brothers were photographed backstage with members of the Obama family (Michelle Obama, Malia, and Sasha) at this concert.</evidence>
+<source>News reports from outlets like MTV News ("Miley Cyrus, Jonas Brothers, Other Stars Perform For Military Families At Kids' Inaugural Concert," Jan 19, 2009), Reuters, Associated Press. Getty Images archives (e.g., Image #84412609 showing Jonas Brothers with Michelle Obama and daughters backstage). Official Obama Presidential Library archives may also contain records.</source>
+<google>photo "Jonas Brothers" "Barack Obama" "Michelle Obama" "Kids Inaugural Concert 2009"</google>
+<source_type>Tier 2</source_type>
+<context>Pre-inaugural concert ("Kids' Inaugural: We Are the Future") for military families celebrating the incoming Obama administration.</context>
+<date_range>2009-01-19</date_range>
+<strength>Strong</strength>
+<verification_notes>The Jonas Brothers were official performers at this widely publicized event. Barack Obama's attendance and speech at the same event, and the Jonas Brothers' documented interaction with his immediate family there, firmly places them at the same specific event. Visuals of the Jonas Brothers with Michelle Obama at the event are readily available; Barack Obama was the central figure of the overall inauguration program.</verification_notes>
+</link>
+</connection_chain>

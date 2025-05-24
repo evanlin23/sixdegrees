@@ -1,0 +1,4 @@
+Analyze this image.
+Does this image clearly show BOTH "{person1_name}" AND "{person2_name}" present together?
+Consider their known appearances.
+Respond with ONLY one word: YES or NO.

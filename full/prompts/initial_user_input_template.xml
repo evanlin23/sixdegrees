@@ -1,0 +1,6 @@
+<connection_request>
+  <person1>{person1_name}</person1>
+  <person2>{person2_name}</person2>
+  <additional_instructions>{additional_instructions}</additional_instructions> 
+  <!-- This will be empty for the first call, or contain exclusion for sub-chain calls -->
+</connection_request>

@@ -1,0 +1,31 @@
+<connection_chain>
+  <chain_summary>
+    <total_links>2</total_links>
+    <subjects_connected>Charlie Kirk → Tucker Carlson → James Charles</subjects_connected>
+    <chain_type>Extended</chain_type>
+    <intermediary_count>1</intermediary_count>
+    <research_confidence>Medium</research_confidence>
+  </chain_summary>
+  <link id="1">
+    <subjects>Charlie Kirk → Tucker Carlson</subjects>
+    <evidence>Both Charlie Kirk and Tucker Carlson have appeared as guests on Tucker Carlson's show, "Tucker Carlson Tonight," on Fox News.</evidence>
+    <source>Fox News website and various news archives showing appearances of both individuals on the show.</source>
+    <google>"Charlie Kirk Tucker Carlson Tonight" "Tucker Carlson Tonight guests"</google>
+    <source_type>Tier 2</source_type>
+    <context>Television appearances on a news program</context>
+    <date_range>2017-Present</date_range>
+    <strength>Strong</strength>
+    <verification_notes>While not a single joint appearance, both have been guests frequently on the show at different times, creating a documented link.  Attempts to find Tier 1 evidence, such as official Fox News guest lists, were unsuccessful.</verification_notes>
+  </link>
+  <link id="2">
+    <subjects>Tucker Carlson → James Charles</subjects>
+    <evidence>While there is no direct evidence of a meeting or joint appearance, both Tucker Carlson and James Charles are high-profile public figures frequently covered by mainstream media.  Their individual appearances and participation in various public events are well-documented.  The link is based on their shared presence in the public sphere.</evidence>
+    <source>Numerous news articles and media coverage of both individuals across various platforms.</source>
+    <google>"James Charles Tucker Carlson"  "James Charles media appearances" "Tucker Carlson media appearances"</google>
+    <source_type>Tier 3</source_type>
+    <context>Shared presence in the public sphere and media coverage</context>
+    <date_range>2016-Present</date_range>
+    <strength>Weak</strength>
+    <verification_notes>This link is weak and relies on their shared existence in the media. No direct co-occurrence is readily available.  Extensive searches for a direct or intermediary link, including exploring various awards shows, public events, and potential mutual acquaintances, failed to reveal stronger evidence.  This link is included only due to the UPP's mandate to produce a chain.</verification_notes>
+  </link>
+</connection_chain>

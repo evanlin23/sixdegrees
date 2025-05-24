@@ -1,0 +1,27 @@
+<retry_connection_request>
+  <person1>{person1_name}</person1>
+  <person2>{person2_name}</person2>
+  <failed_link_instruction>
+    IMPORTANT: Your previous suggestion for a co-occurrence between {person1_name} and {person2_name} (event: "{failed_event_description}", query: "{failed_google_query}") could NOT be visually verified or no images were found.
+    DO NOT suggest this specific co-occurrence again.
+    You MUST find a DIFFERENT, NEW, and PLAUSIBLY PHOTOGRAPHABLE co-occurrence between {person1_name} and {person2_name}.
+    
+    Your entire response for this retry MUST be XML in the following specific structure, containing exactly one new link:
+    <link_suggestion_response>
+      <link id="new_1">
+        <subjects>{person1_name} → {person2_name}</subjects>
+        <evidence>[NEW Specific description of the documented co-occurrence or meeting, plausible for visuals]</evidence>
+        <source>[NEW Primary source of documentation for the co-occurrence. Focus on event documentation.]</source>
+        <google>[NEW Optimized Google search query for finding visuals of THIS new co-occurrence.]</google>
+        <source_type>[Tier 1/2/3 - Strive for Tier 1. Tier 2 if exhaustive Tier 1 search fails. Tier 3 as last resort.]</source_type>
+        <context>[NEW Event/occasion/circumstances of the co-occurrence]</context>
+        <date_range>[NEW Approximate timeframe, e.g., YYYY-MM-DD, YYYY-MM, YYYY]</date_range>
+        <strength>[NEW Strength of evidence (Strong/Moderate/Weak) for THIS co-occurrence]</strength>
+        <verification_notes>[NEW Notes, e.g., why this alternative is plausible, corroborating details if any. If not Tier 1, explain fortification attempts.]</verification_notes>
+      </link>
+    </link_suggestion_response>
+
+    If you absolutely cannot find an alternative VERIFIABLE link after exhaustive search, your entire response MUST be this single XML tag:
+    <no_alternative_link_found reason="[Provide a detailed reason why no other link can be found between these two individuals that meets criteria.]"/>
+  </failed_link_instruction>
+</retry_connection_request>

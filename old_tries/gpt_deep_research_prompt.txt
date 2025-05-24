@@ -1,0 +1,16 @@
+I want you to find a valid person-to-person chain connecting PERSON1 and PERSON2.
+
+Constraints:
+1. Every adjacent pair must have known public visual evidence of them together.
+2. The chain can be as long as needed.
+3. If one path fails (e.g., no visual depiction), try alternate routes.
+4. Please include source links to each depiction.
+5. Include all types of public figures: politicians, entertainers, activists, etc.
+
+Helpful tip: You may use historically well-connected figures to bridge the gap between eras. For example, connecting to any Pope is allowed, as they often have photos with both world leaders and modern celebrities. Once you reach a Pope, use that as a springboard into the modern era. Think of figures like US presidents, UN leaders, or cultural icons as useful hubs too.
+
+Note: The visual evidence does **not** need to be a photograph. Any clearly identifiable **painting, drawing, sculpture, or other visual depiction** showing both individuals physically present together is acceptable. This includes official portraits, historical artwork, newsreel footage, or any publicly accessible visual media that shows both figures in the same physical space. Please include a reference or link for each such depiction.
+
+Please provide a link or citation for the visual evidence. It does not need to be a photograph as long as the depiction is credible and they are shown together in the same setting.
+
+Please attempt several paths before concluding whether a connection is possible.

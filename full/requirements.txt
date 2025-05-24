@@ -1,0 +1,8 @@
+google-generativeai
+python-dotenv
+Pillow>=9.0.0
+icrawler
+numpy~=1.26.0
+pandas
+deepface
+tf-keras

@@ -1,0 +1,17 @@
+<retry_initial_connection_request>
+  <person1>{person1_name}</person1>
+  <person2>{person2_name}</person2>
+  <previous_attempt_feedback>
+    Your previous attempt to generate a connection chain between {person1_name} and {person2_name} resulted in a research failure or malformed XML.
+    Previous response snippet (if available): {previous_response_snippet}
+    
+    Please re-attempt to find a connection chain.
+    Consider the following strategies:
+    1. Explore a DIFFERENT set of initial intermediaries if the previous path seemed like a dead end.
+    2. Be more expansive in your search for co-occurrences.
+    3. Ensure your response strictly adheres to the required <connection_chain> XML format, including all sub-elements as defined in the original system prompt.
+    4. Do NOT output a <research_failure> tag unless all possible avenues, including very long and indirect chains, have been truly exhausted according to the Unwavering Persistence Protocol.
+    
+    Your entire response MUST be a valid <connection_chain> XML document.
+  </previous_attempt_feedback>
+</retry_initial_connection_request>
