@@ -25,7 +25,7 @@ SYSTEM_PROMPT_FILE_PATH = os.path.join(PROMPTS_DIR, "system_prompt.txt")
 INITIAL_USER_INPUT_TEMPLATE_PATH = os.path.join(PROMPTS_DIR, "initial_user_input_template.xml")
 INITIAL_CHAIN_RETRY_USER_INPUT_TEMPLATE_PATH = os.path.join(PROMPTS_DIR, "initial_chain_retry_user_input_template.xml")
 RETRY_USER_INPUT_TEMPLATE_PATH = os.path.join(PROMPTS_DIR, "retry_user_input_template.xml")
-SUB_CHAIN_EXCLUSION_TEMPLATE_PATH = os.path.join(PROMPTS_DIR, "sub_chain_exclusion_instruction_template.txt") # New
+SUB_CHAIN_EXCLUSION_TEMPLATE_PATH = os.path.join(PROMPTS_DIR, "sub_chain_exclusion_instruction_template.txt") 
 
 OUTPUT_DIR = "output"
 RAW_IMAGES_DIR = os.path.join(OUTPUT_DIR, "connection_chain_images")
@@ -92,7 +92,7 @@ def clean_output_directory(dir_path, logger_obj):
             logger_obj.error(f"  Failed to delete {item_path}. Reason: {e}")
     logger_obj.info(f"Finished cleaning directory: {dir_path}")
 
-def load_prompt_template(filepath, is_critical=True): # Added is_critical flag
+def load_prompt_template(filepath, is_critical=True): 
     logger.debug(f"Attempting to load prompt template from: {filepath}")
     try:
         with open(filepath, "r", encoding="utf-8") as f: 
@@ -111,6 +111,11 @@ def load_prompt_template(filepath, is_critical=True): # Added is_critical flag
 def extract_persons_from_subjects(subjects_text):
     logger.debug(f"Attempting to extract persons from subjects_text: '{subjects_text}'")
     if not subjects_text or '→' not in subjects_text:
+        # If it's a single name (often from reference download subjects or malformed link)
+        if subjects_text and '→' not in subjects_text:
+            p1_sanitized = image_downloader.sanitize_filename(subjects_text) # Sanitize for consistency
+            logger.warning(f"Only one part found in subjects: '{subjects_text}'. Extracted P1: '{p1_sanitized}', using fallback for P2.")
+            return p1_sanitized, "UnknownTarget_From_Single_Subject"
         logger.warning(f"Could not parse subjects: '{subjects_text}'. Using fallbacks.")
         return "UnknownPerson1", "UnknownPerson2" 
     
@@ -132,8 +137,8 @@ def extract_persons_from_subjects(subjects_text):
         if not p1:
             logger.warning(f"Extracted P1 is empty from single part '{subjects_text}'. Using fallback.")
             p1 = "UnknownPerson1_from_empty_single"
-        logger.warning(f"Only one person found in subjects '{subjects_text}'. Extracted P1: '{p1}', using fallback for P2.")
-        return p1, "UnknownTarget" 
+        logger.warning(f"Only one person found in subjects '{subjects_text}' after split. Extracted P1: '{p1}', using fallback for P2.")
+        return p1, "UnknownTarget_From_Split_Single" 
     else: 
         logger.warning(f"Unexpected parsing of subjects '{subjects_text}' after split (0 parts). Using fallbacks.")
         return "UnknownPerson1", "UnknownPerson2"
@@ -166,7 +171,7 @@ def main(person1_arg, person2_arg, no_cleanup_arg=False):
                 retry_user_input_template]): 
         logger.fatal("One or more core prompt templates could not be loaded. Exiting.")
         return
-    if not sub_chain_exclusion_template: # Make this non-fatal, fallback if not found
+    if not sub_chain_exclusion_template: 
         logger.warning(f"Sub-chain exclusion template not loaded from {SUB_CHAIN_EXCLUSION_TEMPLATE_PATH}. Sub-chain retries might be less effective.")
 
 
@@ -248,6 +253,7 @@ def main(person1_arg, person2_arg, no_cleanup_arg=False):
     last_verified_person = person1_arg
     chain_broken = False
     link_idx = -1 
+    failed_links_signatures = set() # Stores (sanitized_subjects_text, google_query)
 
     while (link_idx + 1) < len(master_links_to_process):
         link_idx += 1
@@ -268,6 +274,8 @@ def main(person1_arg, person2_arg, no_cleanup_arg=False):
         p1_current_segment, p2_current_segment = extract_persons_from_subjects(subjects_text)
         logger.info(f"  Attempting segment: '{p1_current_segment}' → '{p2_current_segment}'")
 
+        current_link_signature = (image_downloader.sanitize_filename(subjects_text), google_query)
+        
         is_first_link_overall = not verified_chain_links_data and p1_current_segment == person1_arg
         is_subsequent_link_correct = verified_chain_links_data and p1_current_segment == last_verified_person
         
@@ -276,18 +284,30 @@ def main(person1_arg, person2_arg, no_cleanup_arg=False):
             logger.debug(f"    Context: last_verified_person='{last_verified_person}', p1_current_segment='{p1_current_segment}', person1_arg='{person1_arg}', verified_chain_links_data length: {len(verified_chain_links_data)}")
             chain_broken = True; break
         
-        download_folder_path = image_downloader.fetch_images_for_link(
-            subjects_text, google_query, RAW_IMAGES_DIR, IMAGES_TO_DOWNLOAD_PER_LINK, logger
-        )
-        
-        verifier_status, verifier_data = image_verifier.verify_and_potentially_reprompt_link(
-            person1_in_link=p1_current_segment, person2_in_link=p2_current_segment,
-            images_folder_path=download_folder_path if download_folder_path else "", 
-            original_link_xml_node=current_processing_link_node,
-            system_prompt_content=system_prompt_content,
-            retry_user_input_template_str=retry_user_input_template,
-            logger_obj=logger, max_images_to_check_vision=MAX_IMAGES_TO_CHECK_PER_LINK_VERIFIER
-        )
+        verifier_status = None
+        verifier_data = None
+        download_folder_path = None
+
+        if current_link_signature in failed_links_signatures:
+            logger.info(f"  Link '{subjects_text}' (Query: '{google_query}') was previously tried and failed verification. Skipping download and verification.")
+            verifier_status = "ALREADY_FAILED_IN_ORCHESTRATOR" # Custom status for orchestrator
+        else:
+            download_folder_path = image_downloader.fetch_images_for_link(
+                subjects_text, google_query, RAW_IMAGES_DIR, IMAGES_TO_DOWNLOAD_PER_LINK, logger
+            )
+            
+            verifier_status, verifier_data = image_verifier.verify_and_potentially_reprompt_link(
+                person1_in_link=p1_current_segment, person2_in_link=p2_current_segment,
+                images_folder_path=download_folder_path if download_folder_path else "", 
+                original_link_xml_node=current_processing_link_node,
+                system_prompt_content=system_prompt_content,
+                retry_user_input_template_str=retry_user_input_template,
+                logger_obj=logger, max_images_to_check_vision=MAX_IMAGES_TO_CHECK_PER_LINK_VERIFIER
+            )
+
+        # --- Handle Verification Outcome ---
+        should_regenerate_subchain = False
+        original_link_failed_definitively_this_iteration = False
 
         if verifier_status == "VERIFIED_OK":
             verified_image_path_raw, verified_link_xml_str = verifier_data
@@ -321,27 +341,67 @@ def main(person1_arg, person2_arg, no_cleanup_arg=False):
                 logger.info(f"  Target '{person2_arg}' reached and verified!")
                 break 
         
+        # Handle cases where verification did not result in VERIFIED_OK
         else: 
-            logger.warning(f"  Segment '{p1_current_segment}' → '{p2_current_segment}' failed verification (status from verifier: {verifier_status}).")
+            if verifier_status == "FAILED_VERIFICATION_NO_ALTERNATIVE":
+                logger.warning(f"  Segment '{p1_current_segment}' → '{p2_current_segment}' failed verification, and verifier found no alternative. Query: '{google_query}'.")
+                original_link_failed_definitively_this_iteration = True
+                should_regenerate_subchain = True
             
-            if verifier_status == "NEEDS_REPROMPT_NEW_LINK_PROVIDED":
+            elif verifier_status == "NEEDS_REPROMPT_NEW_LINK_PROVIDED":
                 new_link_suggestion_xml_str = verifier_data 
                 logger.info(f"  Orchestrator received new link suggestion from verifier. Attempting to parse and integrate.")
                 try:
                     new_link_node = ET.fromstring(new_link_suggestion_xml_str)
                     if new_link_node.tag == "link":
-                        logger.info(f"    Successfully parsed new <link> node. Replacing current link and re-processing.")
-                        master_links_to_process[link_idx] = new_link_node 
-                        link_idx -=1 
-                        continue 
+                        new_subjects_text = new_link_node.findtext("subjects")
+                        new_google_query = new_link_node.findtext("google")
+                        if not new_subjects_text or not new_google_query:
+                            logger.error("    New link suggestion from verifier is missing subjects or google query. Discarding.")
+                            original_link_failed_definitively_this_iteration = True
+                            should_regenerate_subchain = True
+                        else:
+                            new_link_signature = (image_downloader.sanitize_filename(new_subjects_text), new_google_query)
+                            if new_link_signature in failed_links_signatures:
+                                logger.warning(f"    Verifier suggested new link '{new_subjects_text}', but this link/query combination was also previously tried and failed. Original link '{subjects_text}' is now considered definitively failed.")
+                                original_link_failed_definitively_this_iteration = True
+                                should_regenerate_subchain = True
+                            else:
+                                logger.info(f"    Successfully parsed new <link> node. Replacing current link and re-processing.")
+                                master_links_to_process[link_idx] = new_link_node 
+                                link_idx -=1 
+                                continue # Restart loop for the new link suggestion
                     else:
-                        logger.error(f"    New link suggestion was not a single <link> tag, but <{new_link_node.tag}>. Falling through to sub-chain regeneration.")
+                        logger.error(f"    New link suggestion was not a single <link> tag, but <{new_link_node.tag}>. Original link '{subjects_text}' considered failed.")
+                        original_link_failed_definitively_this_iteration = True
+                        should_regenerate_subchain = True
                 except ET.ParseError as e_parse:
-                    logger.error(f"    Failed to parse new link XML from verifier: {e_parse}. Raw: {new_link_suggestion_xml_str[:300]}. Falling through to sub-chain regeneration.")
+                    logger.error(f"    Failed to parse new link XML from verifier: {e_parse}. Raw: {new_link_suggestion_xml_str[:300]}. Original link '{subjects_text}' considered failed.")
+                    original_link_failed_definitively_this_iteration = True
+                    should_regenerate_subchain = True
                 except Exception as e_unexpected:
-                    logger.error(f"    Unexpected error processing new link XML from verifier: {e_unexpected}. Falling through to sub-chain regeneration.")
+                    logger.error(f"    Unexpected error processing new link XML from verifier: {e_unexpected}. Original link '{subjects_text}' considered failed.")
+                    original_link_failed_definitively_this_iteration = True
+                    should_regenerate_subchain = True
+
+            elif verifier_status == "ALREADY_FAILED_IN_ORCHESTRATOR":
+                logger.info(f"  Link '{subjects_text}' (Query: '{google_query}') was identified as ALREADY FAILED by orchestrator. Proceeding to sub-chain regeneration.")
+                # No need to add to failed_links_signatures again, it's already there.
+                should_regenerate_subchain = True
             
+            else: # Other unknown failure from verifier
+                logger.warning(f"  Segment '{p1_current_segment}' → '{p2_current_segment}' failed with unhandled verifier status: {verifier_status}. Query: '{google_query}'.")
+                original_link_failed_definitively_this_iteration = True
+                should_regenerate_subchain = True
+
+            if original_link_failed_definitively_this_iteration:
+                 logger.info(f"  Adding signature for failed link '{subjects_text}' (Query: '{google_query}') to failed_links_signatures.")
+                 failed_links_signatures.add(current_link_signature)
+
+
+        if should_regenerate_subchain:
             logger.info(f"  Attempting orchestrator-level sub-chain re-generation from '{last_verified_person}' to '{person2_arg}'.")
+            logger.debug(f"    Failed segment was '{p1_current_segment}' → '{p2_current_segment}'.")
             
             chain_regenerated_from_here = False
             current_verified_path_people = [person1_arg] + [extract_persons_from_subjects(ET.fromstring(link_data[0]).findtext("subjects"))[1] for link_data in verified_chain_links_data]
@@ -362,28 +422,52 @@ def main(person1_arg, person2_arg, no_cleanup_arg=False):
                         avoid_intermediaries_instr_part = (f"2. If possible, also try to AVOID using any of these people as *new intermediaries* in this sub-chain, "
                                                            f"as they are already part of the path leading to '{last_verified_person}': [{exclusion_list_str}]. "
                                                            f"Focus on new, previously unused intermediaries.\n")
+                    
+                    failed_direct_links_instr_part = ""
+                    failed_subject_query_strings_for_prompt = set()
+                    if failed_links_signatures:
+                        for sig_subj, sig_query in failed_links_signatures:
+                            parts = sig_subj.split('_')
+                            human_readable_failed_link = " → ".join(parts) if len(parts) > 1 else (parts[0] if parts else sig_subj)
+                            failed_subject_query_strings_for_prompt.add(f"'{human_readable_failed_link}' (related to query: '{sig_query[:75]}...')")
+                    
+                    if failed_subject_query_strings_for_prompt:
+                        failed_direct_links_instr_part = (f"3. CRITICAL: AVOID suggesting any of the following specific connections (SUBJECTS and associated general query context) that have already been attempted and FAILED verification in previous steps: "
+                                                          f"[{', '.join(sorted(list(failed_subject_query_strings_for_prompt)))}]. Focus on entirely new connection ideas.\n")
+
                     try:
                         exclusion_instr = sub_chain_exclusion_template.format(
                             last_verified_person_name=last_verified_person,
                             target_person_name=person2_arg,
                             immediate_next_step_to_avoid=immediate_next_step_exclusion,
-                            avoid_intermediaries_instruction=avoid_intermediaries_instr_part
+                            avoid_intermediaries_instruction=avoid_intermediaries_instr_part,
+                            previously_failed_direct_links_instruction=failed_direct_links_instr_part
                         )
                     except KeyError as e_fmt:
                         logger.error(f"Failed to format sub-chain exclusion template: {e_fmt}. Using minimal exclusion.")
                         exclusion_instr = f"IMPORTANT: Do not suggest '{immediate_next_step_exclusion}' as next from '{last_verified_person}'."
+                        if failed_direct_links_instr_part: exclusion_instr += "\n" + failed_direct_links_instr_part.replace("3. ", "") # Add if available
 
-                else: # Fallback if template not loaded
+                else: 
                      exclusion_instr = (
                         f"IMPORTANT: You are building a new sub-chain from '{last_verified_person}' to '{person2_arg}'.\n"
                         f"1. Crucially, DO NOT suggest '{immediate_next_step_exclusion}' as the immediate next connection from '{last_verified_person}'. That path just failed.\n")
                      if people_to_avoid_as_intermediaries:
                         exclusion_list_str = ", ".join(f"'{p}'" for p in people_to_avoid_as_intermediaries)
                         exclusion_instr += (f"2. If possible, also try to AVOID using any of these people as *new intermediaries* in this sub-chain, as they are already part of the path leading to '{last_verified_person}': [{exclusion_list_str}]. Focus on new, previously unused intermediaries.\n")
-                     exclusion_instr += f"3. The goal is to find a NEW, fresh path from '{last_verified_person}' to '{person2_arg}'."
+                     
+                     failed_subject_query_strings_for_prompt_fallback = set() # Re-calculate for fallback
+                     if failed_links_signatures:
+                        for sig_subj, sig_query in failed_links_signatures:
+                            parts = sig_subj.split('_')
+                            human_readable_failed_link = " → ".join(parts) if len(parts) > 1 else (parts[0] if parts else sig_subj)
+                            failed_subject_query_strings_for_prompt_fallback.add(f"'{human_readable_failed_link}' (query: '{sig_query[:75]}...')")
+                     if failed_subject_query_strings_for_prompt_fallback:
+                         exclusion_instr += (f"3. CRITICAL: AVOID suggesting any of the following specific connections (SUBJECTS and associated general query context) that have already been attempted and FAILED verification in previous steps: "
+                                          f"[{', '.join(sorted(list(failed_subject_query_strings_for_prompt_fallback)))}]. Focus on entirely new connection ideas.\n")
+                     exclusion_instr += f"Goal: Find a NEW, fresh path from '{last_verified_person}' to '{person2_arg}'."
                 
                 logger.debug(f"    Sub-chain exclusion instruction: {exclusion_instr}")
-
 
                 new_sub_chain_xml_str = initial_gemini_query.get_initial_chain(
                     last_verified_person, person2_arg, system_prompt_content,

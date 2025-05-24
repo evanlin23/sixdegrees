@@ -6,6 +6,8 @@ import xml.etree.ElementTree as ET
 from deepface import DeepFace
 import logging
 import time
+import cv2 # Added for collage detection
+import numpy as np # Added for collage detection
 
 import image_downloader 
 
@@ -50,6 +52,87 @@ API_CALL_DELAY_SECONDS_CONFIG = {
     "gemini_text_retry": 15,
     "default": 5
 }
+
+# --- Collage Detection Heuristic Parameters ---
+COLLAGE_CANNY_THRESH1 = 50
+COLLAGE_CANNY_THRESH2 = 150
+COLLAGE_HOUGH_THRESHOLD_RATIO = 0.10 # Ratio of min(height,width) for Hough accumulator votes
+COLLAGE_HOUGH_MIN_LINE_LENGTH_RATIO = 0.3 # Ratio of min(height,width) for min line length
+COLLAGE_HOUGH_MAX_LINE_GAP_RATIO = 0.05  # Ratio of min(height,width) for max line gap
+COLLAGE_SIGNIFICANT_LINE_LENGTH_RATIO = 0.6 # A line is significant if its length > this ratio * image dimension
+COLLAGE_LINE_ANGLE_TOLERANCE_DEGREES = 5.0 # Tolerance for classifying line as horizontal/vertical
+COLLAGE_MIN_SIGNIFICANT_LINES_TO_FLAG = 1 # If this many significant dividing lines are found, flag as collage
+
+
+def is_likely_collage_heuristic(image_path, logger):
+    """
+    Heuristic check to see if an image is likely a collage by detecting strong dividing lines.
+    Returns True if likely a collage, False otherwise.
+    """
+    try:
+        img = cv2.imread(image_path)
+        if img is None:
+            logger.warning(f"Collage Check: Could not read image {image_path}")
+            return False 
+
+        height, width = img.shape[:2]
+        if height == 0 or width == 0:
+            logger.warning(f"Collage Check: Invalid image dimensions for {image_path}")
+            return False
+
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        edges = cv2.Canny(gray, COLLAGE_CANNY_THRESH1, COLLAGE_CANNY_THRESH2)
+
+        # Adaptive thresholds for HoughLinesP
+        min_dim = min(height, width)
+        hough_thresh = int(min_dim * COLLAGE_HOUGH_THRESHOLD_RATIO)
+        hough_min_len = int(min_dim * COLLAGE_HOUGH_MIN_LINE_LENGTH_RATIO)
+        hough_max_gap = int(min_dim * COLLAGE_HOUGH_MAX_LINE_GAP_RATIO)
+
+        lines = cv2.HoughLinesP(edges, 1, np.pi / 180, threshold=hough_thresh,
+                                minLineLength=hough_min_len, maxLineGap=hough_max_gap)
+
+        if lines is None:
+            return False # No lines detected, unlikely to be a grid-like collage
+
+        num_significant_vertical_lines = 0
+        num_significant_horizontal_lines = 0
+
+        for line_segment in lines:
+            x1, y1, x2, y2 = line_segment[0]
+            line_len = np.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+            
+            angle_rad = np.arctan2(y2 - y1, x2 - x1)
+            angle_deg = np.degrees(angle_rad)
+
+            # Normalize angle to be between 0 and 180 for easier checking
+            if angle_deg < 0:
+                angle_deg += 180
+            
+            # Check for Vertical lines (around 90 degrees)
+            if abs(angle_deg - 90) < COLLAGE_LINE_ANGLE_TOLERANCE_DEGREES:
+                if line_len > height * COLLAGE_SIGNIFICANT_LINE_LENGTH_RATIO:
+                    # Further check: not too close to image borders
+                    if min(x1, x2) > width * 0.05 and max(x1, x2) < width * 0.95:
+                        num_significant_vertical_lines += 1
+            # Check for Horizontal lines (around 0 or 180 degrees)
+            elif angle_deg < COLLAGE_LINE_ANGLE_TOLERANCE_DEGREES or \
+                 abs(angle_deg - 180) < COLLAGE_LINE_ANGLE_TOLERANCE_DEGREES:
+                if line_len > width * COLLAGE_SIGNIFICANT_LINE_LENGTH_RATIO:
+                     # Further check: not too close to image borders
+                    if min(y1, y2) > height * 0.05 and max(y1, y2) < height * 0.95:
+                        num_significant_horizontal_lines += 1
+        
+        if num_significant_vertical_lines >= COLLAGE_MIN_SIGNIFICANT_LINES_TO_FLAG or \
+           num_significant_horizontal_lines >= COLLAGE_MIN_SIGNIFICANT_LINES_TO_FLAG:
+            logger.info(f"Collage Check: Image {os.path.basename(image_path)} flagged as likely collage. "
+                        f"Found {num_significant_vertical_lines} vertical and {num_significant_horizontal_lines} horizontal significant lines.")
+            return True
+
+        return False
+    except Exception as e:
+        logger.error(f"Collage Check: Error processing image {image_path}: {e}", exc_info=False) # exc_info=False to avoid too much noise for a heuristic
+        return False # Err on the side of caution, treat as not a collage if error occurs
 
 def _load_reference_query_patterns(logger_obj):
     try:
@@ -178,7 +261,6 @@ def find_reference_image(person_name, logger_obj, auto_download=True):
         num_needed_to_download = NUM_REFERENCE_IMAGES_TO_USE - len(existing_images)
         logger.info(f"Need {num_needed_to_download} more reference images for '{person_name}'. Triggering download.")
         
-        # Load query patterns each time for flexibility, though could be cached
         query_patterns = _load_reference_query_patterns(logger)
 
         download_successful = _download_additional_reference_images(
@@ -360,7 +442,7 @@ def verify_and_potentially_reprompt_link(
     logger_obj, max_images_to_check_vision = 3
     ):
     logger = logger_obj
-    logger.info(f"--- Verifying link segment: '{person1_in_link}' <-> '{person2_in_link}' (using DeepFace Multi-Model) ---")
+    logger.info(f"--- Verifying link segment: '{person1_in_link}' <-> '{person2_in_link}' (using DeepFace Multi-Model & Collage Check) ---")
 
     def format_retry_prompt(p1, p2, failed_details_dict, template_str):
         try: p1_str_fmt = str(p1); p2_str_fmt = str(p2); return template_str.format(person1_name=p1_str_fmt, person2_name=p2_str_fmt, failed_event_description=failed_details_dict.get('event_description', 'Previously suggested event'), failed_google_query=failed_details_dict.get('google_query', 'Previously suggested query'))
@@ -383,27 +465,35 @@ def verify_and_potentially_reprompt_link(
 
     image_files = [os.path.join(images_folder_path, f) for f in os.listdir(images_folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.webp'))]
     image_files_to_check = image_files[:max_images_to_check_vision]
-    logger.info(f"  Found {len(image_files)} images in '{images_folder_path}'. Will check up to {len(image_files_to_check)} with DeepFace Multi-Model.")
+    logger.info(f"  Found {len(image_files)} images in '{images_folder_path}'. Will check up to {len(image_files_to_check)}.")
 
     verified_image_path = None
     for img_path in image_files_to_check:
+        logger.info(f"  Processing image for verification: {os.path.basename(img_path)}")
+
+        # Collage Check
+        if is_likely_collage_heuristic(img_path, logger):
+            logger.warning(f"    Image {os.path.basename(img_path)} flagged as a likely collage. Skipping DeepFace verification for this image.")
+            continue # Skip to the next image if it's likely a collage
+
         verification_result = verify_image_with_deepface_models(
             img_path, person1_in_link, person2_in_link, logger
         )
         if verification_result == "YES":
             verified_image_path = img_path; logger.info(f"  SUCCESS: Verified '{person1_in_link}' and '{person2_in_link}' in {os.path.basename(img_path)} using DeepFace Multi-Model"); break
         elif verification_result == "ERROR": 
-            logger.warning(f"  DeepFace Multi-Model error or file issue for image {os.path.basename(img_path)}. This image will be skipped. An alternative link might be sought if all images fail.")
+            logger.warning(f"  DeepFace Multi-Model error or file issue for image {os.path.basename(img_path)}. This image will be skipped.")
+        # If "NO", continue to the next image
 
     original_link_xml_string = ET.tostring(original_link_xml_node, encoding='unicode')
     if verified_image_path:
         return "VERIFIED_OK", (verified_image_path, original_link_xml_string)
     else:
-        logger.warning(f"  Verification FAILED for all {len(image_files_to_check)} checked images for '{person1_in_link}' and '{person2_in_link}' using DeepFace Multi-Model.")
+        logger.warning(f"  Verification FAILED for all {len(image_files_to_check)} checked images (or images were skipped as collages) for '{person1_in_link}' and '{person2_in_link}'.")
         failed_event_desc = original_link_xml_node.findtext('evidence', 'Previously suggested event'); failed_google_query = original_link_xml_node.findtext('google', 'Previously suggested query'); failed_details = {"event_description": failed_event_desc, "google_query": failed_google_query}
         formatted_retry_user_prompt_xml = format_retry_prompt(person1_in_link, person2_in_link, failed_details, retry_user_input_template_str)
         if not formatted_retry_user_prompt_xml: return "FAILED_VERIFICATION_NO_ALTERNATIVE", original_link_xml_string
-        logger.info(f"  Reprompting Gemini for an alternative link (due to image verification failure with DeepFace Multi-Model).")
+        logger.info(f"  Reprompting Gemini for an alternative link (due to image verification failure or no suitable images).")
         new_link_suggestion_xml = query_gemini_text_for_retry(system_prompt_content, formatted_retry_user_prompt_xml, logger)
         try:
             if not isinstance(new_link_suggestion_xml, str) or new_link_suggestion_xml.strip().startswith("<error>"):

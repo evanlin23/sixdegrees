@@ -1,4 +1,8 @@
-IMPORTANT: You are building a new sub-chain from '{last_verified_person_name}' to '{target_person_name}'.
-1. Crucially, DO NOT suggest '{immediate_next_step_to_avoid}' as the immediate next connection from '{last_verified_person_name}'. That path just failed.
+You are tasked with finding a NEW sub-chain of connections between {last_verified_person_name} and {target_person_name}.
+Please adhere to the following critical instructions:
+
+1. DO NOT suggest '{immediate_next_step_to_avoid}' as the immediate next person connected from '{last_verified_person_name}'. This specific connection has just failed verification. You must find an alternative.
 {avoid_intermediaries_instruction}
-3. The goal is to find a NEW, fresh path from '{last_verified_person_name}' to '{target_person_name}'.
+{previously_failed_direct_links_instruction}
+4. Your primary goal is to find a *new* and *valid* path from '{last_verified_person_name}' to '{target_person_name}', even if it requires multiple intermediate steps.
+5. If you cannot find any valid new sub-chain under these constraints, respond with <research_failure reason="Cannot find a new sub-chain from {last_verified_person_name} to {target_person_name} avoiding previous failures."/>.

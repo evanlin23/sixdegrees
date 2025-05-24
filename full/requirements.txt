@@ -6,3 +6,4 @@ numpy~=1.26.0
 pandas
 deepface
 tf-keras
+opencv-python

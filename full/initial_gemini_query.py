@@ -4,7 +4,7 @@ import os
 import xml.etree.ElementTree as ET
 
 TEXT_MODEL_NAME = "gemini-1.5-flash-latest"
-GEMINI_TASK_HEADER_FILE_PATH = os.path.join("prompts", "gemini_task_header.txt") # New
+GEMINI_TASK_HEADER_FILE_PATH = os.path.join("prompts", "gemini_task_header.txt") 
 
 def _load_gemini_task_header(logger_obj):
     try:
@@ -109,9 +109,18 @@ def get_initial_chain_from_gemini_direct(system_prompt_content, user_input_xml_f
 def get_initial_chain(person_a, person_b, system_prompt_content, user_input_template_str, api_key, logger, exclusion_instruction=""):
     logger.info(f"Requesting chain: {person_a} -> ... -> {person_b}.")
     if exclusion_instruction:
-        logger.info(f"With exclusion instruction: {exclusion_instruction}")
+        # Log only a snippet if it's too long
+        log_exclusion_instr = exclusion_instruction
+        if len(exclusion_instruction) > 300:
+            log_exclusion_instr = exclusion_instruction[:150] + " ... (truncated) ... " + exclusion_instruction[-150:]
+        logger.info(f"With exclusion instruction: {log_exclusion_instr}")
+
 
     try:
+        # The user_input_template_str might already contain {additional_instructions}
+        # Or we append the exclusion_instruction to what format produces.
+        # Current template expects person1_name, person2_name, additional_instructions.
+        # So, the exclusion_instruction IS the additional_instructions.
         user_input_xml_content = user_input_template_str.format(
             person1_name=person_a, 
             person2_name=person_b,
@@ -121,7 +130,7 @@ def get_initial_chain(person_a, person_b, system_prompt_content, user_input_temp
         logger.error(f"Failed to format user input template. Missing key: {e_format}. Template: {user_input_template_str}")
         return f"<error><type>TemplateFormatError</type><message>Failed to format user input template: {e_format}</message></error>"
     
-    task_header = _load_gemini_task_header(logger) # Load from file
+    task_header = _load_gemini_task_header(logger) 
     user_input_xml_for_gemini = task_header + user_input_xml_content
 
     return get_initial_chain_from_gemini_direct(system_prompt_content, user_input_xml_for_gemini, api_key, logger)
