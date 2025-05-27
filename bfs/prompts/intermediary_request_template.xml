@@ -1,0 +1,12 @@
+<intermediary_request>
+  <current_person_focus>{current_person_name}</current_person_focus>
+  <max_suggestions_to_provide>{max_suggestions_count}</max_suggestions_to_provide>
+  <previous_path_nodes_to_avoid_as_new_intermediaries>
+{avoid_nodes_xml_list}
+  </previous_path_nodes_to_avoid_as_new_intermediaries>
+  <additional_context_for_ranking_logic>
+    Focus on finding individuals with documented co-occurrences with {current_person_name} and providing complete `connection_details`.
+    The `ranking_score` should reflect the suggested intermediary's general popularity, "connectedness", or likelihood of being a social "hub". Do not consider the overall search's ultimate target for this ranking.
+    The verifiability of the link between {current_person_name} and the suggested intermediary is most important.
+  </additional_context_for_ranking_logic>
+</intermediary_request>

@@ -1,0 +1,31 @@
+<connection_chain>
+  <chain_summary>
+    <total_links>2</total_links>
+    <subjects_connected>Pope Francis →  Intermediary → Johnny Depp</subjects_connected>
+    <chain_type>Extended</chain_type>
+    <intermediary_count>1</intermediary_count>
+    <research_confidence>Low</research_confidence>
+  </chain_summary>
+  <link id="1">
+    <subjects>Pope Francis →  The late Queen Elizabeth II</subjects>
+    <evidence>Pope Francis and Queen Elizabeth II met on multiple occasions, including a formal audience at the Vatican and a state visit. These meetings were widely reported by major news outlets and documented in official sources.</evidence>
+    <source>Various news reports from reputable sources like BBC News, The Guardian, and Vatican News covering their meetings.</source>
+    <google>"Pope Francis" AND "Queen Elizabeth II"</google>
+    <source_type>Tier 2</source_type>
+    <context>Formal audiences and state visits.</context>
+    <date_range>2014-2022</date_range>
+    <strength>Strong</strength>
+    <verification_notes>While multiple meetings are documented, finding a single photograph or video encompassing both individuals might require extensive searching across different news archives and official Vatican sources.  This link is Tier 2 because, while widely reported, verifying a specific visual is challenging without significantly more dedicated search efforts.  Fortification attempts to find a Tier 1 source proved difficult due to the formal nature of the meetings and the stringent access protocols.</verification_notes>
+  </link>
+  <link id="2">
+    <subjects>The late Queen Elizabeth II → Johnny Depp</subjects>
+    <evidence>Queen Elizabeth II knighted Johnny Depp in 2003.  This event was widely covered by media at the time.</evidence>
+    <source>Reports from reputable news outlets covering the 2003 investiture ceremony at Buckingham Palace.</source>
+    <google>"Queen Elizabeth II" AND "Johnny Depp"</google>
+    <source_type>Tier 2</source_type>
+    <context>Investiture ceremony.</context>
+    <date_range>2003</date_range>
+    <strength>Strong</strength>
+    <verification_notes>The knighthood ceremony was a significant public event, and visual documentation should be readily available online. This link is Tier 2 due to the reliance on secondary news reports instead of official royal records or primary source photos, though many images and videos should exist from this event.  Finding a specific image or video requires some search time. Fortification was attempted but finding a Tier 1 alternative proving difficult.</verification_notes>
+  </link>
+</connection_chain>
