@@ -35,8 +35,9 @@ BIRTHYEAR_LOWER_BOUND = -9999 # Allow for ancient figures
 
 DEFAULT_OLLAMA_MODEL = "phi3:mini"
 
-# --- Global graph object for signal handler ---
+# --- Global graph object and state for signal handler ---
 current_graph_object = nx.Graph()
+graph_state_initialized = False # NEW: Flag to track graph initialization status
 
 # --- Helper for ETA and time formatting ---
 def format_time_delta(seconds):
@@ -95,15 +96,29 @@ def save_progress(index):
 
 # --- Signal Handler for Ctrl+C ---
 def save_graph_on_interrupt(signum, frame):
-    global current_graph_object
-    print("\nCtrl+C detected. Attempting to save current graph state...")
+    global current_graph_object, graph_state_initialized # MODIFIED: include graph_state_initialized
+    print("\nCtrl+C detected.")
+
+    if not graph_state_initialized:
+        print("Interrupt occurred during initial script setup (before graph was fully loaded/initialized).")
+        print(f"To prevent accidental overwrite of '{OUTPUT_GRAPH_FILE}' with an incomplete graph, no save operation will be performed at this stage.")
+        print("If the script was previously interrupted, the existing graph file (if any) should be intact.")
+        print("Exiting script prematurely."); exit(1) # Exit with a non-zero code to indicate abnormal termination
+
+    print("Attempting to save current graph state...")
     if current_graph_object is not None and current_graph_object.number_of_nodes() > 0:
         try:
             nx.write_gexf(current_graph_object, OUTPUT_GRAPH_FILE)
-            print(f"Partial graph saved to {OUTPUT_GRAPH_FILE}")
+            print(f"Partial graph saved to {OUTPUT_GRAPH_FILE} (Nodes: {current_graph_object.number_of_nodes()}, Edges: {current_graph_object.number_of_edges()})")
         except Exception as e: print(f"Error saving graph on interrupt: {e}")
-    else: print("Graph is empty or not initialized, not saving on interrupt.")
-    print("Exiting script."); exit(0)
+    else:
+        # This case means graph_state_initialized is True, but the graph is empty.
+        # This can happen if:
+        # 1. It's the first run and no data was processed yet before interrupt.
+        # 2. An existing graph file was empty or unreadable, and no new data was processed yet.
+        print("Graph is currently empty. Not saving an empty graph on interrupt.")
+        print(f"If '{OUTPUT_GRAPH_FILE}' existed and was meant to be loaded, check for prior errors regarding its loading.")
+    print("Exiting script."); exit(0) # Normal exit after attempting/skipping save
 
 # --- LLM Query Functions ---
 llm_cache = {}
@@ -129,51 +144,30 @@ def initialize_gemini():
         return False
 
 def is_valid_name_list_format(text_response: str) -> bool:
-    """
-    Checks if the response string appears to be a comma-separated list of names.
-    - Allows for some leading/trailing whitespace.
-    - Checks for presence of commas if multiple names are expected.
-    - Disallows very long strings without commas (likely prose).
-    - Disallows common introductory phrases if they constitute the bulk of the response.
-    """
     if not text_response or not isinstance(text_response, str):
         return False
     
     text_response = text_response.strip()
-    if not text_response: # Empty after strip
-        return True # An empty list is a valid response (no names found)
+    if not text_response:
+        return True
 
-    # Check for common problematic introductory phrases that might not be caught by regex in ollama func
     bad_intros = [
         "here is a list of people", "based on my knowledge", "individuals that",
         "i can list the following", "sure, here are some", "the people that",
         "some of the notable individuals", "considering the figure"
     ]
     if any(text_response.lower().startswith(intro) for intro in bad_intros) and ',' not in text_response:
-        # If it starts with an intro and has NO commas, it's likely not a list.
-        if len(text_response.split()) > 15: # Heuristic: if it's long and has no commas, it's probably prose.
+        if len(text_response.split()) > 15:
             return False
 
-    # A single name is valid, doesn't need a comma.
-    # If there are multiple words and no comma, it might be a single multi-word name or prose.
-    # This is tricky. We rely on the prompt to enforce comma separation.
-    # A simple check: if it contains non-alphanumeric (excluding space, comma, hyphen, apostrophe)
-    # it might be problematic prose.
-    # This regex checks if the string primarily consists of names (words, spaces, hyphens, apostrophes) and commas.
-    # It allows for some leeway.
     if re.fullmatch(r"^[a-zA-Z0-9 .,'-]+$", text_response):
-         # Check if it's just "None", "N/A" etc. - these are technically valid format but mean no results
         if text_response.lower() in ["none", "n/a", "unknown", "no one", "no known meetings"]:
-            return True # Valid format indicating no people
-        return True # Looks like a name list or a single name
+            return True
+        return True
     
-    # If it contains many words but no commas, it's suspicious
-    if ',' not in text_response and len(text_response.split()) > 7: # Heuristic for prose
+    if ',' not in text_response and len(text_response.split()) > 7:
         print(f"      Format Check: Suspicious response - many words, no commas: '{text_response[:100]}...'")
         return False
-
-    # Fallback: if previous checks didn't catch it, but it passed the regex, assume okay.
-    # The main splitting logic will handle empty strings from split.
     return True
 
 
@@ -183,7 +177,6 @@ def get_people_met_from_gemini(person_name, birth_year, death_year, occupation, 
         print("   ERROR: Gemini model not initialized. Skipping API call.")
         return []
 
-    # Use a slightly different prompt version for cache if we change format enforcement
     prompt_version = "gemini_v2.1_fmt_strict"
     cache_key = f"{person_name}_{birth_year}_{occupation}_{alive_status}_{prompt_version}"
 
@@ -214,7 +207,7 @@ def get_people_met_from_gemini(person_name, birth_year, death_year, occupation, 
     
     for attempt in range(MAX_RETRIES_API_CALL):
         current_prompt = base_prompt_text
-        if attempt > 0 : # For retries due to format, slightly more emphasis
+        if attempt > 0 :
              current_prompt += "\nIMPORTANT: Your response MUST be ONLY a comma-separated list of names. No other text."
 
         print(f"   Querying Gemini for: {person_name} (Attempt {attempt + 1}/{MAX_RETRIES_API_CALL}, Prompt: {prompt_version})...")
@@ -223,14 +216,12 @@ def get_people_met_from_gemini(person_name, birth_year, death_year, occupation, 
             
             if response.prompt_feedback and response.prompt_feedback.block_reason:
                 print(f"      LLM Query blocked: {response.prompt_feedback.block_reason_message or response.prompt_feedback.block_reason}")
-                # If blocked, likely won't succeed with retry, so break
                 llm_cache[cache_key] = []; save_cache(llm_cache); return []
                 
             if not response.candidates or not response.candidates[0].content.parts:
                 print(f"      LLM returned no candidates/empty content on attempt {attempt + 1}.")
-                # This is an API issue, not necessarily a format issue yet. Let retry logic handle it.
                 if attempt + 1 < MAX_RETRIES_API_CALL: time.sleep(API_CALL_DELAY_SECONDS); continue
-                else: break # Max API retries reached
+                else: break 
 
             text_response = response.text.strip()
             print(f"      LLM Raw Response (attempt {attempt+1}, first 200 chars): {text_response[:200]}...")
@@ -239,13 +230,12 @@ def get_people_met_from_gemini(person_name, birth_year, death_year, occupation, 
                 print(f"      Response format invalid on attempt {attempt + 1}. Response: '{text_response[:100]}...'")
                 if attempt + 1 < MAX_RETRIES_API_CALL:
                     print(f"      Retrying with stricter format prompt...")
-                    time.sleep(API_CALL_DELAY_SECONDS / 2) # Shorter delay for format retry
-                    continue # Go to next attempt in the loop
+                    time.sleep(API_CALL_DELAY_SECONDS / 2) 
+                    continue
                 else:
                     print(f"      Max retries for format correction reached. Giving up.")
-                    llm_cache[cache_key] = []; save_cache(llm_cache); return [] # Bad format after all retries
+                    llm_cache[cache_key] = []; save_cache(llm_cache); return [] 
 
-            # If format is valid (or empty, which is valid)
             met_people_names = [name.strip() for name in text_response.split(',') if name.strip() and name.strip().lower() not in ["none", "n/a", "unknown", "various", "multiple", "no one", "no known meetings"]]
             llm_cache[cache_key] = met_people_names
             save_cache(llm_cache)
@@ -276,7 +266,7 @@ def get_people_met_from_ollama(person_name, birth_year, death_year, occupation, 
         print("   ERROR: ollama library not installed. Skipping local LLM call.")
         return []
 
-    prompt_version = "ollama_v3.1_fmt_strict" # Cache buster for new logic
+    prompt_version = "ollama_v3.1_fmt_strict"
     cache_key = f"{person_name}_{birth_year}_{occupation}_{alive_status}_{ollama_model_name}_{prompt_version}"
 
     if cache_key in llm_cache:
@@ -304,11 +294,9 @@ def get_people_met_from_ollama(person_name, birth_year, death_year, occupation, 
         f"Do NOT include any introductory phrases, explanations, or any text other than the comma-separated list of names. Your entire response should just be the list."
     )
 
-    # Ollama doesn't have the same kind of structured retry for API errors vs format errors typically,
-    # but we can use MAX_FORMAT_CORRECTION_ATTEMPTS for re-prompting.
-    for attempt in range(MAX_FORMAT_CORRECTION_ATTEMPTS): # Renamed MAX_RETRIES_API_CALL for this loop
+    for attempt in range(MAX_FORMAT_CORRECTION_ATTEMPTS):
         current_prompt = base_prompt_text
-        if attempt > 0: # For retries due to format
+        if attempt > 0:
             current_prompt += "\n\nIMPORTANT REMINDER: Your entire response must be ONLY a comma-separated list of names. No other text. Example: Name One, Name Two, Name Three"
             print(f"   Re-querying local Ollama with stricter format prompt (Attempt {attempt + 1}/{MAX_FORMAT_CORRECTION_ATTEMPTS})...")
         else:
@@ -316,21 +304,19 @@ def get_people_met_from_ollama(person_name, birth_year, death_year, occupation, 
 
         try:
             response = ollama.generate(model=ollama_model_name, prompt=current_prompt, stream=False,
-                                       options={"temperature": 0.05, "num_predict": 350}) # Lower temp for more deterministic format
+                                       options={"temperature": 0.05, "num_predict": 350})
             text_response_raw = response['response'].strip()
             print(f"      Ollama Raw Response (attempt {attempt+1}, first 200): {text_response_raw[:200]}...")
 
             if not is_valid_name_list_format(text_response_raw):
                 print(f"      Ollama response format invalid on attempt {attempt + 1}. Response: '{text_response_raw[:100]}...'")
                 if attempt + 1 < MAX_FORMAT_CORRECTION_ATTEMPTS:
-                    time.sleep(0.5) # Short delay before re-prompting
-                    continue # Try next attempt with stricter prompt
+                    time.sleep(0.5)
+                    continue
                 else:
                     print(f"      Max format correction attempts reached for Ollama. Giving up on this person.")
                     llm_cache[cache_key] = []; save_cache(llm_cache); return []
 
-            # Format is considered valid, proceed with extraction
-            # Try to remove common introductory phrases if model still adds them despite prompt
             match = re.match(r"^(?:here(?: is|'s) a list of people .*? met:|based on .*?, .*? met:|individuals .*? met:|people .*? met:|.*?:\s*)?(.*)", text_response_raw, re.IGNORECASE | re.DOTALL)
             actual_list_part = match.group(1).strip() if match and match.group(1) else text_response_raw
 
@@ -338,7 +324,7 @@ def get_people_met_from_ollama(person_name, birth_year, death_year, occupation, 
             met_people_names = []
             for name_candidate in met_people_names_raw_split:
                 name = name_candidate.strip()
-                name = re.sub(r'\s*\(.*?\)\s*$', '', name).strip() # Remove trailing (details)
+                name = re.sub(r'\s*\(.*?\)\s*$', '', name).strip()
                 name = name.strip('\'"')
 
                 if name and name.lower() not in ["none", "n/a", "unknown", "various", "multiple", "several", "", "no one", "no known meetings"] and len(name) > 2 :
@@ -349,13 +335,9 @@ def get_people_met_from_ollama(person_name, birth_year, death_year, occupation, 
             llm_cache[cache_key] = met_people_names; save_cache(llm_cache); return met_people_names
 
         except Exception as e:
-            # This will catch network errors etc. with ollama.generate
             print(f"      Error querying local Ollama ({ollama_model_name}) for {person_name} on attempt {attempt + 1}: {e}")
-            # For Ollama, if `generate` fails, it's usually a more fundamental issue than transient API limits.
-            # We'll break the loop here; the outer script's flow will eventually move to the next person.
             llm_cache[cache_key] = []; save_cache(llm_cache); return []
 
-    # If loop finishes without returning (e.g. all format correction attempts failed)
     llm_cache[cache_key] = []; save_cache(llm_cache); return []
 
 
@@ -368,7 +350,7 @@ def get_processing_set_description(master_list_size: int, processing_list_size: 
 
 # --- Main Script ---
 def create_meeting_graph(use_local_llm: bool, local_llm_model: str, limit_top_n: int = None):
-    global llm_cache, current_graph_object, MAX_PEOPLE_TO_PROCESS_IN_SESSION
+    global llm_cache, current_graph_object, MAX_PEOPLE_TO_PROCESS_IN_SESSION, graph_state_initialized # MODIFIED
 
     signal.signal(signal.SIGINT, save_graph_on_interrupt)
     llm_cache = load_cache()
@@ -376,9 +358,11 @@ def create_meeting_graph(use_local_llm: bool, local_llm_model: str, limit_top_n:
     if not use_local_llm:
         if not initialize_gemini():
             print("Exiting due to Gemini initialization failure.")
+            # graph_state_initialized remains False, interrupt will not save
             return
     elif not ollama:
         print("ERROR: --local flag used, but 'ollama' library not installed. Please install it (`pip install ollama`).")
+        # graph_state_initialized remains False, interrupt will not save
         return
     else:
         print(f"Using local Ollama model: {local_llm_model}. Make sure Ollama server is running and model '{local_llm_model}' is pulled.")
@@ -410,10 +394,8 @@ def create_meeting_graph(use_local_llm: bool, local_llm_model: str, limit_top_n:
         df_full_raw['non_en_page_views'] = pd.to_numeric(df_full_raw.get('non_en_page_views'), errors='coerce').fillna(0).astype(int)
 
         print(f"Original dataset size: {len(df_full_raw)} people.")
-        # Ensure 'birthyear' is numeric before comparison
         df_full_raw['birthyear'] = pd.to_numeric(df_full_raw['birthyear'], errors='coerce')
         df_filtered = df_full_raw[df_full_raw['birthyear'].notna() & (df_full_raw['birthyear'] >= BIRTHYEAR_LOWER_BOUND)].copy()
-        # Convert back to Int64 after filtering to keep NA if any sneaked through numeric conversion (shouldn't if notna() is used)
         df_filtered['birthyear'] = df_filtered['birthyear'].astype(pd.Int64Dtype())
 
         print(f"Filtered by birthyear (>= {BIRTHYEAR_LOWER_BOUND} and not NA): {len(df_filtered)} people.")
@@ -424,6 +406,7 @@ def create_meeting_graph(use_local_llm: bool, local_llm_model: str, limit_top_n:
 
         if df_master_list.empty:
             print(f"No people found after filtering and sorting. Exiting.")
+            # graph_state_initialized remains False, interrupt will not save
             return
 
         all_known_names_full_dataset = list(df_master_list['name'][df_master_list['name'] != ''].unique())
@@ -446,26 +429,40 @@ def create_meeting_graph(use_local_llm: bool, local_llm_model: str, limit_top_n:
 
         if df_current_scope.empty:
             print(f"No people to process in the current scope ({processing_set_desc}). Exiting.")
+            # graph_state_initialized remains False, interrupt will not save
             return
 
-    except FileNotFoundError: print(f"Error: {CSV_FILE_PATH} not found."); return
-    except Exception as e: print(f"Error loading/filtering CSV: {e}"); return
+    except FileNotFoundError:
+        print(f"Error: {CSV_FILE_PATH} not found.")
+        # graph_state_initialized remains False, interrupt will not save
+        return
+    except Exception as e:
+        print(f"Error loading/filtering CSV: {e}")
+        # graph_state_initialized remains False, interrupt will not save
+        return
 
+    # --- Graph Loading/Initialization ---
+    # current_graph_object is already global and initialized to nx.Graph()
     if os.path.exists(OUTPUT_GRAPH_FILE):
         try:
             print(f"Loading existing graph from {OUTPUT_GRAPH_FILE}...")
-            current_graph_object = nx.read_gexf(OUTPUT_GRAPH_FILE)
+            current_graph_object = nx.read_gexf(OUTPUT_GRAPH_FILE) # This re-assigns the global
             print(f"Loaded graph: {current_graph_object.number_of_nodes()} nodes, {current_graph_object.number_of_edges()} edges.")
         except Exception as e:
-            print(f"Could not load existing graph: {e}. Starting new graph."); current_graph_object = nx.Graph()
-    else: current_graph_object = nx.Graph()
+            print(f"Could not load existing graph: {e}. Starting new graph.")
+            current_graph_object = nx.Graph() # Ensure it's a new graph if loading fails
+    else:
+        print(f"No existing graph file found at {OUTPUT_GRAPH_FILE}. Starting new graph.")
+        current_graph_object = nx.Graph() # Ensure it's a new graph if no file exists
+
+    graph_state_initialized = True # NEW: Set flag only AFTER graph object is definitively set
 
     start_index = load_start_index()
     if start_index > 0 and start_index < len(df_current_scope):
         print(f"Resuming from index {start_index} of the {processing_set_desc} processing set.")
     elif start_index >= len(df_current_scope) and len(df_current_scope) > 0:
         print(f"All {len(df_current_scope)} people from the {processing_set_desc} processing set already processed according to progress file. Exiting.")
-        return
+        return # graph_state_initialized is True, but main processing loop won't run.
     elif start_index > 0 and len(df_current_scope) == 0 :
         print(f"Progress file indicates a start index, but the {processing_set_desc} processing set is empty. Resetting progress.")
         start_index = 0; save_progress(0)
@@ -482,6 +479,10 @@ def create_meeting_graph(use_local_llm: bool, local_llm_model: str, limit_top_n:
             print(f"All people from the {processing_set_desc} processing set processed based on start_index.")
         else:
             print(f"No people to process this session (check {processing_set_desc} set, and MAX_PEOPLE_TO_PROCESS_IN_SESSION).")
+        # No processing will occur, so we might just want to save if the graph was loaded.
+        # However, the main save logic is at the end of the function, after the loop.
+        # If we exit here, the graph (if loaded) won't be re-saved unless Ctrl+C was hit.
+        # This is probably fine, as no changes were made.
         return
 
     print(f"\nProcessing up to {total_to_process_this_session} people this session (from index {start_index} to {start_index + total_to_process_this_session -1} of {processing_set_desc} set)...")
@@ -570,11 +571,11 @@ def create_meeting_graph(use_local_llm: bool, local_llm_model: str, limit_top_n:
                         else:
                             current_graph_object.add_node(matched_name_from_dataset, label=matched_name_from_dataset)
 
-                    if current_graph_object.has_node(matched_name_from_dataset):
+                    if current_graph_object.has_node(matched_name_from_dataset): # Check again, could have been added above
                         if not current_graph_object.has_edge(person_a_name, matched_name_from_dataset):
                             current_graph_object.add_edge(person_a_name, matched_name_from_dataset)
                             print(f"      Added edge: {person_a_name} <-> {matched_name_from_dataset}")
-            elif llm_name:
+            elif llm_name: # Only print if llm_name is not empty/None
                 print(f"      Note: LLM suggested '{llm_name}', but no close match found/valid in full dataset.")
 
         item_work_duration = time.time() - item_work_start_time
@@ -595,13 +596,25 @@ def create_meeting_graph(use_local_llm: bool, local_llm_model: str, limit_top_n:
         avg_total_time_per_item = total_session_duration / processed_count_in_session
         print(f"Average time per item (incl. delays): {avg_total_time_per_item:.2f}s")
 
-    print(f"Current graph: {current_graph_object.number_of_nodes()} nodes, {current_graph_object.number_of_edges()} edges.")
-    if current_graph_object.number_of_nodes() > 0:
-        try:
-            nx.write_gexf(current_graph_object, OUTPUT_GRAPH_FILE)
-            print(f"Graph saved to {OUTPUT_GRAPH_FILE}")
-        except Exception as e: print(f"Error writing GEXF file: {e}")
-    else: print("Graph is empty, not saving.")
+    print(f"Final graph state: {current_graph_object.number_of_nodes()} nodes, {current_graph_object.number_of_edges()} edges.")
+    
+    # Ensure graph_state_initialized is checked before saving at the end of normal execution
+    if graph_state_initialized:
+        if current_graph_object.number_of_nodes() > 0:
+            try:
+                nx.write_gexf(current_graph_object, OUTPUT_GRAPH_FILE)
+                print(f"Graph saved to {OUTPUT_GRAPH_FILE} (Nodes: {current_graph_object.number_of_nodes()}, Edges: {current_graph_object.number_of_edges()})")
+            except Exception as e: print(f"Error writing GEXF file: {e}")
+        else:
+            print("Graph is empty at the end of the session. Not saving an empty graph.")
+            # Consider if an empty OUTPUT_GRAPH_FILE should be deleted if it existed
+            # For now, it just won't overwrite a potentially non-empty file with an empty one.
+    else:
+        # This case should ideally not be reached if the script ran through,
+        # as graph_state_initialized would have been set.
+        # It's a safeguard.
+        print("Graph state was not properly initialized during the session; not saving at script completion.")
+
 
     final_processed_index_in_current_scope = start_index + processed_count_in_session
     if final_processed_index_in_current_scope >= len(df_current_scope):
