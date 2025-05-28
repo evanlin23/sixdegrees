@@ -6,83 +6,125 @@ import networkx as nx
 # import pandas as pd # Not strictly needed if LABEL_ATTRIBUTE_TITLE is sufficient
 import numpy as np
 
-# --- Monkey-patching for lenient GEXF float parsing ---
-# This patch allows networkx to read GEXF files where float attributes
-# might contain non-standard values like 'NA', empty strings, or other unparseable text.
-# It modifies the GEXFReader to use a custom function for converting
-# attribute values declared as 'float' or 'double' in the GEXF,
-# ensuring such problematic values become float('nan').
+# --- Monkey-patching for lenient GEXF attribute parsing ---
+# This patch allows networkx to read GEXF files where attributes
+# (float, double, integer, long, boolean) might contain non-standard
+# values like 'NA', empty strings, or other unparseable text.
+# It modifies GEXFReader to use custom functions for converting these
+# attribute values, ensuring problematic values become float('nan') for
+# float/double types, and None for integer/long/boolean types.
 
 try:
     from networkx.readwrite.gexf import GEXFReader
 
-    # Define the lenient caster function
-    def _custom_lenient_gexf_float_caster(value_from_gexf):
+    # --- Custom Caster Factory for Numeric Types ---
+    def _create_lenient_numeric_caster(target_type, na_value_for_type):
         """
-        Custom caster for GEXF attributes declared as float or double.
-        Converts 'NA' (case-insensitive), empty/whitespace-only strings to float('nan').
-        Also converts other strings that cause ValueError during float() to float('nan').
-        If the input is already a number (int/float), it's cast to float.
-        Other non-string, non-numeric types (e.g., None) also become float('nan').
+        Factory to create a lenient caster for numeric GEXF attributes.
+        Handles 'NA', empty strings, and conversion errors.
         """
-        if isinstance(value_from_gexf, (float, int)): # If already a number
-            return float(value_from_gexf)
+        def caster(value_from_gexf):
+            # If already a number, try to convert to target_type
+            if isinstance(value_from_gexf, (int, float)):
+                try:
+                    return target_type(value_from_gexf)
+                except (ValueError, TypeError): # e.g. int(1.0) is fine, int(float('nan')) is error
+                    return na_value_for_type 
+            
+            if not isinstance(value_from_gexf, str):
+                # For non-string, non-numeric types (e.g., None)
+                return na_value_for_type
+
+            # At this point, value_from_gexf is a string.
+            val_stripped = value_from_gexf.strip()
+            if val_stripped.upper() == 'NA' or val_stripped == '':
+                return na_value_for_type
+            
+            try:
+                return target_type(val_stripped)
+            except ValueError:
+                return na_value_for_type
+        return caster
+
+    # Instantiate casters for float and int using the factory
+    _custom_lenient_gexf_float_caster = _create_lenient_numeric_caster(float, float('nan'))
+    _custom_lenient_gexf_int_caster = _create_lenient_numeric_caster(int, None) # 'NA' for int becomes None
+
+    # --- Custom Caster for Boolean Type ---
+    def _custom_lenient_gexf_boolean_caster(value_from_gexf):
+        """
+        Custom caster for GEXF attributes declared as boolean.
+        Converts 'NA' (case-insensitive), empty/whitespace-only strings to None.
+        Converts "true"/"false" (case-insensitive) to True/False.
+        Other unparseable strings also become None.
+        """
+        if isinstance(value_from_gexf, bool):
+            return value_from_gexf
         
         if not isinstance(value_from_gexf, str):
-            # For other non-string types (like None passed from parser, or unexpected objects)
-            # print(f"GEXF Read Warning: Attribute value '{value_from_gexf}' (type: {type(value_from_gexf)})"
-            #       f" is not a string or number. Using NaN for GEXF float/double attribute.")
-            return float('nan')
+            return None # Non-string, non-bool becomes None
 
-        # At this point, value_from_gexf is a string.
         val_stripped = value_from_gexf.strip()
-        if val_stripped.upper() == 'NA' or val_stripped == '':
-            return float('nan')
+        val_lower = val_stripped.lower()
+
+        if val_lower == 'na' or val_stripped == '':
+            return None
         
-        try:
-            # Attempt to convert the stripped string to a float.
-            return float(val_stripped)
-        except ValueError:
-            # Catches other strings that cannot be converted to float (e.g., "Missing", "N/A", or just text).
-            # print(f"GEXF Read Warning: Could not convert attribute string '{value_from_gexf}' to float. Using NaN.")
-            return float('nan')
+        if val_lower == "true":
+            return True
+        if val_lower == "false":
+            return False
+        
+        # For other strings that are not "true", "false", "NA", or empty
+        return None
+
 
     # Apply the patch by modifying GEXFReader.__init__
-    # This flag ensures the patch is applied only once, even if the module is reloaded.
-    _GEXFREADER_INIT_PATCH_FLAG_FOR_FLOAT_NA = '_gexfreader_init_patched_for_custom_float_na_parsing'
+    _GEXFREADER_INIT_PATCH_FLAG_FOR_UNIVERSAL_NA_HANDLING = '_gexfreader_init_patched_for_universal_na_handling'
 
-    if not hasattr(GEXFReader, _GEXFREADER_INIT_PATCH_FLAG_FOR_FLOAT_NA):
+    if not hasattr(GEXFReader, _GEXFREADER_INIT_PATCH_FLAG_FOR_UNIVERSAL_NA_HANDLING):
         _original_gexfreader_init = GEXFReader.__init__
 
         def _patched_gexfreader_init(self, *args, **kwargs):
-            # Call the original __init__ method of GEXFReader
-            _original_gexfreader_init(self, *args, **kwargs)
+            _original_gexfreader_init(self, *args, **kwargs) # Call original __init__
             
-            # After the original __init__ has run, self.python_type dictionary should exist.
-            # We modify this instance dictionary to use our custom caster.
+            # Modify self.python_type for lenient parsing
             if hasattr(self, 'python_type') and isinstance(self.python_type, dict):
-                # Only replace if the current caster is the built-in `float`.
-                # This avoids issues if it's already been patched or is some other callable.
+                # Patch float and double types
                 if self.python_type.get('float') is float:
                     self.python_type['float'] = _custom_lenient_gexf_float_caster
-                
-                # GEXF 'double' type also typically maps to Python's `float`.
-                if self.python_type.get('double') is float:
+                if self.python_type.get('double') is float: # GEXF double also maps to Python float
                     self.python_type['double'] = _custom_lenient_gexf_float_caster
-            # else:
-                # This case would be unexpected if GEXFReader.__init__ behaves as known.
-                # print("Warning: GEXFReader patch: self.python_type not found or not a dict after __init__.")
+                
+                # Patch integer and long types
+                if self.python_type.get('integer') is int:
+                    self.python_type['integer'] = _custom_lenient_gexf_int_caster
+                if self.python_type.get('long') is int: # GEXF long also maps to Python int
+                    self.python_type['long'] = _custom_lenient_gexf_int_caster
+
+                # Patch boolean type
+                # Original GEXFReader.__init__ sets self.python_type['boolean'] = self._parse_boolean (instance method)
+                # We replace this with our custom function if it's still the original.
+                original_nx_bool_parser_method_name = '_parse_boolean' # Name of the GEXFReader method
+                current_bool_caster = self.python_type.get('boolean')
+                if current_bool_caster is not None and \
+                   hasattr(current_bool_caster, '__func__') and \
+                   current_bool_caster.__func__.__name__ == original_nx_bool_parser_method_name:
+                    self.python_type['boolean'] = _custom_lenient_gexf_boolean_caster
+                elif current_bool_caster is not None and not (hasattr(current_bool_caster, '__func__')) and \
+                     current_bool_caster.__name__ == original_nx_bool_parser_method_name : # Python 2 case for instancemethod
+                     self.python_type['boolean'] = _custom_lenient_gexf_boolean_caster
+
 
         GEXFReader.__init__ = _patched_gexfreader_init
-        setattr(GEXFReader, _GEXFREADER_INIT_PATCH_FLAG_FOR_FLOAT_NA, True)
-        # print("Applied GEXFReader.__init__ patch for lenient float parsing of 'NA' values.") # For debugging
+        setattr(GEXFReader, _GEXFREADER_INIT_PATCH_FLAG_FOR_UNIVERSAL_NA_HANDLING, True)
+        # print("Applied GEXFReader.__init__ patch for lenient NA parsing (all types).")
     # else:
-        # print("GEXFReader.__init__ patch for lenient float parsing already applied.") # For debugging
+        # print("GEXFReader.__init__ patch for lenient NA parsing (all types) already applied.")
         # pass
 
 except ImportError:
-    # Handle cases where GEXFReader might not be found (e.g., very old NetworkX or unusual install)
-    print("Warning: Could not import GEXFReader from networkx.readwrite.gexf. Patch for 'NA' float values not applied.")
+    print("Warning: Could not import GEXFReader from networkx.readwrite.gexf. Patches for 'NA' handling not applied.")
     pass
 # --- End of monkey-patching ---
 
@@ -96,13 +138,16 @@ OUTPUT_IMAGE_FILE = "graph_visualization_final.png" # Define output filename her
 def display_graph(graph_file_path):
     print(f"Attempting to load graph from: {graph_file_path}")
     try:
-        # With the patch, nx.read_gexf should now handle 'NA' in float fields.
+        # With the patch, nx.read_gexf should now handle 'NA' in float, int, bool fields.
         graph = nx.read_gexf(graph_file_path)
     except FileNotFoundError:
         print(f"Error: Graph file not found at '{graph_file_path}'.")
         return
     except Exception as e:
         print(f"Error reading GEXF file: {e}")
+        # If you want more details during debugging the patch:
+        # import traceback
+        # traceback.print_exc()
         return
 
     if graph.number_of_nodes() == 0:
@@ -113,6 +158,16 @@ def display_graph(graph_file_path):
     num_edges = graph.number_of_edges()
     print(f"\nGraph loaded successfully:")
     print(f"  Nodes: {num_nodes}, Edges: {num_edges}")
+
+    # Example: Check an attribute that might have been 'NA'
+    # for node_id, data in graph.nodes(data=True):
+    #     if 'some_integer_attribute_key' in data: # Replace with an actual key
+    #         print(f"Node {node_id}, int_attr: {data['some_integer_attribute_key']} (type: {type(data['some_integer_attribute_key'])})")
+    #     if 'some_float_attribute_key' in data: # Replace with an actual key
+    #         print(f"Node {node_id}, float_attr: {data['some_float_attribute_key']} (type: {type(data['some_float_attribute_key'])})")
+    #     if 'some_boolean_attribute_key' in data: # Replace with an actual key
+    #         print(f"Node {node_id}, bool_attr: {data['some_boolean_attribute_key']} (type: {type(data['some_boolean_attribute_key'])})")
+    #     break # Just check one node for example
 
     fig, ax = plt.subplots(figsize=(20, 20)) # Even larger for potentially many labels
 
