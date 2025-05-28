@@ -1,0 +1,72 @@
+2025-05-27 19:04:31,099 - VisualChainBiBFSApp - INFO - main_bfs.find_visual_connection_bibfs:293 - --- DEFAULT MODE SELECTED (applying base default settings) ---
+2025-05-27 19:04:31,099 - VisualChainBiBFSApp - INFO - main_bfs.find_visual_connection_bibfs:316 - --- Starting Bi-Directional BFS Visual Chain Generation ---
+2025-05-27 19:04:31,099 - VisualChainBiBFSApp - INFO - main_bfs.find_visual_connection_bibfs:317 - Person 1 (Start): Adolf Hitler
+2025-05-27 19:04:31,099 - VisualChainBiBFSApp - INFO - main_bfs.find_visual_connection_bibfs:318 - Person 2 (Target): James Charles
+2025-05-27 19:04:31,099 - VisualChainBiBFSApp - INFO - main_bfs.find_visual_connection_bibfs:319 - --- Effective Configuration ---
+2025-05-27 19:04:31,099 - VisualChainBiBFSApp - INFO - main_bfs.find_visual_connection_bibfs:320 - Search: MaxDepthPerDirection=2, MaxGeminiSugg=10
+2025-05-27 19:04:31,099 - VisualChainBiBFSApp - INFO - main_bfs.find_visual_connection_bibfs:324 - Downloads: ImgsToDLPerLink=5, MaxRetries=3, RetryDelay=10s
+2025-05-27 19:04:31,099 - VisualChainBiBFSApp - INFO - main_bfs.find_visual_connection_bibfs:327 - Verifier: TargetRefImgs=5, RefImgPool=10, VerifModels=['VGG-Face', 'Facenet', 'ArcFace', 'SFace'], Detector=retinaface
+2025-05-27 19:04:31,099 - VisualChainBiBFSApp - DEBUG - utils_bfs.ensure_dir_bfs:18 - Directory already exists: /Users/Evan/6degrees/bfs/output_bfs
+2025-05-27 19:04:31,099 - VisualChainBiBFSApp - DEBUG - utils_bfs.ensure_dir_bfs:18 - Directory already exists: /Users/Evan/6degrees/bfs/output_bfs/logs
+2025-05-27 19:04:31,099 - VisualChainBiBFSApp - INFO - main_bfs.find_visual_connection_bibfs:343 - --- Cleaning up previous BiBFS output sub-directories (temp_files, verified_images) ---
+2025-05-27 19:04:31,099 - VisualChainBiBFSApp - INFO - utils_bfs.clean_output_sub_dir_bfs:23 - Directory to clean does not exist, skipping: /Users/Evan/6degrees/bfs/output_bfs/temp_files
+2025-05-27 19:04:31,099 - VisualChainBiBFSApp - INFO - utils_bfs.clean_output_sub_dir_bfs:23 - Directory to clean does not exist, skipping: /Users/Evan/6degrees/bfs/output_bfs/verified_images
+2025-05-27 19:04:31,099 - VisualChainBiBFSApp - INFO - utils_bfs.ensure_dir_bfs:13 - Created directory: /Users/Evan/6degrees/bfs/output_bfs/temp_files
+2025-05-27 19:04:31,099 - VisualChainBiBFSApp - INFO - utils_bfs.ensure_dir_bfs:13 - Created directory: /Users/Evan/6degrees/bfs/output_bfs/verified_images
+2025-05-27 19:04:31,099 - VisualChainBiBFSApp - INFO - utils_bfs.ensure_dir_bfs:13 - Created directory: /Users/Evan/6degrees/bfs/output_bfs/reference_faces_bfs
+2025-05-27 19:04:31,099 - VisualChainBiBFSApp - DEBUG - utils_bfs.load_prompt_template_bfs:41 - Attempting to load BFS prompt template from: /Users/Evan/6degrees/bfs/prompts/system_prompt_bfs.txt
+2025-05-27 19:04:31,099 - VisualChainBiBFSApp - INFO - utils_bfs.load_prompt_template_bfs:45 - BFS Prompt template loaded successfully from /Users/Evan/6degrees/bfs/prompts/system_prompt_bfs.txt
+2025-05-27 19:04:31,099 - VisualChainBiBFSApp - DEBUG - utils_bfs.load_prompt_template_bfs:41 - Attempting to load BFS prompt template from: /Users/Evan/6degrees/bfs/prompts/intermediary_request_template.xml
+2025-05-27 19:04:31,100 - VisualChainBiBFSApp - INFO - utils_bfs.load_prompt_template_bfs:45 - BFS Prompt template loaded successfully from /Users/Evan/6degrees/bfs/prompts/intermediary_request_template.xml
+2025-05-27 19:04:31,100 - VisualChainBiBFSApp - INFO - main_bfs.find_visual_connection_bibfs:373 - 
+=== BiBFS Processing Depth Level 0 (Max: 2) ===
+2025-05-27 19:04:31,100 - VisualChainBiBFSApp - INFO - main_bfs.find_visual_connection_bibfs:383 -   Expanding 1 FWD nodes at depth 0
+2025-05-27 19:04:31,100 - VisualChainBiBFSApp - INFO - main_bfs.run_single_bfs_expansion_step:123 - 
+--- BiBFS Step (Forward) ---
+2025-05-27 19:04:31,100 - VisualChainBiBFSApp - INFO - main_bfs.run_single_bfs_expansion_step:124 - Dequeued: 'Adolf Hitler'. Current Path: [Adolf Hitler]. Depth: 0 / 2
+2025-05-27 19:04:31,100 - VisualChainBiBFSApp - INFO - gemini_bfs_query.get_intermediary_suggestions_bidirectional:45 - BFS Gemini (BiDir): Requesting suggestions from 'Adolf Hitler'. Avoiding 1 nodes.
+2025-05-27 19:04:31,100 - VisualChainBiBFSApp - DEBUG - utils_bfs.load_prompt_template_bfs:41 - Attempting to load BFS prompt template from: /Users/Evan/6degrees/bfs/prompts/gemini_task_header.txt
+2025-05-27 19:04:31,100 - VisualChainBiBFSApp - INFO - utils_bfs.load_prompt_template_bfs:45 - BFS Prompt template loaded successfully from /Users/Evan/6degrees/bfs/prompts/gemini_task_header.txt
+2025-05-27 19:04:31,100 - VisualChainBiBFSApp - WARNING - gemini_bfs_query.get_intermediary_suggestions_bidirectional:96 - Could not reliably determine log directory, defaulting to current: name 'logging' is not defined
+2025-05-27 19:04:31,100 - VisualChainBiBFSApp - INFO - gemini_bfs_query.get_intermediary_suggestions_bidirectional:106 - Full prompt to Gemini (BiBFS) saved to: ./full_prompt_to_gemini_BiBFS_Adolf_Hitler_1748390671.txt
+2025-05-27 19:04:31,100 - VisualChainBiBFSApp - DEBUG - gemini_bfs_query.get_intermediary_suggestions_bidirectional:110 - BFS User input XML for Gemini (BiDir, part of full prompt, snippet):
+<intermediary_request>
+  <current_person_focus>Adolf Hitler</current_person_focus>
+  <max_suggestions_to_provide>10</max_suggestions_to_provide>
+  <previous_path_nodes_to_avoid_as_new_intermediaries>
+    <person>Adolf Hitler</person>
+
+  </previous_path_nodes_to_avoid_as_new_intermediaries>
+  <additional_context_for_ranking_logic>
+    Focus on finding individuals with documented co-occurrences with Adolf Hitler and providing complete `connection_details`.
+    The `ranking_score` should reflect th
+2025-05-27 19:04:31,100 - VisualChainBiBFSApp - INFO - gemini_bfs_query.get_intermediary_suggestions_bidirectional:111 - --- Sending to Gemini (BFS BiDir intermediary suggestions for 'Adolf Hitler') ---
+2025-05-27 19:04:39,526 - VisualChainBiBFSApp - DEBUG - gemini_bfs_query.clean_gemini_xml_response_bfs:15 - BFS Raw AI output before cleaning (first 300 chars): ```xml
+<intermediary_suggestions>
+  <suggestion>
+    <intermediary_person_name>Heinrich Himmler</intermediary_person_name>
+    <connection_details>
+      <evidence>Himmler served as the head of the SS, a major organization within the Nazi regime, and was a key figure in Hitler's inner circle.  Numer
+2025-05-27 19:04:39,527 - VisualChainBiBFSApp - DEBUG - gemini_bfs_query.clean_gemini_xml_response_bfs:33 - BFS AI output after cleaning (first 300 chars): <intermediary_suggestions>
+  <suggestion>
+    <intermediary_person_name>Heinrich Himmler</intermediary_person_name>
+    <connection_details>
+      <evidence>Himmler served as the head of the SS, a major organization within the Nazi regime, and was a key figure in Hitler's inner circle.  Numerous his
+2025-05-27 19:04:39,529 - VisualChainBiBFSApp - INFO - gemini_bfs_query.get_intermediary_suggestions_bidirectional:125 - BFS Gemini response parsed (BiDir), root: intermediary_suggestions
+2025-05-27 19:04:39,529 - VisualChainBiBFSApp - INFO - main_bfs.run_single_bfs_expansion_step:184 -   Received 3 suggestion items for 'Adolf Hitler' (Forward). Processing...
+2025-05-27 19:04:39,529 - VisualChainBiBFSApp - INFO - main_bfs.run_single_bfs_expansion_step:200 -     Processing Suggestion 1 (Rank: 95): 'Adolf Hitler' → 'Heinrich Himmler' (Forward)
+2025-05-27 19:04:39,530 - VisualChainBiBFSApp - DEBUG - main_bfs.run_single_bfs_expansion_step:204 -       Using standardized Google query: "Adolf Hitler" AND "Heinrich Himmler"
+2025-05-27 19:04:39,530 - VisualChainBiBFSApp - INFO - utils_bfs.ensure_dir_bfs:13 - Created directory: /Users/Evan/6degrees/bfs/output_bfs/temp_files/Adolf_Hitler_to_Heinrich_Himmler_Forward_1748390679
+2025-05-27 19:04:39,530 - VisualChainBiBFSApp - INFO - image_verifier_bfs.verify_single_link_attempt:226 - --- BFS Verifying Link: 'Adolf Hitler' <-> 'Heinrich Himmler' ---
+2025-05-27 19:04:39,530 - VisualChainBiBFSApp - INFO - image_verifier_bfs.verify_single_link_attempt:227 -     Link Img DLs: 5, Ref Imgs Target: 5, Ref DL Pool: 10
+2025-05-27 19:04:39,530 - VisualChainBiBFSApp - INFO - image_verifier_bfs.verify_single_link_attempt:228 -     Verif Models: ['VGG-Face', 'Facenet', 'ArcFace', 'SFace'], Verif Detector: retinaface
+2025-05-27 19:04:39,530 - VisualChainBiBFSApp - INFO - image_verifier_bfs.verify_single_link_attempt:229 -     Image Download Config: MaxRetries=3, RetryDelay=10s
+2025-05-27 19:04:39,531 - VisualChainBiBFSApp - INFO - image_downloader_bfs.fetch_images_for_link_bfs:16 - BFS DL: Preparing to download. Target: 'Adolf Hitler to Heinrich Himmler', Query: '"Adolf Hitler" AND "Heinrich Himmler"', Num: 5, Ref: False, MaxRetries: 3, RetryDelay: 10s
+2025-05-27 19:04:39,531 - VisualChainBiBFSApp - DEBUG - image_downloader_bfs.fetch_images_for_link_bfs:32 - BFS DL: Image download folder exists: /Users/Evan/6degrees/bfs/output_bfs/temp_files/Adolf_Hitler_to_Heinrich_Himmler_Forward_1748390679
+2025-05-27 19:04:39,531 - VisualChainBiBFSApp - INFO - image_downloader_bfs.fetch_images_for_link_bfs:46 - BFS DL: Download attempt 1/3 for query: '"Adolf Hitler" AND "Heinrich Himmler"'
+2025-05-27 19:04:39,534 - VisualChainBiBFSApp - DEBUG - image_downloader_bfs.fetch_images_for_link_bfs:64 - BFS DL: Starting icrawler.crawl (Attempt 1) for: '"Adolf Hitler" AND "Heinrich Himmler"' (requesting up to 5 total images in folder)
+2025-05-27 19:04:44,551 - VisualChainBiBFSApp - INFO - image_downloader_bfs.fetch_images_for_link_bfs:76 - BFS DL: Finished icrawler.crawl (Attempt 1) for 'Adolf Hitler to Heinrich Himmler'.
+2025-05-27 19:04:44,552 - VisualChainBiBFSApp - INFO - image_downloader_bfs.fetch_images_for_link_bfs:92 - BFS DL: Found 0 image(s) in /Users/Evan/6degrees/bfs/output_bfs/temp_files/Adolf_Hitler_to_Heinrich_Himmler_Forward_1748390679 after crawl attempt 1 for query '"Adolf Hitler" AND "Heinrich Himmler"'.
+2025-05-27 19:04:44,553 - VisualChainBiBFSApp - WARNING - image_downloader_bfs.fetch_images_for_link_bfs:105 - BFS DL: Downloaded 0/5 images. Retrying in 10 seconds...
+2025-05-27 19:04:54,557 - VisualChainBiBFSApp - INFO - image_downloader_bfs.fetch_images_for_link_bfs:46 - BFS DL: Download attempt 2/3 for query: '"Adolf Hitler" AND "Heinrich Himmler"'
+2025-05-27 19:04:54,561 - VisualChainBiBFSApp - DEBUG - image_downloader_bfs.fetch_images_for_link_bfs:64 - BFS DL: Starting icrawler.crawl (Attempt 2) for: '"Adolf Hitler" AND "Heinrich Himmler"' (requesting up to 5 total images in folder)

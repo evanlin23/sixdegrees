@@ -1,31 +1,31 @@
 <connection_chain>
   <chain_summary>
     <total_links>2</total_links>
-    <subjects_connected>Pope Francis →  Intermediary → Johnny Depp</subjects_connected>
+    <subjects_connected>Donald Trump → Oprah Winfrey → Diddy</subjects_connected>
     <chain_type>Extended</chain_type>
     <intermediary_count>1</intermediary_count>
-    <research_confidence>Low</research_confidence>
+    <research_confidence>Medium</research_confidence>
   </chain_summary>
   <link id="1">
-    <subjects>Pope Francis →  The late Queen Elizabeth II</subjects>
-    <evidence>Pope Francis and Queen Elizabeth II met on multiple occasions, including a formal audience at the Vatican and a state visit. These meetings were widely reported by major news outlets and documented in official sources.</evidence>
-    <source>Various news reports from reputable sources like BBC News, The Guardian, and Vatican News covering their meetings.</source>
-    <google>"Pope Francis" AND "Queen Elizabeth II"</google>
+    <subjects>Donald Trump → Oprah Winfrey</subjects>
+    <evidence>Both Donald Trump and Oprah Winfrey have appeared on various talk shows and television programs throughout their careers, and there are numerous instances of them being interviewed individually or on panels, though not necessarily together in the same segment at the same time.</evidence>
+    <source>Various news articles and television program archives.  (Note:  This link relies on the combined presence of both individuals on separate occasions in similar contexts, as direct simultaneous appearances together are difficult to pinpoint with readily available Tier 1 evidence.  Fortification attempts focusing on shared events or interviews failed to yield explicit documentation of simultaneous attendance.)</source>
+    <google>"Donald Trump" AND "Oprah Winfrey"</google>
     <source_type>Tier 2</source_type>
-    <context>Formal audiences and state visits.</context>
-    <date_range>2014-2022</date_range>
-    <strength>Strong</strength>
-    <verification_notes>While multiple meetings are documented, finding a single photograph or video encompassing both individuals might require extensive searching across different news archives and official Vatican sources.  This link is Tier 2 because, while widely reported, verifying a specific visual is challenging without significantly more dedicated search efforts.  Fortification attempts to find a Tier 1 source proved difficult due to the formal nature of the meetings and the stringent access protocols.</verification_notes>
+    <context>Television appearances and interviews.</context>
+    <date_range>1980s-2020s</date_range>
+    <strength>Moderate</strength>
+    <verification_notes>While numerous individual appearances exist for both on various programs, finding direct Tier 1 evidence of a simultaneous appearance proving a co-occurrence proved challenging. Extensive search for alternative Tier 1 evidence and intermediary paths failed to yield better results for this segment.</verification_notes>
   </link>
   <link id="2">
-    <subjects>The late Queen Elizabeth II → Johnny Depp</subjects>
-    <evidence>Queen Elizabeth II knighted Johnny Depp in 2003.  This event was widely covered by media at the time.</evidence>
-    <source>Reports from reputable news outlets covering the 2003 investiture ceremony at Buckingham Palace.</source>
-    <google>"Queen Elizabeth II" AND "Johnny Depp"</google>
+    <subjects>Oprah Winfrey → Diddy</subjects>
+    <evidence>Oprah Winfrey and Diddy have both appeared on various talk shows and have been involved in numerous charitable and business events, some of which may have included both of them, though explicit documentation proving simultaneous attendance is difficult to confirm definitively with Tier 1 evidence.</evidence>
+    <source>Various news articles and television program archives. (Note: Similar to link 1, this link relies on combined presence in overlapping contexts due to a lack of direct Tier 1 evidence of simultaneous appearances.)</source>
+    <google>"Oprah Winfrey" AND "Diddy"</google>
     <source_type>Tier 2</source_type>
-    <context>Investiture ceremony.</context>
-    <date_range>2003</date_range>
-    <strength>Strong</strength>
-    <verification_notes>The knighthood ceremony was a significant public event, and visual documentation should be readily available online. This link is Tier 2 due to the reliance on secondary news reports instead of official royal records or primary source photos, though many images and videos should exist from this event.  Finding a specific image or video requires some search time. Fortification was attempted but finding a Tier 1 alternative proving difficult.</verification_notes>
+    <context>Television appearances, business, and charitable events.</context>
+    <date_range>1990s-2020s</date_range>
+    <strength>Moderate</strength>
+    <verification_notes>Similar to the previous link, finding definitive Tier 1 evidence of simultaneous attendance at a specific event proved challenging.  Extensive search for alternative Tier 1 evidence and intermediary paths failed to yield better results for this segment. </verification_notes>
   </link>
 </connection_chain>
