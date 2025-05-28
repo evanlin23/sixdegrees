@@ -14,7 +14,7 @@ import argparse # For command-line arguments
 try:
     import google.generativeai as genai
 except ImportError:
-    genai = None 
+    genai = None
 try:
     import ollama
 except ImportError:
@@ -26,13 +26,14 @@ OUTPUT_GRAPH_FILE = "met_people_graph.gexf"
 LLM_CACHE_FILE = "llm_responses_cache.json"
 PROGRESS_FILE = "processing_progress.txt"
 
-MAX_PEOPLE_TO_PROCESS_IN_SESSION = None # Set to a number to limit, e.g., 10, or None for all. Can be overridden by CLI.
-API_CALL_DELAY_SECONDS = 4 
-MAX_RETRIES_API_CALL = 5 # For Gemini API
-FUZZY_MATCH_THRESHOLD = 95
-BIRTHYEAR_LOWER_BOUND = 1800
+MAX_PEOPLE_TO_PROCESS_IN_SESSION = None
+API_CALL_DELAY_SECONDS = 4
+MAX_RETRIES_API_CALL = 5 # Max retries for API call itself (network, rate limit)
+MAX_FORMAT_CORRECTION_ATTEMPTS = 2 # How many times to re-prompt if format is bad (within one API call attempt)
+FUZZY_MATCH_THRESHOLD = 90
+BIRTHYEAR_LOWER_BOUND = -9999 # Allow for ancient figures
 
-DEFAULT_OLLAMA_MODEL = "phi3:mini" # Model to use with --local if not specified
+DEFAULT_OLLAMA_MODEL = "phi3:mini"
 
 # --- Global graph object for signal handler ---
 current_graph_object = nx.Graph()
@@ -41,7 +42,7 @@ current_graph_object = nx.Graph()
 def format_time_delta(seconds):
     if seconds is None or seconds < 0:
         return "N/A"
-    seconds = int(seconds) # Ensure integer seconds for calculations
+    seconds = int(seconds)
     hours = seconds // 3600
     minutes = (seconds % 3600) // 60
     secs = seconds % 60
@@ -83,7 +84,7 @@ def load_start_index():
                     return int(content)
         except ValueError:
             print(f"Warning: Progress file {PROGRESS_FILE} content is not a valid integer. Starting from scratch.")
-        except FileNotFoundError: pass # Should not happen if os.path.exists is true, but defensive
+        except FileNotFoundError: pass
         except Exception as e: print(f"Warning: Could not load progress file {PROGRESS_FILE}: {e}. Starting from scratch.")
     return 0
 
@@ -105,8 +106,8 @@ def save_graph_on_interrupt(signum, frame):
     print("Exiting script."); exit(0)
 
 # --- LLM Query Functions ---
-llm_cache = {} # Loaded in main function
-gemini_model = None # Initialized if Gemini is used
+llm_cache = {}
+gemini_model = None
 
 def initialize_gemini():
     global gemini_model
@@ -127,15 +128,65 @@ def initialize_gemini():
         print(f"Error initializing Gemini API: {e}")
         return False
 
+def is_valid_name_list_format(text_response: str) -> bool:
+    """
+    Checks if the response string appears to be a comma-separated list of names.
+    - Allows for some leading/trailing whitespace.
+    - Checks for presence of commas if multiple names are expected.
+    - Disallows very long strings without commas (likely prose).
+    - Disallows common introductory phrases if they constitute the bulk of the response.
+    """
+    if not text_response or not isinstance(text_response, str):
+        return False
+    
+    text_response = text_response.strip()
+    if not text_response: # Empty after strip
+        return True # An empty list is a valid response (no names found)
+
+    # Check for common problematic introductory phrases that might not be caught by regex in ollama func
+    bad_intros = [
+        "here is a list of people", "based on my knowledge", "individuals that",
+        "i can list the following", "sure, here are some", "the people that",
+        "some of the notable individuals", "considering the figure"
+    ]
+    if any(text_response.lower().startswith(intro) for intro in bad_intros) and ',' not in text_response:
+        # If it starts with an intro and has NO commas, it's likely not a list.
+        if len(text_response.split()) > 15: # Heuristic: if it's long and has no commas, it's probably prose.
+            return False
+
+    # A single name is valid, doesn't need a comma.
+    # If there are multiple words and no comma, it might be a single multi-word name or prose.
+    # This is tricky. We rely on the prompt to enforce comma separation.
+    # A simple check: if it contains non-alphanumeric (excluding space, comma, hyphen, apostrophe)
+    # it might be problematic prose.
+    # This regex checks if the string primarily consists of names (words, spaces, hyphens, apostrophes) and commas.
+    # It allows for some leeway.
+    if re.fullmatch(r"^[a-zA-Z0-9 .,'-]+$", text_response):
+         # Check if it's just "None", "N/A" etc. - these are technically valid format but mean no results
+        if text_response.lower() in ["none", "n/a", "unknown", "no one", "no known meetings"]:
+            return True # Valid format indicating no people
+        return True # Looks like a name list or a single name
+    
+    # If it contains many words but no commas, it's suspicious
+    if ',' not in text_response and len(text_response.split()) > 7: # Heuristic for prose
+        print(f"      Format Check: Suspicious response - many words, no commas: '{text_response[:100]}...'")
+        return False
+
+    # Fallback: if previous checks didn't catch it, but it passed the regex, assume okay.
+    # The main splitting logic will handle empty strings from split.
+    return True
+
+
 def get_people_met_from_gemini(person_name, birth_year, death_year, occupation, alive_status):
     global llm_cache, gemini_model
     if not gemini_model:
         print("   ERROR: Gemini model not initialized. Skipping API call.")
         return []
 
-    prompt_version = "gemini_v2_more_people_confident" 
+    # Use a slightly different prompt version for cache if we change format enforcement
+    prompt_version = "gemini_v2.1_fmt_strict"
     cache_key = f"{person_name}_{birth_year}_{occupation}_{alive_status}_{prompt_version}"
-    
+
     if cache_key in llm_cache:
         print(f"   Cache hit for: {person_name} (Provider: Gemini, Prompt: {prompt_version})")
         return llm_cache[cache_key]
@@ -150,45 +201,72 @@ def get_people_met_from_gemini(person_name, birth_year, death_year, occupation, 
     elif pd.notna(death_year): life_span += f", Died: {death_year}"
     else: life_span += ", Death year unknown"
 
-    prompt = (
+    base_prompt_text = (
         f"Consider the historical or public figure: {person_name} "
         f"(Occupation: {occupation if pd.notna(occupation) else 'Unknown'}, {life_span}{current_alive_status_text}). "
         f"List individuals that {person_name} definitively met during their lifetime. "
         f"Include well-known contemporaries, collaborators, mentors, protégés, or even notable adversaries they directly encountered. "
         f"Prioritize interactions with a higher degree of certainty or historical record. "
         f"Provide as many names as you can confidently list. "
-        f"Return ONLY the full names, separated by commas. For example: Isaac Newton, Robert Boyle, John Locke, Gottfried Wilhelm Leibniz"
+        f"Return ONLY the full names, separated by commas. For example: Isaac Newton, Robert Boyle, John Locke, Gottfried Wilhelm Leibniz. "
+        f"Do NOT include any introductory phrases, explanations, or any text other than the comma-separated list of names."
     )
-    print(f"   Querying Gemini for: {person_name} (Prompt: {prompt_version})...")
     
     for attempt in range(MAX_RETRIES_API_CALL):
+        current_prompt = base_prompt_text
+        if attempt > 0 : # For retries due to format, slightly more emphasis
+             current_prompt += "\nIMPORTANT: Your response MUST be ONLY a comma-separated list of names. No other text."
+
+        print(f"   Querying Gemini for: {person_name} (Attempt {attempt + 1}/{MAX_RETRIES_API_CALL}, Prompt: {prompt_version})...")
         try:
-            response = gemini_model.generate_content(prompt)
+            response = gemini_model.generate_content(current_prompt)
+            
             if response.prompt_feedback and response.prompt_feedback.block_reason:
-                print(f"      LLM Query blocked: {response.prompt_feedback.block_reason_message or response.prompt_feedback.block_reason}"); break
+                print(f"      LLM Query blocked: {response.prompt_feedback.block_reason_message or response.prompt_feedback.block_reason}")
+                # If blocked, likely won't succeed with retry, so break
+                llm_cache[cache_key] = []; save_cache(llm_cache); return []
+                
             if not response.candidates or not response.candidates[0].content.parts:
-                print(f"      LLM returned no candidates/empty content."); break
+                print(f"      LLM returned no candidates/empty content on attempt {attempt + 1}.")
+                # This is an API issue, not necessarily a format issue yet. Let retry logic handle it.
+                if attempt + 1 < MAX_RETRIES_API_CALL: time.sleep(API_CALL_DELAY_SECONDS); continue
+                else: break # Max API retries reached
+
             text_response = response.text.strip()
-            print(f"      LLM Response (first 200 chars): {text_response[:200]}...")
-            met_people_names = [name.strip() for name in text_response.split(',') if name.strip() and name.strip().lower() not in ["none", "n/a", "unknown", "various", "multiple"]]
-            llm_cache[cache_key] = met_people_names; save_cache(llm_cache); return met_people_names
+            print(f"      LLM Raw Response (attempt {attempt+1}, first 200 chars): {text_response[:200]}...")
+
+            if not is_valid_name_list_format(text_response):
+                print(f"      Response format invalid on attempt {attempt + 1}. Response: '{text_response[:100]}...'")
+                if attempt + 1 < MAX_RETRIES_API_CALL:
+                    print(f"      Retrying with stricter format prompt...")
+                    time.sleep(API_CALL_DELAY_SECONDS / 2) # Shorter delay for format retry
+                    continue # Go to next attempt in the loop
+                else:
+                    print(f"      Max retries for format correction reached. Giving up.")
+                    llm_cache[cache_key] = []; save_cache(llm_cache); return [] # Bad format after all retries
+
+            # If format is valid (or empty, which is valid)
+            met_people_names = [name.strip() for name in text_response.split(',') if name.strip() and name.strip().lower() not in ["none", "n/a", "unknown", "various", "multiple", "no one", "no known meetings"]]
+            llm_cache[cache_key] = met_people_names
+            save_cache(llm_cache)
+            return met_people_names
+
         except Exception as e:
-            error_message = str(e); print(f"      Error attempt {attempt + 1}/{MAX_RETRIES_API_CALL}: {error_message}")
-            retry_after = API_CALL_DELAY_SECONDS 
+            error_message = str(e); print(f"      Error during Gemini API call attempt {attempt + 1}/{MAX_RETRIES_API_CALL}: {error_message}")
+            retry_after = API_CALL_DELAY_SECONDS
             if "429" in error_message or "ResourceExhausted" in error_message or "rate limit" in error_message.lower():
                 match = re.search(r'retry_delay.*?seconds:\s*(\d+)', error_message, re.IGNORECASE | re.DOTALL)
-                # Use server-suggested delay if available, else exponential backoff
                 extracted_delay_server = int(match.group(1)) if match else None
-                if extracted_delay_server:
-                    retry_after = max(extracted_delay_server, 5) # Ensure minimum 5s
-                else:
-                    retry_after = (API_CALL_DELAY_SECONDS * (2**attempt)) + random.uniform(0,1) # Exponential backoff
+                if extracted_delay_server: retry_after = max(extracted_delay_server, 5)
+                else: retry_after = (API_CALL_DELAY_SECONDS * (2**attempt)) + random.uniform(0,1)
                 print(f"      Rate limit or resource exhausted. Retrying in {retry_after:.2f}s...")
-            elif attempt + 1 == MAX_RETRIES_API_CALL: print(f"      Max retries. Skipping."); break
-            else: # General error, apply milder exponential backoff
-                retry_after = (API_CALL_DELAY_SECONDS / 2 * (2**attempt)) + random.uniform(0,0.5) # Shorter base for general errors
+            elif attempt + 1 == MAX_RETRIES_API_CALL:
+                print(f"      Max API retries reached after error. Skipping."); break
+            else:
+                retry_after = (API_CALL_DELAY_SECONDS / 2 * (2**attempt)) + random.uniform(0,0.5)
                 print(f"      Retrying in {retry_after:.2f}s...")
             time.sleep(retry_after)
+
     llm_cache[cache_key] = []; save_cache(llm_cache); return []
 
 
@@ -198,9 +276,9 @@ def get_people_met_from_ollama(person_name, birth_year, death_year, occupation, 
         print("   ERROR: ollama library not installed. Skipping local LLM call.")
         return []
 
-    prompt_version = "ollama_v3_max_confident_cleaned" 
+    prompt_version = "ollama_v3.1_fmt_strict" # Cache buster for new logic
     cache_key = f"{person_name}_{birth_year}_{occupation}_{alive_status}_{ollama_model_name}_{prompt_version}"
-    
+
     if cache_key in llm_cache:
         print(f"   Cache hit for: {person_name} (Ollama: {ollama_model_name}, Prompt: {prompt_version})")
         return llm_cache[cache_key]
@@ -215,55 +293,83 @@ def get_people_met_from_ollama(person_name, birth_year, death_year, occupation, 
     elif pd.notna(death_year): life_span += f", Died: {death_year}"
     else: life_span += ", Death year unknown"
 
-    prompt = (
+    base_prompt_text = (
         f"Consider the historical or public figure: {person_name} "
         f"(Occupation: {occupation if pd.notna(occupation) else 'Unknown'}, {life_span}{current_alive_status_text}). "
         f"List individuals that {person_name} definitively met during their lifetime. "
         f"Include well-known contemporaries, collaborators, mentors, protégés, or even notable adversaries they directly encountered. "
         f"Only give interactions with a high degree of certainty or with records. "
         f"Provide as many names as you can confidently list. "
-        f"Return ONLY the full names, separated by commas. For example: Isaac Newton, Robert Boyle, John Locke, Gottfried Wilhelm Leibniz. Do not include any introductory phrases or explanations."
+        f"Return ONLY the full names, separated by commas. For example: Isaac Newton, Robert Boyle, John Locke, Gottfried Wilhelm Leibniz. "
+        f"Do NOT include any introductory phrases, explanations, or any text other than the comma-separated list of names. Your entire response should just be the list."
     )
-    print(f"   Querying local Ollama ({ollama_model_name}) for: {person_name} (Prompt: {prompt_version})...")
-    
-    try:
-        response = ollama.generate(model=ollama_model_name, prompt=prompt, stream=False,
-                                   options={"temperature": 0.1, "num_predict": 350}) # num_predict might need adjustment per model
-        text_response = response['response'].strip()
-        print(f"      Ollama Raw Response (first 200): {text_response[:200]}...")
-        
-        # Attempt to remove common introductory phrases if model still adds them
-        # This regex tries to find the start of the list after potential intro
-        match = re.match(r"^(?:here(?: is|'s) a list of people .*? met:|based on .*?, .*? met:|individuals .*? met:|people .*? met:|.*?:\s*)?(.*)", text_response, re.IGNORECASE | re.DOTALL)
-        if match and match.group(1):
-            actual_list_part = match.group(1).strip()
+
+    # Ollama doesn't have the same kind of structured retry for API errors vs format errors typically,
+    # but we can use MAX_FORMAT_CORRECTION_ATTEMPTS for re-prompting.
+    for attempt in range(MAX_FORMAT_CORRECTION_ATTEMPTS): # Renamed MAX_RETRIES_API_CALL for this loop
+        current_prompt = base_prompt_text
+        if attempt > 0: # For retries due to format
+            current_prompt += "\n\nIMPORTANT REMINDER: Your entire response must be ONLY a comma-separated list of names. No other text. Example: Name One, Name Two, Name Three"
+            print(f"   Re-querying local Ollama with stricter format prompt (Attempt {attempt + 1}/{MAX_FORMAT_CORRECTION_ATTEMPTS})...")
         else:
-            actual_list_part = text_response # Fallback to full response if regex doesn't find a clear list start
+            print(f"   Querying local Ollama ({ollama_model_name}) for: {person_name} (Prompt: {prompt_version})...")
 
-        met_people_names_raw = actual_list_part.split(',')
-        met_people_names = []
-        for name_candidate in met_people_names_raw:
-            name = name_candidate.strip()
-            # Remove trailing explanations like "(collaborator)" or "(met in Paris)"
-            name = re.sub(r'\s*\(.*?\)\s*$', '', name).strip()
-            # Remove leading/trailing quotes if any
-            name = name.strip('\'"')
+        try:
+            response = ollama.generate(model=ollama_model_name, prompt=current_prompt, stream=False,
+                                       options={"temperature": 0.05, "num_predict": 350}) # Lower temp for more deterministic format
+            text_response_raw = response['response'].strip()
+            print(f"      Ollama Raw Response (attempt {attempt+1}, first 200): {text_response_raw[:200]}...")
 
-            if name and name.lower() not in ["none", "n/a", "unknown", "various", "multiple", "several", ""] and len(name) > 2:
-                met_people_names.append(name)
-        
-        met_people_names = [name for name in met_people_names if name.lower() != person_name.lower()] # Remove self-mentions
-        print(f"      Processed list (first 5): {met_people_names[:5]}")
-        llm_cache[cache_key] = met_people_names; save_cache(llm_cache); return met_people_names
-    except Exception as e:
-        print(f"      Error querying local Ollama ({ollama_model_name}) for {person_name}: {e}")
-        llm_cache[cache_key] = []; save_cache(llm_cache); return []
+            if not is_valid_name_list_format(text_response_raw):
+                print(f"      Ollama response format invalid on attempt {attempt + 1}. Response: '{text_response_raw[:100]}...'")
+                if attempt + 1 < MAX_FORMAT_CORRECTION_ATTEMPTS:
+                    time.sleep(0.5) # Short delay before re-prompting
+                    continue # Try next attempt with stricter prompt
+                else:
+                    print(f"      Max format correction attempts reached for Ollama. Giving up on this person.")
+                    llm_cache[cache_key] = []; save_cache(llm_cache); return []
 
+            # Format is considered valid, proceed with extraction
+            # Try to remove common introductory phrases if model still adds them despite prompt
+            match = re.match(r"^(?:here(?: is|'s) a list of people .*? met:|based on .*?, .*? met:|individuals .*? met:|people .*? met:|.*?:\s*)?(.*)", text_response_raw, re.IGNORECASE | re.DOTALL)
+            actual_list_part = match.group(1).strip() if match and match.group(1) else text_response_raw
+
+            met_people_names_raw_split = actual_list_part.split(',')
+            met_people_names = []
+            for name_candidate in met_people_names_raw_split:
+                name = name_candidate.strip()
+                name = re.sub(r'\s*\(.*?\)\s*$', '', name).strip() # Remove trailing (details)
+                name = name.strip('\'"')
+
+                if name and name.lower() not in ["none", "n/a", "unknown", "various", "multiple", "several", "", "no one", "no known meetings"] and len(name) > 2 :
+                    met_people_names.append(name)
+
+            met_people_names = [name for name in met_people_names if name.lower() != person_name.lower()]
+            print(f"      Processed list (first 5): {met_people_names[:5]}")
+            llm_cache[cache_key] = met_people_names; save_cache(llm_cache); return met_people_names
+
+        except Exception as e:
+            # This will catch network errors etc. with ollama.generate
+            print(f"      Error querying local Ollama ({ollama_model_name}) for {person_name} on attempt {attempt + 1}: {e}")
+            # For Ollama, if `generate` fails, it's usually a more fundamental issue than transient API limits.
+            # We'll break the loop here; the outer script's flow will eventually move to the next person.
+            llm_cache[cache_key] = []; save_cache(llm_cache); return []
+
+    # If loop finishes without returning (e.g. all format correction attempts failed)
+    llm_cache[cache_key] = []; save_cache(llm_cache); return []
+
+
+# --- Helper for describing the processing set ---
+def get_processing_set_description(master_list_size: int, processing_list_size: int) -> str:
+    if processing_list_size < master_list_size:
+        return f"top {processing_list_size} (from {master_list_size} total filtered & sorted)"
+    else:
+        return f"all {master_list_size} filtered & sorted"
 
 # --- Main Script ---
-def create_meeting_graph(use_local_llm: bool, local_llm_model: str):
-    global llm_cache, current_graph_object, MAX_PEOPLE_TO_PROCESS_IN_SESSION # Allow modification by CLI args
-    
+def create_meeting_graph(use_local_llm: bool, local_llm_model: str, limit_top_n: int = None):
+    global llm_cache, current_graph_object, MAX_PEOPLE_TO_PROCESS_IN_SESSION
+
     signal.signal(signal.SIGINT, save_graph_on_interrupt)
     llm_cache = load_cache()
 
@@ -277,52 +383,73 @@ def create_meeting_graph(use_local_llm: bool, local_llm_model: str):
     else:
         print(f"Using local Ollama model: {local_llm_model}. Make sure Ollama server is running and model '{local_llm_model}' is pulled.")
 
-
     print(f"Loading data from {CSV_FILE_PATH}...")
     try:
-        # Define dtypes for critical columns to ensure correct parsing
         dtypes_map = {
-            'name': str, 'occupation': str, 
-            'birthyear': 'Int64', 'deathyear': 'Int64', 
+            'name': str, 'occupation': str,
+            'birthyear': 'Int64', 'deathyear': 'Int64',
             'alive': 'boolean', 'non_en_page_views': 'Int64'
         }
-        df_full = pd.read_csv(CSV_FILE_PATH, low_memory=False) # Read all first
-        
+        df_full_raw = pd.read_csv(CSV_FILE_PATH, low_memory=False)
+
         for col, dtype_val in dtypes_map.items():
-            if col in df_full.columns:
+            if col in df_full_raw.columns:
                 if dtype_val == 'Int64':
-                    df_full[col] = pd.to_numeric(df_full[col], errors='coerce').astype(pd.Int64Dtype())
+                    df_full_raw[col] = pd.to_numeric(df_full_raw[col], errors='coerce').astype(pd.Int64Dtype())
                 elif dtype_val == 'boolean':
-                    # Handle various string representations of boolean
-                    df_full[col] = df_full[col].astype(str).str.lower().map({'true': True, 'false': False, '1': True, '0': False, 'yes': True, 'no': False}).astype(pd.BooleanDtype())
+                    df_full_raw[col] = df_full_raw[col].astype(str).str.lower().map({'true': True, 'false': False, '1': True, '0': False, 'yes': True, 'no': False}).astype(pd.BooleanDtype())
                 else:
-                    df_full[col] = df_full[col].astype(str)
-            elif dtype_val in ['Int64', 'boolean', str]: # If column missing, add it with appropriate NA type
-                if dtype_val == 'Int64': df_full[col] = pd.Series(pd.NA, index=df_full.index, dtype=pd.Int64Dtype())
-                elif dtype_val == 'boolean': df_full[col] = pd.Series(pd.NA, index=df_full.index, dtype=pd.BooleanDtype())
-                else: df_full[col] = pd.Series(pd.NA, index=df_full.index, dtype=str)
+                    df_full_raw[col] = df_full_raw[col].astype(str)
+            elif dtype_val in ['Int64', 'boolean', str]:
+                if dtype_val == 'Int64': df_full_raw[col] = pd.Series(pd.NA, index=df_full_raw.index, dtype=pd.Int64Dtype())
+                elif dtype_val == 'boolean': df_full_raw[col] = pd.Series(pd.NA, index=df_full_raw.index, dtype=pd.BooleanDtype())
+                else: df_full_raw[col] = pd.Series(pd.NA, index=df_full_raw.index, dtype=str)
 
+        df_full_raw['occupation'] = df_full_raw['occupation'].fillna('Unknown').astype(str)
+        df_full_raw['name'] = df_full_raw['name'].fillna('').astype(str).str.strip()
+        df_full_raw['non_en_page_views'] = pd.to_numeric(df_full_raw.get('non_en_page_views'), errors='coerce').fillna(0).astype(int)
 
-        df_full['occupation'] = df_full['occupation'].fillna('Unknown').astype(str)
-        df_full['name'] = df_full['name'].fillna('').astype(str).str.strip()
-        df_full['non_en_page_views'] = pd.to_numeric(df_full.get('non_en_page_views'), errors='coerce').fillna(0).astype(int) # Ensure it's int after fillna
+        print(f"Original dataset size: {len(df_full_raw)} people.")
+        # Ensure 'birthyear' is numeric before comparison
+        df_full_raw['birthyear'] = pd.to_numeric(df_full_raw['birthyear'], errors='coerce')
+        df_filtered = df_full_raw[df_full_raw['birthyear'].notna() & (df_full_raw['birthyear'] >= BIRTHYEAR_LOWER_BOUND)].copy()
+        # Convert back to Int64 after filtering to keep NA if any sneaked through numeric conversion (shouldn't if notna() is used)
+        df_filtered['birthyear'] = df_filtered['birthyear'].astype(pd.Int64Dtype())
 
-        print(f"Original dataset size: {len(df_full)} people.")
-        df_filtered = df_full[df_full['birthyear'].notna() & (df_full['birthyear'] >= BIRTHYEAR_LOWER_BOUND)].copy()
         print(f"Filtered by birthyear (>= {BIRTHYEAR_LOWER_BOUND} and not NA): {len(df_filtered)} people.")
         df_sorted = df_filtered.sort_values(by='non_en_page_views', ascending=False).copy()
         print(f"Sorted by page views (descending).")
-        df = df_sorted
-        
-        if df.empty: print(f"No people found matching filtering criteria. Exiting."); return
-        df = df.reset_index(drop=True)
+
+        df_master_list = df_sorted.reset_index(drop=True)
+
+        if df_master_list.empty:
+            print(f"No people found after filtering and sorting. Exiting.")
+            return
+
+        all_known_names_full_dataset = list(df_master_list['name'][df_master_list['name'] != ''].unique())
+        name_to_data_map_full_dataset = {row['name']: row.to_dict() for _, row in df_master_list.iterrows() if row['name'] != ''}
+        print(f"LLM results will be matched against {len(all_known_names_full_dataset)} unique names from the full filtered & sorted dataset.")
+
+        df_for_processing = df_master_list
+
+        if limit_top_n is not None and limit_top_n > 0:
+            if limit_top_n < len(df_master_list):
+                print(f"Applying --limit: will process only the top {limit_top_n} people from the {len(df_master_list)} in the master list.")
+                df_for_processing = df_master_list.head(limit_top_n).copy()
+            else:
+                print(f"--limit {limit_top_n} is >= master list size ({len(df_master_list)}). Will process all {len(df_master_list)} available.")
+        elif limit_top_n is not None and limit_top_n <= 0:
+            print("Warning: --limit value must be positive. Ignoring --limit, will process full master list.")
+
+        df_current_scope = df_for_processing.reset_index(drop=True)
+        processing_set_desc = get_processing_set_description(len(df_master_list), len(df_current_scope))
+
+        if df_current_scope.empty:
+            print(f"No people to process in the current scope ({processing_set_desc}). Exiting.")
+            return
 
     except FileNotFoundError: print(f"Error: {CSV_FILE_PATH} not found."); return
     except Exception as e: print(f"Error loading/filtering CSV: {e}"); return
-
-    all_known_names_in_dataset = list(df['name'][df['name'] != ''].unique())
-    name_to_data_map = {row['name']: row.to_dict() for index, row in df.iterrows() if row['name'] != ''}
-    print(f"Using {len(all_known_names_in_dataset)} unique names from filtered & sorted dataset for matching.")
 
     if os.path.exists(OUTPUT_GRAPH_FILE):
         try:
@@ -334,37 +461,38 @@ def create_meeting_graph(use_local_llm: bool, local_llm_model: str):
     else: current_graph_object = nx.Graph()
 
     start_index = load_start_index()
-    if start_index > 0 and start_index < len(df):
-        print(f"Resuming from CSV index {start_index} of filtered & sorted dataset.")
-    elif start_index >= len(df) and len(df) > 0:
-        print(f"All {len(df)} people from filtered & sorted dataset already processed according to progress file. Exiting.")
+    if start_index > 0 and start_index < len(df_current_scope):
+        print(f"Resuming from index {start_index} of the {processing_set_desc} processing set.")
+    elif start_index >= len(df_current_scope) and len(df_current_scope) > 0:
+        print(f"All {len(df_current_scope)} people from the {processing_set_desc} processing set already processed according to progress file. Exiting.")
         return
-    elif start_index > 0 and len(df) == 0: 
-        print("Progress file indicates a start index, but dataset is empty after filtering. Resetting progress.")
+    elif start_index > 0 and len(df_current_scope) == 0 :
+        print(f"Progress file indicates a start index, but the {processing_set_desc} processing set is empty. Resetting progress.")
         start_index = 0; save_progress(0)
 
-
     if MAX_PEOPLE_TO_PROCESS_IN_SESSION is not None:
-        end_slice_index = min(start_index + MAX_PEOPLE_TO_PROCESS_IN_SESSION, len(df))
-        people_to_process_df = df.iloc[start_index : end_slice_index]
+        end_slice_index = min(start_index + MAX_PEOPLE_TO_PROCESS_IN_SESSION, len(df_current_scope))
+        people_to_process_df_slice = df_current_scope.iloc[start_index : end_slice_index]
     else:
-        people_to_process_df = df.iloc[start_index:]
-    
-    total_to_process_this_session = len(people_to_process_df)
+        people_to_process_df_slice = df_current_scope.iloc[start_index:]
+
+    total_to_process_this_session = len(people_to_process_df_slice)
     if total_to_process_this_session == 0:
-        if start_index >= len(df) and len(df) > 0 : print("All people from filtered & sorted CSV processed based on start_index.")
-        else: print("No people to process this session (check filters, CSV, and MAX_PEOPLE_TO_PROCESS_IN_SESSION).")
+        if start_index >= len(df_current_scope) and len(df_current_scope) > 0 :
+            print(f"All people from the {processing_set_desc} processing set processed based on start_index.")
+        else:
+            print(f"No people to process this session (check {processing_set_desc} set, and MAX_PEOPLE_TO_PROCESS_IN_SESSION).")
         return
-        
-    print(f"\nProcessing up to {total_to_process_this_session} people this session (from CSV index {start_index} to {start_index + total_to_process_this_session -1})...")
 
-    processed_count_in_session = 0 
-    session_start_time = time.time() 
+    print(f"\nProcessing up to {total_to_process_this_session} people this session (from index {start_index} to {start_index + total_to_process_this_session -1} of {processing_set_desc} set)...")
 
-    for original_df_idx, row_series in people_to_process_df.iterrows():
+    processed_count_in_session = 0
+    session_start_time = time.time()
+
+    for current_scope_idx, row_series in people_to_process_df_slice.iterrows():
         eta_str = "Calculating..."
         avg_time_str = "N/A"
-        
+
         if processed_count_in_session > 0:
             elapsed_session_time = time.time() - session_start_time
             avg_time_per_item = elapsed_session_time / processed_count_in_session
@@ -373,25 +501,25 @@ def create_meeting_graph(use_local_llm: bool, local_llm_model: str):
             if items_remaining_in_session > 0:
                 eta_seconds = avg_time_per_item * items_remaining_in_session
                 eta_str = format_time_delta(eta_seconds)
-            else: 
+            else:
                 eta_str = "Finalizing..."
         elif total_to_process_this_session > 0 :
              eta_str = f"Estimating for {total_to_process_this_session} items this session..."
 
         row = row_series.to_dict()
         person_a_name = str(row.get('name', '')).strip()
-        
-        print(f"\nProcessing item {processed_count_in_session + 1}/{total_to_process_this_session} (CSV Index: {original_df_idx}, Name: {person_a_name})")
+
+        print(f"\nProcessing item {processed_count_in_session + 1}/{total_to_process_this_session} (Index in current processing set: {current_scope_idx}, Name: {person_a_name})")
         print(f"   Session Stats: Avg: {avg_time_str}, ETA (session): {eta_str} (PageViews: {row.get('non_en_page_views', 'N/A')})")
-        
+
         item_work_start_time = time.time()
 
         if not person_a_name:
-            print(f"Skipping row with empty name at CSV index {original_df_idx}.")
+            print(f"Skipping row with empty name at index {current_scope_idx} in current processing set.")
             item_work_duration = time.time() - item_work_start_time
             print(f"   Item processing (skip) took: {item_work_duration:.2f}s.")
-            processed_count_in_session += 1 
-            save_progress(original_df_idx + 1) 
+            processed_count_in_session += 1
+            save_progress(current_scope_idx + 1)
             continue
 
         birth_year = row.get('birthyear', pd.NA)
@@ -402,9 +530,9 @@ def create_meeting_graph(use_local_llm: bool, local_llm_model: str):
         if not current_graph_object.has_node(person_a_name):
             node_attrs = {}
             for k, v in row.items():
-                if pd.isna(v): node_attrs[k] = "NA" 
+                if pd.isna(v): node_attrs[k] = "NA"
                 elif isinstance(v, (pd.Timestamp, pd.Timedelta)): node_attrs[k] = str(v)
-                elif isinstance(v, (bool, pd.BooleanDtype)): node_attrs[k] = str(v) # GEXF prefers strings for bools often
+                elif isinstance(v, (bool, pd.BooleanDtype)): node_attrs[k] = str(v)
                 else: node_attrs[k] = v
             current_graph_object.add_node(person_a_name, **node_attrs)
 
@@ -419,18 +547,18 @@ def create_meeting_graph(use_local_llm: bool, local_llm_model: str):
 
         for llm_name in potential_met_names_llm:
             matched_name_from_dataset = None
-            if llm_name in name_to_data_map: 
+            if llm_name in name_to_data_map_full_dataset:
                 matched_name_from_dataset = llm_name
-            elif all_known_names_in_dataset: 
-                fuzzy_match_result = process.extractOne(llm_name, all_known_names_in_dataset, scorer=fuzz.WRatio, score_cutoff=FUZZY_MATCH_THRESHOLD)
-                if fuzzy_match_result: 
+            elif all_known_names_full_dataset:
+                fuzzy_match_result = process.extractOne(llm_name, all_known_names_full_dataset, scorer=fuzz.WRatio, score_cutoff=FUZZY_MATCH_THRESHOLD)
+                if fuzzy_match_result:
                     matched_name_from_dataset = fuzzy_match_result[0]
-                    print(f"      Fuzzy match: LLM '{llm_name}' -> Dataset '{matched_name_from_dataset}' (Score: {fuzzy_match_result[1]})")
-            
+                    print(f"      Fuzzy match (against full dataset): LLM '{llm_name}' -> Dataset '{matched_name_from_dataset}' (Score: {fuzzy_match_result[1]})")
+
             if matched_name_from_dataset:
-                if person_a_name != matched_name_from_dataset: 
+                if person_a_name != matched_name_from_dataset:
                     if not current_graph_object.has_node(matched_name_from_dataset):
-                        person_b_data = name_to_data_map.get(matched_name_from_dataset)
+                        person_b_data = name_to_data_map_full_dataset.get(matched_name_from_dataset)
                         if person_b_data:
                             node_attrs_b = {}
                             for k, v_b in person_b_data.items():
@@ -439,27 +567,25 @@ def create_meeting_graph(use_local_llm: bool, local_llm_model: str):
                                 elif isinstance(v_b, (bool, pd.BooleanDtype)): node_attrs_b[k] = str(v_b)
                                 else: node_attrs_b[k] = v_b
                             current_graph_object.add_node(matched_name_from_dataset, **node_attrs_b)
-                        else: 
-                            current_graph_object.add_node(matched_name_from_dataset, label=matched_name_from_dataset) # Basic node
-                    
-                    if current_graph_object.has_node(matched_name_from_dataset): 
+                        else:
+                            current_graph_object.add_node(matched_name_from_dataset, label=matched_name_from_dataset)
+
+                    if current_graph_object.has_node(matched_name_from_dataset):
                         if not current_graph_object.has_edge(person_a_name, matched_name_from_dataset):
                             current_graph_object.add_edge(person_a_name, matched_name_from_dataset)
                             print(f"      Added edge: {person_a_name} <-> {matched_name_from_dataset}")
-            elif llm_name: 
-                print(f"      Note: LLM suggested '{llm_name}', but no close match found/valid in dataset.")
-        
+            elif llm_name:
+                print(f"      Note: LLM suggested '{llm_name}', but no close match found/valid in full dataset.")
+
         item_work_duration = time.time() - item_work_start_time
-        
         processed_count_in_session += 1
-        save_progress(original_df_idx + 1) 
+        save_progress(current_scope_idx + 1)
 
         if not use_local_llm and processed_count_in_session < total_to_process_this_session :
             print(f"   Item core work took: {item_work_duration:.2f}s. Waiting {API_CALL_DELAY_SECONDS}s for next API call...")
             time.sleep(API_CALL_DELAY_SECONDS)
-        else: 
+        else:
              print(f"   Item core work took: {item_work_duration:.2f}s.")
-
 
     total_session_duration = time.time() - session_start_time
     print("\n--- Graph Construction Session Complete ---")
@@ -471,35 +597,43 @@ def create_meeting_graph(use_local_llm: bool, local_llm_model: str):
 
     print(f"Current graph: {current_graph_object.number_of_nodes()} nodes, {current_graph_object.number_of_edges()} edges.")
     if current_graph_object.number_of_nodes() > 0:
-        try: 
+        try:
             nx.write_gexf(current_graph_object, OUTPUT_GRAPH_FILE)
             print(f"Graph saved to {OUTPUT_GRAPH_FILE}")
         except Exception as e: print(f"Error writing GEXF file: {e}")
     else: print("Graph is empty, not saving.")
-    
-    final_processed_csv_index = start_index + processed_count_in_session
-    if final_processed_csv_index >= len(df): 
-        print("\nAll people in (filtered & sorted) CSV processed.")
-        if os.path.exists(PROGRESS_FILE): 
-            try: os.remove(PROGRESS_FILE); print(f"Progress file {PROGRESS_FILE} removed as processing is complete.")
+
+    final_processed_index_in_current_scope = start_index + processed_count_in_session
+    if final_processed_index_in_current_scope >= len(df_current_scope):
+        print(f"\nAll people in the {processing_set_desc} processing set have been processed.")
+        if os.path.exists(PROGRESS_FILE):
+            try: os.remove(PROGRESS_FILE); print(f"Progress file {PROGRESS_FILE} removed as processing for this scope ({processing_set_desc}) is complete.")
             except OSError as e: print(f"Could not remove progress file {PROGRESS_FILE}: {e}")
-    else: 
-        print(f"\nProcessing paused. Run script again to continue from CSV index {final_processed_csv_index} of filtered & sorted dataset.")
+    else:
+        print(f"\nProcessing paused. Run script again to continue from index {final_processed_index_in_current_scope} of the {processing_set_desc} processing set.")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Create a graph of people who may have met, using Gemini or a local LLM.")
     parser.add_argument("--local", action="store_true", help="Use a local LLM via Ollama instead of Gemini API.")
     parser.add_argument("--model", type=str, default=DEFAULT_OLLAMA_MODEL, help=f"Specify the local Ollama model name (default: {DEFAULT_OLLAMA_MODEL}). Used only with --local.")
     parser.add_argument("--max_process", type=int, default=None, help="Maximum number of people to process in this session (overrides script's MAX_PEOPLE_TO_PROCESS_IN_SESSION).")
+    parser.add_argument("--limit", type=int, default=None, help="Limit processing to the top N most popular people from the filtered and sorted list. This defines the set of people to query LLM for.")
 
     args = parser.parse_args()
 
     if args.max_process is not None:
         if args.max_process <= 0:
-            print("Warning: --max_process must be a positive integer. Using script default or no limit.")
+            print("Warning: --max_process must be a positive integer. Using script default or no limit for session batching.")
         else:
             MAX_PEOPLE_TO_PROCESS_IN_SESSION = args.max_process
-            print(f"Command-line override: MAX_PEOPLE_TO_PROCESS_IN_SESSION set to {MAX_PEOPLE_TO_PROCESS_IN_SESSION}")
+            print(f"Command-line override: MAX_PEOPLE_TO_PROCESS_IN_SESSION (session batch size) set to {MAX_PEOPLE_TO_PROCESS_IN_SESSION}")
 
+    limit_top_n_val = None
+    if args.limit is not None:
+        if args.limit <= 0:
+            print("Warning: --limit value must be a positive integer. Ignoring --limit.")
+        else:
+            limit_top_n_val = args.limit
+            print(f"Command-line setting: --limit (people to query LLM for) to top {limit_top_n_val} people.")
 
-    create_meeting_graph(use_local_llm=args.local, local_llm_model=args.model)
+    create_meeting_graph(use_local_llm=args.local, local_llm_model=args.model, limit_top_n=limit_top_n_val)
