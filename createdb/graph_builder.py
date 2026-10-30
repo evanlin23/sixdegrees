@@ -136,7 +136,7 @@ except ImportError:
 
 # --- LLM Client Imports (conditional) ---
 try:
-    import google.generativeai as genai
+    from google import genai  # pip install google-genai
 except ImportError:
     genai = None
 try:
@@ -247,17 +247,23 @@ gemini_model = None
 def initialize_gemini():
     global gemini_model
     if not genai:
-        print("ERROR: google-generativeai library not installed. Cannot use Gemini.")
+        print("ERROR: google-genai library not installed (pip install google-genai). Cannot use Gemini.")
         return False
     load_dotenv()
-    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
     if not GEMINI_API_KEY:
         print("ERROR: GEMINI_API_KEY not found in .env file or environment. Cannot use Gemini.")
         return False
     try:
-        genai.configure(api_key=GEMINI_API_KEY)
-        gemini_model = genai.GenerativeModel('gemini-1.5-flash-latest')
-        print("Gemini API initialized successfully.")
+        client = genai.Client(api_key=GEMINI_API_KEY)
+        model_name = os.getenv("GEMINI_MODEL", "gemini-flash-latest")  # gemini-1.5 models are retired
+
+        class _GeminiModel:
+            def generate_content(self, prompt):
+                return client.models.generate_content(model=model_name, contents=prompt)
+
+        gemini_model = _GeminiModel()
+        print(f"Gemini API initialized successfully ({model_name}).")
         return True
     except Exception as e:
         print(f"Error initializing Gemini API: {e}")
@@ -338,7 +344,7 @@ def get_people_met_from_gemini(person_name, birth_year, death_year, occupation, 
                 print(f"      LLM Query blocked: {response.prompt_feedback.block_reason_message or response.prompt_feedback.block_reason}")
                 llm_cache[cache_key] = []; save_cache(llm_cache); return []
                 
-            if not response.candidates or not response.candidates[0].content.parts:
+            if not response.candidates or not response.candidates[0].content or not response.candidates[0].content.parts:
                 print(f"      LLM returned no candidates/empty content on attempt {attempt + 1}.")
                 if attempt + 1 < MAX_RETRIES_API_CALL: time.sleep(API_CALL_DELAY_SECONDS); continue
                 else: break 
