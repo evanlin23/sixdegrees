@@ -52,12 +52,16 @@ def _video_args(p: argparse.ArgumentParser) -> None:
 
 def _planner_args(p: argparse.ArgumentParser) -> None:
     g = p.add_argument_group("planning")
-    g.add_argument("--planner", choices=("auto", "gemini", "graph"), default="auto",
-                   help="auto = Gemini if an API key is set, else the createdb graph")
-    g.add_argument("--model", default=None, help="Gemini model (default: gemini-flash-latest or $GEMINI_MODEL)")
-    g.add_argument("--no-grounding", action="store_true", help="don't let Gemini use Google Search")
+    g.add_argument("--planner", choices=("auto", "claude", "gemini", "graph"), default="auto",
+                   help="auto = Claude if Anthropic credentials are set, else Gemini, else the createdb graph")
+    g.add_argument("--model", default=None,
+                   help="model for the chosen planner (Claude default: claude-opus-5-5; Gemini: gemini-flash-latest)")
+    g.add_argument("--effort", choices=("low", "medium", "high", "xhigh", "max"), default="high",
+                   help="Claude effort: how hard it researches each chain (default high)")
+    g.add_argument("--no-web-search", "--no-grounding", dest="no_web_search", action="store_true",
+                   help="don't let the model search the web")
     g.add_argument("--graph", type=Path, default=REPO_GRAPH, help="GEXF graph for --planner graph")
-    g.add_argument("--fresh", action="store_true", help="ignore cached Gemini answers")
+    g.add_argument("--fresh", action="store_true", help="ignore cached model answers")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -76,7 +80,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     p = sub.add_parser("chain", help="use a chain you already know: A B C ... (no planner needed)")
     p.add_argument("people", nargs="+")
-    p.add_argument("--repair-with", choices=("none", "gemini", "graph"), default="none",
+    p.add_argument("--repair-with", choices=("none", "claude", "gemini", "graph"), default="none",
                    help="let a planner route around links that have no usable photo")
     _planner_args(p)
     _search_args(p)
@@ -110,22 +114,39 @@ def _style(args):
                  level_eyes=not args.no_level_eyes, background=args.background)
 
 
+def _has_anthropic_credentials() -> bool:
+    import os
+
+    if os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("ANTHROPIC_AUTH_TOKEN") or os.environ.get("ANTHROPIC_PROFILE"):
+        return True
+    profiles = Path(os.environ.get("XDG_CONFIG_HOME") or Path.home() / ".config") / "anthropic"
+    return profiles.is_dir() and any(profiles.iterdir())  # `ant auth login`
+
+
 def _make_planner(kind: str, args):
-    from .planners import GeminiPlanner, GraphPlanner, PlannerError
+    import os
+
+    from .planners import ClaudePlanner, GeminiPlanner, GraphPlanner, PlannerError
 
     if kind == "auto":
-        import os
-
-        kind = "gemini" if (os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")) else "graph"
-        if kind == "graph" and not Path(args.graph).exists():
-            raise SystemExit("No planner available: set GEMINI_API_KEY (or GOOGLE_API_KEY), pass --graph, "
+        if _has_anthropic_credentials():
+            kind = "claude"
+        elif os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY"):
+            kind = "gemini"
+        elif Path(args.graph).exists():
+            kind = "graph"
+        else:
+            raise SystemExit("No planner available: set ANTHROPIC_API_KEY (or run `ant auth login`), pass --graph, "
                              "or give the chain yourself with `sixdegrees chain A B C`.")
         log.info("Planner: %s", kind)
-    if kind == "gemini":
-        try:
-            return GeminiPlanner(model=args.model, grounding=not args.no_grounding, use_cache=not args.fresh)
-        except PlannerError as e:
-            raise SystemExit(str(e))
+    try:
+        if kind == "claude":
+            return ClaudePlanner(model=args.model, effort=args.effort, web_search=not args.no_web_search,
+                                 use_cache=not args.fresh)
+        if kind == "gemini":
+            return GeminiPlanner(model=args.model, grounding=not args.no_web_search, use_cache=not args.fresh)
+    except PlannerError as e:
+        raise SystemExit(str(e))
     if kind == "graph":
         if not Path(args.graph).exists():
             raise SystemExit(f"Graph file not found: {args.graph}")
@@ -137,7 +158,7 @@ def main(argv=None) -> int:
     load_dotenv_if_present()
     args = build_parser().parse_args(argv)
     logging.basicConfig(level=logging.DEBUG if args.verbose else logging.INFO, format="%(message)s")
-    for noisy in ("urllib3", "icrawler", "httpx", "google_genai", "PIL"):
+    for noisy in ("urllib3", "icrawler", "httpx", "httpx2", "anthropic", "google_genai", "PIL"):
         logging.getLogger(noisy).setLevel(logging.WARNING)
 
     from .pipeline import Options, Pipeline

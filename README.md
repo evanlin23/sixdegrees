@@ -29,9 +29,13 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-Put your Gemini key in `.env` (`GEMINI_API_KEY=...`; `GOOGLE_API_KEY` also works). That's only
-needed for `find`. ffmpeg is used if installed, and the pip-installed one is used otherwise. The face
+`find` uses Claude to plan chains. Either put `ANTHROPIC_API_KEY=...` in `.env`, or run
+`ant auth login` once and leave the key unset. (Gemini still works with `--planner gemini` and
+`GEMINI_API_KEY`.) ffmpeg is used if installed, and the pip-installed one is used otherwise. The face
 models (~40 MB, OpenCV YuNet + SFace) download automatically on the first run.
+
+On Python 3.9, pip installs the 0.125 Anthropic SDK (the last release for 3.9), which this tool
+supports. Python 3.10+ gets the current SDK.
 
 ## Usage
 
@@ -78,13 +82,19 @@ Useful options (`python -m sixdegrees find -h` for all):
 | `--title ""` | no title (default "How is A connected to B?") |
 | `--no-labels` | don't write names under faces |
 | `--sources commons` | which image sources to use (see below) |
-| `--model gemini-pro-latest` | pick the Gemini model (default `gemini-flash-latest`) |
+| `--model claude-sonnet-5-5` | pick the planner's model (default `claude-opus-5-5`) |
+| `--effort medium` | how hard Claude researches each chain: `low` to `max` (default `high`) |
+| `--planner gemini` | plan with Gemini instead of Claude (`graph` needs no API key) |
 | `--no-video` | stop after building `chain.json` |
 
 ## How it works
 
-1. **Plan.** Gemini (grounded with Google Search) proposes a chain where every pair was
-   *photographed together*, with the occasion and a search query for each link.
+1. **Plan.** Claude (Opus 5.5, with web search) proposes a chain where every pair was
+   *photographed together*, with the occasion and a search query for each link. It returns the
+   chain through a strict `submit_chain` tool, so the answer is always well-formed. Refusal fallback
+   is on: if a request trips a safety classifier, the API re-runs it on Anthropic's recommended
+   fallback model instead of failing. Answers are cached, so re-running the same pair is free
+   (`--fresh` to ask again).
 2. **Who is who.** Each person is looked up on Wikipedia. Their lead image plus a few more photos
    become reference faces. The face that recurs across those photos is taken as the person, so a
    stray wrong search result doesn't poison it.
