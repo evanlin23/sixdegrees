@@ -29,13 +29,20 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-`find` uses Claude to plan chains. Either put `ANTHROPIC_API_KEY=...` in `.env`, or run
-`ant auth login` once and leave the key unset. (Gemini still works with `--planner gemini` and
-`GEMINI_API_KEY`.) ffmpeg is used if installed, and the pip-installed one is used otherwise. The face
-models (~40 MB, OpenCV YuNet + SFace) download automatically on the first run.
+`find` asks **Claude Code** to plan the chain, so no API key is needed: install
+[Claude Code](https://code.claude.com) and run `claude` once to log in. It then runs headlessly
+(`claude -p`) on that login, so on a Pro/Max plan, planning uses your plan's usage instead of API
+billing. In those runs Claude Code can only search and read the web (no shell, no file access),
+and it ignores any `ANTHROPIC_API_KEY` in your environment so it can't bill the API by accident.
 
-On Python 3.9, pip installs the 0.125 Anthropic SDK (the last release for 3.9), which this tool
-supports. Python 3.10+ gets the current SDK.
+Other planners, if you'd rather:
+
+- `--planner claude`: the Claude API directly, with `ANTHROPIC_API_KEY` in `.env` (or `ant auth login`).
+- `--planner gemini`: Gemini, with `GEMINI_API_KEY`.
+- `--planner graph`: the pre-built graph in `createdb/`; no account needed.
+
+ffmpeg is used if installed, and the pip-installed one is used otherwise. The face models (~40 MB,
+OpenCV YuNet + SFace) download automatically on the first run.
 
 ## Usage
 
@@ -51,8 +58,8 @@ Already know the chain? Skip the AI:
 python -m sixdegrees chain "Dick Durbin" "Barack Obama" "Michelle Obama"
 ```
 
-No API key? Use the pre-built graph in `createdb/` to propose chains (it's noisy; every link still
-has to pass the photo check, and failed links are routed around):
+No Claude Code or API key? Use the pre-built graph in `createdb/` to propose chains (it's noisy;
+every link still has to pass the photo check, and failed links are routed around):
 
 ```bash
 python -m sixdegrees find "Pope Francis" "Johnny Depp" --planner graph
@@ -82,19 +89,20 @@ Useful options (`python -m sixdegrees find -h` for all):
 | `--title ""` | no title (default "How is A connected to B?") |
 | `--no-labels` | don't write names under faces |
 | `--sources commons` | which image sources to use (see below) |
-| `--model claude-sonnet-5-5` | pick the planner's model (default `claude-opus-5-5`) |
+| `--model sonnet` | the planner's model (Claude Code default `opus`; `sonnet`/`haiku` use less of your plan) |
 | `--effort medium` | how hard Claude researches each chain: `low` to `max` (default `high`) |
-| `--planner gemini` | plan with Gemini instead of Claude (`graph` needs no API key) |
+| `--planner claude` | another planner: `claude` (API key), `gemini`, or `graph` |
 | `--no-video` | stop after building `chain.json` |
 
 ## How it works
 
-1. **Plan.** Claude (Opus 5.5, with web search) proposes a chain where every pair was
-   *photographed together*, with the occasion and a search query for each link. It returns the
-   chain through a strict `submit_chain` tool, so the answer is always well-formed. Refusal fallback
-   is on: if a request trips a safety classifier, the API re-runs it on Anthropic's recommended
-   fallback model instead of failing. Answers are cached, so re-running the same pair is free
-   (`--fresh` to ask again).
+1. **Plan.** Claude Code (Opus, with web search) proposes a chain where every pair was
+   *photographed together*, with the occasion and a search query for each link. It answers as
+   JSON checked against a schema, and its searches are printed as it works. A broken chain is sent
+   back once with what's wrong. Answers are cached, so re-running the same pair costs nothing
+   (`--fresh` to ask again). With `--planner claude`, the same happens through the API, with
+   refusal fallback on (a request that trips a safety classifier is re-run on Anthropic's
+   recommended fallback model).
 2. **Who is who.** Each person is looked up on Wikipedia. Their lead image plus a few more photos
    become reference faces. The face that recurs across those photos is taken as the person, so a
    stray wrong search result doesn't poison it.

@@ -1,6 +1,7 @@
 """Planners propose who-met-whom chains; the pipeline then checks every link against real photos.
 
-- ClaudePlanner: asks Claude (with web search) for photographed meetings. The default.
+- ClaudeCodePlanner: runs Claude Code headlessly (`claude -p`) on your Claude login. No API key.
+- ClaudePlanner: the same through the Claude API (ANTHROPIC_API_KEY), with web search.
 - GeminiPlanner: the same with Gemini (optionally grounded with Google Search).
 - GraphPlanner: shortest paths through a pre-built "met" graph (createdb/met_people_graph.gexf).
 - ManualPlanner: a chain you type in yourself.
@@ -12,6 +13,10 @@ import json
 import math
 import os
 import re
+import shutil
+import subprocess
+import tempfile
+import threading
 import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -466,6 +471,116 @@ class ClaudePlanner(_LLMPlanner):
                 return data
             messages.append({"role": "assistant", "content": echoable(msg.content)})
             messages.append({"role": "user", "content": "Please call the submit_chain tool with the complete chain."})
+        return None
+
+
+# ---------------------------------------------------------------- Claude Code
+
+CLAUDE_CODE_FORMAT = """Use web search to confirm that each pair was really photographed together, then give the
+chain as your structured output. The first "from" must be %(start)s, each "to" must be the next link's
+"from", and the last "to" must be %(target)s."""
+
+
+class ClaudeCodePlanner(_LLMPlanner):
+    """Plan with Claude Code in headless mode (`claude -p`), using whatever Claude Code is logged in
+    with (e.g. your Claude Pro/Max plan), so no API key is involved.
+
+    Claude Code only gets its WebSearch and WebFetch tools here (no shell, no file edits), and returns
+    the chain as JSON validated against the same schema the API planner uses.
+    """
+
+    label = "Claude Code"
+    format_text = CLAUDE_CODE_FORMAT
+
+    def __init__(self, model: Optional[str] = None, effort: str = "high", web_search: bool = True,
+                 use_cache: bool = True, exe=None, timeout: float = 900):
+        exe = exe or shutil.which("claude")
+        if not exe:
+            raise PlannerError("Claude Code isn't installed or isn't on PATH (https://code.claude.com). "
+                               "Install it and run `claude` once to log in.")
+        self.cmd = list(exe) if isinstance(exe, (list, tuple)) else [exe]
+        self.model = model or os.environ.get("CLAUDE_CODE_MODEL") or "opus"
+        self.effort = effort
+        self.web_search = web_search
+        self.use_cache = use_cache
+        self.timeout = timeout
+
+    def _cache_key(self, prompt: str) -> str:
+        return short_hash(self.label + self.model + str(self.web_search) + prompt, 24)
+
+    def command(self) -> list[str]:
+        tools = ["WebSearch", "WebFetch"] if self.web_search else []
+        cmd = self.cmd + ["-p", "--output-format", "stream-json", "--verbose",
+                          "--json-schema", json.dumps(SUBMIT_CHAIN_TOOL["input_schema"]),
+                          "--model", self.model, "--effort", self.effort, "--permission-mode", "dontAsk",
+                          "--no-session-persistence", "--strict-mcp-config", "--tools", ",".join(tools)]
+        if tools:
+            cmd += ["--allowedTools"] + tools  # pre-approve them; nothing else is allowed in dontAsk mode
+        return cmd
+
+    def _run(self, prompt: str) -> Optional[dict]:
+        """Run one headless session, echoing its web searches, and return the final `result` event."""
+        env = dict(os.environ)
+        for var in ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN"):
+            env.pop(var, None)  # use the Claude Code login, not an API key that may be in .env
+        with tempfile.TemporaryDirectory(prefix="sixdegrees-cc-") as cwd:  # no CLAUDE.md or project settings
+            proc = subprocess.Popen(self.command(), cwd=cwd, env=env, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE, text=True, encoding="utf-8", errors="replace")
+            timed_out = threading.Event()
+
+            def kill():
+                timed_out.set()
+                proc.kill()
+
+            timer = threading.Timer(self.timeout, kill)
+            timer.start()
+            result, self.searches = None, 0
+            try:
+                proc.stdin.write(prompt)
+                proc.stdin.close()
+                for line in proc.stdout:
+                    try:
+                        event = json.loads(line)
+                    except json.JSONDecodeError:
+                        continue
+                    if event.get("type") == "assistant":
+                        for block in event.get("message", {}).get("content", []) or []:
+                            if block.get("type") == "tool_use" and block.get("name") in ("WebSearch", "WebFetch"):
+                                what = block.get("input", {}).get("query") or block.get("input", {}).get("url")
+                                self.searches += block["name"] == "WebSearch"
+                                log.info("    %s: %s", "searching" if block["name"] == "WebSearch" else "reading", what)
+                    elif event.get("type") == "result":
+                        result = event
+                proc.wait()
+            finally:
+                timer.cancel()
+                if proc.poll() is None:
+                    proc.kill()
+            stderr = proc.stderr.read() if proc.stderr else ""
+        if result is None:
+            if timed_out.is_set():
+                raise PlannerError(f"Claude Code timed out after {self.timeout:.0f}s")
+            hint = " ".join(stderr.strip().splitlines()[-3:]) or f"exit code {proc.returncode}"
+            raise PlannerError(f"Claude Code exited without an answer: {hint}")
+        return result
+
+    def _request(self, prompt: str, start: str, target: str) -> Optional[dict]:
+        feedback = ""
+        for _ in range(2):
+            result = self._run(prompt + feedback)
+            if result.get("is_error") or result.get("subtype") != "success":
+                message = str(result.get("result") or result.get("subtype") or "unknown error")
+                if any(w in message.lower() for w in ("log in", "login", "authenticat", "/login")):
+                    raise PlannerError(f"Claude Code isn't logged in ({message}). Run `claude` once and sign in.")
+                log.warning("  Claude Code failed: %s", message[:300])
+                return None
+            log.info("  Claude Code answered in %s turns with %d web searches.", result.get("num_turns", "?"),
+                     self.searches)
+            data = result.get("structured_output") or extract_json(str(result.get("result") or ""))
+            if normalize_chain(data, start, target):
+                return data
+            feedback = (f"\n\nA previous answer was not a valid chain: it must start with {start}, end with {target}, "
+                        f"each link's 'from' must equal the previous link's 'to', and nobody may appear twice.")
         return None
 
 

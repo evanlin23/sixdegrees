@@ -52,12 +52,14 @@ def _video_args(p: argparse.ArgumentParser) -> None:
 
 def _planner_args(p: argparse.ArgumentParser) -> None:
     g = p.add_argument_group("planning")
-    g.add_argument("--planner", choices=("auto", "claude", "gemini", "graph"), default="auto",
-                   help="auto = Claude if Anthropic credentials are set, else Gemini, else the createdb graph")
+    g.add_argument("--planner", choices=("auto", "claude-code", "claude", "gemini", "graph"), default="auto",
+                   help="auto = Claude Code if it's installed, else the Claude API if a key is set, "
+                        "else Gemini, else the createdb graph")
     g.add_argument("--model", default=None,
-                   help="model for the chosen planner (Claude default: claude-opus-5-5; Gemini: gemini-flash-latest)")
+                   help="model for the chosen planner (Claude Code: opus; Claude API: claude-opus-5-5; "
+                        "Gemini: gemini-flash-latest)")
     g.add_argument("--effort", choices=("low", "medium", "high", "xhigh", "max"), default="high",
-                   help="Claude effort: how hard it researches each chain (default high)")
+                   help="Claude / Claude Code effort: how hard it researches each chain (default high)")
     g.add_argument("--no-web-search", "--no-grounding", dest="no_web_search", action="store_true",
                    help="don't let the model search the web")
     g.add_argument("--graph", type=Path, default=REPO_GRAPH, help="GEXF graph for --planner graph")
@@ -80,7 +82,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     p = sub.add_parser("chain", help="use a chain you already know: A B C ... (no planner needed)")
     p.add_argument("people", nargs="+")
-    p.add_argument("--repair-with", choices=("none", "claude", "gemini", "graph"), default="none",
+    p.add_argument("--repair-with", choices=("none", "claude-code", "claude", "gemini", "graph"), default="none",
                    help="let a planner route around links that have no usable photo")
     _planner_args(p)
     _search_args(p)
@@ -126,20 +128,27 @@ def _has_anthropic_credentials() -> bool:
 def _make_planner(kind: str, args):
     import os
 
-    from .planners import ClaudePlanner, GeminiPlanner, GraphPlanner, PlannerError
+    import shutil
+
+    from .planners import ClaudeCodePlanner, ClaudePlanner, GeminiPlanner, GraphPlanner, PlannerError
 
     if kind == "auto":
-        if _has_anthropic_credentials():
+        if shutil.which("claude"):
+            kind = "claude-code"
+        elif _has_anthropic_credentials():
             kind = "claude"
         elif os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY"):
             kind = "gemini"
         elif Path(args.graph).exists():
             kind = "graph"
         else:
-            raise SystemExit("No planner available: set ANTHROPIC_API_KEY (or run `ant auth login`), pass --graph, "
+            raise SystemExit("No planner available: install Claude Code (or set ANTHROPIC_API_KEY), pass --graph, "
                              "or give the chain yourself with `sixdegrees chain A B C`.")
         log.info("Planner: %s", kind)
     try:
+        if kind == "claude-code":
+            return ClaudeCodePlanner(model=args.model, effort=args.effort, web_search=not args.no_web_search,
+                                     use_cache=not args.fresh)
         if kind == "claude":
             return ClaudePlanner(model=args.model, effort=args.effort, web_search=not args.no_web_search,
                                  use_cache=not args.fresh)
