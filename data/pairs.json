@@ -114,11 +114,12 @@
  {
   "from": "Grug",
   "to": "Napoleon",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@Aceofspades6906",
   "comment": "Grug to Napoleon",
   "likes": 0,
-  "source": "comment on 'adolf h to luffy' (old channel)"
+  "source": "comment on 'adolf h to luffy' (old channel)",
+  "slug": "grug-to-napoleon"
  },
  {
   "from": "Jesus",
@@ -160,11 +161,12 @@
  {
   "from": "Joseph Stalin",
   "to": "Optimus Prime",
-  "status": "todo",
+  "status": "skipped",
   "requested_by": "@Thegreatskibidisigmalord",
   "comment": "Connect Joseph Stalin to Optimus prime",
   "likes": 0,
-  "source": "comment on 'adolf h to luffy' (old channel)"
+  "source": "comment on 'adolf h to luffy' (old channel)",
+  "reason": "No real photo of Peter Cullen (Optimus Prime's voice) with anyone notable could be found: Commons only has solo/convention shots and NASA student events; press galleries (premieres, 2014 handprint ceremony) show no verifiable shared photo. Retry if one turns up."
  },
  {
   "from": "Augustus",

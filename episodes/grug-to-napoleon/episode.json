@@ -1,0 +1,140 @@
+{
+  "from": "Grug",
+  "to": "Napoleon",
+  "requested_by": "@Aceofspades6906",
+  "title": "A caveman to an emperor in six links",
+  "description": "Grug from The Croods connects to Napoleon through Nicolas Cage, Elvis, two presidents and France's line of rulers.",
+  "hook": "How is Grug connected to Napoleon?",
+  "people": {
+    "Grug": {
+      "label": "Grug"
+    },
+    "Nicolas Cage": {
+      "label": "Nicolas Cage"
+    },
+    "Lisa Marie Presley": {
+      "label": "Lisa Marie Presley"
+    },
+    "Elvis Presley": {
+      "label": "Elvis Presley"
+    },
+    "Richard Nixon": {
+      "label": "Richard Nixon"
+    },
+    "Charles de Gaulle": {
+      "label": "Charles de Gaulle"
+    },
+    "Napoleon": {
+      "label": "Napoleon"
+    }
+  },
+  "links": [
+    {
+      "a": "Grug",
+      "b": "Nicolas Cage",
+      "image": {
+        "pair": [
+          {
+            "url": "https://www.filmofilia.com/wp-content/uploads/2012/09/Crood-Family.jpg",
+            "credit": "DreamWorks Animation (via Entertainment Weekly)",
+            "license": "Fair use (commentary)",
+            "source": "https://www.filmofilia.com/the-croods-new-images-114199/"
+          },
+          {
+            "file": "File:Nicolas Cage Deauville 2013.jpg"
+          }
+        ]
+      },
+      "line": "Grug, the caveman dad of The Croods, is voiced by Nicolas Cage.",
+      "a_face": 5
+    },
+    {
+      "a": "Nicolas Cage",
+      "b": "Lisa Marie Presley",
+      "image": {
+        "url": "https://assets2.cbsnewsstatic.com/hub/i/r/2005/10/28/4a49dc26-a642-11e2-a3f0-029118418759/thumbnail/620x493/6d296e5611ad855611f616fb0fd105a1/image990867.jpg",
+        "credit": "Mark Wilson/Getty Images",
+        "license": "Fair use (commentary)",
+        "source": "https://www.cbsnews.com/pictures/nicolas-cage/"
+      },
+      "line": "In 2001, Cage sat beside Lisa Marie Presley at the Capitol, and the next year they married.",
+      "a_face": 1
+    },
+    {
+      "a": "Lisa Marie Presley",
+      "b": "Elvis Presley",
+      "image": {
+        "file": "File:Elvis, Priscilla and Lisa Marie.jpg"
+      },
+      "line": "Her father was Elvis Presley, pictured here with baby Lisa Marie in 1968.",
+      "a_face": 3
+    },
+    {
+      "a": "Elvis Presley",
+      "b": "Richard Nixon",
+      "image": {
+        "file": "File:Elvis-nixon.jpg"
+      },
+      "line": "In December 1970, Elvis showed up at the White House asking President Nixon for a narcotics badge."
+    },
+    {
+      "a": "Richard Nixon",
+      "b": "Charles de Gaulle",
+      "image": {
+        "file": "File:President Nixon and staff members with President Charles DeGaulle of France - NARA - 194610.jpg"
+      },
+      "line": "In 1969, Nixon flew to Paris to meet French President Charles de Gaulle.",
+      "b_face": 5
+    },
+    {
+      "a": "Charles de Gaulle",
+      "b": "Napoleon",
+      "line": "De Gaulle's France traces its line of rulers back to Napoleon, through kings and emperors.",
+      "lineage": {
+        "label": "RULERS OF FRANCE",
+        "people": [
+          {
+            "name": "Charles de Gaulle",
+            "file": "File:De_Gaulle-OWI_(cropped)_(c)(2).jpg",
+            "label": "1959"
+          },
+          {
+            "name": "Vincent Auriol",
+            "file": "File:Portrait_officiel_Vincent_Auriol.jpg",
+            "label": "1947"
+          },
+          {
+            "name": "Raymond Poincaré",
+            "file": "File:Raymond_Poincaré_officiel_(cropped).jpg",
+            "label": "1913"
+          },
+          {
+            "name": "Adolphe Thiers",
+            "file": "File:Adolphe_Thiers_Nadar_2.JPG",
+            "label": "1871"
+          },
+          {
+            "name": "Napoleon III",
+            "file": "File:Alexandre_Cabanel_002.jpg",
+            "label": "1848"
+          },
+          {
+            "name": "Louis Philippe I",
+            "file": "File:1841_portrait_painting_of_Louis_Philippe_I_(King_of_the_French)_by_Winterhalter.jpg",
+            "label": "1830"
+          },
+          {
+            "name": "Louis XVIII",
+            "file": "File:Gérard_-_Louis_XVIII_of_France_in_Coronation_Robes.jpg",
+            "label": "1814"
+          },
+          {
+            "name": "Napoleon",
+            "file": "File:Jacques-Louis_David_-_The_Emperor_Napoleon_in_His_Study_at_the_Tuileries_-_Google_Art_Project.jpg",
+            "label": "1804"
+          }
+        ]
+      }
+    }
+  ]
+}
