@@ -31,7 +31,7 @@ RESPELL = {
     "Hatsune Miku": "Hot-sue-neh Mee-koo",
     "IShowSpeed": "I Show Speed",
     "MrBeast": "Mister Beast",
-    "Jae-in": "Jay-inn",
+    "Jae-in": "Jay In",
 }
 
 
