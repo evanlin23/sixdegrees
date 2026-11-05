@@ -68,6 +68,14 @@
   "px_bomb": {
    "url": "https://assets.mixkit.co/active_storage/sfx/2811/2811-preview.mp3",
    "title": "8-Bit bomb explosion"
+  },
+  "rewind": {
+   "url": "https://assets.mixkit.co/active_storage/sfx/1092/1092-preview.mp3",
+   "title": "Fast tape rewind cinematic transition"
+  },
+  "scratch": {
+   "url": "https://assets.mixkit.co/active_storage/sfx/704/704-preview.mp3",
+   "title": "Vinyl stop fast scratch"
   }
  },
  "music": [

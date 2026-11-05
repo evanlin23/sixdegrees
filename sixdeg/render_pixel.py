@@ -31,6 +31,7 @@ PURPLE_Q = (60, 50, 110)
 # per-photo background tones (light, dark)
 TONES = [((255, 46, 99), (226, 26, 82)), ((40, 170, 255), (20, 130, 225)), ((255, 170, 0), (236, 140, 0)),
          ((140, 70, 255), (112, 46, 220)), ((0, 205, 130), (0, 170, 105)), ((255, 90, 200), (225, 60, 170))]
+FF, RW = 0.55, 0.38                   # hook: flash-forward to the payoff, then a rewind scrub
 CARD = (40, 300, 1040, 1600)          # photo window: x0, y0, x1, y1
 BAND = 210                            # top title band height
 
@@ -154,13 +155,18 @@ def render(slug: str, log=print) -> Path:
     # ---------- audio + timeline
     segs, voice_clips, sfx = [], [], []
     t = 0.0
+    n_words = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"]
     hook = spec.get("hook") or f"How is {short_name(spec['from'])} connected to {short_name(spec['to'])}?"
     a, words = audio.say(hook, voice)
-    HOOK_VO = 0.3
-    d = len(a) / audio.SR + 0.15 + HOOK_VO
+    HOOK_VO = 0.05   # the claim starts immediately, over the flash-forward
+    d = max(len(a) / audio.SR + 0.3 + HOOK_VO, FF + RW + 1.3)
     segs.append({"kind": "hook", "t0": t, "t1": t + d, "cap": PixelCaptions(words, t + HOOK_VO)})
     voice_clips.append((t + HOOK_VO, a))
-    sfx += [(0.0, assets.sfx("px_hook", 0.5)), (0.45, assets.sfx("px_pop", 0.35))]
+    sfx += [(0.0, assets.sfx("px_bomb", 0.45)), (0.05, assets.sfx("big_impact", 0.35)),
+            (FF, assets.sfx("rewind", 0.45, max_len=RW + 0.1)),
+            (FF + RW, assets.sfx("scratch", 0.35, max_len=0.4)),
+            (FF + RW + 0.02, assets.sfx("bass_hit", 0.5)), (FF + RW + 0.2, assets.sfx("bass_hit", 0.5)),
+            (FF + RW + 0.45, assets.sfx("px_coin", 0.4))]
     t += d
     for i, link in enumerate(spec["links"]):
         a, words = audio.say(link["line"], voice)
@@ -210,7 +216,8 @@ def render(slug: str, log=print) -> Path:
     # ---------- static bits
     def short_label(n):
         lab = C.labels[n].upper()
-        return lab if len(lab) <= 9 else lab.split()[-1]
+        last = lab.split()[-1]
+        return lab if (len(lab) <= 12 or len(last) <= 3) else last
     title = f"{short_label(spec['from'])} > {short_label(spec['to'])}"
     tsize = 46
     while pf(tsize).getlength(title) > W - 80 and tsize > 24:
@@ -353,43 +360,84 @@ def render(slug: str, log=print) -> Path:
             base.alpha_composite(Image.new("RGBA", (W, H), TONES[i % len(TONES)][0] + (int(120 * (1 - land / 0.07)),)))
         return base
 
+    class _NoCap:
+        def draw(self, *a, **k):
+            pass
+
+    def fake_link_frame(i, local_k):
+        """Frame of link i at progress local_k (0..1+), without its captions: used by the hook."""
+        sg = next(x for x in segs if x.get("i") == i)
+        fake = {**sg, "cap": _NoCap()}
+        return frame_link(fake, sg["t0"] + sg["speech"] * local_k)
+
     def frame_hook(seg, tt):
         k = tt - seg["t0"]
-        base = checker(tt, ((90, 40, 200), (70, 26, 170)))
-        dr = ImageDraw.Draw(base)
-        dr.rectangle([0, 0, W, BAND], fill=INK)
-        paste(base, pixel_text("HOW ARE THEY", 44, fill=WHITE, shadow=False), W / 2, 70)
-        paste(base, pixel_text("CONNECTED?", 44, fill=YELLOW, shadow=False), W / 2, 145)
-        for nm, cy, delay, col in ((spec["from"], 600, 0.0, CYAN), (spec["to"], 1290, 0.15, YELLOW)):
-            sc = min(1.0, ease_out_back((k - delay) / 0.18)) if k > delay else 0
-            if sc <= 0:
-                continue
-            size = 360
-            face = C.thumbs[nm].resize((size, size), Image.BICUBIC).convert("RGBA")
-            card = Image.new("RGBA", (size + 44, size + 44), (0, 0, 0, 0))
-            cd = ImageDraw.Draw(card)
-            cd.rectangle([16, 16, size + 44, size + 44], fill=INK)
-            cd.rectangle([0, 0, size + 28, size + 28], fill=WHITE, outline=INK, width=6)
-            flat = Image.new("RGBA", (size, size), (30, 30, 30, 255)); flat.alpha_composite(face)
-            card.alpha_composite(flat, (14, 14))
-            paste(base, card, W / 2, cy, scale=sc, nearest=False)
-            paste(base, pixel_tag(C.labels[nm].upper(), col, 30), W / 2, cy + 225, scale=sc)
-        if spec.get("requested_by"):   # real viewer request: pixel comment bubble under the band
-            req = f'{spec["requested_by"]}: "{short_name(spec["from"]).upper()} TO {short_name(spec["to"]).upper()}"'
-            fsz = 24
-            while pf(fsz).getlength(req) > W - 140 and fsz > 14:
-                fsz -= 2
-            bub = pixel_tag(req, WHITE, fsz)
-            paste(base, bub, W / 2, 272, scale=min(1, ease_out_back(k / 0.15)))
-        q = pixel_text("?", 150, fill=YELLOW)
-        paste(base, q, W / 2 - 290, 945, scale=min(1, ease_out_back((k - 0.3) / 0.2)) * (1 + 0.08 * math.sin(k * 10)))
-        # Pin falls in and bounces
-        dk = min(1.0, k / 0.45)
-        y = -150 + (1020 + 150) * (1 - (1 - dk) ** 2)
-        if k > 0.45:
-            y -= abs(math.sin((k - 0.45) * 10)) * 70 * math.exp(-(k - 0.45) * 4)
-        sq = 0.6 * math.exp(-(k - 0.45) * 8) if k > 0.45 else -0.3
-        paste_pin(base, pin_sprite("shock", 0, sq, -1), W / 2 + 300, y)
+        last = n_links - 1
+        if k < FF:                                   # 1) flash-forward: the payoff first
+            land_k = REVEAL + (THROW + 0.45 + k * 0.8) / segs[-1]["speech"]
+            base = fake_link_frame(last, land_k)
+            if k < 0.08:
+                base.alpha_composite(Image.new("RGBA", (W, H), (255, 255, 255, int(255 * (1 - k / 0.08)))))
+        elif k < FF + RW:                            # 2) rewind scrub back through the chain
+            r = (k - FF) / RW
+            idx = last - min(last, int(r * (last + 1)))
+            base = fake_link_frame(idx, 0.9 - r * 0.6)
+            base = mosaic(base, 10)
+            a = np.array(base)
+            for y0 in range(int(r * 1900) % 240, H, 240):   # VHS tracking bands
+                a[y0:y0 + 26] = np.roll(a[y0:y0 + 26], 40, axis=1)
+            a[..., 0] = np.roll(a[..., 0], 12, axis=1)
+            base = Image.fromarray(a)
+            paste(base, pixel_text("<< REWIND", 56, fill=WHITE), 270, 360)
+        else:                                        # 3) versus: A and B slam in, string snaps, count pops
+            kk = k - FF - RW
+            sx, sy = shake(kk, 22, 0.25)
+            sx2, sy2 = shake(kk - 0.18, 22, 0.25)
+            base = checker(tt, ((90, 40, 200), (70, 26, 170)))
+            dr = ImageDraw.Draw(base)
+            dr.rectangle([0, 0, W, BAND], fill=INK)
+            paste(base, pixel_text(f"{n_links} PICTURES", 50, fill=YELLOW, shadow=False), W / 2, 75,
+                  scale=min(1, ease_out_back((kk - 0.4) / 0.15)) if kk > 0.4 else 0.01)
+            paste(base, pixel_text("APART", 40, fill=WHITE, shadow=False), W / 2, 150,
+                  scale=1 if kk > 0.5 else 0.01)
+            centers = {}
+            for nm, cy, delay, col, (dx, dy) in ((spec["from"], 610, 0.0, CYAN, (sx, sy)),
+                                                 (spec["to"], 1290, 0.18, YELLOW, (sx2, sy2))):
+                if kk < delay:
+                    continue
+                sc = 1.6 - 0.6 * ease(min(1, (kk - delay) / 0.12))     # slams down from big to size
+                sc *= 1 + 0.06 * min(1.0, kk / 2.0)                       # then a slow push-in
+                dy += 10 * math.sin(kk * 5 + (0 if nm == spec["from"] else 2))   # and keeps bobbing
+                size = 360
+                face = C.thumbs[nm].resize((size, size), Image.BICUBIC).convert("RGBA")
+                card = Image.new("RGBA", (size + 44, size + 44), (0, 0, 0, 0))
+                cd = ImageDraw.Draw(card)
+                cd.rectangle([16, 16, size + 44, size + 44], fill=INK)
+                cd.rectangle([0, 0, size + 28, size + 28], fill=WHITE, outline=INK, width=6)
+                flat = Image.new("RGBA", (size, size), (30, 30, 30, 255)); flat.alpha_composite(face)
+                card.alpha_composite(flat, (14, 14))
+                paste(base, card, W / 2 + dx, cy + dy, scale=sc, nearest=False)
+                paste(base, pixel_tag(C.labels[nm].upper(), col, 30), W / 2 + dx, cy + 225 + dy, scale=min(1, sc))
+                centers[nm] = (W / 2 + dx, cy + dy)
+            if len(centers) == 2 and kk > 0.3:                          # the string snaps between them
+                (ax, ay), (bx, by) = centers[spec["from"]], centers[spec["to"]]
+                g = min(1.0, (kk - 0.3) / 0.12)
+                p0, p1 = (ax + 210, ay + 120), (bx + 210, by - 200)
+                pe = (p0[0] + (p1[0] - p0[0]) * g, p0[1] + (p1[1] - p0[1]) * g)
+                dr = ImageDraw.Draw(base)
+                dr.line([p0, pe], fill=INK, width=14); dr.line([p0, pe], fill=RED, width=8)
+                hop = abs(math.sin(kk * 8)) * 40
+                walk = 120 * math.sin(kk * 2.2)                           # Buh paces along the string
+                paste_pin(base, pin_sprite("shock" if kk < 0.8 else ("smug" if int(kk * 2) % 2 else "angry"),
+                                           0, 0, 1 if math.cos(kk * 2.2) > 0 else -1), p1[0] + 40 + walk, p1[1] - hop)
+            if spec.get("requested_by"):
+                req = f'{spec["requested_by"]}: "{short_name(spec["from"]).upper()} TO {short_name(spec["to"]).upper()}"'
+                fsz = 24
+                while pf(fsz).getlength(req) > W - 140 and fsz > 14:
+                    fsz -= 2
+                paste(base, pixel_tag(req, WHITE, fsz), W / 2, 272, scale=min(1, ease_out_back(kk / 0.15)))
+            if kk < 0.06:
+                base.alpha_composite(Image.new("RGBA", (W, H), (255, 255, 255, int(200 * (1 - kk / 0.06)))))
         seg["cap"].draw(base, tt, y=1690)
         return base
 
