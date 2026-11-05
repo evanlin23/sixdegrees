@@ -12,7 +12,9 @@ on:
     inputs:
       slug: {description: "episode folder to (re)render", required: true}
       enqueue: {description: "put it on the upload queue if QA passes", default: "true"}
-concurrency: {group: render, cancel-in-progress: false}
+# one group per commit / PR: a single shared group let GitHub cancel waiting runs whenever several producers
+# pushed close together. Parallel runs are safe: the queue push rebases and retries on conflicts.
+concurrency: {group: "render-${{ github.event.pull_request.number || github.sha }}-${{ inputs.slug }}", cancel-in-progress: false}
 permissions: {contents: write, issues: write}
 jobs:
   render:
