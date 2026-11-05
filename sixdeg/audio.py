@@ -1,0 +1,278 @@
+"""Voice (local Kokoro TTS), procedurally generated music bed + SFX, and the mix.
+
+Everything here is generated locally, so there is nothing to license: no
+stock music, no Content ID claims on the soundtrack.
+"""
+from __future__ import annotations
+
+import hashlib
+import re
+from pathlib import Path
+
+import numpy as np
+import soundfile as sf
+
+from .common import CACHE, MODELS
+
+SR = 24000
+_kokoro = None
+
+# Names TTS tends to mangle -> phonetic respelling. Extend as episodes need.
+RESPELL = {
+    "Wernher": "Vairner",
+    "Göring": "Gerring",
+    "Goebbels": "Gerbels",
+    "Hatsune Miku": "Hot-sue-neh Mee-koo",
+    "IShowSpeed": "I Show Speed",
+    "MrBeast": "Mister Beast",
+}
+
+
+def _tts():
+    global _kokoro
+    if _kokoro is None:
+        from kokoro_onnx import Kokoro
+        _kokoro = Kokoro(str(MODELS / "kokoro-v1.0.onnx"), str(MODELS / "voices-v1.0.bin"))
+    return _kokoro
+
+
+def speakable(text: str) -> str:
+    for k, v in RESPELL.items():
+        text = text.replace(k, v)
+    return text
+
+
+def say(text: str, voice: str = "am_michael", speed: float = 1.12) -> tuple[np.ndarray, list[tuple[str, float, float]]]:
+    """Synthesize `text`. Returns (mono float32 @ SR, word timings [(word, t0, t1)])."""
+    key = hashlib.sha1(f"{voice}|{speed}|{text}".encode()).hexdigest()
+    p = CACHE / "tts" / f"{key}.wav"
+    if p.exists():
+        a, _ = sf.read(p, dtype="float32")
+    else:
+        a, sr = _tts().create(speakable(text), voice=voice, speed=speed, lang="en-us")
+        assert sr == SR, sr
+        a = _trim(a.astype(np.float32))
+        p.parent.mkdir(parents=True, exist_ok=True)
+        sf.write(p, a, SR)
+    return a, aligned_word_times(text, p, len(a) / SR)
+
+
+_whisper = None
+
+
+def transcribe(wav: Path) -> list[tuple[str, float, float]]:
+    """Whisper word timestamps (cached next to the wav)."""
+    import json
+    jp = Path(str(wav) + ".words.json")
+    if jp.exists():
+        return [tuple(x) for x in json.loads(jp.read_text())]
+    global _whisper
+    if _whisper is None:
+        from faster_whisper import WhisperModel
+        _whisper = WhisperModel("base.en", device="cpu", compute_type="int8",
+                                download_root=str(MODELS / "whisper"))
+    a, sr = sf.read(str(wav), dtype="float32")
+    if a.ndim > 1:
+        a = a.mean(axis=1)
+    if sr != 16000:  # whisper wants 16 kHz; linear resample is fine for speech recognition
+        n = int(len(a) * 16000 / sr)
+        a = np.interp(np.linspace(0, len(a) - 1, n), np.arange(len(a)), a).astype(np.float32)
+    segs, _ = _whisper.transcribe(a, word_timestamps=True, language="en", beam_size=5)
+    words = [(w.word.strip(), float(w.start), float(w.end)) for sg in segs for w in (sg.words or [])]
+    jp.write_text(json.dumps(words))
+    return words
+
+
+def aligned_word_times(text: str, wav: Path, dur: float) -> list[tuple[str, float, float]]:
+    """Script words with real timings from Whisper when the word counts line up, else estimates."""
+    est = _word_times(text, dur)
+    try:
+        heard = transcribe(wav)
+    except Exception:  # noqa: BLE001 - whisper is a nicety for captions
+        return est
+    if len(heard) == len(est):
+        return [(w, h[1], h[2]) for (w, _, _), h in zip(est, heard)]
+    # counts differ (numbers, hyphens...): map each script word to the heard word at the same relative position
+    out = []
+    for i, (w, a, b) in enumerate(est):
+        j = min(len(heard) - 1, int(round(i * (len(heard) - 1) / max(1, len(est) - 1)))) if heard else -1
+        out.append((w, heard[j][1], heard[j][2]) if j >= 0 else (w, a, b))
+    return out
+
+
+def tts_cache_path(text: str, voice: str = "am_michael", speed: float = 1.12) -> Path:
+    key = hashlib.sha1(f"{voice}|{speed}|{text}".encode()).hexdigest()
+    return CACHE / "tts" / f"{key}.wav"
+
+
+def _trim(a: np.ndarray, thr: float = 0.01) -> np.ndarray:
+    idx = np.where(np.abs(a) > thr)[0]
+    if len(idx) == 0:
+        return a
+    s = max(0, idx[0] - int(0.03 * SR))
+    e = min(len(a), idx[-1] + int(0.08 * SR))
+    return a[s:e]
+
+
+def _word_times(text: str, dur: float) -> list[tuple[str, float, float]]:
+    """Estimate word timings: proportional to syllable-ish weight, plus pauses at punctuation."""
+    words = text.split()
+    if not words:
+        return []
+    weights = []
+    for w in words:
+        core = re.sub(r"[^A-Za-z0-9]", "", w)
+        wt = 0.6 + 0.28 * max(1, len(re.findall(r"[aeiouy]+", core.lower())))
+        if core.isdigit():
+            wt += 0.4 * len(core)
+        pause = 0.0
+        if w.endswith((",", ";", ":")):
+            pause = 0.45
+        elif w.endswith((".", "!", "?")):
+            pause = 0.75
+        weights.append((wt, pause))
+    total = sum(a + b for a, b in weights)
+    t, out = 0.0, []
+    for w, (wt, pause) in zip(words, weights):
+        d = dur * wt / total
+        out.append((w, t, t + d))
+        t += d + dur * pause / total
+    return out
+
+
+# ------------------------------------------------------------------ music + sfx
+
+def _env(n, a=0.01, r=0.3):
+    t = np.arange(n) / SR
+    e = np.minimum(1, t / a) * np.exp(-t / r)
+    return e.astype(np.float32)
+
+
+def music_bed(seconds: float, seed: int = 0, bpm: float = 104) -> np.ndarray:
+    """Dark, driving 'mystery' bed: pad chords + pulsing bass + soft kick/hat. Mono."""
+    rng = np.random.default_rng(seed)
+    n = int(seconds * SR) + SR
+    out = np.zeros(n, np.float32)
+    beat = 60 / bpm
+    # minor progressions (semitones from root), pick by seed for variety
+    progs = [[0, -4, -7, -2], [0, -2, -4, -5], [0, 3, -4, -2], [0, -5, -4, -2]]
+    prog = progs[seed % len(progs)]
+    root = 110 * 2 ** (rng.integers(-3, 3) / 12)  # around A2
+    bar = beat * 4
+    t_all = np.arange(n) / SR
+    for bi in range(int(seconds / bar) + 2):
+        semi = prog[bi % len(prog)]
+        f0 = root * 2 ** (semi / 12)
+        s, e = int(bi * bar * SR), min(n, int((bi + 1) * bar * SR))
+        if s >= n:
+            break
+        t = t_all[s:e] - t_all[s]
+        # pad: minor triad, detuned saws softened
+        pad = np.zeros(e - s, np.float32)
+        for iv in (0, 3, 7, 12):
+            f = f0 * 2 * 2 ** (iv / 12)
+            for det in (-0.15, 0.15):
+                ph = 2 * np.pi * (f + det) * t
+                pad += (np.sin(ph) + 0.3 * np.sin(2 * ph) + 0.12 * np.sin(3 * ph)).astype(np.float32)
+        fade = np.minimum(1, np.minimum(t / 0.25, (bar - t) / 0.25)).astype(np.float32)
+        out[s:e] += 0.018 * pad * fade
+        # bass: eighth-note pulse
+        for k in range(8):
+            bs = s + int(k * beat / 2 * SR)
+            bl = int(beat / 2 * SR * 0.9)
+            if bs + bl > n:
+                break
+            tt = np.arange(bl) / SR
+            out[bs:bs + bl] += 0.11 * np.sin(2 * np.pi * f0 * tt) * _env(bl, 0.005, 0.12)
+    # drums
+    for k in range(int(seconds / beat) + 2):
+        ks = int(k * beat * SR)
+        if ks >= n:
+            break
+        if k % 2 == 0:
+            kl = min(int(0.25 * SR), n - ks)
+            tt = np.arange(kl) / SR
+            f = 120 * np.exp(-tt * 30) + 45
+            out[ks:ks + kl] += 0.28 * np.sin(2 * np.pi * np.cumsum(f) / SR) * _env(kl, 0.002, 0.09)
+        hs = ks + int(beat / 2 * SR)
+        hl = min(int(0.05 * SR), n - hs)
+        if hl > 0:
+            out[hs:hs + hl] += 0.03 * rng.standard_normal(hl).astype(np.float32) * _env(hl, 0.001, 0.015)
+    return out[: int(seconds * SR)]
+
+
+def whoosh(dur=0.45, seed=1) -> np.ndarray:
+    rng = np.random.default_rng(seed)
+    n = int(dur * SR)
+    noise = rng.standard_normal(n).astype(np.float32)
+    # moving one-pole lowpass sweep
+    out = np.zeros(n, np.float32)
+    y = 0.0
+    for i in range(n):
+        a = 0.02 + 0.5 * np.sin(np.pi * i / n) ** 2
+        y += a * (noise[i] - y)
+        out[i] = y
+    env = np.sin(np.pi * np.arange(n) / n) ** 1.5
+    return 0.5 * out * env
+
+
+def ding(f=1320.0, dur=0.5) -> np.ndarray:
+    n = int(dur * SR)
+    t = np.arange(n) / SR
+    s = np.sin(2 * np.pi * f * t) + 0.4 * np.sin(2 * np.pi * f * 2.01 * t)
+    return (0.16 * s * _env(n, 0.002, 0.18)).astype(np.float32)
+
+
+def boom(dur=1.2) -> np.ndarray:
+    n = int(dur * SR)
+    t = np.arange(n) / SR
+    f = 70 * np.exp(-t * 3) + 30
+    return (0.5 * np.sin(2 * np.pi * np.cumsum(f) / SR) * _env(n, 0.003, 0.4)).astype(np.float32)
+
+
+def mix(total: float, voice: list[tuple[float, np.ndarray]], sfx: list[tuple[float, np.ndarray]],
+        seed: int, out: Path) -> Path:
+    n = int(total * SR)
+    v = np.zeros(n, np.float32)
+    for t, a in voice:
+        s = int(t * SR)
+        e = min(n, s + len(a))
+        v[s:e] += a[: e - s]
+    m = music_bed(total, seed=seed)
+    # sidechain-ish ducking under the voice
+    env = np.abs(v)
+    k = int(0.15 * SR)
+    env = np.convolve(env, np.ones(k) / k, mode="same")
+    duck = 1 - 0.55 * np.clip(env / (env.max() + 1e-9) * 4, 0, 1)
+    fx = np.zeros(n, np.float32)
+    for t, a in sfx:
+        s = int(t * SR)
+        e = min(n, s + len(a))
+        if s < n:
+            fx[s:e] += a[: e - s]
+    # fade music out at the end
+    fo = int(1.2 * SR)
+    m[-fo:] *= np.linspace(1, 0, fo)
+    y = v * 1.0 + m * duck * 0.9 + fx * 0.8
+    y = y / max(1e-6, np.abs(y).max())
+    # soft limiter: lowers crest factor so loudness normalisation can reach -14 LUFS
+    drive = 2.2
+    y = np.tanh(y * drive) / np.tanh(drive)
+    raw = out.with_name(out.stem + "_raw.wav")
+    sf.write(raw, y * 0.95, SR)
+    loudnorm(raw, out)
+    return out
+
+
+def loudnorm(src: Path, dst: Path, target=-14.0, tp=-1.5):
+    """Two-pass EBU R128 normalisation (single pass undershoots on peaky voice)."""
+    import json
+    import subprocess
+    f = f"loudnorm=I={target}:TP={tp}:LRA=11"
+    r = subprocess.run(["ffmpeg", "-hide_banner", "-nostats", "-i", str(src), "-af", f + ":print_format=json",
+                        "-f", "null", "-"], capture_output=True, text=True)
+    m = json.loads(r.stderr[r.stderr.rfind("{"):r.stderr.rfind("}") + 1])
+    f2 = (f + f":measured_I={m['input_i']}:measured_TP={m['input_tp']}:measured_LRA={m['input_lra']}"
+          f":measured_thresh={m['input_thresh']}:offset={m['target_offset']}:linear=true")
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(src), "-af", f2, "-ar", "48000", str(dst)],
+                   check=True)
