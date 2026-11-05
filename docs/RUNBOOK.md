@@ -61,7 +61,8 @@ Pick the chain with:
 
 The schema is documented in `sixdeg/episode.py`. Writing rules (STYLE.md has more):
 - Retention is everything: target 20-35 s total. No outro; the video ends on the final reveal.
-- `hook`: one question, 10 words or fewer, both names in it.
+- `hook`: the question, said over the flash-forward: "How is <A> connected to <B>?" (creator's call: the
+  question opens the loop; the visual flash-forward shows the payoff, the "N PICTURES" badge gives the number).
 - each `line`: ONE sentence, at most ~18 words, starting with a year or a hook word. Say who, when, where, and *why*
   they were together. Use a concrete fact, not "they met".
 - `outro`: optional. The default is "<A> to <B> in N photos. Comment two names…".

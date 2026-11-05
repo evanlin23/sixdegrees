@@ -70,10 +70,12 @@ def music(track: dict, seconds: float) -> np.ndarray:
     if len(a) <= n:
         a = np.tile(a, int(np.ceil(n / len(a))) + 1)
     hop = SR // 2
-    e = np.sqrt(np.convolve(a ** 2, np.ones(hop) / hop, mode="valid")[::hop])  # RMS per 0.5 s
+    sq = a[: len(a) // hop * hop].astype(np.float64) ** 2
+    e = np.sqrt(sq.reshape(-1, hop).mean(axis=1))  # RMS per 0.5 s (block means: O(n), not an O(n*hop) convolution)
     win = max(1, n // hop)
     limit = max(1, len(e) - win)
-    scores = [e[i:i + win].mean() for i in range(0, limit)]
+    cs = np.concatenate([[0.0], np.cumsum(e)])
+    scores = (cs[win:win + limit] - cs[:limit]) / win
     start = int(np.argmax(scores[: max(1, int(len(scores) * 0.7))])) * hop  # stay out of the outro
     seg = a[start:start + n].copy()
     fi, fo = int(0.05 * SR), int(0.8 * SR)
