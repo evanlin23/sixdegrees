@@ -31,6 +31,7 @@ RESPELL = {
     "Hatsune Miku": "Hot-sue-neh Mee-koo",
     "IShowSpeed": "I Show Speed",
     "MrBeast": "Mister Beast",
+    "Jae-in": "Jay-inn",
 }
 
 
@@ -135,7 +136,7 @@ def say(text: str, voice: dict | None = None) -> tuple[np.ndarray, list[tuple[st
     """Synthesize `text`. Returns (mono float32 @ SR, word timings [(word, t0, t1)])."""
     import json
     cfg = voice_config(voice)
-    key = hashlib.sha1(f"{json.dumps(cfg, sort_keys=True)}|{text}".encode()).hexdigest()
+    key = hashlib.sha1(f"{json.dumps(cfg, sort_keys=True)}|{speakable(text)}".encode()).hexdigest()  # respellings change the audio
     p = CACHE / "tts" / f"{key}.wav"
     if p.exists():
         a, _ = sf.read(p, dtype="float32")

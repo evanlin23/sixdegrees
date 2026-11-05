@@ -51,8 +51,9 @@ Pick the chain with:
 ## 3. Write `episodes/<slug>/episode.json`
 
 The schema is documented in `sixdeg/episode.py`. Writing rules (STYLE.md has more):
-- `hook`: one question, 12 words or fewer, both names in it.
-- each `line`: 1-2 sentences, at most ~24 words. Say who, when, where, and *why*
+- Retention is everything: target 20-35 s total. No outro; the video ends on the final reveal.
+- `hook`: one question, 10 words or fewer, both names in it.
+- each `line`: ONE sentence, at most ~18 words, starting with a year or a hook word. Say who, when, where, and *why*
   they were together. Use a concrete fact, not "they met".
 - `outro`: optional. The default is "<A> to <B> in N photos. Comment two names…".
 - `title`: a question or a claim, under 70 characters, with no slurs or shock words.

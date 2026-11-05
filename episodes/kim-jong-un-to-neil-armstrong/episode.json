@@ -1,0 +1,36 @@
+{
+  "from": "Kim Jong Un",
+  "to": "Neil Armstrong",
+  "title": "How is Kim Jong Un connected to the first man on the Moon?",
+  "description": "Three real photos connect Kim Jong Un to Neil Armstrong.",
+  "hook": "How is Kim Jong Un connected to Neil Armstrong?",
+  "links": [
+    {
+      "a": "Kim Jong Un",
+      "b": "Moon Jae-in",
+      "image": {
+        "file": "File:2018 inter-Korean summit 01.jpg"
+      },
+      "line": "In 2018, Kim Jong Un crossed the border to shake hands with South Korea's president, Moon Jae-in.",
+      "a_face": 0
+    },
+    {
+      "a": "Moon Jae-in",
+      "b": "Valentina Tereshkova",
+      "image": {
+        "file": "File:Moon Jae-in in the Russian State Duma (2018-06-21) 07.jpg"
+      },
+      "line": "Two months later in Moscow, Moon met Valentina Tereshkova, the first woman in space."
+    },
+    {
+      "a": "Valentina Tereshkova",
+      "b": "Neil Armstrong",
+      "image": {
+        "file": "File:RIAN archive 837790 Valentina Tereshkova and Neil Armstrong.jpg"
+      },
+      "line": "And in 1970, Tereshkova pinned a badge on the first man on the Moon, Neil Armstrong.",
+      "a_face": 0,
+      "b_face": 3
+    }
+  ]
+}

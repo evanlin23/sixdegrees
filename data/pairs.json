@@ -1,5 +1,11 @@
 [
  {
+  "from": "Kim Jong Un",
+  "to": "Neil Armstrong",
+  "status": "done",
+  "slug": "kim-jong-un-to-neil-armstrong"
+ },
+ {
   "from": "Adolf Hitler",
   "to": "Neil Armstrong",
   "status": "done",
