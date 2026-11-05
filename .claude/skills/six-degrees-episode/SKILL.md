@@ -38,7 +38,13 @@ episode.json: the hook shows the viewer's request bubble and the first comment c
   The first and last names must equal `a` and `b`. Use 6-15 portraits, choosing well-known holders to skip
   through a long line. It counts as one link.
 - **Fictional characters** connect through a real photo of their voice actor, creator or puppeteer, and the
-  line says so ("Grug is voiced by Nicolas Cage").
+  line says so ("Grug is voiced by Nicolas Cage"). The character itself appears only in its own artwork
+  (official art or a film still, fair use), as the endpoint link: `{"a": "Grug", "b": "Nicolas Cage", "image": <a
+  still or poster showing Grug>, "line": "Grug is voiced by Nicolas Cage."}`. Pin Grug's face in the art. If no
+  picture shows both, use a `pair` image: the character art next to a real photo of the actor.
+- **Name tags are real names.** Every person in a photo is labelled with their real name, the form people know
+  them by (`"people": {"Dwayne Johnson": {"label": "Dwayne 'The Rock' Johnson"}}` if needed). A character's
+  name only ever labels the character's own artwork, never the actor in a real photo.
 - **No limit on the number of links.** A Short can be up to 3 minutes, and QA fails only past 3:00 (it warns past
   60 s). Shorter is better for retention, so prefer the most surprising chain with tight lines.
 - Never invent a meeting, a photo or a caption. If no honest chain exists, mark the pair `"skipped"` with a reason.
