@@ -93,12 +93,26 @@ Open `episodes/<slug>/out/contact.jpg` and check the name tags sit on the right
 heads and the captions read well. Fix and re-render until QA passes. Never ship a
 QA failure.
 
-## 6. Deliver
+## 6. Upload and deliver
+
+```bash
+python -m sixdeg upload <slug>      # private, scheduled into the next free slot (2 a day)
+```
+
+YouTube is the backlog. Every video goes up private with a scheduled publish time,
+so it doesn't matter that this container disappears. The command appends to
+`data/uploads.json`. If the `YT_*` environment variables are missing, it does a dry
+run and says so; then the creator uploads by hand from the kit.
 
 1. In `data/pairs.json`, set the pair's `status` to `"done"` and add the slug.
-2. Commit `episodes/<slug>/episode.json` and `data/pairs.json` (the video itself
-   is gitignored) and push.
-3. Open a GitHub issue titled `Upload: <title>` whose body is `out/upload.md`.
+2. Commit `episodes/<slug>/episode.json`, `data/pairs.json` and `data/uploads.json`
+   (the video itself is gitignored) and push to `main`.
+3. Open a GitHub issue titled `Scheduled: <title> (<publish time>)` with the
+   YouTube link and `out/upload.md`, so the creator can see what's queued.
 4. Send the mp4 to the user with SendUserFile (`display: "attach"`).
 
-The upload step depends on the upload mode chosen in `docs/STYLE.md` → Upload.
+## Cadence
+
+The scheduled run makes **two** episodes per run (one per publish slot). If
+`data/uploads.json` already has 4 or more videos scheduled in the future, make
+only one; never let the queue grow past about 6.

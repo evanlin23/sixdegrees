@@ -52,6 +52,20 @@ def next_slot(now: dt.datetime | None = None, taken: list[str] | None = None) ->
     raise RuntimeError("no free slot in 60 days")
 
 
+def scheduled_on_channel(yt) -> list[str]:
+    """publishAt of every private video on the channel that is still waiting to go public."""
+    ch = yt.channels().list(part="contentDetails", mine=True).execute()["items"][0]
+    pl = ch["contentDetails"]["relatedPlaylists"]["uploads"]
+    items = yt.playlistItems().list(part="contentDetails", playlistId=pl, maxResults=50).execute().get("items", [])
+    ids = [it["contentDetails"]["videoId"] for it in items]
+    out = []
+    for i in range(0, len(ids), 50):
+        vs = yt.videos().list(part="status", id=",".join(ids[i:i + 50])).execute().get("items", [])
+        out += [v["status"]["publishAt"] for v in vs if v["status"].get("publishAt")
+                and v["status"].get("privacyStatus") == "private"]
+    return out
+
+
 def have_credentials() -> bool:
     return all(os.environ.get(k) for k in ("YT_CLIENT_ID", "YT_CLIENT_SECRET", "YT_REFRESH_TOKEN", "YT_CHANNEL_ID"))
 
@@ -86,9 +100,9 @@ def upload(slug: str, dry_run: bool = False) -> dict:
     mp4 = out / meta["file"]
     if any(u["slug"] == slug for u in _uploads()):
         raise SystemExit(f"{slug}: already in data/uploads.json")
-    when = next_slot()
-    rec = {"slug": slug, "title": meta["title"], "publish_at": when.strftime("%Y-%m-%dT%H:%M:%SZ")}
     if dry_run or not have_credentials():
+        when = next_slot()
+        rec = {"slug": slug, "title": meta["title"], "publish_at": when.strftime("%Y-%m-%dT%H:%M:%SZ")}
         rec["dry_run"] = True
         if not have_credentials():
             rec["note"] = "no YT_* credentials in the environment: upload by hand from the kit"
@@ -99,6 +113,10 @@ def upload(slug: str, dry_run: bool = False) -> dict:
     me = yt.channels().list(part="id,snippet", mine=True).execute()["items"][0]
     if me["id"] != os.environ["YT_CHANNEL_ID"]:
         raise SystemExit(f"token belongs to channel {me['id']} ({me['snippet']['title']}), not YT_CHANNEL_ID")
+    # the channel itself is the source of truth for which slots are taken (fresh containers share no state)
+    taken = scheduled_on_channel(yt) + [u["publish_at"] for u in _uploads() if u.get("publish_at")]
+    when = next_slot(taken=taken)
+    rec = {"slug": slug, "title": meta["title"], "publish_at": when.strftime("%Y-%m-%dT%H:%M:%SZ")}
     dup = _already_on_channel(yt, meta["title"])
     if dup:
         rec.update(video_id=dup, note="already on channel; recorded, not re-uploaded")

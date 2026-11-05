@@ -33,7 +33,7 @@ mass-produced, template-only videos. It is judged per channel. So:
   neutral facts, no praise, no jokes about atrocities.
 - Advertiser-friendly: no swastika or gore as the focal point, no slurs, no shock
   words in titles. Write "Hitler", not "Adolf H." (it's history, not evasion).
-- Max one upload per day at first; do not batch-dump.
+- Two uploads a day, in fixed slots (see Upload); never batch-dump.
 - Credits for every photo go in the description (CC BY/BY-SA requires it).
 - Images: Wikimedia/public domain first. Use press photos only when nothing free
   exists, and only with narration over them (fair use commentary). QA warns on
@@ -49,11 +49,7 @@ mass-produced, template-only videos. It is judged per channel. So:
 
 ## Upload
 
-The mode is pending the creator's choice:
-- `kit` (current): the session opens a GitHub issue with the upload kit and sends
-  the mp4, and the creator posts it from their phone (about 1 minute).
-- `api`: YouTube Data API `videos.insert` with a one-time OAuth refresh token
-  stored as an environment secret. Videos stay private until Google's free
-  compliance audit approves the project, so run `kit` until that is approved.
-- Browser automation is not used: it breaks YouTube's terms, and Google blocks
-  logins from cloud IPs.
+`python -m sixdeg upload <slug>` uses the official YouTube Data API, as
+`blocky-stories` does: no audit is needed, and uploads go private with
+`publishAt` set to the next free slot (11:30 AM / 6:30 PM Central plus jitter).
+Setup is in `docs/youtube-setup.md`. Browser automation is not used.
