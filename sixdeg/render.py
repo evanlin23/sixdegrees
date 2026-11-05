@@ -15,7 +15,7 @@ import cv2
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
-from . import audio
+from . import assets, audio, mascot
 from .common import FONTS, slugify
 from .episode import load, people_order
 
@@ -24,6 +24,16 @@ CYAN = (34, 211, 238)
 YELLOW = (255, 214, 10)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+HUES = [(255, 46, 99), (0, 200, 255), (255, 170, 0), (140, 60, 255), (0, 230, 120), (255, 80, 200)]
+RED_STRING = (235, 30, 50)
+REVEAL = 0.32       # fraction of a line at which B is revealed
+
+
+def seg_reveal(speech: float) -> float:
+    return speech * REVEAL
+
+
+THROW = 0.30        # seconds Pin flies from A to B
 PAD = 0.12          # silence after each narration line
 XFADE = 0.10        # cross-fade between segments (snappy)
 END_HOLD = 0.7      # hold on the final reveal
@@ -156,7 +166,7 @@ class Ctx:
         self.work = self.dir / "work"
         self.fj = json.loads((self.work / "faces.json").read_text())
         self.people = people_order(self.spec)
-        self.imgs = [cv2.imread(str(self.work / l["image"])) for l in self.fj["links"]]
+        self.imgs = [grade(cv2.imread(str(self.work / l["image"]))) for l in self.fj["links"]]
         # face thumbnails: prefer the person's Wikipedia portrait (big, frontal); fall back to a link photo
         self.thumbs = {}
         from .faces import detect
@@ -186,15 +196,48 @@ class Ctx:
         self.labels = {n: self.spec.get("people", {}).get(n, {}).get("label", short_name(n)) for n in self.people}
 
 
-def blurred_bg(img: np.ndarray, t: float) -> Image.Image:
+def grade(img: np.ndarray) -> np.ndarray:
+    """High-dopamine grade: more saturation and contrast (B&W photos just get contrast)."""
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV).astype(np.float32)
+    if hsv[..., 1].mean() > 18:  # colour photo
+        hsv[..., 1] = np.clip(hsv[..., 1] * 1.55, 0, 255)
+    img = cv2.cvtColor(hsv.astype(np.uint8), cv2.COLOR_HSV2BGR)
+    lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
+    lab[..., 0] = cv2.createCLAHE(clipLimit=2.2, tileGridSize=(8, 8)).apply(lab[..., 0])
+    return cv2.cvtColor(lab, cv2.COLOR_LAB2BGR)
+
+
+def blurred_bg(img: np.ndarray, t: float, hue=None) -> Image.Image:
     h, w = img.shape[:2]
     s = max(W / w, H / h) * (1.15 + 0.03 * t)
     M = np.float32([[s, 0, W / 2 - w * s / 2], [0, s, H / 2 - h * s / 2]])
     small = cv2.warpAffine(img, M, (W, H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
     small = cv2.GaussianBlur(cv2.resize(small, (W // 8, H // 8)), (0, 0), 6)
     small = cv2.resize(small, (W, H))
-    small = (small * 0.38).astype(np.uint8)
-    return Image.fromarray(cv2.cvtColor(small, cv2.COLOR_BGR2RGB)).convert("RGBA")
+    small = (small * 0.45).astype(np.uint8)
+    out = Image.fromarray(cv2.cvtColor(small, cv2.COLOR_BGR2RGB)).convert("RGBA")
+    if hue is not None:  # vivid colour wash, drifting diagonally
+        g = np.linspace(0, 1, H)[:, None] * 0.6 + np.linspace(0, 1, W)[None, :] * 0.4
+        g = (np.sin((g + t * 0.25) * math.pi * 2) * 0.5 + 0.5)[..., None]
+        c1 = np.array(hue, np.float32); c2 = c1[::-1] * 0.6 + 60
+        col = (c1 * g + c2 * (1 - g)).astype(np.uint8)
+        wash = Image.fromarray(np.dstack([col, np.full((H, W, 1), 150, np.uint8)]))
+        out.alpha_composite(wash)
+    return out
+
+
+def rgb_split(im: Image.Image, px: int) -> Image.Image:
+    a = np.array(im)
+    a[..., 0] = np.roll(a[..., 0], px, axis=1)
+    a[..., 2] = np.roll(a[..., 2], -px, axis=1)
+    return Image.fromarray(a)
+
+
+def shake(t_since: float, amp: float, dur: float = 0.35):
+    if t_since < 0 or t_since > dur:
+        return 0.0, 0.0
+    a = amp * (1 - t_since / dur) ** 2
+    return a * math.sin(t_since * 95), a * math.cos(t_since * 77)
 
 
 def camera_for(box, img_shape, view_h_frac):
@@ -221,9 +264,9 @@ def lerp_cam(c0, c1, k):
     return (c0[0] + (c1[0] - c0[0]) * k, c0[1] + (c1[1] - c0[1]) * k, c0[2] * (c1[2] / c0[2]) ** k)
 
 
-def warp_photo(img, cam, center_y=980):
+def warp_photo(img, cam, center_y=980, shift=(0.0, 0.0)):
     cx, cy, s = cam
-    M = np.float32([[s, 0, W / 2 - cx * s], [0, s, center_y - cy * s]])
+    M = np.float32([[s, 0, W / 2 - cx * s + shift[0]], [0, s, center_y - cy * s + shift[1]]])
     interp = cv2.INTER_CUBIC if s > 1 else cv2.INTER_AREA
     rgb = cv2.warpAffine(img, M, (W, H), flags=interp, borderMode=cv2.BORDER_CONSTANT, borderValue=(0, 0, 0))
     mask = cv2.warpAffine(np.full(img.shape[:2], 255, np.uint8), M, (W, H), flags=cv2.INTER_LINEAR,
@@ -252,9 +295,11 @@ def render(slug: str, log=print) -> Path:
     t = 0.0
     hook = spec.get("hook") or f"How is {short_name(spec['from'])} connected to {short_name(spec['to'])}?"
     a, words = audio.say(hook, voice)
-    d = len(a) / audio.SR + 0.15
-    segs.append({"kind": "hook", "t0": t, "t1": t + d, "cap": Captions(words, t + 0.02)})
-    voice_clips.append((t + 0.02, a)); sfx.append((0.0, audio.boom()))
+    HOOK_VO = 0.35  # the boom lands first, then the question (overlapping them masked the names)
+    d = len(a) / audio.SR + 0.15 + HOOK_VO
+    segs.append({"kind": "hook", "t0": t, "t1": t + d, "cap": Captions(words, t + HOOK_VO)})
+    voice_clips.append((t + HOOK_VO, a))
+    sfx.append((0.0, assets.sfx("boom", 0.7))); sfx.append((0.12, assets.sfx("bass_hit", 0.6)))
     t += d
     for i, link in enumerate(spec["links"]):
         a, words = audio.say(link["line"], voice)
@@ -263,12 +308,22 @@ def render(slug: str, log=print) -> Path:
         segs.append({"kind": "link", "i": i, "t0": t, "t1": t + d, "cap": Captions(words, t + 0.08),
                      "speech": len(a) / audio.SR + 0.08})
         voice_clips.append((t + 0.08, a))
-        sfx.append((max(0, t - 0.12), audio.whoosh(dur=0.3, seed=i)))
-        sfx.append((t + (len(a) / audio.SR) * 0.38, audio.ding(1320 if i % 2 == 0 else 1480)))
+        sfx.append((t, assets.sfx("shutter", 0.6)))                                  # snapshot on every new photo
+        reveal = t + seg_reveal(len(a) / audio.SR + 0.08)
+        sfx.append((reveal - 0.05, assets.sfx("swipe", 0.35)))                        # Pin gets thrown
+        sfx.append((reveal + THROW, assets.sfx("bass_hit", 0.55)))                    # ...and lands: B revealed
+        sfx.append((reveal + THROW, assets.sfx("pop", 0.3)))
+        if last:
+            sfx.append((max(0, reveal - 1.6), assets.sfx("riser", 0.4, max_len=1.6)))  # build-up
+            sfx.append((reveal + THROW, assets.sfx("big_impact", 0.75)))               # final reveal hit
+            sfx.append((reveal + THROW + 0.35, assets.sfx("impact", 0.5)))             # CONNECTED! stamp
         t += d
     n_links = len(spec["links"])
     total = t
-    wav = audio.mix(total, voice_clips, sfx, seed=sum(map(ord, slug)), out=out_dir / "mix.wav")
+    track = assets.pick_track(slug, spec.get("music"))
+    wav = audio.mix(total, voice_clips, sfx, seed=sum(map(ord, slug)), out=out_dir / "mix.wav",
+                    music=assets.music(track, total))
+    log(f"music: {track['title']} (Mixkit)")
     log(f"timeline {total:.1f}s, {len(segs)} segments")
 
     # ---------- precompute per-link cameras
@@ -349,14 +404,45 @@ def render(slug: str, log=print) -> Path:
             cam = cm["both"]
         else:
             cam = lerp_cam(cm["both"], cm["b"], ease((k - 0.62) / 0.30))
-        # gentle drift so it never freezes
-        cam = (cam[0], cam[1], cam[2] * (1 + 0.02 * math.sin(tt * 1.3)))
-        base = blurred_bg(img, tt - seg["t0"])
-        ph, M = warp_photo(img, cam)
+        # drift, punch-in on the cut, punch + shake when Pin lands on B
+        since = (k - REVEAL) * seg.get("speech", 1.0)           # seconds since the throw started
+        land = since - THROW                                      # seconds since Pin landed
+        incut = tt - seg["t0"]
+        punch = 0.10 * math.exp(-land * 8) if land >= 0 else 0.0
+        cutin = 0.18 * math.exp(-incut * 10)
+        cam = (cam[0], cam[1], cam[2] * (1 + 0.02 * math.sin(tt * 1.3) + punch + cutin))
+        last = i == n_links - 1
+        sh = shake(land, 30 if last else 12, 0.45 if last else 0.3)
+        base = blurred_bg(img, tt - seg["t0"], HUES[i % len(HUES)])
+        ph, M = warp_photo(img, cam, shift=sh)
         base.alpha_composite(ph)
         # name tags
         names = (spec["links"][i]["a"], spec["links"][i]["b"])
-        for role, nm, appear in (("ba", names[0], 0.0), ("bb", names[1], 0.32)):
+        # Pin (the mascot) + the red evidence string it drags from A to B
+        pa = to_screen(M, cm["ba"][0] + cm["ba"][2] / 2, cm["ba"][1] - cm["ba"][3] * 0.08)
+        pb = to_screen(M, cm["bb"][0] + cm["bb"][2] / 2, cm["bb"][1] - cm["bb"][3] * 0.08)
+        pa = (max(60, min(W - 60, pa[0])), max(320, min(1560, pa[1])))
+        pb = (max(60, min(W - 60, pb[0])), max(320, min(1560, pb[1])))
+        mascot_draw = None
+        if since < 0:          # waiting on A, bobbing, eyeing B
+            bob = 10 * math.sin(tt * 7)
+            mascot_draw = (pa[0] + 70, pa[1] - 40 + bob, "happy", 0.0, -8 + 6 * math.sin(tt * 5), 1 if pb[0] > pa[0] else -1)
+        elif since < THROW:    # thrown along an arc, spinning, stretched
+            x, y, ang = mascot.throw_path((pa[0] + 70, pa[1] - 40), pb, since / THROW, 300)
+            mascot_draw = (x, y, "shock", -0.6, ang, 0)
+        else:                  # landed on B: squash, shock, then smug
+            sq = 0.9 * math.exp(-land * 10) * math.cos(land * 30)
+            ex = "shock" if land < 0.5 else "smug"
+            hop = -abs(math.sin(land * 9)) * 25 * math.exp(-land * 5)
+            spin = 360 * min(1, (land - 0.5) / 0.4) if (last and land > 0.5) else 0
+            mascot_draw = (pb[0], pb[1] + hop, ex, sq, spin, 0)
+        if since >= 0:
+            pe = pb if since >= THROW else mascot.throw_path((pa[0] + 70, pa[1] - 40), pb, since / THROW, 300)[:2]
+            sd = ImageDraw.Draw(base)
+            sd.line([pa, pe], fill=(0, 0, 0, 140), width=13)
+            sd.line([pa, pe], fill=RED_STRING + (255,), width=8)
+            sd.ellipse([pa[0] - 14, pa[1] - 14, pa[0] + 14, pa[1] + 14], fill=RED_STRING + (255,), outline=(255, 255, 255, 255), width=4)
+        for role, nm, appear in (("ba", names[0], 0.0), ("bb", names[1], REVEAL)):
             bx = cm[role]
             sx, sy = to_screen(M, bx[0] + bx[2] / 2, bx[1])
             pop = ease_out_back((k - appear) / 0.06) if k >= appear else 0
@@ -369,23 +455,40 @@ def render(slug: str, log=print) -> Path:
                 sy = max(330, min(1500, sy - 40))
                 sx = max(p.width / 2 + 10, min(W - p.width / 2 - 10, sx))
                 paste(base, p, sx, sy, scale=pop)
+        if mascot_draw:
+            x, y, ex, sq, ang, look = mascot_draw
+            spr = mascot.draw(ex, 0.62 * (1.35 if (last and since >= THROW + 0.5) else 1.0), ang, sq, look)
+            paste(base, spr, x, y - spr.height * 0.42)   # needle tip sits on the point
+        if last and land > 0.35:  # CONNECTED! stamp slams down
+            st = min(1.0, (land - 0.35) / 0.12)
+            stamp = text_img("CONNECTED!", 120, fill=RED_STRING, stroke=12).rotate(-8, expand=True, resample=Image.BICUBIC)
+            paste(base, stamp, W / 2, 1180, scale=2.2 - 1.2 * ease(st), alpha=min(1, st * 1.5))
         # header + progress
         paste(base, title_im, W / 2, 150)
         step = pill(f"PHOTO {i + 1} / {n_links}", 34, fg=WHITE, bg=(30, 30, 30))
         paste(base, step, W / 2, 235)
-        revealed = i + (1 if k >= 0.32 else 0)
-        chain_bar(base, revealed, {i, i + 1} if k >= 0.32 else {i})
+        revealed = i + (1 if k >= REVEAL else 0)
+        chain_bar(base, revealed, {i, i + 1} if k >= REVEAL else {i})
         credit_line(base, i)
         seg["cap"].draw(base, tt)
+        flash = tt - seg["t0"]
+        if flash < 0.14:  # camera-flash cut into every new photo
+            base.alpha_composite(Image.new("RGBA", (W, H), (255, 255, 255, int(235 * (1 - flash / 0.14)))))
+        if flash < 0.12:
+            base = rgb_split(base, int(28 * (1 - flash / 0.12)))
+        if 0 <= land < 0.08:  # landing: RGB split + colour flash
+            base = rgb_split(base, int(20 * (1 - land / 0.08)))
+            base.alpha_composite(Image.new("RGBA", (W, H), HUES[i % len(HUES)] + (int(110 * (1 - land / 0.08)),)))
         return base
 
     def frame_hook(seg, tt):
         k = tt - seg["t0"]
-        base = Image.new("RGBA", (W, H), (12, 12, 16, 255))
-        # subtle radial glow
+        base = Image.new("RGBA", (W, H), (20, 8, 40, 255))
+        # vivid glow
         glow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
         gd = ImageDraw.Draw(glow)
-        gd.ellipse([W / 2 - 600, H / 2 - 600, W / 2 + 600, H / 2 + 600], fill=(34, 90, 120, 90))
+        gd.ellipse([W / 2 - 650, H / 2 - 650, W / 2 + 650, H / 2 + 650], fill=HUES[3] + (170,))
+        gd.ellipse([W / 2 - 300, 200, W / 2 + 500, 900], fill=HUES[0] + (140,))
         base.alpha_composite(glow.filter(ImageFilter.GaussianBlur(120)))
         a_name, b_name = spec["from"], spec["to"]
         for nm, cy, delay, col in ((a_name, 560, 0.0, CYAN), (b_name, 1300, 0.12, YELLOW)):
@@ -394,8 +497,16 @@ def render(slug: str, log=print) -> Path:
             paste(base, th, W / 2, cy, scale=sc)
             lab = pill(C.labels[nm], 52, bg=col)
             paste(base, lab, W / 2, cy + 245, scale=sc)
-        q = text_img("?", 200, fill=WHITE, stroke=12)
-        paste(base, q, W / 2, 935, scale=ease_out_back((k - 0.25) / 0.2) * (1 + 0.05 * math.sin(k * 8)))
+        q = text_img("?", 200, fill=YELLOW, stroke=12)
+        paste(base, q, W / 2 - 120, 935, scale=ease_out_back((k - 0.25) / 0.2) * (1 + 0.08 * math.sin(k * 10)))
+        # Pin drops in from the top and bounces
+        dk = min(1.0, k / 0.45)
+        y = -200 + (935 + 200) * (1 - (1 - dk) ** 2) - (abs(math.sin((k - 0.45) * 10)) * 60 * math.exp(-(k - 0.45) * 4) if k > 0.45 else 0)
+        spr = mascot.draw("shock", 0.7, 10 * math.sin(k * 6), 0.5 * math.exp(-(k - 0.45) * 8) if k > 0.45 else -0.4, -1)
+        paste(base, spr, W / 2 + 140, y - 40)
+        sx, sy = shake(k - 0.12, 16, 0.3)
+        if sx or sy:
+            base = Image.fromarray(np.roll(np.roll(np.array(base), int(sy), 0), int(sx), 1))
         top = text_img("HOW ARE THEY CONNECTED?", 60, fill=WHITE, stroke=8)
         paste(base, top, W / 2, 200, scale=min(1, ease(k / 0.12)))
         seg["cap"].draw(base, tt, y=1720)
@@ -444,13 +555,28 @@ def render(slug: str, log=print) -> Path:
             if sg["t0"] <= tt < sg["t1"] or j == len(segs) - 1:
                 im = draw[sg["kind"]](sg, tt)
                 # crossfade from previous segment's last frame
-                if j > 0 and tt - sg["t0"] < XFADE:
+                if j > 0 and tt - sg["t0"] < XFADE and sg["kind"] != "link":
                     prev = segs[j - 1]
                     pim = draw[prev["kind"]](prev, prev["t1"] - 1e-3)
                     a = ease((tt - sg["t0"]) / XFADE)
                     im = Image.blend(pim, im, a)
-                return im
+                return finish(im, tt)
         raise AssertionError
+
+    # film grain + vignette: cheap texture that makes still photos feel alive
+    rng = np.random.default_rng(7)
+    grains = [Image.fromarray(np.dstack([np.full((H // 2, W // 2), v, np.uint8) for v in (128, 128, 128)] +
+                                        [(rng.random((H // 2, W // 2)) * 22).astype(np.uint8)])).resize((W, H))
+              for _ in range(4)]
+    yy, xx = np.mgrid[0:H, 0:W]
+    dist = np.sqrt(((xx - W / 2) / (W * 0.62)) ** 2 + ((yy - H / 2) / (H * 0.62)) ** 2)
+    vign = Image.fromarray(np.dstack([np.zeros((H, W), np.uint8)] * 3 + [np.clip((dist - 0.55) * 260, 0, 150).astype(np.uint8)]))
+
+    def finish(im, tt):
+        im = im.copy()
+        im.alpha_composite(vign)
+        im.alpha_composite(grains[int(tt * FPS) % 4])
+        return im
 
     # ---------- encode
     out = out_dir / f"{slug}.mp4"
@@ -458,7 +584,7 @@ def render(slug: str, log=print) -> Path:
     cmd = ["ffmpeg", "-y", "-loglevel", "error",
            "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(FPS), "-i", "-",
            "-i", str(wav),
-           "-c:v", "libx264", "-preset", "medium", "-crf", "19", "-pix_fmt", "yuv420p",
+           "-c:v", "libx264", "-preset", "medium", "-crf", "21", "-pix_fmt", "yuv420p",
            "-c:a", "aac", "-b:a", "192k", "-ar", "48000",
            "-shortest", "-movflags", "+faststart", str(out)]
     proc = subprocess.Popen(cmd, stdin=subprocess.PIPE)

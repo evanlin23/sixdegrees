@@ -320,19 +320,21 @@ def boom(dur=1.2) -> np.ndarray:
 
 
 def mix(total: float, voice: list[tuple[float, np.ndarray]], sfx: list[tuple[float, np.ndarray]],
-        seed: int, out: Path) -> Path:
+        seed: int, out: Path, music: np.ndarray | None = None) -> Path:
     n = int(total * SR)
     v = np.zeros(n, np.float32)
     for t, a in voice:
         s = int(t * SR)
         e = min(n, s + len(a))
         v[s:e] += a[: e - s]
-    m = music_bed(total, seed=seed)
+    m = music[:n] if music is not None else music_bed(total, seed=seed)
+    if len(m) < n:
+        m = np.pad(m, (0, n - len(m)))
     # sidechain-ish ducking under the voice
     env = np.abs(v)
     k = int(0.15 * SR)
     env = np.convolve(env, np.ones(k) / k, mode="same")
-    duck = 1 - 0.55 * np.clip(env / (env.max() + 1e-9) * 4, 0, 1)
+    duck = 1 - 0.5 * np.clip(env / (env.max() + 1e-9) * 4, 0, 1)
     fx = np.zeros(n, np.float32)
     for t, a in sfx:
         s = int(t * SR)

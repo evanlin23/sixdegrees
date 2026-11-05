@@ -1,0 +1,49 @@
+# Consumer: uploads the oldest videos on the `queue` branch to YouTube, private with a scheduled publish
+# (11:30 AM and 6:30 PM Central). Started once a day by cron-job.org (docs/youtube-setup.md), like
+# blocky-stories, because GitHub's own `schedule:` has proven unreliable. Run it by hand from the Actions tab too.
+name: upload
+on:
+  workflow_dispatch:
+    inputs:
+      max: {description: "how many to upload", default: "2"}
+      dry_run: {description: "true = don't upload, just show what would happen", default: "false"}
+concurrency: {group: upload, cancel-in-progress: false}
+permissions: {contents: write, issues: write}
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install requests google-api-python-client google-auth
+      - name: upload
+        env:
+          GH_TOKEN: ${{ github.token }}
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ vars.YT_CHANNEL_ID }}
+          YT_PRIVACY: ${{ vars.YT_PRIVACY || 'scheduled' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898729+github-actions[bot]@users.noreply.github.com"
+          args="--max ${{ inputs.max || '2' }}"
+          if [ "${{ inputs.dry_run }}" = "true" ]; then args="$args --dry-run"; fi
+          python -m sixdeg consume $args | tee result.json
+      - name: tell the owner
+        if: success() && inputs.dry_run != 'true'
+        env: {GH_TOKEN: "${{ github.token }}"}
+        run: |
+          python - <<'PY' > body.md
+          import json
+          r = json.load(open("result.json"))
+          if not r["uploaded"]:
+              print("The upload queue is empty. Make more episodes (docs/RUNBOOK.md)."); raise SystemExit
+          for u in r["uploaded"]:
+              print(f"- **{u['title']}**: {u.get('url', '')} (goes public {u['publish_at']} UTC)")
+          print(f"\n{r['left']} videos left in the queue.")
+          PY
+          gh issue create --title "Scheduled $(date -u +%F): $(python -c "import json;print(len(json.load(open('result.json'))['uploaded']))") Shorts" --body-file body.md

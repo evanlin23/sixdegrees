@@ -10,6 +10,8 @@
   kit <slug>                     upload kit: out/upload.md (title, description, credits, tags)
   make <slug>                    prep + render + qa + kit
   upload <slug> [--dry-run]      schedule it on YouTube in the next free slot (private until publish time)
+  enqueue <slug>                 producer: put the finished video on the `queue` branch
+  consume [--max N] [--dry-run]  consumer (GitHub Actions): upload the oldest N queued videos
 """
 import json
 import sys
@@ -59,6 +61,13 @@ def main(argv):
     elif cmd == "upload":
         from .upload import upload
         print(json.dumps(upload(args[0], dry_run="--dry-run" in args), indent=1))
+    elif cmd == "enqueue":
+        from .queue import enqueue
+        print(enqueue(args[0]))
+    elif cmd == "consume":
+        from .queue import consume
+        mx = int(args[args.index("--max") + 1]) if "--max" in args else 2
+        consume(mx, dry_run="--dry-run" in args)
     elif cmd == "make":
         from .episode import prep
         from .kit import kit

@@ -91,21 +91,33 @@ def _already_on_channel(yt, title: str) -> str | None:
 
 
 def upload(slug: str, dry_run: bool = False) -> dict:
+    """Upload an episode straight from episodes/<slug>/out (the queue normally does this instead)."""
     d, spec = load(slug)
     out = d / "out"
     qa = json.loads((out / "qa.json").read_text()) if (out / "qa.json").exists() else {}
     if not qa.get("pass"):
         raise SystemExit(f"{slug}: QA has not passed; refusing to upload")
     meta = json.loads((out / "metadata.json").read_text())
-    mp4 = out / meta["file"]
+    meta["slug"] = slug
     if any(u["slug"] == slug for u in _uploads()):
         raise SystemExit(f"{slug}: already in data/uploads.json")
+    rec = upload_file(out / meta["file"], meta, dry_run=dry_run)
+    if not rec.get("dry_run"):
+        ups = _uploads(); ups.append(rec)
+        UPLOADS.parent.mkdir(exist_ok=True)
+        UPLOADS.write_text(json.dumps(ups, indent=1))
+    return rec
+
+
+def upload_file(mp4, meta: dict, dry_run: bool = False) -> dict:
+    """Upload one video as private with publishAt = the next free slot; returns the record."""
+    slug = meta.get("slug", "")
     if dry_run or not have_credentials():
         when = next_slot()
-        rec = {"slug": slug, "title": meta["title"], "publish_at": when.strftime("%Y-%m-%dT%H:%M:%SZ")}
-        rec["dry_run"] = True
+        rec = {"slug": slug, "title": meta["title"], "publish_at": when.strftime("%Y-%m-%dT%H:%M:%SZ"),
+               "dry_run": True}
         if not have_credentials():
-            rec["note"] = "no YT_* credentials in the environment: upload by hand from the kit"
+            rec["note"] = "no YT_* credentials in the environment"
         return rec
 
     from googleapiclient.http import MediaFileUpload
@@ -113,21 +125,24 @@ def upload(slug: str, dry_run: bool = False) -> dict:
     me = yt.channels().list(part="id,snippet", mine=True).execute()["items"][0]
     if me["id"] != os.environ["YT_CHANNEL_ID"]:
         raise SystemExit(f"token belongs to channel {me['id']} ({me['snippet']['title']}), not YT_CHANNEL_ID")
-    # the channel itself is the source of truth for which slots are taken (fresh containers share no state)
-    taken = scheduled_on_channel(yt) + [u["publish_at"] for u in _uploads() if u.get("publish_at")]
-    when = next_slot(taken=taken)
+    # the channel itself is the source of truth for which slots are taken (no shared state needed)
+    when = next_slot(taken=scheduled_on_channel(yt))
     rec = {"slug": slug, "title": meta["title"], "publish_at": when.strftime("%Y-%m-%dT%H:%M:%SZ")}
     dup = _already_on_channel(yt, meta["title"])
     if dup:
         rec.update(video_id=dup, note="already on channel; recorded, not re-uploaded")
     else:
-        body = {
-            "snippet": {"title": meta["title"], "description": meta["description"], "tags": meta["tags"],
-                        "categoryId": meta.get("categoryId", "27"), "defaultLanguage": "en",
-                        "defaultAudioLanguage": "en"},
-            "status": {"privacyStatus": "private", "publishAt": rec["publish_at"],
-                       "selfDeclaredMadeForKids": False, "containsSyntheticMedia": meta.get("containsSyntheticMedia", False)},
-        }
+        privacy = os.environ.get("YT_PRIVACY", "scheduled")
+        status = {"privacyStatus": "private", "selfDeclaredMadeForKids": False,
+                  "containsSyntheticMedia": meta.get("containsSyntheticMedia", False)}
+        if privacy == "scheduled":
+            status["publishAt"] = rec["publish_at"]
+        elif privacy == "public":
+            status["privacyStatus"] = "public"
+        body = {"snippet": {"title": meta["title"], "description": meta["description"], "tags": meta["tags"],
+                            "categoryId": meta.get("categoryId", "27"), "defaultLanguage": "en",
+                            "defaultAudioLanguage": "en"},
+                "status": status}
         req = yt.videos().insert(part="snippet,status", body=body,
                                  media_body=MediaFileUpload(str(mp4), mimetype="video/mp4", chunksize=8 << 20,
                                                             resumable=True))
@@ -136,8 +151,4 @@ def upload(slug: str, dry_run: bool = False) -> dict:
             _, resp = req.next_chunk()
         rec["video_id"] = resp["id"]
     rec["url"] = f"https://youtube.com/shorts/{rec['video_id']}"
-    ups = _uploads()
-    ups.append(rec)
-    UPLOADS.parent.mkdir(exist_ok=True)
-    UPLOADS.write_text(json.dumps(ups, indent=1))
     return rec
