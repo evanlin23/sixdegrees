@@ -14,7 +14,7 @@ from pathlib import Path
 
 import cv2
 import numpy as np
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 from . import assets, audio, pixelpin
 from .common import FONTS
@@ -31,7 +31,7 @@ PURPLE_Q = (60, 50, 110)
 # per-photo background tones (light, dark)
 TONES = [((255, 46, 99), (226, 26, 82)), ((40, 170, 255), (20, 130, 225)), ((255, 170, 0), (236, 140, 0)),
          ((140, 70, 255), (112, 46, 220)), ((0, 205, 130), (0, 170, 105)), ((255, 90, 200), (225, 60, 170))]
-FF, RW = 0.55, 0.38                   # hook: flash-forward to the payoff, then a rewind scrub
+FF, RW = 0.95, 0.60                   # hook: flash-forward to the payoff, then a rewind scrub
 CARD = (40, 300, 1040, 1600)          # photo window: x0, y0, x1, y1
 BAND = 210                            # top title band height
 
@@ -162,11 +162,10 @@ def render(slug: str, log=print) -> Path:
     d = max(len(a) / audio.SR + 0.3 + HOOK_VO, FF + RW + 1.3)
     segs.append({"kind": "hook", "t0": t, "t1": t + d, "cap": PixelCaptions(words, t + HOOK_VO)})
     voice_clips.append((t + HOOK_VO, a))
-    sfx += [(0.0, assets.sfx("px_bomb", 0.45)), (0.05, assets.sfx("big_impact", 0.35)),
-            (FF, assets.sfx("rewind", 0.45, max_len=RW + 0.1)),
-            (FF + RW, assets.sfx("scratch", 0.35, max_len=0.4)),
-            (FF + RW + 0.02, assets.sfx("bass_hit", 0.5)), (FF + RW + 0.2, assets.sfx("bass_hit", 0.5)),
-            (FF + RW + 0.45, assets.sfx("px_coin", 0.4))]
+    sfx += [(0.0, assets.sfx("impact", 0.4)),                              # one clean hit on the payoff
+            (FF, assets.sfx("rewind", 0.28, max_len=RW + 0.1)),             # quieter tape rewind
+            (FF + RW + 0.02, assets.sfx("bass_hit", 0.4)),                  # A and B land
+            (FF + RW + 0.5, assets.sfx("px_coin", 0.3))]
     t += d
     for i, link in enumerate(spec["links"]):
         a, words = audio.say(link["line"], voice)
@@ -223,7 +222,10 @@ def render(slug: str, log=print) -> Path:
     while pf(tsize).getlength(title) > W - 80 and tsize > 24:
         tsize -= 2
     title_im = pixel_text(title, tsize, shadow=False)
-    mos = {n: mosaic(C.thumbs[n].resize((96, 96), Image.BICUBIC), 6) for n in C.people}
+    def _flat(im):
+        bg = Image.new("RGBA", im.size, (40, 30, 60, 255)); bg.alpha_composite(im.convert("RGBA")); return bg
+    sharp = {n: _flat(C.thumbs[n].resize((120, 120), Image.BICUBIC)) for n in C.people}
+    blurred = {n: sharp[n].filter(ImageFilter.GaussianBlur(9)) for n in C.people}
 
     def band(base, i=None):
         dr = ImageDraw.Draw(base)
@@ -232,7 +234,8 @@ def render(slug: str, log=print) -> Path:
         if i is not None:
             paste(base, pixel_text(f"LINK {i + 1}/{n_links}", 22, fill=YELLOW, shadow=False), W / 2, 160)
 
-    def blocks(base, upto, active, tt):
+    def blocks(base, upto, active, tt, sharpen=1.0):
+        """Chain bar: revealed faces sharp, upcoming faces blurred; the newest one sharpens in (sharpen 0..1)."""
         n = len(C.people)
         size = min(120, int((W - 80) / n) - 24)
         gap = (W - 80) / n
@@ -243,16 +246,17 @@ def render(slug: str, log=print) -> Path:
             bob = -10 * abs(math.sin(tt * 6)) if k in active else 0
             x0, y0 = cx - size / 2, y - size / 2 + bob
             dr.rectangle([x0 + 8, y0 + 8, x0 + size + 8, y0 + size + 8], fill=INK)
-            if k <= upto or k == n - 1:
-                th = mos[nm].resize((size - 12, size - 12), Image.NEAREST)
-                if k > upto:
-                    a = np.array(th); a[..., :3] = (a[..., :3] * 0.35).astype(np.uint8); th = Image.fromarray(a)
-                dr.rectangle([x0, y0, x0 + size, y0 + size], fill=YELLOW if k in active else WHITE, outline=INK, width=6)
-                base.alpha_composite(th.convert("RGBA"), (int(x0 + 6), int(y0 + 6)))
-                dr.rectangle([x0, y0, x0 + size, y0 + size], outline=INK, width=6)
+            dr.rectangle([x0, y0, x0 + size, y0 + size], fill=YELLOW if k in active else WHITE, outline=INK, width=6)
+            inner = size - 12
+            if k < upto or (k == upto and sharpen >= 1):
+                th = sharp[nm].resize((inner, inner), Image.BICUBIC)
+            elif k == upto:
+                th = Image.blend(blurred[nm].resize((inner, inner), Image.BICUBIC),
+                                 sharp[nm].resize((inner, inner), Image.BICUBIC), sharpen)
             else:
-                dr.rectangle([x0, y0, x0 + size, y0 + size], fill=PURPLE_Q, outline=INK, width=6)
-                dr.text((cx, y0 + size / 2 + 4), "?", font=pf(int(size * 0.5)), fill=(160, 150, 220), anchor="mm")
+                th = blurred[nm].resize((inner, inner), Image.BICUBIC)
+            base.alpha_composite(th.convert("RGBA"), (int(x0 + 6), int(y0 + 6)))
+            dr.rectangle([x0, y0, x0 + size, y0 + size], outline=INK, width=6)
 
     def credit(base, i):
         cr = C.fj["credits"][i]
@@ -351,7 +355,7 @@ def render(slug: str, log=print) -> Path:
             paste(base, pixel_text("CONNECTED!", 80, fill=RED), W / 2, 1180, scale=2.0 - ease(st))
         band(base, i)
         upto = i + (1 if land >= 0 else 0)
-        blocks(base, upto, {upto} if land >= 0 else {i}, tt)
+        blocks(base, upto, {upto} if land >= 0 else {i}, tt, sharpen=min(1.0, land / 0.35) if land >= 0 else 1.0)
         credit(base, i)
         seg["cap"].draw(base, tt)
         if incut < 0.10:
@@ -370,34 +374,47 @@ def render(slug: str, log=print) -> Path:
         fake = {**sg, "cap": _NoCap()}
         return frame_link(fake, sg["t0"] + sg["speech"] * local_k)
 
+    _strip = {}
+
+    def strip_frame(i):
+        if i not in _strip:
+            _strip[i] = fake_link_frame(i, 0.75)
+        return _strip[i]
+
     def frame_hook(seg, tt):
         k = tt - seg["t0"]
         last = n_links - 1
         if k < FF:                                   # 1) flash-forward: the payoff first
-            land_k = REVEAL + (THROW + 0.45 + k * 0.8) / segs[-1]["speech"]
+            land_k = REVEAL + (THROW + 0.45 + k * 0.5) / segs[-1]["speech"]
             base = fake_link_frame(last, land_k)
-            if k < 0.08:
-                base.alpha_composite(Image.new("RGBA", (W, H), (255, 255, 255, int(255 * (1 - k / 0.08)))))
+            z = 1.45 - 0.45 * ease(k / FF)                    # continuous dolly-out from tight to full frame
+            cw, ch = int(W / z), int(H / z)
+            x0, y0 = (W - cw) // 2, int((H - ch) * 0.42)
+            base = base.crop((x0, y0, x0 + cw, y0 + ch)).resize((W, H), Image.BILINEAR)
+            if k < 0.12:   # soft fade-in from white, not a hard strobe
+                base.alpha_composite(Image.new("RGBA", (W, H), (255, 255, 255, int(150 * (1 - k / 0.12)))))
         elif k < FF + RW:                            # 2) rewind scrub back through the chain
-            r = (k - FF) / RW
-            idx = last - min(last, int(r * (last + 1)))
-            base = fake_link_frame(idx, 0.9 - r * 0.6)
-            base = mosaic(base, 10)
-            a = np.array(base)
-            for y0 in range(int(r * 1900) % 240, H, 240):   # VHS tracking bands
-                a[y0:y0 + 26] = np.roll(a[y0:y0 + 26], 40, axis=1)
-            a[..., 0] = np.roll(a[..., 0], 12, axis=1)
-            base = Image.fromarray(a)
+            r = ease((k - FF) / RW)                          # film strip whips back through the chain
+            pos = r * last                                   # 0 = last photo ... last = first photo
+            j = min(last - 1, int(pos)) if last > 0 else 0
+            frac = pos - j if last > 0 else 0.0
+            a_im = strip_frame(last - j)
+            b_im = strip_frame(max(0, last - j - 1))
+            off = int(frac * H)
+            base = Image.new("RGBA", (W, H), (0, 0, 0, 255))
+            base.alpha_composite(a_im, (0, off))
+            base.alpha_composite(b_im, (0, off - H))
             paste(base, pixel_text("<< REWIND", 56, fill=WHITE), 270, 360)
         else:                                        # 3) versus: A and B slam in, string snaps, count pops
             kk = k - FF - RW
-            sx, sy = shake(kk, 22, 0.25)
-            sx2, sy2 = shake(kk - 0.18, 22, 0.25)
-            base = checker(tt, ((90, 40, 200), (70, 26, 170)))
+            sx, sy = shake(kk, 12, 0.25)
+            sx2, sy2 = shake(kk - 0.2, 12, 0.25)
+            base = checker(tt * 3, ((90, 40, 200), (70, 26, 170)))   # faster scroll keeps the screen moving
             dr = ImageDraw.Draw(base)
             dr.rectangle([0, 0, W, BAND], fill=INK)
+            pulse = 1 + 0.05 * math.sin(kk * 9)
             paste(base, pixel_text(f"{n_links} PICTURES", 50, fill=YELLOW, shadow=False), W / 2, 75,
-                  scale=min(1, ease_out_back((kk - 0.4) / 0.15)) if kk > 0.4 else 0.01)
+                  scale=(min(1, ease_out_back((kk - 0.4) / 0.15)) if kk > 0.4 else 0.01) * pulse)
             paste(base, pixel_text("APART", 40, fill=WHITE, shadow=False), W / 2, 150,
                   scale=1 if kk > 0.5 else 0.01)
             centers = {}
@@ -426,6 +443,10 @@ def render(slug: str, log=print) -> Path:
                 pe = (p0[0] + (p1[0] - p0[0]) * g, p0[1] + (p1[1] - p0[1]) * g)
                 dr = ImageDraw.Draw(base)
                 dr.line([p0, pe], fill=INK, width=14); dr.line([p0, pe], fill=RED, width=8)
+                if g >= 1:   # a glow travels along the string
+                    q = (kk * 1.6) % 1.0
+                    gx, gy = p0[0] + (p1[0] - p0[0]) * q, p0[1] + (p1[1] - p0[1]) * q
+                    dr.rectangle([gx - 9, gy - 9, gx + 9, gy + 9], fill=YELLOW, outline=INK, width=3)
                 hop = abs(math.sin(kk * 8)) * 40
                 walk = 120 * math.sin(kk * 2.2)                           # Buh paces along the string
                 paste_pin(base, pin_sprite("shock" if kk < 0.8 else ("smug" if int(kk * 2) % 2 else "angry"),
@@ -436,8 +457,8 @@ def render(slug: str, log=print) -> Path:
                 while pf(fsz).getlength(req) > W - 140 and fsz > 14:
                     fsz -= 2
                 paste(base, pixel_tag(req, WHITE, fsz), W / 2, 272, scale=min(1, ease_out_back(kk / 0.15)))
-            if kk < 0.06:
-                base.alpha_composite(Image.new("RGBA", (W, H), (255, 255, 255, int(200 * (1 - kk / 0.06)))))
+            if kk < 0.08:
+                base.alpha_composite(Image.new("RGBA", (W, H), (255, 255, 255, int(110 * (1 - kk / 0.08)))))
         seg["cap"].draw(base, tt, y=1690)
         return base
 
