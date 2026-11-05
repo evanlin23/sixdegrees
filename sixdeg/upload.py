@@ -109,7 +109,8 @@ def upload(slug: str, dry_run: bool = False) -> dict:
     return rec
 
 
-def upload_file(mp4, meta: dict, dry_run: bool = False) -> dict:
+def upload_file(mp4, meta: dict, dry_run: bool = False, taken_extra: list[str] | None = None,
+                thumb=None) -> dict:
     """Upload one video as private with publishAt = the next free slot; returns the record."""
     slug = meta.get("slug", "")
     if dry_run or not have_credentials():
@@ -119,10 +120,10 @@ def upload_file(mp4, meta: dict, dry_run: bool = False) -> dict:
             me = yt.channels().list(part="id,snippet", mine=True).execute()["items"][0]
             rec["channel"] = f"{me['snippet']['title']} ({me['id']})"
             rec["channel_ok"] = me["id"] == os.environ["YT_CHANNEL_ID"]
-            when = next_slot(taken=scheduled_on_channel(yt))
+            when = next_slot(taken=scheduled_on_channel(yt) + list(taken_extra or []))
         else:
             rec["note"] = "no YT_* credentials in the environment"
-            when = next_slot()
+            when = next_slot(taken=list(taken_extra or []))
         rec["publish_at"] = when.strftime("%Y-%m-%dT%H:%M:%SZ")
         return rec
 
@@ -132,7 +133,7 @@ def upload_file(mp4, meta: dict, dry_run: bool = False) -> dict:
     if me["id"] != os.environ["YT_CHANNEL_ID"]:
         raise SystemExit(f"token belongs to channel {me['id']} ({me['snippet']['title']}), not YT_CHANNEL_ID")
     # the channel itself is the source of truth for which slots are taken (no shared state needed)
-    when = next_slot(taken=scheduled_on_channel(yt))
+    when = next_slot(taken=scheduled_on_channel(yt) + list(taken_extra or []))
     rec = {"slug": slug, "title": meta["title"], "publish_at": when.strftime("%Y-%m-%dT%H:%M:%SZ")}
     dup = _already_on_channel(yt, meta["title"])
     if dup:
@@ -156,5 +157,38 @@ def upload_file(mp4, meta: dict, dry_run: bool = False) -> dict:
         while resp is None:
             _, resp = req.next_chunk()
         rec["video_id"] = resp["id"]
+        rec["privacy"] = privacy
     rec["url"] = f"https://youtube.com/shorts/{rec['video_id']}"
+    if thumb and not dup:
+        rec["thumbnail"] = set_thumbnail(yt, rec["video_id"], thumb)
+    if privacy == "public" and meta.get("first_comment") and not dup:
+        rec["comment"] = post_comment(yt, rec["video_id"], meta["first_comment"])
     return rec
+
+
+def set_thumbnail(yt, video_id: str, path) -> str:
+    """Custom thumbnail (needs a phone-verified channel; failure is reported, not fatal)."""
+    from googleapiclient.http import MediaFileUpload
+    try:
+        yt.thumbnails().set(videoId=video_id, media_body=MediaFileUpload(str(path), mimetype="image/jpeg")).execute()
+        return "set"
+    except Exception as e:  # noqa: BLE001
+        return f"not set: {str(e)[:160]}"
+
+
+def post_comment(yt, video_id: str, text: str) -> str:
+    """Channel's own first comment (only possible once the video is public; pinning has no API)."""
+    try:
+        r = yt.commentThreads().insert(part="snippet", body={"snippet": {"videoId": video_id, "topLevelComment": {
+            "snippet": {"textOriginal": text}}}}).execute()
+        return "posted " + r["id"]
+    except Exception as e:  # noqa: BLE001
+        return f"not posted: {str(e)[:160]}"
+
+
+def comment_if_public(yt, rec: dict, text: str) -> str | None:
+    """For scheduled uploads: post the first comment on a later run, once the video has gone public."""
+    v = yt.videos().list(part="status", id=rec["video_id"]).execute().get("items", [])
+    if v and v[0]["status"]["privacyStatus"] == "public":
+        return post_comment(yt, rec["video_id"], text)
+    return None

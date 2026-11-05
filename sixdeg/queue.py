@@ -81,6 +81,8 @@ def enqueue(slug: str) -> str:
     dst = wt / "queue" / f"{n:04d}-{slug}"
     dst.mkdir(parents=True)
     shutil.copy(d / meta["file"], dst / "video.mp4")
+    if (d / "thumb.jpg").exists():
+        shutil.copy(d / "thumb.jpg", dst / "thumb.jpg")
     meta["slug"] = slug
     (dst / "metadata.json").write_text(json.dumps(meta, indent=1, ensure_ascii=False))
     _push(f"Queue {slug}")
@@ -88,12 +90,24 @@ def enqueue(slug: str) -> str:
 
 
 def consume(max_items: int = 2, dry_run: bool = False) -> list[dict]:
-    from .upload import upload_file
+    from .upload import comment_if_public, have_credentials, upload_file, youtube
     wt = worktree()
     done = []
+    log = json.loads((wt / "uploaded.json").read_text())
+    if not dry_run and have_credentials():   # first comments for scheduled uploads that have gone public since
+        yt = youtube()
+        for r in log:
+            if r.get("video_id") and r.get("first_comment") and not r.get("comment"):
+                c = comment_if_public(yt, r, r["first_comment"])
+                if c:
+                    r["comment"] = c
+        (wt / "uploaded.json").write_text(json.dumps(log, indent=1, ensure_ascii=False) + "\n")
     for it in items(wt)[:max_items]:
         meta = json.loads((it / "metadata.json").read_text())
-        rec = upload_file(it / "video.mp4", meta, dry_run=dry_run)
+        thumb = it / "thumb.jpg" if (it / "thumb.jpg").exists() else None
+        rec = upload_file(it / "video.mp4", meta, dry_run=dry_run, taken_extra=[r["publish_at"] for r in done],
+                          thumb=thumb)
+        rec["first_comment"] = meta.get("first_comment")
         rec["n"] = int(it.name.split("-", 1)[0])
         done.append(rec)
         if dry_run:

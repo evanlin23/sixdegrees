@@ -48,13 +48,22 @@ def kit(slug: str) -> str:
     ])
     tags = list(dict.fromkeys([_short(p) for p in ppl] + ["six degrees of separation", "six degrees", "history",
                                                           "connections", "small world"]))
+    first = spec.get("first_comment") or spec.get("pinned_comment") or (
+        f"{spec['requested_by']} asked for this one. Who should I connect next? Two names, the weirder the better."
+        if spec.get("requested_by") else "Who should I connect next? Two names, the weirder the better.")
     meta = {"title": title, "description": desc, "tags": tags[:30], "categoryId": "27",  # Education
+            "first_comment": first,
             "madeForKids": False,
             # narrator is a generic TTS voice, not a real person, and photos are unaltered:
             # YouTube's altered/synthetic disclosure is not required
             "containsSyntheticMedia": False, "file": f"{slug}.mp4"}
     out = d / "out"
     out.mkdir(exist_ok=True)
+    mp4 = out / f"{slug}.mp4"
+    if mp4.exists():  # thumbnail: the hook frame (both faces, the "?" and Pin)
+        import subprocess
+        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-ss", "1.2", "-i", str(mp4), "-frames:v", "1",
+                        "-q:v", "3", str(out / "thumb.jpg")], check=True)
     (out / "metadata.json").write_text(json.dumps(meta, indent=1, ensure_ascii=False))
     md = "\n".join([
         f"# Upload kit: {slug}", "",
@@ -64,7 +73,7 @@ def kit(slug: str) -> str:
         "**Settings:** Not made for kids · Category: Education · "
         "Altered or synthetic content: No (generic narrator voice, unaltered photos)", "",
         f"**Pinned comment**", "```",
-        spec.get("pinned_comment") or f"Who should I connect next? Two names, the weirder the better.",
+        first,
         "```",
     ])
     (out / "upload.md").write_text(md)
