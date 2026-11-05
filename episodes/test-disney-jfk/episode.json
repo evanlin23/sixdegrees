@@ -1,0 +1,14 @@
+{
+  "from": "Walt Disney",
+  "to": "John F. Kennedy",
+  "title": "How is Walt Disney connected to JFK?",
+  "hook": "How is Walt Disney connected to John F. Kennedy?",
+  "links": [
+    {"a": "Walt Disney", "b": "Wernher von Braun",
+     "image": {"file": "File:Walt Disney and Dr. Wernher von Braun - GPN-2000-000060.jpg"},
+     "line": "In 1954, Walt Disney teamed up with rocket scientist Wernher von Braun to make films about going to space."},
+    {"a": "Wernher von Braun", "b": "John F. Kennedy",
+     "image": {"file": "File:Kennedy vonbraun 19may63 02.jpg"},
+     "line": "Nine years later, von Braun was showing President Kennedy the rocket that would take America to the Moon."}
+  ]
+}

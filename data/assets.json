@@ -1,0 +1,120 @@
+{
+ "license_note": "Mixkit Sound Effects Free License / Mixkit Stock Music Free License: free for commercial use, no attribution; files may not be redistributed, so they are downloaded by `python -m sixdeg setup`, never committed.",
+ "sfx": {
+  "shutter": {
+   "url": "https://assets.mixkit.co/active_storage/sfx/1133/1133-preview.mp3",
+   "title": "Camera shutter click"
+  },
+  "shutter_hard": {
+   "url": "https://assets.mixkit.co/active_storage/sfx/1430/1430-preview.mp3",
+   "title": "Camera shutter hard click"
+  },
+  "pop": {
+   "url": "https://assets.mixkit.co/active_storage/sfx/2364/2364-preview.mp3",
+   "title": "Hard pop click"
+  },
+  "impact": {
+   "url": "https://assets.mixkit.co/active_storage/sfx/772/772-preview.mp3",
+   "title": "Quick zoom impact"
+  },
+  "hook_hit": {
+   "url": "https://assets.mixkit.co/active_storage/sfx/1143/1143-preview.mp3",
+   "title": "Cinematic whoosh deep impact"
+  },
+  "bass_hit": {
+   "url": "https://assets.mixkit.co/active_storage/sfx/2299/2299-preview.mp3",
+   "title": "Short bass hit"
+  },
+  "riser": {
+   "url": "https://assets.mixkit.co/active_storage/sfx/790/790-preview.mp3",
+   "title": "Cinematic trailer riser"
+  },
+  "boom": {
+   "url": "https://assets.mixkit.co/active_storage/sfx/2902/2902-preview.mp3",
+   "title": "Movie impact intro presentation"
+  },
+  "swipe": {
+   "url": "https://assets.mixkit.co/active_storage/sfx/2627/2627-preview.mp3",
+   "title": "Fast swipe zoom"
+  },
+  "big_impact": {
+   "url": "https://assets.mixkit.co/active_storage/sfx/788/788-preview.mp3",
+   "title": "Big cinematic impact"
+  },
+  "px_hook": {
+   "url": "https://assets.mixkit.co/active_storage/sfx/234/234-preview.mp3",
+   "title": "Video game mystery alert"
+  },
+  "px_cut": {
+   "url": "https://assets.mixkit.co/active_storage/sfx/2185/2185-preview.mp3",
+   "title": "Electronic retro block hit"
+  },
+  "px_jump": {
+   "url": "https://assets.mixkit.co/active_storage/sfx/223/223-preview.mp3",
+   "title": "Arcade retro jump"
+  },
+  "px_coin": {
+   "url": "https://assets.mixkit.co/active_storage/sfx/216/216-preview.mp3",
+   "title": "Arcade game jump coin"
+  },
+  "px_pop": {
+   "url": "https://assets.mixkit.co/active_storage/sfx/2887/2887-preview.mp3",
+   "title": "Arcade video game pop"
+  },
+  "px_win": {
+   "url": "https://assets.mixkit.co/active_storage/sfx/2059/2059-preview.mp3",
+   "title": "Game level completed"
+  },
+  "px_bomb": {
+   "url": "https://assets.mixkit.co/active_storage/sfx/2811/2811-preview.mp3",
+   "title": "8-Bit bomb explosion"
+  }
+ },
+ "music": [
+  {
+   "id": "876",
+   "title": "Like a Loop Machine",
+   "url": "https://assets.mixkit.co/music/876/876.mp3"
+  },
+  {
+   "id": "135",
+   "title": "Sleepy Cat",
+   "url": "https://assets.mixkit.co/music/135/135.mp3"
+  },
+  {
+   "id": "299",
+   "title": "Lil Sky Beats",
+   "url": "https://assets.mixkit.co/music/299/299.mp3"
+  },
+  {
+   "id": "281",
+   "title": "Complicated",
+   "url": "https://assets.mixkit.co/music/281/281.mp3"
+  },
+  {
+   "id": "765",
+   "title": "Lo-Fi 03",
+   "url": "https://assets.mixkit.co/music/765/765.mp3"
+  },
+  {
+   "id": "246",
+   "title": "Hip Hop Astrology Beat",
+   "url": "https://assets.mixkit.co/music/246/246.mp3"
+  },
+  {
+   "id": "304",
+   "title": "Torey",
+   "url": "https://assets.mixkit.co/music/304/304.mp3"
+  },
+  {
+   "id": "404",
+   "title": "Greed",
+   "url": "https://assets.mixkit.co/music/404/404.mp3"
+  },
+  {
+   "id": "298",
+   "title": "Lil Haiti Beat",
+   "url": "https://assets.mixkit.co/music/298/298.mp3"
+  }
+ ]
+}

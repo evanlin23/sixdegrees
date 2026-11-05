@@ -1,0 +1,114 @@
+"""Producer/consumer queue on the `queue` branch (same model as blocky-stories).
+
+Producer (a Claude session):   python -m sixdeg enqueue <slug>
+    copies out/<slug>.mp4 + out/metadata.json into  queue/<NNNN>-<slug>/  on the `queue` branch and pushes.
+Consumer (GitHub Actions):     python -m sixdeg consume [--max 2]
+    uploads the oldest items to YouTube (private + scheduled publish), moves them from queue/ to the
+    uploaded.json log, pushes. Runs from .github/workflows/upload.yml, started by cron-job.org.
+
+The branch only ever holds what is waiting, so it stays small; it is an orphan branch (no code).
+"""
+from __future__ import annotations
+
+import json
+import os
+import shutil
+import subprocess
+from pathlib import Path
+
+from .common import ROOT, EPISODES
+
+BRANCH = "queue"
+WT = ROOT / ".queue"          # git worktree of the queue branch
+
+
+def _git(*a, cwd=ROOT, check=True):
+    return subprocess.run(["git", *a], cwd=cwd, check=check, capture_output=True, text=True)
+
+
+def worktree() -> Path:
+    """Fresh worktree of origin/queue (created as an orphan branch the first time)."""
+    if WT.exists():
+        _git("worktree", "remove", "--force", str(WT), check=False)
+        shutil.rmtree(WT, ignore_errors=True)
+    _git("worktree", "prune")
+    has_remote = _git("ls-remote", "--heads", "origin", BRANCH).stdout.strip() != ""
+    if has_remote:
+        _git("fetch", "origin", BRANCH)
+        _git("worktree", "add", "-B", BRANCH, str(WT), f"origin/{BRANCH}")
+    else:
+        _git("worktree", "add", "--detach", str(WT))
+        _git("checkout", "--orphan", BRANCH, cwd=WT)
+        _git("rm", "-rf", "--quiet", ".", cwd=WT)
+        (WT / "README.md").write_text("Videos waiting to be uploaded. Producer: `python -m sixdeg enqueue`; "
+                                      "consumer: `.github/workflows/upload.yml`.\n")
+        (WT / "queue").mkdir()
+        (WT / "queue" / ".keep").write_text("")
+        (WT / "uploaded.json").write_text("[]\n")
+        _git("add", "-A", cwd=WT)
+        _git("commit", "-m", "Start the upload queue", cwd=WT)
+    return WT
+
+
+def _push(msg: str):
+    _git("add", "-A", cwd=WT)
+    if _git("diff", "--cached", "--quiet", cwd=WT, check=False).returncode == 0:
+        return
+    _git("commit", "-m", msg, cwd=WT)
+    for _ in range(4):
+        r = _git("push", "-u", "origin", BRANCH, cwd=WT, check=False)
+        if r.returncode == 0:
+            return
+        _git("pull", "--rebase", "origin", BRANCH, cwd=WT, check=False)   # producer and consumer raced
+    raise RuntimeError("could not push the queue branch: " + r.stderr)
+
+
+def items(wt: Path) -> list[Path]:
+    return sorted(p for p in (wt / "queue").iterdir() if p.is_dir())
+
+
+def enqueue(slug: str) -> str:
+    d = EPISODES / slug / "out"
+    qa = json.loads((d / "qa.json").read_text())
+    if not qa.get("pass"):
+        raise SystemExit(f"{slug}: QA has not passed; not enqueuing")
+    meta = json.loads((d / "metadata.json").read_text())
+    wt = worktree()
+    uploaded = json.loads((wt / "uploaded.json").read_text())
+    if any(u["slug"] == slug for u in uploaded) or any(p.name.split("-", 1)[1] == slug for p in items(wt)):
+        raise SystemExit(f"{slug}: already queued or uploaded")
+    n = max([int(p.name.split("-", 1)[0]) for p in items(wt)] + [u.get("n", 0) for u in uploaded] + [0]) + 1
+    dst = wt / "queue" / f"{n:04d}-{slug}"
+    dst.mkdir(parents=True)
+    shutil.copy(d / meta["file"], dst / "video.mp4")
+    meta["slug"] = slug
+    (dst / "metadata.json").write_text(json.dumps(meta, indent=1, ensure_ascii=False))
+    _push(f"Queue {slug}")
+    return f"queued {dst.name} ({(dst / 'video.mp4').stat().st_size / 1e6:.1f} MB); {len(items(wt))} waiting"
+
+
+def consume(max_items: int = 2, dry_run: bool = False) -> list[dict]:
+    from .upload import upload_file
+    wt = worktree()
+    done = []
+    for it in items(wt)[:max_items]:
+        meta = json.loads((it / "metadata.json").read_text())
+        rec = upload_file(it / "video.mp4", meta, dry_run=dry_run)
+        rec["n"] = int(it.name.split("-", 1)[0])
+        done.append(rec)
+        if dry_run:
+            continue
+        log = json.loads((wt / "uploaded.json").read_text())
+        log.append(rec)
+        (wt / "uploaded.json").write_text(json.dumps(log, indent=1, ensure_ascii=False) + "\n")
+        shutil.rmtree(it)
+        _push(f"Uploaded {meta['slug']} ({rec.get('video_id')})")
+    left = len(items(wt))
+    out = os.environ.get("GITHUB_STEP_SUMMARY")
+    if out:
+        with open(out, "a") as f:
+            for r in done:
+                f.write(f"- {r['title']}: {r.get('url', 'dry run')} (publishes {r['publish_at']})\n")
+            f.write(f"\n{left} videos left in the queue.\n")
+    print(json.dumps({"uploaded": done, "left": left}, indent=1))
+    return done
