@@ -1,12 +1,15 @@
-# Consumer: uploads the oldest videos on the `queue` branch to YouTube, private with a scheduled publish
-# (11:30 AM and 6:30 PM Central). Started once a day by cron-job.org (docs/youtube-setup.md), like
-# blocky-stories, because GitHub's own `schedule:` has proven unreliable. Run it by hand from the Actions tab too.
+# Consumer: uploads the oldest videos on the `queue` branch to YouTube. Started by cron-job.org (GitHub's own
+# `schedule:` has proven unreliable), like blocky-stories. Two modes:
+#   privacy=public    (cron at ~11:22 and ~18:22 CT, max=1): goes live now, sets the thumbnail, posts the first comment
+#   privacy=scheduled (one daily run, max=2): private until the next slot; comments are posted by a later run
+# Run it by hand from the Actions tab too.
 name: upload
 on:
   workflow_dispatch:
     inputs:
       max: {description: "how many to upload", default: "2"}
       dry_run: {description: "true = don't upload, just show what would happen", default: "false"}
+      privacy: {description: "public = go live now and post the first comment; scheduled = private until the next slot", default: ""}
 concurrency: {group: upload, cancel-in-progress: false}
 permissions: {contents: write, issues: write}
 jobs:
@@ -26,7 +29,7 @@ jobs:
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
           YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
           YT_CHANNEL_ID: ${{ vars.YT_CHANNEL_ID }}
-          YT_PRIVACY: ${{ vars.YT_PRIVACY || 'scheduled' }}
+          YT_PRIVACY: ${{ inputs.privacy || vars.YT_PRIVACY || 'scheduled' }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898729+github-actions[bot]@users.noreply.github.com"
