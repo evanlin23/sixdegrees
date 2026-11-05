@@ -1,0 +1,26 @@
+# Performance snapshot of every uploaded Short (views, likes, comments, and retention if the token has the
+# yt-analytics.readonly scope). Run by hand or by a Claude check-in; history is kept in stats.json on `queue`.
+name: stats
+on:
+  workflow_dispatch:
+concurrency: {group: queue-writers, cancel-in-progress: false}
+permissions: {contents: write}
+jobs:
+  stats:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install requests google-api-python-client google-auth
+      - env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ vars.YT_CHANNEL_ID }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898729+github-actions[bot]@users.noreply.github.com"
+          python -m sixdeg stats
