@@ -20,7 +20,6 @@ import random
 from zoneinfo import ZoneInfo
 
 from .common import DATA
-from .episode import load
 
 TZ = ZoneInfo("America/Chicago")
 SLOTS = [(11, 30), (18, 30)]          # Central time; each gets 0-20 min jitter so it never looks like clockwork
@@ -92,6 +91,7 @@ def _already_on_channel(yt, title: str) -> str | None:
 
 def upload(slug: str, dry_run: bool = False) -> dict:
     """Upload an episode straight from episodes/<slug>/out (the queue normally does this instead)."""
+    from .episode import load  # heavy imports (cv2...) only for local use; the Actions consumer doesn't need them
     d, spec = load(slug)
     out = d / "out"
     qa = json.loads((out / "qa.json").read_text()) if (out / "qa.json").exists() else {}
@@ -113,11 +113,17 @@ def upload_file(mp4, meta: dict, dry_run: bool = False) -> dict:
     """Upload one video as private with publishAt = the next free slot; returns the record."""
     slug = meta.get("slug", "")
     if dry_run or not have_credentials():
-        when = next_slot()
-        rec = {"slug": slug, "title": meta["title"], "publish_at": when.strftime("%Y-%m-%dT%H:%M:%SZ"),
-               "dry_run": True}
-        if not have_credentials():
+        rec = {"slug": slug, "title": meta["title"], "dry_run": True}
+        if have_credentials():  # dry run with credentials: prove the token works and points at the right channel
+            yt = youtube()
+            me = yt.channels().list(part="id,snippet", mine=True).execute()["items"][0]
+            rec["channel"] = f"{me['snippet']['title']} ({me['id']})"
+            rec["channel_ok"] = me["id"] == os.environ["YT_CHANNEL_ID"]
+            when = next_slot(taken=scheduled_on_channel(yt))
+        else:
             rec["note"] = "no YT_* credentials in the environment"
+            when = next_slot()
+        rec["publish_at"] = when.strftime("%Y-%m-%dT%H:%M:%SZ")
         return rec
 
     from googleapiclient.http import MediaFileUpload

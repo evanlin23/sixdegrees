@@ -17,6 +17,17 @@ import json
 import sys
 
 
+def render_any(slug):
+    """Render in the channel style from data/style.json (pixel by default; "classic" = the original look)."""
+    from .common import DATA
+    style = json.loads((DATA / "style.json").read_text()).get("style", "pixel") if (DATA / "style.json").exists() else "pixel"
+    if style == "pixel":
+        from .render_pixel import render
+    else:
+        from .render import render
+    return render(slug)
+
+
 def main(argv):
     if not argv or argv[0] in ("-h", "--help"):
         print(__doc__)
@@ -48,8 +59,7 @@ def main(argv):
         from .episode import prep
         prep(args[0])
     elif cmd == "render":
-        from .render import render
-        render(args[0])
+        render_any(args[0])
     elif cmd == "qa":
         from .qa import qa
         r = qa(args[0])
@@ -72,8 +82,7 @@ def main(argv):
         from .episode import prep
         from .kit import kit
         from .qa import qa
-        from .render import render
-        prep(args[0]); render(args[0])
+        prep(args[0]); render_any(args[0])
         r = qa(args[0]); print(json.dumps(r, indent=1))
         print(kit(args[0]))
         return 0 if r["pass"] else 1

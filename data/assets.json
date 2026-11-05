@@ -40,6 +40,34 @@
   "big_impact": {
    "url": "https://assets.mixkit.co/active_storage/sfx/788/788-preview.mp3",
    "title": "Big cinematic impact"
+  },
+  "px_hook": {
+   "url": "https://assets.mixkit.co/active_storage/sfx/234/234-preview.mp3",
+   "title": "Video game mystery alert"
+  },
+  "px_cut": {
+   "url": "https://assets.mixkit.co/active_storage/sfx/2185/2185-preview.mp3",
+   "title": "Electronic retro block hit"
+  },
+  "px_jump": {
+   "url": "https://assets.mixkit.co/active_storage/sfx/223/223-preview.mp3",
+   "title": "Arcade retro jump"
+  },
+  "px_coin": {
+   "url": "https://assets.mixkit.co/active_storage/sfx/216/216-preview.mp3",
+   "title": "Arcade game jump coin"
+  },
+  "px_pop": {
+   "url": "https://assets.mixkit.co/active_storage/sfx/2887/2887-preview.mp3",
+   "title": "Arcade video game pop"
+  },
+  "px_win": {
+   "url": "https://assets.mixkit.co/active_storage/sfx/2059/2059-preview.mp3",
+   "title": "Game level completed"
+  },
+  "px_bomb": {
+   "url": "https://assets.mixkit.co/active_storage/sfx/2811/2811-preview.mp3",
+   "title": "8-Bit bomb explosion"
   }
  },
  "music": [
