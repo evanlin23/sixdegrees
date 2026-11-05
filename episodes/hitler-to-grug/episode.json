@@ -1,0 +1,118 @@
+{
+  "from": "Adolf Hitler",
+  "to": "Grug",
+  "requested_by": "@Twelfz-z3u",
+  "title": "From Hitler to a cartoon caveman in six photos",
+  "description": "Seven real photos connect Adolf Hitler to Grug from The Croods, through a dictator, two presidents, the King of Rock and a movie star.",
+  "hook": "How is Adolf Hitler connected to Grug?",
+  "people": {
+    "Adolf Hitler": {
+      "label": "Adolf Hitler"
+    },
+    "Francisco Franco": {
+      "label": "Francisco Franco"
+    },
+    "Dwight D. Eisenhower": {
+      "label": "Dwight Eisenhower"
+    },
+    "Richard Nixon": {
+      "label": "Richard Nixon"
+    },
+    "Elvis Presley": {
+      "label": "Elvis Presley"
+    },
+    "Lisa Marie Presley": {
+      "label": "Lisa Marie Presley"
+    },
+    "Nicolas Cage": {
+      "label": "Nicolas Cage"
+    },
+    "Grug": {
+      "label": "Grug"
+    }
+  },
+  "links": [
+    {
+      "a": "Adolf Hitler",
+      "b": "Francisco Franco",
+      "image": {
+        "file": "File:Hitler and Franco at Hendaye (en.wiki).jpg"
+      },
+      "line": "In October 1940, Hitler met Spain's dictator Francisco Franco at Hendaye, trying to pull Spain into the war.",
+      "a_face": [
+        355,
+        533,
+        345,
+        455
+      ],
+      "b_face": 1
+    },
+    {
+      "a": "Francisco Franco",
+      "b": "Dwight D. Eisenhower",
+      "image": {
+        "file": "File:Franco eisenhower 1959 madrid.jpg"
+      },
+      "line": "Spain stayed out, and in 1959 Franco welcomed President Dwight Eisenhower to Madrid.",
+      "a_face": 7,
+      "b_face": 6
+    },
+    {
+      "a": "Dwight D. Eisenhower",
+      "b": "Richard Nixon",
+      "image": {
+        "file": "File:Future Presidents Dwight D. Eisenhower and Richard Nixon Enjoying a Chat in 1952.jpg"
+      },
+      "line": "Eisenhower's vice president for eight years was a young senator named Richard Nixon.",
+      "b_face": 1
+    },
+    {
+      "a": "Richard Nixon",
+      "b": "Elvis Presley",
+      "image": {
+        "file": "File:Elvis-nixon.jpg"
+      },
+      "line": "In December 1970, Elvis Presley showed up at the White House asking President Nixon for a narcotics badge."
+    },
+    {
+      "a": "Elvis Presley",
+      "b": "Lisa Marie Presley",
+      "image": {
+        "file": "File:Elvis, Priscilla and Lisa Marie.jpg"
+      },
+      "line": "In 1968, Elvis posed with his newborn daughter, Lisa Marie.",
+      "b_face": 3
+    },
+    {
+      "a": "Lisa Marie Presley",
+      "b": "Nicolas Cage",
+      "image": {
+        "url": "https://assets2.cbsnewsstatic.com/hub/i/r/2005/10/28/4a49dc26-a642-11e2-a3f0-029118418759/thumbnail/620x493/6d296e5611ad855611f616fb0fd105a1/image990867.jpg",
+        "credit": "Mark Wilson/Getty Images",
+        "license": "Fair use (commentary)",
+        "source": "https://www.cbsnews.com/pictures/nicolas-cage/"
+      },
+      "line": "In 2001, Lisa Marie sat beside Nicolas Cage at the Capitol, and the next year they married.",
+      "b_face": 1
+    },
+    {
+      "a": "Nicolas Cage",
+      "b": "Grug",
+      "image": {
+        "pair": [
+          {
+            "file": "File:Nicolas Cage Deauville 2013.jpg"
+          },
+          {
+            "url": "https://www.filmofilia.com/wp-content/uploads/2012/09/Crood-Family.jpg",
+            "credit": "DreamWorks Animation (via Entertainment Weekly)",
+            "license": "Fair use (commentary)",
+            "source": "https://www.filmofilia.com/the-croods-new-images-114199/"
+          }
+        ]
+      },
+      "line": "And Grug, the caveman dad of The Croods, is voiced by Nicolas Cage.",
+      "b_face": 6
+    }
+  ]
+}

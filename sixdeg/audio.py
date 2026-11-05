@@ -36,6 +36,7 @@ RESPELL = {
     "Sadat": "Sah-dot",
     "Neymar": "Nay-mar",
     "Ronaldinho": "Ronal-deen-yo",
+    "Hendaye": "On-dye",
 }
 
 

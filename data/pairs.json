@@ -75,11 +75,12 @@
  {
   "from": "Adolf Hitler",
   "to": "Grug (The Croods)",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@Twelfz-z3u",
   "comment": "Hitler to Grug from Croods",
   "likes": 1,
-  "source": "comment on 'leonardo da vinci to naruto' (old channel)"
+  "source": "comment on 'leonardo da vinci to naruto' (old channel)",
+  "slug": "hitler-to-grug"
  },
  {
   "from": "Zeus",
