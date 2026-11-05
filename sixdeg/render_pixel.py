@@ -1,6 +1,6 @@
 """Pixel-arcade style renderer (the channel look).
 
-Real photos in a white card with a hard shadow, on a scrolling two-tone pixel checkerboard;
+Photos and paintings in a white card with a hard shadow, on a scrolling two-tone pixel checkerboard;
 chunky pixel name tags and captions (Press Start 2P); Pin (pixel pushpin in a detective hat)
 thrown along the red evidence string; "?" blocks that fill in as people are revealed;
 pixelate-dissolve cuts; 8-bit SFX; CONNECTED! on the final reveal.
@@ -223,7 +223,7 @@ def render(slug: str, log=print) -> Path:
         dr.rectangle([0, 0, W, BAND], fill=INK)
         paste(base, title_im, W / 2, 80)
         if i is not None:
-            paste(base, pixel_text(f"PHOTO {i + 1}/{n_links}", 22, fill=YELLOW, shadow=False), W / 2, 160)
+            paste(base, pixel_text(f"LINK {i + 1}/{n_links}", 22, fill=YELLOW, shadow=False), W / 2, 160)
 
     def blocks(base, upto, active, tt):
         n = len(C.people)

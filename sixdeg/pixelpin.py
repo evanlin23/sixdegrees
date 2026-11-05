@@ -19,12 +19,12 @@ PALETTES = {
 FIXED = {"K": (24, 14, 32), "W": (255, 255, 255), "G": (196, 204, 218), "g": (116, 122, 140), "M": (90, 10, 34),
          "T": (255, 130, 150), "H": (120, 86, 60), "h": (80, 56, 38)}
 
-GW, GH = 30, 44   # sprite drawn at offset (2, 6) inside, leaving room for hat, arms and border
+GW, GH = 34, 44   # local art is drawn at offset (4, 6), leaving room for hat, arms, outline and border
 
 
 def _grid(expr: str, arms: bool, hat: bool, look: int) -> list[list[str]]:
     big = [["." for _ in range(GW)] for _ in range(GH)]
-    g = _Local(big, 2, 6)
+    g = _Local(big, 4, 6)
     cx, cy, r = 13, 12, 10
     # head
     for y in range(36):

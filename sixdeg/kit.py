@@ -35,7 +35,7 @@ def kit(slug: str) -> str:
     tags_inline = " ".join(dict.fromkeys([_tag(p) for p in (spec["from"], spec["to"])] +
                                          ["#sixdegrees", "#history", "#didyouknow", "#shorts"]))
     desc = "\n".join([
-        spec.get("description") or f"{len(spec['links'])} real photos connect {a} to {b}.",
+        spec.get("description") or f"{len(spec["links"])} pictures connect {a} to {b}.",
         "",
         chain,
         "",
