@@ -1,0 +1,53 @@
+{
+  "from": "Rivaldo",
+  "to": "Lil Wayne",
+  "requested_by": "@Devoted_99",
+  "title": "From Brazil's World Cup hero to Lil Wayne in four photos",
+  "description": "Four real photos link 2002 World Cup winner Rivaldo to Lil Wayne, through Ronaldinho and two presidents.",
+  "hook": "How is Rivaldo connected to Lil Wayne?",
+  "people": {
+    "Ronaldinho": {
+      "label": "Ronaldinho"
+    }
+  },
+  "links": [
+    {
+      "a": "Rivaldo",
+      "b": "Ronaldinho",
+      "image": {
+        "url": "https://media.redgol.cl/wp-content/uploads/sites/8/2024/08/22132635/gettyimages-52873372_crop1584821371528jpg_242310155-1200x740.jpg",
+        "credit": "Getty Images, via RedGol",
+        "license": "Fair use (commentary)",
+        "source": "https://redgol.cl/internacional/Ronaldo-Rivaldo-y-Roberto-Carlos-saludaron-a-Ronaldinho-en-el-dia-de-su-cumpleanos-20200321-0051.html"
+      },
+      "line": "In 2002, Rivaldo lined up with Ronaldinho in Brazil's team photo, and together they won the World Cup."
+    },
+    {
+      "a": "Ronaldinho",
+      "b": "Jair Bolsonaro",
+      "image": {
+        "file": "File:2019 Encontro com Presidente do Instituto Brasileiro do Turismo, Gilson Machado e o ex-jogador de futebol, Ronaldinho Gaúcho.jpg"
+      },
+      "line": "In June 2019, Ronaldinho visited Brazil's president Jair Bolsonaro in Brasília to talk about promoting tourism."
+    },
+    {
+      "a": "Jair Bolsonaro",
+      "b": "Donald Trump",
+      "image": {
+        "file": "File:Bolsonaro with US President Donald Trump in White House, 19 March 2019.jpg"
+      },
+      "line": "Earlier that year at the White House, Bolsonaro and Donald Trump swapped personalized football jerseys."
+    },
+    {
+      "a": "Donald Trump",
+      "b": "Lil Wayne",
+      "image": {
+        "url": "https://lede-admin.stereogum.com/wp-content/uploads/sites/64/2020/10/lil-wayne-trump-meeting-1604014974.jpg",
+        "credit": "Lil Wayne (Twitter), via Stereogum",
+        "license": "Fair use (commentary)",
+        "source": "https://stereogum.com/2104337/lil-wayne-trump-endorsement-meeting/news"
+      },
+      "line": "And in October 2020, days before the election, Trump met Lil Wayne in Florida for this thumbs-up photo."
+    }
+  ]
+}

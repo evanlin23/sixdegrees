@@ -1,0 +1,44 @@
+{
+  "from": "Neymar",
+  "to": "Elizabeth II",
+  "requested_by": "@MEMEDOSBAM",
+  "title": "Neymar is three photos away from Queen Elizabeth II",
+  "description": "Three real photos link Neymar to Queen Elizabeth II, by way of a Brazilian president and a future king.",
+  "hook": "How is Neymar connected to Queen Elizabeth the Second?",
+  "people": {
+    "Elizabeth II": {
+      "label": "Queen Elizabeth II"
+    },
+    "Charles III": {
+      "label": "King Charles III"
+    }
+  },
+  "links": [
+    {
+      "a": "Neymar",
+      "b": "Jair Bolsonaro",
+      "image": {
+        "file": "File:2019 Final da Copa América 2019 - 48225217491.jpg"
+      },
+      "line": "In July 2019, at the Copa América final in Rio, Neymar posed with Brazil's president Jair Bolsonaro."
+    },
+    {
+      "a": "Jair Bolsonaro",
+      "b": "Charles III",
+      "image": {
+        "file": "File:2019 Reunião Bilateral com o Príncipe Charles - 48947648318.jpg"
+      },
+      "line": "That October in Tokyo, Bolsonaro met Prince Charles; both had come for Japan's new emperor's enthronement ceremony."
+    },
+    {
+      "a": "Charles III",
+      "b": "Elizabeth II",
+      "image": {
+        "file": "File:Queen Elizabeth II Platinum Jubilee 2022 - Platinum Pageant (52123563502).jpg"
+      },
+      "line": "And in 2022, Charles stood beside his mother, Queen Elizabeth the Second, for her Platinum Jubilee on the palace balcony.",
+      "a_face": 0,
+      "b_face": 1
+    }
+  ]
+}

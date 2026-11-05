@@ -34,6 +34,8 @@ RESPELL = {
     "Jae-in": "Jay In",
     "FUBAR": "Foo-bar",
     "Sadat": "Sah-dot",
+    "Neymar": "Nay-mar",
+    "Ronaldinho": "Ronal-deen-yo",
 }
 
 

@@ -93,11 +93,12 @@
  {
   "from": "Rivaldo",
   "to": "Lil Wayne",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@Devoted_99",
   "comment": "w rivaldo to lil wayne plz",
   "likes": 0,
-  "source": "comment on 'pythagoras to virgil van dijk' (old channel)"
+  "source": "comment on 'pythagoras to virgil van dijk' (old channel)",
+  "slug": "rivaldo-to-lil-wayne"
  },
  {
   "from": "King Henry VII",
@@ -129,11 +130,12 @@
  {
   "from": "Neymar",
   "to": "Queen Elizabeth",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@MEMEDOSBAM",
   "comment": "Faz NEYMAR AND RAINHA ELIZABETH",
   "likes": 0,
-  "source": "comment on 'leonardo da vinci to naruto' (old channel)"
+  "source": "comment on 'leonardo da vinci to naruto' (old channel)",
+  "slug": "neymar-to-queen-elizabeth-ii"
  },
  {
   "from": "Queen Elizabeth",
