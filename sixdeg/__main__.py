@@ -11,6 +11,7 @@
   make <slug>                    prep + render + qa + kit
   upload <slug> [--dry-run]      schedule it on YouTube in the next free slot (private until publish time)
   enqueue <slug>                 producer: put the finished video on the `queue` branch
+  requeue [slug...]              replace queued videos with their latest QA-passed render
   consume [--max N] [--dry-run]  consumer (GitHub Actions): upload the oldest N queued videos
 """
 import json
@@ -74,6 +75,9 @@ def main(argv):
     elif cmd == "enqueue":
         from .queue import enqueue
         print(enqueue(args[0]))
+    elif cmd == "requeue":
+        from .queue import requeue
+        print(requeue(args or None))
     elif cmd == "consume":
         from .queue import consume
         mx = int(args[args.index("--max") + 1]) if "--max" in args else 2

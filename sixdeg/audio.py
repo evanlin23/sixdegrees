@@ -31,7 +31,7 @@ RESPELL = {
     "Hatsune Miku": "Hot-sue-neh Mee-koo",
     "IShowSpeed": "I Show Speed",
     "MrBeast": "Mister Beast",
-    "Jae-in": "Jay-inn",
+    "Jae-in": "Jay In",
 }
 
 
@@ -43,9 +43,35 @@ def _tts():
     return _kokoro
 
 
+_ONES = "zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen".split()
+_TENS = "_ _ twenty thirty forty fifty sixty seventy eighty ninety".split()
+
+
+def _two(n: int) -> str:
+    if n < 20:
+        return _ONES[n]
+    t, o = divmod(n, 10)
+    return _TENS[t] + ("-" + _ONES[o] if o else "")
+
+
+def say_year(y: int) -> str:
+    """1973 -> nineteen seventy-three, 1905 -> nineteen oh-five, 1900 -> nineteen hundred,
+    2005 -> two thousand five, 2013 -> twenty thirteen (how a narrator says years)."""
+    hi, lo = divmod(y, 100)
+    if 2000 <= y <= 2009:
+        return "two thousand" + ("" if y == 2000 else " " + _ONES[lo])
+    if lo == 0:
+        return _two(hi) + " hundred"
+    if lo < 10:
+        return _two(hi) + " oh-" + _ONES[lo]
+    return _two(hi) + " " + _two(lo)
+
+
 def speakable(text: str) -> str:
     for k, v in RESPELL.items():
         text = text.replace(k, v)
+    # years: Kokoro reads "1973" as "nineteen hundred seventy-three"
+    text = re.sub(r"\b(1[0-9]{3}|20[0-9]{2})\b(?![,.]?\d)", lambda m: say_year(int(m.group(1))), text)
     return text
 
 
@@ -334,7 +360,8 @@ def mix(total: float, voice: list[tuple[float, np.ndarray]], sfx: list[tuple[flo
     env = np.abs(v)
     k = int(0.15 * SR)
     env = np.convolve(env, np.ones(k) / k, mode="same")
-    duck = 1 - 0.5 * np.clip(env / (env.max() + 1e-9) * 4, 0, 1)
+    speaking = np.clip(env / (env.max() + 1e-9) * 4, 0, 1)
+    duck = 1 - 0.7 * speaking                 # music drops ~10 dB under the voice
     fx = np.zeros(n, np.float32)
     for t, a in sfx:
         s = int(t * SR)
@@ -342,9 +369,10 @@ def mix(total: float, voice: list[tuple[float, np.ndarray]], sfx: list[tuple[flo
         if s < n:
             fx[s:e] += a[: e - s]
     # fade music out at the end
-    fo = int(1.2 * SR)
+    fo = int(0.03 * SR)   # no fade-out: the video cuts hard and loops
     m[-fo:] *= np.linspace(1, 0, fo)
-    y = v * 1.0 + m * duck * 0.9 + fx * 0.8
+    fx_duck = 1 - 0.5 * speaking               # effects also step back while someone is talking
+    y = v * 1.0 + m * duck * 0.55 + fx * fx_duck * 0.5
     y = y / max(1e-6, np.abs(y).max())
     # soft limiter: lowers crest factor so loudness normalisation can reach -14 LUFS
     drive = 2.2

@@ -89,6 +89,30 @@ def enqueue(slug: str) -> str:
     return f"queued {dst.name} ({(dst / 'video.mp4').stat().st_size / 1e6:.1f} MB); {len(items(wt))} waiting"
 
 
+def requeue(slugs: list[str] | None = None) -> str:
+    """Replace already-queued videos with their latest render. Refuses any episode whose QA didn't pass."""
+    wt = worktree()
+    done, refused = [], []
+    for it in items(wt):
+        slug = it.name.split("-", 1)[1]
+        if slugs and slug not in slugs:
+            continue
+        out = EPISODES / slug / "out"
+        qa = json.loads((out / "qa.json").read_text()) if (out / "qa.json").exists() else {}
+        if not qa.get("pass"):
+            refused.append(slug)
+            continue
+        meta = json.loads((out / "metadata.json").read_text())
+        meta["slug"] = slug
+        (it / "metadata.json").write_text(json.dumps(meta, indent=1, ensure_ascii=False))
+        shutil.copy(out / meta["file"], it / "video.mp4")
+        if (out / "thumb.jpg").exists():
+            shutil.copy(out / "thumb.jpg", it / "thumb.jpg")
+        done.append(slug)
+    _push("Requeue latest renders: " + ", ".join(done))
+    return f"requeued {done}; refused (QA not passed) {refused}"
+
+
 def consume(max_items: int = 2, dry_run: bool = False) -> list[dict]:
     from .upload import comment_if_public, have_credentials, upload_file, youtube
     wt = worktree()
