@@ -6,3 +6,7 @@ onnxruntime
 kokoro-onnx
 soundfile
 faster-whisper
+google-api-python-client
+google-auth
+pocket-tts
+# torch: install the CPU build first: pip install torch --index-url https://download.pytorch.org/whl/cpu

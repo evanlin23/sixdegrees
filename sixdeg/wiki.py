@@ -176,7 +176,38 @@ def _links(c: str) -> list[str]:
 
 
 def article_images(title: str) -> list[dict]:
-    """Images used in an article, with captions and the article links inside each caption."""
+    """Images used in an article, with captions and the article links inside each caption.
+
+    Uses the REST media-list endpoint (one light request, rate-limited separately from the
+    action API); falls back to parsing wikitext.
+    """
+    try:
+        return _media_list(title)
+    except Exception:  # noqa: BLE001
+        return _article_images_wikitext(title)
+
+
+def _media_list(title: str) -> list[dict]:
+    from urllib.parse import quote
+    url = "https://en.wikipedia.org/api/rest_v1/page/media-list/" + quote(title.replace(" ", "_"), safe="")
+    d = cached_json("ml:" + title, lambda: http_get(url).json())
+    out, seen = [], set()
+    for it in d.get("items", []):
+        if it.get("type") != "image" or not it.get("title", "").startswith("File:"):
+            continue
+        f = it["title"].replace("_", " ")
+        if f in seen:
+            continue
+        seen.add(f)
+        cap = it.get("caption") or {}
+        h = cap.get("html", "")
+        links = [unquote(m).replace("_", " ") for m in re.findall(r'href="\./([^"#?]+)', h)]
+        links = [l for l in links if ":" not in l]
+        out.append({"file": f, "caption": " ".join(html.unescape(cap.get("text", "")).split()), "links": links})
+    return out
+
+
+def _article_images_wikitext(title: str) -> list[dict]:
     d = _api(action="parse", page=title, prop="wikitext", redirects=1)
     if "parse" not in d:
         return []

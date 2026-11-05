@@ -1,4 +1,10 @@
-"""Voice (local Kokoro TTS), procedurally generated music bed + SFX, and the mix.
+"""Voice (local TTS: Kokoro, Pocket TTS or Chatterbox), procedurally generated music bed + SFX, and the mix.
+
+The narrator is configured in data/voice.json, e.g.
+  {"engine": "kokoro", "voice": "am_michael", "speed": 1.12}
+  {"engine": "pocket", "voice": "peter_yearsley"}          (any Pocket catalog name, wav path or hf:// url)
+  {"engine": "chatterbox", "variant": "orig", "ref": null, "exaggeration": 0.7, "cfg": 0.4}
+An episode can override it with a "voice" object in episode.json.
 
 Everything here is generated locally, so there is nothing to license: no
 stock music, no Content ID claims on the soundtrack.
@@ -12,7 +18,7 @@ from pathlib import Path
 import numpy as np
 import soundfile as sf
 
-from .common import CACHE, MODELS
+from .common import CACHE, DATA, MODELS, ROOT
 
 SR = 24000
 _kokoro = None
@@ -42,16 +48,72 @@ def speakable(text: str) -> str:
     return text
 
 
-def say(text: str, voice: str = "am_michael", speed: float = 1.12) -> tuple[np.ndarray, list[tuple[str, float, float]]]:
+DEFAULT_VOICE = {"engine": "kokoro", "voice": "am_michael", "speed": 1.12}
+_pocket = None
+_pocket_states: dict = {}
+
+
+def voice_config(override: dict | None = None) -> dict:
+    import json
+    cfg = dict(DEFAULT_VOICE)
+    vf = DATA / "voice.json"
+    if vf.exists():
+        cfg = json.loads(vf.read_text())
+    if override:
+        cfg = {**cfg, **override}
+    return cfg
+
+
+def _resample(a: np.ndarray, sr: int) -> np.ndarray:
+    if sr == SR:
+        return a.astype(np.float32)
+    n = int(len(a) * SR / sr)
+    return np.interp(np.linspace(0, len(a) - 1, n), np.arange(len(a)), a).astype(np.float32)
+
+
+def _synth(text: str, cfg: dict) -> np.ndarray:
+    eng = cfg.get("engine", "kokoro")
+    if eng == "kokoro":
+        a, sr = _tts().create(text, voice=cfg.get("voice", "am_michael"), speed=cfg.get("speed", 1.12), lang="en-us")
+        return _resample(np.asarray(a), sr)
+    if eng == "pocket":
+        global _pocket
+        if _pocket is None:
+            from pocket_tts import TTSModel
+            _pocket = TTSModel.load_model()
+        v = cfg.get("voice", "peter_yearsley")
+        if v not in _pocket_states:
+            _pocket_states[v] = _pocket.get_state_for_audio_prompt(v)
+        a = _pocket.generate_audio(_pocket_states[v], text)
+        a = a.numpy() if hasattr(a, "numpy") else np.asarray(a)
+        return _resample(a.squeeze(), _pocket.sample_rate)
+    if eng == "chatterbox":
+        import json
+        import os
+        import subprocess
+        import tempfile
+        py = os.environ.get("CHATTERBOX_PY", "/home/user/cbenv/bin/python")
+        with tempfile.TemporaryDirectory() as td:
+            out = Path(td) / "o.wav"
+            job = {**cfg, "text": text, "out": str(out)}
+            subprocess.run([py, str(ROOT / "sixdeg" / "tts_chatterbox.py"), json.dumps(job)], check=True,
+                           stdout=subprocess.DEVNULL)
+            a, sr = sf.read(out, dtype="float32")
+        return _resample(a if a.ndim == 1 else a.mean(1), sr)
+    raise ValueError(f"unknown TTS engine {eng}")
+
+
+def say(text: str, voice: dict | None = None) -> tuple[np.ndarray, list[tuple[str, float, float]]]:
     """Synthesize `text`. Returns (mono float32 @ SR, word timings [(word, t0, t1)])."""
-    key = hashlib.sha1(f"{voice}|{speed}|{text}".encode()).hexdigest()
+    import json
+    cfg = voice_config(voice)
+    key = hashlib.sha1(f"{json.dumps(cfg, sort_keys=True)}|{text}".encode()).hexdigest()
     p = CACHE / "tts" / f"{key}.wav"
     if p.exists():
         a, _ = sf.read(p, dtype="float32")
     else:
-        a, sr = _tts().create(speakable(text), voice=voice, speed=speed, lang="en-us")
-        assert sr == SR, sr
-        a = _trim(a.astype(np.float32))
+        a = _synth(speakable(text), cfg)
+        a = _trim(a / (np.abs(a).max() + 1e-9) * 0.9)
         p.parent.mkdir(parents=True, exist_ok=True)
         sf.write(p, a, SR)
     return a, aligned_word_times(text, p, len(a) / SR)
@@ -99,10 +161,6 @@ def aligned_word_times(text: str, wav: Path, dur: float) -> list[tuple[str, floa
         out.append((w, heard[j][1], heard[j][2]) if j >= 0 else (w, a, b))
     return out
 
-
-def tts_cache_path(text: str, voice: str = "am_michael", speed: float = 1.12) -> Path:
-    key = hashlib.sha1(f"{voice}|{speed}|{text}".encode()).hexdigest()
-    return CACHE / "tts" / f"{key}.wav"
 
 
 def _trim(a: np.ndarray, thr: float = 0.01) -> np.ndarray:

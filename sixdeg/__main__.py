@@ -9,6 +9,7 @@
   qa <slug>                      gates; writes out/qa.json + out/contact.jpg
   kit <slug>                     upload kit: out/upload.md (title, description, credits, tags)
   make <slug>                    prep + render + qa + kit
+  upload <slug> [--dry-run]      schedule it on YouTube in the next free slot (private until publish time)
 """
 import json
 import sys
@@ -55,6 +56,9 @@ def main(argv):
     elif cmd == "kit":
         from .kit import kit
         print(kit(args[0]))
+    elif cmd == "upload":
+        from .upload import upload
+        print(json.dumps(upload(args[0], dry_run="--dry-run" in args), indent=1))
     elif cmd == "make":
         from .episode import prep
         from .kit import kit

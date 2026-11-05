@@ -238,11 +238,12 @@ def to_screen(M, x, y):
 
 # ------------------------------------------------------------------ main render
 
-def render(slug: str, voice: str = "am_michael", log=print) -> Path:
+def render(slug: str, log=print) -> Path:
     C = Ctx(slug)
     spec = C.spec
     out_dir = C.dir / "out"
     out_dir.mkdir(exist_ok=True)
+    voice = spec.get("voice")  # optional per-episode override of data/voice.json
 
     # ---------- audio + timeline
     segs = []  # dicts: kind, t0, t1, ...
