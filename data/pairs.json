@@ -210,11 +210,12 @@
  {
   "from": "Zeus",
   "to": "The Rock",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@matyldabankers1693",
   "comment": "Zeus to the rock",
   "likes": 0,
-  "source": "comment on 'joseph stalin to sophie rain' (old channel)"
+  "source": "comment on 'joseph stalin to sophie rain' (old channel)",
+  "slug": "zeus-to-the-rock"
  },
  {
   "from": "Charlemagne",

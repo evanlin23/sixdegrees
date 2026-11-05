@@ -1,0 +1,82 @@
+{
+  "from": "Zeus",
+  "to": "The Rock",
+  "requested_by": "@matyldabankers1693",
+  "title": "Zeus to The Rock in five real photos?",
+  "description": "A giant Roman statue of Zeus, a G8 handshake and a Pentagon briefing connect the king of the Greek gods to Dwayne Johnson.",
+  "hook": "How is Zeus connected to The Rock?",
+  "people": {
+    "Zeus": {
+      "label": "Zeus"
+    },
+    "Vladimir Putin": {
+      "label": "Vladimir Putin"
+    },
+    "Barack Obama": {
+      "label": "Barack Obama"
+    },
+    "Ash Carter": {
+      "label": "Ash Carter",
+      "wiki": "Ash Carter"
+    },
+    "Kevin Hart": {
+      "label": "Kevin Hart"
+    },
+    "The Rock": {
+      "label": "The Rock",
+      "wiki": "Dwayne Johnson"
+    }
+  },
+  "links": [
+    {
+      "a": "Zeus",
+      "b": "Vladimir Putin",
+      "image": {
+        "url": "http://static.kremlin.ru/media/events/photos/big2x/LZmmVYNNYfLv32NczdFLAD2w034FCNwU.jpg",
+        "credit": "Kremlin.ru",
+        "license": "CC BY 4.0",
+        "source": "http://kremlin.ru/events/president/news/75938",
+        "free": true
+      },
+      "line": "In 2024, Vladimir Putin toured the Hermitage beneath its giant Roman statue of Zeus, called Jupiter by the Romans.",
+      "a_face": 4,
+      "b_face": 2
+    },
+    {
+      "a": "Vladimir Putin",
+      "b": "Barack Obama",
+      "image": {
+        "file": "File:Barack_Obama_and_Vladimir_Putin_shake_hands_at_G8_summit,_2013.jpg"
+      },
+      "line": "In 2013, Putin shook hands with Barack Obama at the G8 summit in Northern Ireland.",
+      "a_face": 1,
+      "b_face": 0
+    },
+    {
+      "a": "Barack Obama",
+      "b": "Ash Carter",
+      "image": {
+        "file": "File:Barack_Obama_and_Ashton_Carter_on_6_July_2015.jpg"
+      },
+      "line": "In 2015, Obama went to the Pentagon with his Defense Secretary, Ash Carter, to plan the fight against ISIS."
+    },
+    {
+      "a": "Ash Carter",
+      "b": "Kevin Hart",
+      "image": {
+        "file": "File:161013-D-SV709-078_(30012677960).jpg"
+      },
+      "line": "A year later, Carter met comedian Kevin Hart backstage at Late Night with Seth Meyers.",
+      "a_face": 0,
+      "b_face": 1
+    },
+    {
+      "a": "Kevin Hart",
+      "b": "The Rock",
+      "image": {
+        "file": "File:Albert_mit_the_Rock_and_Kevin_Hart.jpg"
+      },
+      "line": "And in Berlin in 2016, Hart posed with his Central Intelligence co-star, The Rock."
+    }
+  ]
+}
