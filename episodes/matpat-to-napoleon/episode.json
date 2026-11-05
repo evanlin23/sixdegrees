@@ -1,0 +1,97 @@
+{
+  "from": "MatPat",
+  "to": "Napoleon",
+  "requested_by": "@Tuff_boi911",
+  "title": "How is MatPat connected to Napoleon?",
+  "description": "Congress, a president, two queens and two paintings link MatPat to Napoleon.",
+  "hook": "How is MatPat connected to Napoleon?",
+  "people": {
+    "MatPat": {
+      "label": "MatPat"
+    },
+    "Mary of Teck": {
+      "label": "Queen Mary"
+    },
+    "Elizabeth II": {
+      "label": "Queen Elizabeth II"
+    },
+    "Napoleon": {
+      "label": "Napoleon"
+    }
+  },
+  "links": [
+    {
+      "a": "MatPat",
+      "b": "Yvette Clarke",
+      "image": {
+        "file": "File:Creator Economy Caucus launch, 2025 (1).jpg"
+      },
+      "line": "In 2025, MatPat spoke at the US Capitol beside Congresswoman Yvette Clarke, launching a caucus for creators."
+    },
+    {
+      "a": "Yvette Clarke",
+      "b": "Nancy Pelosi",
+      "image": {
+        "file": "File:Speaker Pelosi and Samuel Obergh (4444863968).jpg"
+      },
+      "line": "In 2010, Clarke stood with Speaker Nancy Pelosi at a press event on the Capitol steps.",
+      "a_face": 27,
+      "b_face": 7
+    },
+    {
+      "a": "Nancy Pelosi",
+      "b": "Barack Obama",
+      "image": {
+        "file": "File:Obama signs health care-20100323.jpg"
+      },
+      "line": "Also in 2010, Pelosi stood right behind Barack Obama as he signed his health care law."
+    },
+    {
+      "a": "Barack Obama",
+      "b": "Elizabeth II",
+      "image": {
+        "file": "File:Barack Obama Michelle Obama Queen Elizabeth II Buckingham Palace London.jpg"
+      },
+      "line": "In 2009, President Obama and Michelle met Queen Elizabeth the Second at Buckingham Palace.",
+      "b_face": 3
+    },
+    {
+      "a": "Elizabeth II",
+      "b": "Mary of Teck",
+      "image": {
+        "file": "File:Queen Mary with Princess Elizabeth and Margaret.jpg"
+      },
+      "line": "Back in 1939, a young Princess Elizabeth posed with her grandmother, Queen Mary.",
+      "a_face": 2,
+      "b_face": 0
+    },
+    {
+      "a": "Mary of Teck",
+      "b": "Queen Victoria",
+      "image": {
+        "file": "File:Queen Victoria with family members.jpg"
+      },
+      "line": "In 1895, Mary sat beside Queen Victoria at Balmoral, holding her baby son, the future Edward the Eighth."
+    },
+    {
+      "a": "Queen Victoria",
+      "b": "Napoleon III",
+      "image": {
+        "file": "File:Edward Matthew Ward (1816-79) - Queen Victoria at the Tomb of Napoleon, 24 August 1855 - RCIN 402019 - Royal Collection.jpg"
+      },
+      "line": "This painting shows Victoria in 1855, visiting Napoleon's tomb in Paris with Emperor Napoleon the Third.",
+      "a_face": 5,
+      "b_face": 6
+    },
+    {
+      "a": "Napoleon III",
+      "b": "Napoleon",
+      "image": {
+        "file": "File:Napoléon enfants Saint-Cloud.jpg"
+      },
+      "line": "And in this 1810 painting, the baby on Napoleon's knee is his nephew, the future Napoleon the Third.",
+      "a_face": 8,
+      "b_face": 6
+    }
+  ]
+}

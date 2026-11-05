@@ -49,11 +49,12 @@
  {
   "from": "MatPat",
   "to": "Napoleon",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@Tuff_boi911",
   "comment": "Matpat to napoleon",
   "likes": 1,
-  "source": "comment on 'george washington to adolf h' (old channel)"
+  "source": "comment on 'george washington to adolf h' (old channel)",
+  "slug": "matpat-to-napoleon"
  },
  {
   "from": "Kim Jong Un",
@@ -245,11 +246,12 @@
  {
   "from": "Virgil van Dijk",
   "to": "Pythagoras",
-  "status": "todo",
+  "status": "skipped",
   "requested_by": "@Devoted_99",
   "comment": "Plz do Van dijk to Pythagoras ive commented on majority of vids (also first)",
   "likes": 0,
-  "source": "comment on 'adolf h to p diddy' (old channel)"
+  "source": "comment on 'adolf h to p diddy' (old channel)",
+  "reason": "already made on the old channel"
  },
  {
   "from": "Kim Jong Un",
