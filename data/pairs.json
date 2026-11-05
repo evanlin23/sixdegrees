@@ -67,11 +67,12 @@
  {
   "from": "Nikola Tesla",
   "to": "The Rock",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@GPtheyeeper",
   "comment": "Nicola Tesla to the rock",
   "likes": 1,
-  "source": "comment on 'joseph stalin to sophie rain' (old channel)"
+  "source": "comment on 'joseph stalin to sophie rain' (old channel)",
+  "slug": "tesla-to-the-rock"
  },
  {
   "from": "Adolf Hitler",
