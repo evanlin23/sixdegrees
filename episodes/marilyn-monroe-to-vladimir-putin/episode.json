@@ -1,0 +1,60 @@
+{
+  "from": "Marilyn Monroe",
+  "to": "Vladimir Putin",
+  "title": "How is Marilyn Monroe connected to Putin?",
+  "description": "Five real photos connect Marilyn Monroe to Vladimir Putin, by way of the space race.",
+  "hook": "How is Marilyn Monroe connected to Vladimir Putin?",
+  "links": [
+    {
+      "a": "Marilyn Monroe",
+      "b": "John F. Kennedy",
+      "image": {
+        "file": "File:JFK and Marilyn Monroe 1962 larger.jpg"
+      },
+      "line": "In 1962, Marilyn Monroe sang Happy Birthday to President Kennedy, then partied with him that night.",
+      "a_face": 0,
+      "b_face": [
+        1104,
+        679,
+        219,
+        226
+      ]
+    },
+    {
+      "a": "John F. Kennedy",
+      "b": "Nikita Khrushchev",
+      "image": {
+        "file": "File:John Kennedy, Nikita Khrushchev 1961.jpg"
+      },
+      "line": "A year earlier, Kennedy faced off with Soviet leader Nikita Khrushchev in Vienna.",
+      "b_face": 0
+    },
+    {
+      "a": "Nikita Khrushchev",
+      "b": "Valentina Tereshkova",
+      "image": {
+        "file": "File:RIAN archive 159271 Nikita Khrushchev, Valentina Tereshkova, Pavel Popovich and Yury Gagarin at Lenin Mausoleum.jpg"
+      },
+      "line": "In 1963, Khrushchev showed off Valentina Tereshkova, the first woman in space.",
+      "b_face": 2
+    },
+    {
+      "a": "Valentina Tereshkova",
+      "b": "Dmitry Medvedev",
+      "image": {
+        "file": "File:Dmitry Medvedev with Valentina Tereshkova.jpg"
+      },
+      "line": "In 2009, Russian President Dmitry Medvedev gave her a state prize.",
+      "a_face": 0,
+      "b_face": 1
+    },
+    {
+      "a": "Dmitry Medvedev",
+      "b": "Vladimir Putin",
+      "image": {
+        "file": "File:Vladimir Putin 2 March 2008-2.jpg"
+      },
+      "line": "And Medvedev only got that job because Vladimir Putin handpicked him."
+    }
+  ]
+}

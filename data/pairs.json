@@ -83,7 +83,8 @@
  {
   "from": "Marilyn Monroe",
   "to": "Vladimir Putin",
-  "status": "todo"
+  "status": "done",
+  "slug": "marilyn-monroe-to-vladimir-putin"
  },
  {
   "from": "Che Guevara",
@@ -93,7 +94,8 @@
  {
   "from": "Elvis Presley",
   "to": "Barack Obama",
-  "status": "todo"
+  "status": "done",
+  "slug": "elvis-presley-to-barack-obama"
  },
  {
   "from": "Muhammad Ali",

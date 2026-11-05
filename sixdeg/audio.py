@@ -113,14 +113,20 @@ BROADCAST_EQ = ("highpass=f=70,lowshelf=f=140:g=3,equalizer=f=350:t=q:w=1:g=-2,"
                 "acompressor=threshold=-20dB:ratio=3:attack=5:release=80:makeup=3")
 
 
-def broadcast_chain(a: np.ndarray) -> np.ndarray:
+def post_chain(a: np.ndarray, tempo: float = 1.0, broadcast: bool = False) -> np.ndarray:
+    """Optional speed-up (pitch-preserving atempo) and broadcast EQ/compression."""
     import subprocess
     import tempfile
+    filters = []
+    if tempo != 1.0:
+        filters.append(f"atempo={tempo}")
+    if broadcast:
+        filters.append(BROADCAST_EQ)
     with tempfile.TemporaryDirectory() as td:
         i, o = Path(td) / "i.wav", Path(td) / "o.wav"
         sf.write(i, a, SR)
-        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(i), "-af", BROADCAST_EQ, "-ar", str(SR), str(o)],
-                       check=True)
+        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(i), "-af", ",".join(filters), "-ar", str(SR),
+                        str(o)], check=True)
         b, _ = sf.read(o, dtype="float32")
     return b
 
@@ -135,8 +141,8 @@ def say(text: str, voice: dict | None = None) -> tuple[np.ndarray, list[tuple[st
         a, _ = sf.read(p, dtype="float32")
     else:
         a = _synth(speakable(text), cfg)
-        if cfg.get("broadcast"):
-            a = broadcast_chain(a)
+        if cfg.get("broadcast") or cfg.get("tempo", 1.0) != 1.0:
+            a = post_chain(a, tempo=cfg.get("tempo", 1.0), broadcast=bool(cfg.get("broadcast")))
         a = _trim(a / (np.abs(a).max() + 1e-9) * 0.9)
         p.parent.mkdir(parents=True, exist_ok=True)
         sf.write(p, a, SR)

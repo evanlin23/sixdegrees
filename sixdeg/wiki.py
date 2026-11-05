@@ -86,6 +86,25 @@ def humans(titles: list[str]) -> set[str]:
 STD_WIDTHS = (330, 500, 960, 1280, 1920)  # thumb sizes Wikimedia serves to this IP
 
 
+def _thumb_url(ii: dict, ow: int) -> str:
+    """A thumb.wikimedia.org URL: originals are rate-limited hard (retry-after 600) from this IP.
+
+    When the requested bucket equals the original width the API returns the original URL, so build
+    the thumb URL ourselves (standard buckets are served even at the original's own width)."""
+    t = (ii.get("thumburl") or ii["url"]).split("?")[0]
+    if "/thumb/" in t:
+        return t
+    orig = ii["url"].split("?")[0]
+    m = re.match(r"https://upload\.wikimedia\.org/wikipedia/commons/(\w/\w\w)/(.+)$", orig)
+    if not m or not orig.lower().endswith((".jpg", ".jpeg", ".png")):
+        return orig
+    fits = [w for w in (250,) + STD_WIDTHS if w <= ow]
+    if not fits:
+        return orig
+    name = m.group(2)
+    return f"https://thumb.wikimedia.org/wikipedia/commons/thumb/{m.group(1)}/{name}/{fits[-1]}px-{name}"
+
+
 def file_info(file_title: str, width: int = 1920) -> dict:
     """File:X -> {url, thumb, width, height, license, artist, credit, description, page}."""
     if not file_title.startswith("File:"):
@@ -113,7 +132,7 @@ def file_info(file_title: str, width: int = 1920) -> dict:
     return {
         "file": p["title"],
         "url": ii["url"].split("?")[0],
-        "thumb": (ii.get("thumburl") or ii["url"]).split("?")[0],
+        "thumb": _thumb_url(ii, ow),
         "width": ii["width"], "height": ii["height"], "mime": ii.get("mime"),
         "license": m("LicenseShortName") or "unknown",
         "license_url": m("LicenseUrl"),

@@ -2,7 +2,7 @@
 
 Structure:  hook (two faces + "?")  ->  one segment per photo link (camera pans
 from person A's face to B's face, name tags pop, narration with captions)
-->  outro (whole chain recap + call to comment).
+->  ends on the final reveal (no outro: Shorts live on retention, and a hard end loops into the hook).
 """
 from __future__ import annotations
 
@@ -24,8 +24,9 @@ CYAN = (34, 211, 238)
 YELLOW = (255, 214, 10)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-PAD = 0.35          # silence after each narration line
-XFADE = 0.22        # cross-fade between segments
+PAD = 0.12          # silence after each narration line
+XFADE = 0.10        # cross-fade between segments (snappy)
+END_HOLD = 0.7      # hold on the final reveal
 
 
 def font(size, w="Black"):
@@ -251,26 +252,21 @@ def render(slug: str, log=print) -> Path:
     t = 0.0
     hook = spec.get("hook") or f"How is {short_name(spec['from'])} connected to {short_name(spec['to'])}?"
     a, words = audio.say(hook, voice)
-    d = len(a) / audio.SR + 0.5
-    segs.append({"kind": "hook", "t0": t, "t1": t + d, "cap": Captions(words, t + 0.1)})
-    voice_clips.append((t + 0.1, a)); sfx.append((0.0, audio.boom()))
+    d = len(a) / audio.SR + 0.15
+    segs.append({"kind": "hook", "t0": t, "t1": t + d, "cap": Captions(words, t + 0.02)})
+    voice_clips.append((t + 0.02, a)); sfx.append((0.0, audio.boom()))
     t += d
     for i, link in enumerate(spec["links"]):
         a, words = audio.say(link["line"], voice)
-        d = len(a) / audio.SR + PAD + 0.25
-        segs.append({"kind": "link", "i": i, "t0": t, "t1": t + d, "cap": Captions(words, t + 0.2)})
-        voice_clips.append((t + 0.2, a))
-        sfx.append((max(0, t - 0.15), audio.whoosh(seed=i)))
-        sfx.append((t + d * 0.42, audio.ding(1320 if i % 2 == 0 else 1480)))
+        last = i == len(spec["links"]) - 1
+        d = len(a) / audio.SR + PAD + 0.08 + (END_HOLD if last else 0)
+        segs.append({"kind": "link", "i": i, "t0": t, "t1": t + d, "cap": Captions(words, t + 0.08),
+                     "speech": len(a) / audio.SR + 0.08})
+        voice_clips.append((t + 0.08, a))
+        sfx.append((max(0, t - 0.12), audio.whoosh(dur=0.3, seed=i)))
+        sfx.append((t + (len(a) / audio.SR) * 0.38, audio.ding(1320 if i % 2 == 0 else 1480)))
         t += d
     n_links = len(spec["links"])
-    outro = spec.get("outro") or (f"{short_name(spec['from'])} to {short_name(spec['to'])} in {n_links} photos. "
-                                  f"Comment two names and I'll connect them next.")
-    a, words = audio.say(outro, voice)
-    d = len(a) / audio.SR + 1.6
-    segs.append({"kind": "outro", "t0": t, "t1": t + d, "cap": Captions(words, t + 0.2)})
-    voice_clips.append((t + 0.2, a)); sfx.append((t, audio.boom()))
-    t += d
     total = t
     wav = audio.mix(total, voice_clips, sfx, seed=sum(map(ord, slug)), out=out_dir / "mix.wav")
     log(f"timeline {total:.1f}s, {len(segs)} segments")
@@ -343,16 +339,16 @@ def render(slug: str, log=print) -> Path:
         i = seg["i"]
         img = C.imgs[i]
         cm = cams[i]
-        k = (tt - seg["t0"]) / (seg["t1"] - seg["t0"])
+        k = min(1.0, (tt - seg["t0"]) / seg.get("speech", seg["t1"] - seg["t0"]))
         # camera: A close -> both -> B close
-        if k < 0.18:
+        if k < 0.10:
             cam = cm["a"]
-        elif k < 0.45:
-            cam = lerp_cam(cm["a"], cm["both"], ease((k - 0.18) / 0.27))
-        elif k < 0.72:
+        elif k < 0.32:
+            cam = lerp_cam(cm["a"], cm["both"], ease((k - 0.10) / 0.22))
+        elif k < 0.62:
             cam = cm["both"]
         else:
-            cam = lerp_cam(cm["both"], cm["b"], ease((k - 0.72) / 0.28))
+            cam = lerp_cam(cm["both"], cm["b"], ease((k - 0.62) / 0.30))
         # gentle drift so it never freezes
         cam = (cam[0], cam[1], cam[2] * (1 + 0.02 * math.sin(tt * 1.3)))
         base = blurred_bg(img, tt - seg["t0"])
@@ -360,7 +356,7 @@ def render(slug: str, log=print) -> Path:
         base.alpha_composite(ph)
         # name tags
         names = (spec["links"][i]["a"], spec["links"][i]["b"])
-        for role, nm, appear in (("ba", names[0], 0.0), ("bb", names[1], 0.40)):
+        for role, nm, appear in (("ba", names[0], 0.0), ("bb", names[1], 0.32)):
             bx = cm[role]
             sx, sy = to_screen(M, bx[0] + bx[2] / 2, bx[1])
             pop = ease_out_back((k - appear) / 0.06) if k >= appear else 0
@@ -377,8 +373,8 @@ def render(slug: str, log=print) -> Path:
         paste(base, title_im, W / 2, 150)
         step = pill(f"PHOTO {i + 1} / {n_links}", 34, fg=WHITE, bg=(30, 30, 30))
         paste(base, step, W / 2, 235)
-        revealed = i + (1 if k >= 0.40 else 0)
-        chain_bar(base, revealed, {i, i + 1} if k >= 0.40 else {i})
+        revealed = i + (1 if k >= 0.32 else 0)
+        chain_bar(base, revealed, {i, i + 1} if k >= 0.32 else {i})
         credit_line(base, i)
         seg["cap"].draw(base, tt)
         return base
@@ -392,16 +388,16 @@ def render(slug: str, log=print) -> Path:
         gd.ellipse([W / 2 - 600, H / 2 - 600, W / 2 + 600, H / 2 + 600], fill=(34, 90, 120, 90))
         base.alpha_composite(glow.filter(ImageFilter.GaussianBlur(120)))
         a_name, b_name = spec["from"], spec["to"]
-        for nm, cy, delay, col in ((a_name, 560, 0.0, CYAN), (b_name, 1300, 0.25, YELLOW)):
-            sc = ease_out_back((k - delay) / 0.35)
+        for nm, cy, delay, col in ((a_name, 560, 0.0, CYAN), (b_name, 1300, 0.12, YELLOW)):
+            sc = ease_out_back((k - delay) / 0.2)
             th = ring(C.thumbs[nm].resize((400, 400), Image.BICUBIC), col, 10)
             paste(base, th, W / 2, cy, scale=sc)
             lab = pill(C.labels[nm], 52, bg=col)
             paste(base, lab, W / 2, cy + 245, scale=sc)
         q = text_img("?", 200, fill=WHITE, stroke=12)
-        paste(base, q, W / 2, 935, scale=ease_out_back((k - 0.5) / 0.3) * (1 + 0.05 * math.sin(k * 8)))
+        paste(base, q, W / 2, 935, scale=ease_out_back((k - 0.25) / 0.2) * (1 + 0.05 * math.sin(k * 8)))
         top = text_img("HOW ARE THEY CONNECTED?", 60, fill=WHITE, stroke=8)
-        paste(base, top, W / 2, 200, scale=min(1, ease(k / 0.25)))
+        paste(base, top, W / 2, 200, scale=min(1, ease(k / 0.12)))
         seg["cap"].draw(base, tt, y=1720)
         return base
 

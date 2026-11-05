@@ -4,6 +4,6 @@
   "am_michael": 0.7,
   "am_onyx": 0.3
  },
- "speed": 1.15,
- "broadcast": true
+ "speed": 1.25,
+ "broadcast": false
 }
