@@ -2,7 +2,8 @@
  {
   "from": "Adolf Hitler",
   "to": "Neil Armstrong",
-  "status": "todo"
+  "status": "done",
+  "slug": "hitler-to-neil-armstrong"
  },
  {
   "from": "Joseph Stalin",

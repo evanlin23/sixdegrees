@@ -120,7 +120,7 @@ class Captions:
         cur = []
         for w, a, b in words:
             cur.append((w, a + t0, b + t0))
-            if len(cur) >= 3 or w.endswith((",", ".", "?", "!", ":")) or len(" ".join(x[0] for x in cur)) > 16:
+            if len(cur) >= 3 or w.endswith((",", ".", "?", "!", ":")) or len(" ".join(x[0] for x in cur)) > 13:
                 self.groups.append(cur)
                 cur = []
         if cur:
@@ -129,16 +129,21 @@ class Captions:
     def draw(self, base: Image.Image, t: float, y=1390):
         for g in self.groups:
             if g[0][1] - 0.02 <= t < g[-1][2] + 0.12:
-                f = font(84)
+                fs_ = 84
                 parts = [w.upper().strip(",.:;") if w.upper().strip(",.:;") else w.upper() for w, _, _ in g]
-                widths = [f.getlength(p + " ") for p in parts]
-                total = sum(widths)
+                while True:  # shrink to fit inside the safe width
+                    f = font(fs_)
+                    widths = [f.getlength(p + " ") for p in parts]
+                    total = sum(widths)
+                    if total <= W - 120 or fs_ <= 56:
+                        break
+                    fs_ -= 4
                 x = W / 2 - total / 2
                 pop = ease_out_back((t - g[0][1]) / 0.12)
                 cur = max([j for j, (_, a, _) in enumerate(g) if a <= t] or [0])
                 for j, ((w, a, b), p, wd) in enumerate(zip(g, parts, widths)):
                     col = YELLOW if j == cur else WHITE
-                    im = text_img(p, 84, fill=col, stroke=10)
+                    im = text_img(p, fs_, fill=col, stroke=10)
                     paste(base, im, x + (wd - f.getlength(" ")) / 2, y, scale=0.85 + 0.15 * pop)
                     x += wd
                 return
@@ -151,8 +156,21 @@ class Ctx:
         self.fj = json.loads((self.work / "faces.json").read_text())
         self.people = people_order(self.spec)
         self.imgs = [cv2.imread(str(self.work / l["image"])) for l in self.fj["links"]]
-        # face thumbnails: prefer crop from the first link photo the person is in (consistent look)
+        # face thumbnails: prefer the person's Wikipedia portrait (big, frontal); fall back to a link photo
         self.thumbs = {}
+        from .faces import detect
+        for name in self.people:
+            refs = self.fj["people"][name]["refs"]
+            if not refs:
+                continue
+            im = cv2.imread(str(self.work / "refs" / refs[0]))
+            if im is None:
+                continue
+            fs = detect(im)
+            if fs:
+                big = max(fs, key=lambda f: f["box"][2] * f["box"][3])
+                if big["box"][3] >= 60:
+                    self.thumbs[name] = face_crop(im, big["box"], 220, pad=0.55)
         for i, l in enumerate(self.fj["links"]):
             for role in ("a", "b"):
                 name = self.spec["links"][i][role]
@@ -160,7 +178,7 @@ class Ctx:
                 if name not in self.thumbs and bx:
                     self.thumbs[name] = face_crop(self.imgs[i], bx, 220)
         for name in self.people:
-            if name not in self.thumbs:
+            if name not in self.thumbs:  # no usable portrait and never boxed in a photo
                 refs = self.fj["people"][name]["refs"]
                 im = cv2.imread(str(self.work / "refs" / refs[0])) if refs else np.full((300, 300, 3), 60, np.uint8)
                 self.thumbs[name] = face_crop(im, None, 220)

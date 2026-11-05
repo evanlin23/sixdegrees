@@ -71,7 +71,7 @@ def _fetch_image(img_spec: dict, dest_stem: Path, width: int = 2000) -> dict:
         dest = dest_stem.with_suffix(ext if ext in (".jpg", ".jpeg", ".png") else ".jpg")
         download(info["thumb"], dest)
         rec = {"path": dest.name, "source": info["page"], "license": info["license"],
-               "artist": info["artist"], "credit": info["credit"][:200], "file": info["file"],
+               "artist": clean_artist(info["artist"]), "credit": info["credit"][:200], "file": info["file"],
                "free": not info["nonfree"]}
     else:
         url = img_spec["url"]
@@ -91,6 +91,17 @@ def _fetch_image(img_spec: dict, dest_stem: Path, width: int = 2000) -> dict:
         bg.save(out, quality=95)
         rec["path"] = out.name
     return rec
+
+
+def clean_artist(a: str) -> str:
+    """Commons 'Artist' fields are messy HTML-to-text: keep a short, human credit or nothing."""
+    import re
+    a = re.sub(r"\s+", " ", a or "").strip()
+    a = re.sub(r"(?i)unknown\s*(author|photographer)?", "", a).strip(" ,;")
+    a = re.sub(r"\s*\(\d{4}\s*[-–]\s*\d{4}\)", "", a)  # life dates
+    if not a or len(a) > 60 or ":" in a or "http" in a:
+        return ""
+    return a
 
 
 def _pin_to_box(pin, det: list[dict]):
