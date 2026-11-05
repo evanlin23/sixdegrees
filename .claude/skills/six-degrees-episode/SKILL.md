@@ -1,0 +1,84 @@
+---
+name: six-degrees-episode
+description: Make one Buh Connects ("Six Degrees") YouTube Short for a pair of people. Research an honest chain of photos/paintings, write episode.json, verify faces by eye, preview, and open a PR. Use for every producer session.
+---
+
+# Make a Six Degrees episode
+
+The channel is **Buh Connects** (@sixdegreesbetweenus). Buh, a pixel pushpin detective, connects any two
+people through pictures of people who actually met. You make the episode. GitHub renders, checks and uploads it.
+
+## Setup (fresh container)
+```bash
+pip install -q -r requirements-render.txt
+python -m sixdeg setup
+git checkout -b claude/ep-<slug>          # your own branch; never commit to main
+```
+
+## 1. The pair
+Use the pair you were given, or the first `"status": "todo"` entry in `data/pairs.json` (viewer requests come
+first). Slug: `<from>-to-<to>`, lowercase with dashes. If the entry has `requested_by`, copy it into
+episode.json: the hook shows the viewer's request bubble and the first comment credits them.
+
+## 2. The chain (honesty rules)
+- Every link is a **real picture of two people together**: a photo, or a painting, mosaic or sculpture that
+  depicts them. If it's a depiction, the line says so ("Michelangelo painted Adam…").
+- Find links with `python -m sixdeg search "<A>" "<B>"`, `neighbors "<X>"`, `photos "<X>"`, plus web research.
+  Wikipedia/Wikimedia pictures first. Press photos only when nothing free exists:
+  `{"url", "credit", "license": "Fair use (commentary)", "source"}`.
+- **Crossing centuries: a lineage link.** One link that scrolls a line of succession (popes, emperors, kings,
+  presidents), one portrait per holder:
+  ```json
+  {"a": "Saint Peter", "b": "Pope Francis", "line": "Saint Peter was the first pope, and the line runs 266 popes to Pope Francis.",
+   "lineage": {"label": "LINE OF POPES", "people": [
+     {"name": "Saint Peter", "file": "File:...jpg", "label": "1st pope"},
+     {"name": "Pope Gregory I", "file": "File:...jpg", "label": "64th"},
+     {"name": "Pope Francis", "file": "File:...jpg", "label": "266th"}]}}
+  ```
+  The first and last names must equal `a` and `b`. Use 6-15 portraits, choosing well-known holders to skip
+  through a long line. It counts as one link.
+- **Fictional characters** connect through a real photo of their voice actor, creator or puppeteer, and the
+  line says so ("Grug is voiced by Nicolas Cage").
+- **No limit on the number of links.** A Short can be up to 3 minutes, and QA fails only past 3:00 (it warns past
+  60 s). Shorter is better for retention, so prefer the most surprising chain with tight lines.
+- Never invent a meeting, a photo or a caption. If no honest chain exists, mark the pair `"skipped"` with a reason.
+- Keep it family-safe: no gore, nudity or slurs on screen. Historical figures are presented as history.
+
+## 3. episode.json
+```json
+{"from": "A", "to": "B", "requested_by": "@handle (if any)",
+ "hook": "How is A connected to B?",
+ "title": "How is A connected to B?",
+ "links": [{"a": "A", "b": "X", "image": {"file": "File:....jpg"}, "line": "In 1970, A met X at ..."}]}
+```
+- `hook` is always the question "How is <A> connected to <B>?"
+- Each `line` is one sentence of about 18 words or fewer, starting with a year or a hook word, with a concrete fact.
+- Don't type years as words. The voice reads "1973" as "nineteen seventy-three" automatically.
+- A name the voice mispronounces: add it to `RESPELL` in `sixdeg/audio.py`, or phrase around it (QA tells you).
+
+## 4. Verify faces by eye
+```bash
+python -m sixdeg prep <slug>
+```
+Open **every** `episodes/<slug>/work/review<i>.jpg` with the Read tool. Green is A and blue is B. For a lineage
+link, the sheet shows every portrait with its name. Fix wrong or unverified faces with `"a_face": <index>` or
+`"b_face": [x, y, w, h]`, then run prep again. Auto-matching does make mistakes, such as swapped people, a poster
+face, or a stranger in the background.
+
+## 5. Preview and QA
+```bash
+python -m sixdeg render <slug> && python -m sixdeg qa <slug>
+```
+QA must print `"pass": true`. Open `out/contact.jpg` and check that tags sit on the right heads and nothing is clipped.
+
+## 6. Hand off with a PR (never push to main)
+1. Set the pair to `"done"` (with `"slug"`) or `"skipped"` (with `"reason"`) in `data/pairs.json`.
+2. Commit only `episodes/<slug>/episode.json` and `data/pairs.json`. Videos are never committed.
+3. `git push -u origin claude/ep-<slug>` and open a PR to `main` titled `Episode: <A> to <B>`.
+4. The PR's `render` check renders and runs QA on GitHub. If it fails, fix the episode on your branch and push again.
+5. The operator session merges PRs whose check passed. The merge renders the episode again and puts it on the
+   upload queue, and `upload.yml` posts it in the next slot.
+
+## Reference
+- Pipeline: `sixdeg/` (wiki/graph search, faces, audio, render_pixel, qa, kit, queue, upload, stats).
+- Style and policy: `docs/STYLE.md`. Uploading: `docs/youtube-setup.md`.

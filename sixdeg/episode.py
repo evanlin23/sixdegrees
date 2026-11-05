@@ -105,6 +105,59 @@ def clean_artist(a: str) -> str:
     return a
 
 
+def _prep_lineage(link: dict, work: Path, i: int, log=print) -> tuple[dict, dict]:
+    """Lineage link: {"a", "b", "lineage": {"label": "LINE OF POPES", "people": [{"name", "file"|"url", "label"?}, ...]},
+    "line"}. The first person must be link a and the last link b. Each portrait gets a face box (largest face, or a
+    centred fallback); review<i>.jpg shows them all so the session can check the names match the pictures."""
+    lin = link["lineage"]
+    ppl = lin["people"]
+    if ppl[0]["name"] != link["a"] or ppl[-1]["name"] != link["b"]:
+        raise SystemExit(f"link {i}: lineage must start with '{link['a']}' and end with '{link['b']}'")
+    items, recs = [], []
+    for j, p in enumerate(ppl):
+        sp = {"file": p["file"]} if p.get("file") else {"url": p["url"], "credit": p.get("credit", ""),
+                                                         "license": p.get("license", "unknown"), "source": p.get("source", p.get("url"))}
+        r = _fetch_image(sp, work / f"link{i}_L{j:02d}")
+        recs.append(r)
+        img = faces.load(work / r["path"])
+        det = faces.detect(img)
+        if det:
+            box = max(det, key=lambda f: f["box"][2] * f["box"][3])["box"]
+        else:
+            h, w = img.shape[:2]
+            box = [w * 0.3, h * 0.15, w * 0.4, w * 0.4]
+        items.append({"path": r["path"], "name": p["name"], "label": p.get("label", ""), "box": box,
+                      "detected": bool(det)})
+    # review sheet: every portrait with its name and the face it found
+    thumbs = []
+    for it in items:
+        im = Image.open(work / it["path"]).convert("RGB")
+        d = ImageDraw.Draw(im)
+        x, y, w, h = it["box"]
+        d.rectangle([x, y, x + w, y + h], outline=(0, 220, 0), width=max(3, im.width // 150))
+        im.thumbnail((260, 320))
+        cell = Image.new("RGB", (270, 360), (20, 20, 20)); cell.paste(im, (5, 5))
+        ImageDraw.Draw(cell).text((6, 330), it["name"][:30], font=_font(16), fill=(255, 255, 255))
+        thumbs.append(cell)
+    cols = 6
+    sheet = Image.new("RGB", (270 * cols, 360 * ((len(thumbs) + cols - 1) // cols)), (0, 0, 0))
+    for j, c in enumerate(thumbs):
+        sheet.paste(c, ((j % cols) * 270, (j // cols) * 360))
+    sheet.save(work / f"review{i}.jpg", quality=85)
+    first = faces.load(work / items[0]["path"])
+    res = {"image": items[0]["path"], "size": [first.shape[1], first.shape[0]], "faces": [items[0]["box"]],
+           "lineage": items, "label": lin.get("label", "LINE OF SUCCESSION"),
+           "a": {"box": items[0]["box"], "method": "lineage", "sim": None},
+           "b": {"box": items[0]["box"], "method": "lineage", "sim": None}}
+    rec = {"path": items[0]["path"], "source": " + ".join(r["source"] for r in recs),
+           "license": " / ".join(dict.fromkeys(r["license"] for r in recs)),
+           "artist": "", "credit": "", "file": recs[0].get("file"), "free": all(r.get("free") for r in recs),
+           "parts": recs}
+    log(f"  link {i} {link['a']} -> {link['b']}: lineage of {len(items)} portraits "
+        f"({sum(it['detected'] for it in items)} faces found) - check review{i}.jpg")
+    return res, rec
+
+
 def _fetch_pair(specs: list[dict], dest_stem: Path) -> dict:
     """Two portraits joined into one picture (same height, thin white gutter). Credits are merged."""
     recs, ims = [], []
@@ -166,7 +219,12 @@ def prep(slug: str, log=print) -> dict:
     # ---- each link photo
     links_out, credits = [], []
     for i, link in enumerate(spec["links"]):
-        if "pair" in link["image"]:   # succession link: two portraits side by side ("line of popes")
+        if "lineage" in link:   # "line of popes": one portrait per holder, rendered as a fast scroll
+            res, rec = _prep_lineage(link, work, i, log)
+            credits.append(rec)
+            links_out.append(res)
+            continue
+        if "pair" in link["image"]:   # two portraits side by side
             rec = _fetch_pair(link["image"]["pair"], work / f"link{i}")
         else:
             rec = _fetch_image(link["image"], work / f"link{i}")
