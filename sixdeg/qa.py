@@ -60,11 +60,11 @@ def qa(slug: str) -> dict:
         for role in ("a", "b"):
             m = l[role]["method"]
             who = link[role]
-            if m not in ("sface", "manual"):
+            if m not in ("sface", "manual", "lineage"):
                 fails.append(f"photo {i + 1}: {who} not verified ({m}) - pin the face after checking review{i}.jpg")
             elif m == "sface" and l[role]["sim"] is not None and l[role]["sim"] < 0.45:
                 warns.append(f"photo {i + 1}: {who} face match is weak ({l[role]['sim']})")
-        if l["a"]["box"] and l["a"]["box"] == l["b"]["box"]:
+        if l["a"]["box"] and l["a"]["box"] == l["b"]["box"] and not l.get("lineage"):
             fails.append(f"photo {i + 1}: both people assigned to the same face")
     for i, c in enumerate(fj["credits"]):
         if not c.get("source") or not c.get("license") or c["license"] == "unknown":
@@ -83,8 +83,10 @@ def qa(slug: str) -> dict:
             fails.append(f"resolution {w}x{h}")
         if abs(fps - 30) > 0.01:
             fails.append(f"fps {fps}")
-        if not 15 <= dur <= 60:
-            fails.append(f"duration {dur:.1f}s outside 15-60s")
+        if not 15 <= dur <= 180:
+            fails.append(f"duration {dur:.1f}s outside 15-180s (Shorts max is 3 min)")
+        elif dur > 60:
+            warns.append(f"duration {dur:.1f}s: over 60 s, so keep lines tight for retention")
         lufs, peak = _loudness(mp4)
         res.update(lufs=lufs, true_peak=peak)
         if lufs is None or abs(lufs + 14) > 1.5:

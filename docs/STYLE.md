@@ -46,7 +46,7 @@ mass-produced, template-only videos. It is judged per channel. So:
 - Music and SFX: generated procedurally in `audio.py`, so there are no Content ID claims.
 - Colours: cyan (#22D3EE) for the earlier person, yellow (#FFD60A) for the newly
   revealed one. Font: Inter Black.
-- Length 25-55 s. QA hard-fails outside 15-60 s.
+- Length: as short as the chain allows (the reference channel's hits ran 33-50 s). QA fails past 3:00 and warns past 60 s.
 
 ## Upload
 

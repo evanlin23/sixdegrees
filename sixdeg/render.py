@@ -183,6 +183,8 @@ class Ctx:
                 if big["box"][3] >= 60:
                     self.thumbs[name] = face_crop(im, big["box"], 220, pad=0.55)
         for i, l in enumerate(self.fj["links"]):
+            if l.get("lineage"):   # lineage boxes belong to individual portraits, not to links[i]["image"]
+                continue
             for role in ("a", "b"):
                 name = self.spec["links"][i][role]
                 bx = l[role]["box"]

@@ -19,7 +19,7 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 from . import assets, audio, pixelpin
 from .common import FONTS
 from .render import (END_HOLD, PAD, REVEAL, THROW, Ctx, both_camera, camera_for, ease, ease_out_back, face_crop,
-                     lerp_cam, seg_reveal, shake, short_name, to_screen, warp_photo)
+                     grade, lerp_cam, seg_reveal, shake, short_name, to_screen, warp_photo)
 
 W, H, FPS = 1080, 1920, 30
 INK = (24, 14, 32)
@@ -44,7 +44,14 @@ def sf(size):
     return ImageFont.truetype(str(FONTS / "Silkscreen-Bold.ttf"), size)
 
 
+def ascii_fold(text: str) -> str:
+    """The pixel font has no accents: Raúl -> Raul, Göring -> Goring."""
+    import unicodedata
+    return "".join(c for c in unicodedata.normalize("NFKD", text) if not unicodedata.combining(c))
+
+
 def pixel_text(text, size, fill=WHITE, outline=INK, shadow=True, font=None) -> Image.Image:
+    text = ascii_fold(text)
     f = font or pf(size)
     l, t, r, b = f.getbbox(text)
     o = max(3, size // 9)
@@ -63,6 +70,7 @@ def pixel_text(text, size, fill=WHITE, outline=INK, shadow=True, font=None) -> I
 
 
 def pixel_tag(text, bg, size=26) -> Image.Image:
+    text = ascii_fold(text)
     f = pf(size)
     l, t, r, b = f.getbbox(text)
     w, h = r - l + 36, b - t + 30
@@ -176,7 +184,7 @@ def render(slug: str, log=print) -> Path:
         segs.append({"kind": "link", "i": i, "t0": t, "t1": t + d, "cap": PixelCaptions(words, t + 0.08),
                      "speech": speech})
         voice_clips.append((t + 0.08, a))
-        reveal = t + seg_reveal(speech)
+        reveal = t + (speech * 0.9 - THROW if link.get("lineage") else seg_reveal(speech))
         sfx += [(t, assets.sfx("px_cut", 0.45)), (t, assets.sfx("shutter", 0.35)),
                 (reveal, assets.sfx("px_jump", 0.35)),
                 (reveal + THROW, assets.sfx("px_coin", 0.45))]
@@ -269,8 +277,74 @@ def render(slug: str, log=print) -> Path:
                                   stroke_width=2, stroke_fill=INK)
 
     # ---------- frames
+    # ---- lineage links ("line of popes"): one portrait card per holder, scrolled fast
+    lineage_cards = {}
+
+    def lineage_card(i, j):
+        key = (i, j)
+        if key not in lineage_cards:
+            it = C.fj["links"][i]["lineage"][j]
+            img = grade(cv2.imread(str(C.work / it["path"])))
+            ih, iw = img.shape[:2]
+            x, y, w, h = it["box"]
+            cw = min(iw, max(w * 2.6, iw * 0.5)); ch = min(ih, cw * 1.25)
+            cx, cy = x + w / 2, y + h * 0.9
+            x0 = int(max(0, min(iw - cw, cx - cw / 2))); y0 = int(max(0, min(ih - ch, cy - ch * 0.42)))
+            crop = cv2.cvtColor(img[y0:int(y0 + ch), x0:int(x0 + cw)], cv2.COLOR_BGR2RGB)
+            ph = Image.fromarray(crop).resize((560, 700), Image.BICUBIC).convert("RGBA")
+            card = Image.new("RGBA", (600, 800), (0, 0, 0, 0))
+            cd = ImageDraw.Draw(card)
+            cd.rectangle([16, 16, 600, 760], fill=INK)
+            cd.rectangle([0, 0, 584, 744], fill=WHITE, outline=INK, width=6)
+            card.alpha_composite(ph, (12, 12))
+            tag = pixel_tag(it["name"].upper(), YELLOW if j == len(C.fj["links"][i]["lineage"]) - 1 else CYAN,
+                            24 if len(it["name"]) < 18 else 18)
+            card.alpha_composite(tag, (int(292 - tag.width / 2), 640))
+            if it.get("label"):
+                lab = pixel_text(it["label"].upper(), 18, fill=WHITE)
+                card.alpha_composite(lab, (int(292 - lab.width / 2), 24))
+            lineage_cards[key] = card
+        return lineage_cards[key]
+
+    def frame_lineage(seg, tt):
+        i = seg["i"]
+        lin = C.fj["links"][i]["lineage"]
+        n = len(lin)
+        last = i == n_links - 1
+        k = min(1.0, (tt - seg["t0"]) / seg["speech"])
+        END = 0.9                                     # the last holder settles at 90% of the line
+        p = ease(min(1.0, max(0.0, (k - 0.06) / (END - 0.06)))) * (n - 1)
+        land = (k - END) * seg["speech"]
+        base = checker(tt * 2, TONES[i % len(TONES)])
+        STEP = 860
+        for j in range(n):
+            y = 960 + (j - p) * STEP
+            if -500 < y < H + 500:
+                paste(base, lineage_card(i, j), W / 2 - 40, y)
+        # Buh rides along the right edge
+        bob = abs(math.sin(tt * 9)) * 30
+        ex = "shock" if 0.2 < k < END else ("smug" if land > 0.3 else "happy")
+        paste_pin(base, pin_sprite(ex, 15 * math.sin(tt * 6) if 0.1 < k < END else 0, 0, -1), W - 150, 900 - bob)
+        dr = ImageDraw.Draw(base)
+        dr.rectangle([0, 0, W, BAND], fill=INK)
+        paste(base, title_im, W / 2, 80)
+        lab = C.fj["links"][i].get("label", "LINE OF SUCCESSION").upper()
+        paste(base, pixel_text(f"{lab}  {min(n, int(p) + 1)}/{n}", 22, fill=YELLOW, shadow=False), W / 2, 160)
+        if last and land > 0.35:
+            st = min(1.0, (land - 0.35) / 0.12)
+            paste(base, pixel_text("CONNECTED!", 80, fill=RED), W / 2, 1180, scale=2.0 - ease(st))
+        upto = i + (1 if land >= 0 else 0)
+        blocks(base, upto, {upto} if land >= 0 else {i}, tt, sharpen=min(1.0, land / 0.35) if land >= 0 else 1.0)
+        seg["cap"].draw(base, tt)
+        incut = tt - seg["t0"]
+        if incut < 0.10:
+            base.alpha_composite(Image.new("RGBA", (W, H), (255, 255, 255, int(220 * (1 - incut / 0.10)))))
+        return base
+
     def frame_link(seg, tt):
         i = seg["i"]
+        if C.fj["links"][i].get("lineage"):
+            return frame_lineage(seg, tt)
         img, cm = C.imgs[i], cams[i]
         last = i == n_links - 1
         k = min(1.0, (tt - seg["t0"]) / seg["speech"])

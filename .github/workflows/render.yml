@@ -6,6 +6,8 @@ on:
   push:
     branches: [main]
     paths: ["episodes/*/episode.json"]
+  pull_request:                       # producers open PRs: render + QA as a check, nothing is queued
+    paths: ["episodes/*/episode.json"]
   workflow_dispatch:
     inputs:
       slug: {description: "episode folder to (re)render", required: true}
@@ -36,12 +38,13 @@ jobs:
         id: which
         run: |
           if [ -n "${{ inputs.slug }}" ]; then echo "slugs=${{ inputs.slug }}" >> "$GITHUB_OUTPUT"; exit 0; fi
-          s=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" -- 'episodes/*/episode.json' | cut -d/ -f2 | sort -u | tr '\n' ' ')
+          if [ "${{ github.event_name }}" = "pull_request" ]; then base="origin/${{ github.base_ref }}"; else base="${{ github.event.before }}"; fi
+          s=$(git diff --name-only "$base" "${{ github.sha }}" -- 'episodes/*/episode.json' | cut -d/ -f2 | sort -u | tr '\n' ' ')
           echo "slugs=$s" >> "$GITHUB_OUTPUT"
       - name: render, check, queue
         env:
           SLUGS: ${{ steps.which.outputs.slugs }}
-          ENQUEUE: ${{ inputs.enqueue || 'true' }}
+          ENQUEUE: ${{ github.event_name == 'pull_request' && 'false' || inputs.enqueue || 'true' }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898729+github-actions[bot]@users.noreply.github.com"
@@ -52,7 +55,7 @@ jobs:
             echo "::group::$s"
             if python -m sixdeg make "$s"; then
               if [ "$ENQUEUE" = "true" ]; then python -m sixdeg enqueue "$s" || true; fi
-              echo "- ✅ $s: queued" >> "$GITHUB_STEP_SUMMARY"
+              echo "- ✅ $s: QA passed$( [ "$ENQUEUE" = "true" ] && echo ', queued')" >> "$GITHUB_STEP_SUMMARY"
             else
               fail=1; echo "- ❌ $s: QA failed (see episodes/$s/out/qa.json in the artifact)" >> "$GITHUB_STEP_SUMMARY"
             fi
@@ -71,7 +74,7 @@ jobs:
             episodes/*/work/review*.jpg
           retention-days: 14
       - name: report a failure
-        if: failure()
+        if: failure() && github.event_name != 'pull_request'
         env: {GH_TOKEN: "${{ github.token }}"}
         run: |
           gh issue create --title "Render failed: ${{ steps.which.outputs.slugs }}" --body "Run ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} failed. QA output and review images are in the artifact. A Claude session should fix episode.json (face pins, respellings) and push again."
