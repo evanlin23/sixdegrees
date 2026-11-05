@@ -41,7 +41,8 @@ mass-produced, template-only videos. It is judged per channel. So:
 
 ## Voice and look
 
-- Narrator: Kokoro `am_michael`, speed 1.12, generated locally.
+- Narrator (creator's pick, round 2 #3): Kokoro blend 70% `am_michael` + 30% `am_onyx`,
+  speed 1.15, broadcast EQ/compression. Configured in `data/voice.json`.
 - Music and SFX: generated procedurally in `audio.py`, so there are no Content ID claims.
 - Colours: cyan (#22D3EE) for the earlier person, yellow (#FFD60A) for the newly
   revealed one. Font: Inter Black.

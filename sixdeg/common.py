@@ -41,7 +41,7 @@ def http_get(url: str, *, params=None, stream=False, timeout=60, tries=6, header
                 break
             ra = r.headers.get("retry-after")
             if ra and ra.isdigit():
-                if float(ra) > 90:  # long ban: fail fast so the caller can pick another source
+                if float(ra) > 300:  # long ban: fail fast so the caller can pick another source
                     raise RuntimeError(f"HTTP {r.status_code} retry-after {ra}s for {r.url}")
                 delay = max(delay, float(ra))
         time.sleep(delay + random.random())

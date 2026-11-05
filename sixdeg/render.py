@@ -364,6 +364,9 @@ def render(slug: str, log=print) -> Path:
             bx = cm[role]
             sx, sy = to_screen(M, bx[0] + bx[2] / 2, bx[1])
             pop = ease_out_back((k - appear) / 0.06) if k >= appear else 0
+            fy = to_screen(M, 0, bx[1] + bx[3] / 2)[1]
+            if not (40 < sx < W - 40 and 150 < fy < 1650):  # face is off-screen: no floating tag
+                pop = 0
             if pop > 0:
                 p = pill(C.labels[nm], 50 if len(C.labels[nm]) < 16 else 42,
                          bg=CYAN if role == "ba" else YELLOW)

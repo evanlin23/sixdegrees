@@ -74,7 +74,11 @@ def _resample(a: np.ndarray, sr: int) -> np.ndarray:
 def _synth(text: str, cfg: dict) -> np.ndarray:
     eng = cfg.get("engine", "kokoro")
     if eng == "kokoro":
-        a, sr = _tts().create(text, voice=cfg.get("voice", "am_michael"), speed=cfg.get("speed", 1.12), lang="en-us")
+        k = _tts()
+        v = cfg.get("voice", "am_michael")
+        if isinstance(v, dict):  # blend, e.g. {"am_michael": 0.7, "am_onyx": 0.3}
+            v = sum(k.get_voice_style(name) * w for name, w in v.items())
+        a, sr = k.create(text, voice=v, speed=cfg.get("speed", 1.12), lang="en-us")
         return _resample(np.asarray(a), sr)
     if eng == "pocket":
         global _pocket
@@ -103,6 +107,24 @@ def _synth(text: str, cfg: dict) -> np.ndarray:
     raise ValueError(f"unknown TTS engine {eng}")
 
 
+# "Broadcast" narrator chain: warmth, less mud, presence, de-ess, gentle compression.
+BROADCAST_EQ = ("highpass=f=70,lowshelf=f=140:g=3,equalizer=f=350:t=q:w=1:g=-2,"
+                "equalizer=f=3200:t=q:w=1.2:g=3,deesser=i=0.4,"
+                "acompressor=threshold=-20dB:ratio=3:attack=5:release=80:makeup=3")
+
+
+def broadcast_chain(a: np.ndarray) -> np.ndarray:
+    import subprocess
+    import tempfile
+    with tempfile.TemporaryDirectory() as td:
+        i, o = Path(td) / "i.wav", Path(td) / "o.wav"
+        sf.write(i, a, SR)
+        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(i), "-af", BROADCAST_EQ, "-ar", str(SR), str(o)],
+                       check=True)
+        b, _ = sf.read(o, dtype="float32")
+    return b
+
+
 def say(text: str, voice: dict | None = None) -> tuple[np.ndarray, list[tuple[str, float, float]]]:
     """Synthesize `text`. Returns (mono float32 @ SR, word timings [(word, t0, t1)])."""
     import json
@@ -113,6 +135,8 @@ def say(text: str, voice: dict | None = None) -> tuple[np.ndarray, list[tuple[st
         a, _ = sf.read(p, dtype="float32")
     else:
         a = _synth(speakable(text), cfg)
+        if cfg.get("broadcast"):
+            a = broadcast_chain(a)
         a = _trim(a / (np.abs(a).max() + 1e-9) * 0.9)
         p.parent.mkdir(parents=True, exist_ok=True)
         sf.write(p, a, SR)
