@@ -2,11 +2,12 @@
  {
   "from": "Adam (first man)",
   "to": "The Rock",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@hatzgt",
   "comment": "Adam (the first man on earth) to The rock",
   "likes": 16,
-  "source": "comment on 'leonardo da vinci to naruto' (old channel)"
+  "source": "comment on 'leonardo da vinci to naruto' (old channel)",
+  "slug": "adam-to-the-rock"
  },
  {
   "from": "Chris Pratt",

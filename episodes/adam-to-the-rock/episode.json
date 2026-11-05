@@ -1,0 +1,93 @@
+{
+  "from": "Adam",
+  "to": "The Rock",
+  "requested_by": "@hatzgt",
+  "title": "The first man to The Rock in five real photos",
+  "description": "Michelangelo's Adam, a vice president's oath and a Pentagon gift connect the first man in the Bible to Dwayne Johnson.",
+  "hook": "How is Adam connected to The Rock?",
+  "people": {
+    "Adam": {
+      "label": "Adam",
+      "wiki": "Adam"
+    },
+    "JD Vance": {
+      "label": "JD Vance"
+    },
+    "Joe Biden": {
+      "label": "Joe Biden"
+    },
+    "Ash Carter": {
+      "label": "Ash Carter",
+      "wiki": "Ash Carter"
+    },
+    "Kevin Hart": {
+      "label": "Kevin Hart"
+    },
+    "The Rock": {
+      "label": "The Rock",
+      "wiki": "Dwayne Johnson"
+    }
+  },
+  "links": [
+    {
+      "a": "Adam",
+      "b": "JD Vance",
+      "image": {
+        "url": "https://mcusercontent.com/dace49741569f7585670378b3/images/13e8d563-c532-0167-5e46-8b4b8d95f22c.jpg",
+        "credit": "Official White House photo by Emily Higgins",
+        "license": "Public domain (U.S. government work)",
+        "source": "https://www.presidency.ucsb.edu/documents/white-house-press-release-vice-president-jd-vance-departs-italy",
+        "free": true
+      },
+      "line": "Michelangelo painted Adam on the Sistine Chapel ceiling, and at Easter 2025, JD Vance stood right beneath him.",
+      "a_face": [
+        420,
+        45,
+        42,
+        34
+      ],
+      "b_face": [
+        240,
+        335,
+        240,
+        220
+      ]
+    },
+    {
+      "a": "JD Vance",
+      "b": "Joe Biden",
+      "image": {
+        "file": "File:JD_Vance_takes_the_oath_of_office_(2025).jpg"
+      },
+      "line": "Three months earlier, Vance took the vice president's oath while outgoing president Joe Biden looked on.",
+      "a_face": 12,
+      "b_face": 32
+    },
+    {
+      "a": "Joe Biden",
+      "b": "Ash Carter",
+      "image": {
+        "file": "File:121001-D-BW835-049_(8047790671).jpg"
+      },
+      "line": "Back in 2012, Ash Carter of the Pentagon handed Vice President Biden a model armored truck."
+    },
+    {
+      "a": "Ash Carter",
+      "b": "Kevin Hart",
+      "image": {
+        "file": "File:161013-D-SV709-078_(30012677960).jpg"
+      },
+      "line": "As Defense Secretary in 2016, Carter met comedian Kevin Hart backstage at Late Night with Seth Meyers.",
+      "a_face": 0,
+      "b_face": 1
+    },
+    {
+      "a": "Kevin Hart",
+      "b": "The Rock",
+      "image": {
+        "file": "File:Albert_mit_the_Rock_and_Kevin_Hart.jpg"
+      },
+      "line": "And in Berlin that year, Hart posed with his Central Intelligence co-star, The Rock."
+    }
+  ]
+}
