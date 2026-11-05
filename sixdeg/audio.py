@@ -369,7 +369,7 @@ def mix(total: float, voice: list[tuple[float, np.ndarray]], sfx: list[tuple[flo
         if s < n:
             fx[s:e] += a[: e - s]
     # fade music out at the end
-    fo = int(1.2 * SR)
+    fo = int(0.03 * SR)   # no fade-out: the video cuts hard and loops
     m[-fo:] *= np.linspace(1, 0, fo)
     fx_duck = 1 - 0.5 * speaking               # effects also step back while someone is talking
     y = v * 1.0 + m * duck * 0.55 + fx * fx_duck * 0.5

@@ -171,7 +171,8 @@ def render(slug: str, log=print) -> Path:
         a, words = audio.say(link["line"], voice)
         last = i == n_links - 1
         speech = len(a) / audio.SR + 0.08
-        d = speech + PAD + (END_HOLD + 0.6 if last else 0)
+        # last photo: cut hard right after the final word / the CONNECTED! slam, for a seamless loop
+        d = max(speech + 0.05, seg_reveal(speech) + THROW + 0.5) if last else speech + PAD
         segs.append({"kind": "link", "i": i, "t0": t, "t1": t + d, "cap": PixelCaptions(words, t + 0.08),
                      "speech": speech})
         voice_clips.append((t + 0.08, a))
@@ -182,7 +183,7 @@ def render(slug: str, log=print) -> Path:
         if last:
             sfx += [(max(0, reveal - 1.6), assets.sfx("riser", 0.3, max_len=1.6)),
                     (reveal + THROW, assets.sfx("px_bomb", 0.5)),
-                    (reveal + THROW + 0.35, assets.sfx("px_win", 0.5, max_len=2.5))]
+                    (reveal + THROW + 0.35, assets.sfx("px_pop", 0.4))]
         t += d
     total = t
     track = assets.pick_track(slug, spec.get("music"))
