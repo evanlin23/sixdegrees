@@ -1,0 +1,8 @@
+numpy
+pillow
+requests
+opencv-python-headless
+onnxruntime
+kokoro-onnx
+soundfile
+faster-whisper

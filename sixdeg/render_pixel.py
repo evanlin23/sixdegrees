@@ -374,6 +374,13 @@ def render(slug: str, log=print) -> Path:
             card.alpha_composite(flat, (14, 14))
             paste(base, card, W / 2, cy, scale=sc, nearest=False)
             paste(base, pixel_tag(C.labels[nm].upper(), col, 30), W / 2, cy + 225, scale=sc)
+        if spec.get("requested_by"):   # real viewer request: pixel comment bubble under the band
+            req = f'{spec["requested_by"]}: "{short_name(spec["from"]).upper()} TO {short_name(spec["to"]).upper()}"'
+            fsz = 24
+            while pf(fsz).getlength(req) > W - 140 and fsz > 14:
+                fsz -= 2
+            bub = pixel_tag(req, WHITE, fsz)
+            paste(base, bub, W / 2, 272, scale=min(1, ease_out_back(k / 0.15)))
         q = pixel_text("?", 150, fill=YELLOW)
         paste(base, q, W / 2 - 290, 945, scale=min(1, ease_out_back((k - 0.3) / 0.2)) * (1 + 0.08 * math.sin(k * 10)))
         # Pin falls in and bounces
