@@ -32,6 +32,8 @@ RESPELL = {
     "IShowSpeed": "I Show Speed",
     "MrBeast": "Mister Beast",
     "Jae-in": "Jay In",
+    "FUBAR": "Foo-bar",
+    "Sadat": "Sah-dot",
 }
 
 

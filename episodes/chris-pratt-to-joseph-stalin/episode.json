@@ -1,0 +1,74 @@
+{
+  "from": "Chris Pratt",
+  "to": "Joseph Stalin",
+  "requested_by": "@ashtash8098",
+  "title": "Star-Lord to Stalin in five real photos?",
+  "description": "Five real photos connect Chris Pratt to Joseph Stalin, through a governor and three presidents.",
+  "hook": "How is Chris Pratt connected to Joseph Stalin?",
+  "people": {
+    "Chris Pratt": {
+      "label": "Chris Pratt"
+    },
+    "Arnold Schwarzenegger": {
+      "label": "Arnold Schwarzenegger"
+    },
+    "Ronald Reagan": {
+      "label": "Ronald Reagan"
+    },
+    "Richard Nixon": {
+      "label": "Richard Nixon"
+    },
+    "Harry S. Truman": {
+      "label": "Harry Truman"
+    },
+    "Joseph Stalin": {
+      "label": "Joseph Stalin"
+    }
+  },
+  "links": [
+    {
+      "a": "Chris Pratt",
+      "b": "Arnold Schwarzenegger",
+      "image": {
+        "url": "https://i.abcnewsfe.com/a/8bc75bcd-175a-4012-b614-81a94f41b5c8/fubar-1-gty-gmh-250612_1749748355376_hpMain.jpg?w=1600",
+        "credit": "Charley Gallay/Getty Images",
+        "license": "Fair use (commentary)",
+        "source": "https://www.goodmorningamerica.com/culture/story/arnold-schwarzeneggers-family-supports-fubar-premiere-122790066"
+      },
+      "line": "In 2025, Chris Pratt joined his father-in-law, Arnold Schwarzenegger, at the premiere of FUBAR."
+    },
+    {
+      "a": "Arnold Schwarzenegger",
+      "b": "Ronald Reagan",
+      "image": {
+        "file": "File:President Ronald Reagan with Arnold Schwarzenegger Retouched (cropped).jpg"
+      },
+      "line": "In 1984, Arnold, already famous as the Terminator, met President Ronald Reagan at the Republican convention."
+    },
+    {
+      "a": "Ronald Reagan",
+      "b": "Richard Nixon",
+      "image": {
+        "file": "File:Four Presidents (Reagan Ford Carter Nixon) Pose for a Portrait Prior to Leaving for Egypt and President Anwar Sadat'S Funeral - DPLA - 11150d197bcd8b923bf519eaad8aeefd.jpg"
+      },
+      "line": "In 1981, Reagan posed with Richard Nixon at the White House before Nixon flew to Sadat's funeral."
+    },
+    {
+      "a": "Richard Nixon",
+      "b": "Harry S. Truman",
+      "image": {
+        "file": "File:Nixon meeting with former President Harry S.Truman - NARA - 194615.tif"
+      },
+      "line": "In 1969, Nixon visited Harry Truman in Missouri and played him a song on the piano.",
+      "b_face": 1
+    },
+    {
+      "a": "Harry S. Truman",
+      "b": "Joseph Stalin",
+      "image": {
+        "file": "File:President Truman (center) speaks with Soviet Prime Minister Josef Stalin (at left) and British Prime Minister Winston... - NARA - 198775.jpg"
+      },
+      "line": "And in 1945, Truman met Joseph Stalin at the Potsdam Conference to decide the fate of postwar Europe."
+    }
+  ]
+}

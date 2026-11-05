@@ -11,11 +11,12 @@
  {
   "from": "Chris Pratt",
   "to": "Joseph Stalin",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@ashtash8098",
   "comment": "Connect Chris Pratt to Joseph Stalin",
   "likes": 7,
-  "source": "comment on 'leonardo da vinci to naruto' (old channel)"
+  "source": "comment on 'leonardo da vinci to naruto' (old channel)",
+  "slug": "chris-pratt-to-joseph-stalin"
  },
  {
   "from": "Qin Shi Huang",
