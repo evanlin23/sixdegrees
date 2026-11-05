@@ -80,29 +80,9 @@
  },
  "music": [
   {
-   "id": "876",
-   "title": "Like a Loop Machine",
-   "url": "https://assets.mixkit.co/music/876/876.mp3"
-  },
-  {
-   "id": "135",
-   "title": "Sleepy Cat",
-   "url": "https://assets.mixkit.co/music/135/135.mp3"
-  },
-  {
-   "id": "299",
-   "title": "Lil Sky Beats",
-   "url": "https://assets.mixkit.co/music/299/299.mp3"
-  },
-  {
-   "id": "281",
-   "title": "Complicated",
-   "url": "https://assets.mixkit.co/music/281/281.mp3"
-  },
-  {
-   "id": "765",
-   "title": "Lo-Fi 03",
-   "url": "https://assets.mixkit.co/music/765/765.mp3"
+   "id": "82",
+   "title": "Keeping Fit",
+   "url": "https://assets.mixkit.co/music/82/82.mp3"
   },
   {
    "id": "246",
@@ -110,19 +90,25 @@
    "url": "https://assets.mixkit.co/music/246/246.mp3"
   },
   {
-   "id": "304",
-   "title": "Torey",
-   "url": "https://assets.mixkit.co/music/304/304.mp3"
+   "id": "777",
+   "title": "A Game",
+   "url": "https://assets.mixkit.co/music/777/777.mp3"
   },
   {
-   "id": "404",
-   "title": "Greed",
-   "url": "https://assets.mixkit.co/music/404/404.mp3"
+   "id": "299",
+   "title": "Lil Sky Beats",
+   "url": "https://assets.mixkit.co/music/299/299.mp3"
   },
   {
-   "id": "298",
-   "title": "Lil Haiti Beat",
-   "url": "https://assets.mixkit.co/music/298/298.mp3"
+   "id": "876",
+   "title": "Like a Loop Machine",
+   "url": "https://assets.mixkit.co/music/876/876.mp3"
+  },
+  {
+   "id": "491",
+   "title": "Game Boy",
+   "url": "https://assets.mixkit.co/music/491/491.mp3"
   }
- ]
+ ],
+ "music_note": "Upbeat only: chosen by measured tempo, onset energy and brightness (2026-11-05)."
 }
