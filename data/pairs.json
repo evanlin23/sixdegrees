@@ -22,11 +22,12 @@
  {
   "from": "Qin Shi Huang",
   "to": "Kevin Hart",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@TFC_GTAG3",
   "comment": "Qin Shi Huangdi to Keven Heart",
   "likes": 6,
-  "source": "comment on 'leonardo da vinci to naruto' (old channel)"
+  "source": "comment on 'leonardo da vinci to naruto' (old channel)",
+  "slug": "qin-shi-huang-to-kevin-hart"
  },
  {
   "from": "King Von",

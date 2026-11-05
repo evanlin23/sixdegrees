@@ -1,0 +1,65 @@
+{
+  "from": "Qin Shi Huang",
+  "to": "Kevin Hart",
+  "requested_by": "@TFC_GTAG3",
+  "title": "China's first emperor to Kevin Hart in five links?",
+  "description": "An opera, a theatre opening, a summit and a TV taping connect Qin Shi Huang to Kevin Hart.",
+  "hook": "How is Qin Shi Huang connected to Kevin Hart?",
+  "links": [
+    {
+      "a": "Qin Shi Huang",
+      "b": "Plácido Domingo",
+      "image": {
+        "pair": [
+          {
+            "file": "File:Qin Shi Huang.jpg"
+          },
+          {
+            "file": "File:Plácido Domingo, 2008.jpg"
+          }
+        ]
+      },
+      "line": "In 2006, New York's Met staged an opera about Qin Shi Huang, with Plácido Domingo playing the emperor.",
+      "a_face": 1,
+      "b_face": 2
+    },
+    {
+      "a": "Plácido Domingo",
+      "b": "Vladimir Putin",
+      "image": {
+        "file": "File:Открытие Новой сцены Мариинского театра 14.jpeg"
+      },
+      "line": "In 2013, Domingo shared champagne with Vladimir Putin at the opening of the Mariinsky Theatre's new stage.",
+      "a_face": 3,
+      "b_face": 2
+    },
+    {
+      "a": "Vladimir Putin",
+      "b": "Barack Obama",
+      "image": {
+        "file": "File:Vladimir Putin and Barack Obama (2015-09-29) 01.jpg"
+      },
+      "line": "In 2015, Putin met Barack Obama at the United Nations in New York to talk about Syria."
+    },
+    {
+      "a": "Barack Obama",
+      "b": "Ash Carter",
+      "image": {
+        "file": "File:Defense Secretary Ash Carter awards the Honorable Barack H. Obama, 44th President of the United States, with the Department of Defense Medal for Distinguished Public Service.jpg"
+      },
+      "line": "In January 2017, Obama's defense secretary Ash Carter gave him the Pentagon's medal for distinguished public service.",
+      "b_face": 0,
+      "a_face": 1
+    },
+    {
+      "a": "Ash Carter",
+      "b": "Kevin Hart",
+      "image": {
+        "file": "File:161013-D-SV709-078 (30012677960).jpg"
+      },
+      "line": "And in 2016, Carter met Kevin Hart backstage at a Late Night with Seth Meyers taping in Washington.",
+      "a_face": 0,
+      "b_face": 1
+    }
+  ]
+}
