@@ -1,0 +1,85 @@
+{
+  "from": "Nelson Mandela",
+  "to": "Napoleon",
+  "requested_by": "@Watermelon.cat.7121",
+  "title": "How is Nelson Mandela connected to Napoleon?",
+  "description": "Five photos and two paintings link Nelson Mandela to Napoleon.",
+  "hook": "How is Nelson Mandela connected to Napoleon?",
+  "people": {
+    "Edward VIII": {
+      "label": "Edward VIII"
+    },
+    "Napoleon": {
+      "label": "Napoleon"
+    }
+  },
+  "links": [
+    {
+      "a": "Nelson Mandela",
+      "b": "George W. Bush",
+      "image": {
+        "file": "File:President George W. Bush and Former President Nelson Mandela of South Africa Meet in the Oval Office.jpg"
+      },
+      "line": "In 2005, Nelson Mandela visited George W. Bush in the Oval Office."
+    },
+    {
+      "a": "George W. Bush",
+      "b": "Gerald Ford",
+      "image": {
+        "file": "File:President George W. Bush, Former President Gerald Ford and Mrs. Betty Ford Greet the Media in Rancho Mirage, California (P042306ED-1123).jpg"
+      },
+      "line": "In 2006, Bush dropped in on Gerald Ford at his home in Rancho Mirage, California."
+    },
+    {
+      "a": "Gerald Ford",
+      "b": "Richard Nixon",
+      "image": {
+        "file": "File:Mr. and Mrs. Ford and Nixon 13 Oct 1973.jpg"
+      },
+      "line": "In 1973, Richard Nixon picked Ford as his vice president; a year later Ford had his job."
+    },
+    {
+      "a": "Richard Nixon",
+      "b": "Edward VIII",
+      "image": {
+        "file": "File:Nixon and the Windsors.jpg"
+      },
+      "line": "In 1970, Nixon threw a White House dinner for Edward the Eighth, the king who gave up his throne."
+    },
+    {
+      "a": "Edward VIII",
+      "b": "Queen Victoria",
+      "image": {
+        "file": "File:Edward VIII Christening.webp"
+      },
+      "line": "Back in 1894, baby Edward sat on the lap of his great-grandmother, Queen Victoria.",
+      "a_face": [
+        680,
+        1290,
+        130,
+        100
+      ],
+      "b_face": 1
+    },
+    {
+      "a": "Queen Victoria",
+      "b": "Napoleon III",
+      "image": {
+        "file": "File:Edward Matthew Ward (1816-79) - Queen Victoria at the Tomb of Napoleon, 24 August 1855 - RCIN 402019 - Royal Collection.jpg"
+      },
+      "line": "This painting shows Victoria in 1855, visiting Napoleon's tomb in Paris with Emperor Napoleon the Third.",
+      "a_face": 5,
+      "b_face": 6
+    },
+    {
+      "a": "Napoleon III",
+      "b": "Napoleon",
+      "image": {
+        "file": "File:Napoléon enfants Saint-Cloud.jpg"
+      },
+      "line": "And in this 1810 painting, the baby on Napoleon's knee is his nephew, the future Napoleon the Third.",
+      "a_face": 8,
+      "b_face": 6
+    }
+  ]
+}

@@ -190,11 +190,12 @@
  {
   "from": "Nelson Mandela",
   "to": "Napoleon",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@Watermelon.cat.7121",
   "comment": "Do nelson mandela to napolean",
   "likes": 0,
-  "source": "comment on 'george washington to adolf h' (old channel)"
+  "source": "comment on 'george washington to adolf h' (old channel)",
+  "slug": "nelson-mandela-to-napoleon"
  },
  {
   "from": "Jesus",
