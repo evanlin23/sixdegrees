@@ -48,7 +48,38 @@ episode.json: the hook shows the viewer's request bubble and the first comment c
   match. A character's name only ever labels the character's own artwork, never the actor in a real photo.
 - **No limit on the number of links.** A Short can be up to 3 minutes, and QA fails only past 3:00 (it warns past
   60 s). Shorter is better for retention, so prefer the most surprising chain with tight lines.
-- Never invent a meeting, a photo or a caption. If no honest chain exists, mark the pair `"skipped"` with a reason.
+- Never invent a meeting, a photo or a caption.
+
+## 2b. Finding pictures: try hard, skipping is the last resort
+Viewers asked for these pairs, so a skip is a failure. "Commons has nothing" is not enough. Before giving up on a
+link, work through **every** step below and keep a note of what you tried.
+1. **Wikipedia and Commons, deeply.** Look through all images in both people's articles, every "Category:<Name>"
+   subcategory on Commons (events, years, "with <X>"), and the `depicts` (P180) search
+   (`haswbstatement:P180=<Qid>`). Check the event categories too, such as premieres, award shows, Met Gala, Comic-Con,
+   WWE events, state visits, sports finals and summits.
+2. **Public-domain archives.** White House and other government Flickr accounts, NARA, the Library of Congress,
+   DVIDS (military), NASA, and Kremlin.ru (CC BY 4.0). Presidents, generals and visiting celebrities show up here.
+3. **Free photo hosts.** Flickr CC-licensed photos (search the two names together), fan convention photos and
+   press-agency CC releases.
+4. **Fair use (commentary) press photos.** These are allowed: Getty, AP, Reuters, AFP, WireImage, news articles, and a
+   verified Instagram or X post by either person. Also allowed: a talk-show, podcast, interview or game-broadcast
+   frame showing both people, such as a YouTube thumbnail or still from the official channel. Use
+   `{"url", "credit", "license": "Fair use (commentary)", "source"}`, with `source` set to the page the image came from.
+5. **Change the route.** If one link is stuck, connect through someone else. Good hubs:
+   - US presidents and first ladies
+   - popes and Queen Elizabeth II
+   - talk-show hosts (Fallon, Kimmel, Oprah, Letterman)
+   - Snoop Dogg, Kim Kardashian, MrBeast, Elon Musk
+   - footballers at the Ballon d'Or, WWE stars
+   - for long time gaps, lineage links (popes, emperors, kings)
+
+   Run `python -m sixdeg search` again with different endpoints, and web search "<A> and <B> photo",
+   "<A> meets", "<A> with" and "<A> backstage".
+6. **Fictional characters.** Use a real photo of the voice actor, creator or puppeteer with anyone notable, such as
+   a convention panel, premiere or award show. Their co-stars and directors count too.
+
+Only after all six steps may a pair be `"skipped"`. Its `reason` must list what you searched at each step, so the
+operator can see the effort.
 - Keep it family-safe: no gore, nudity or slurs on screen. Historical figures are presented as history.
 
 ## 3. episode.json
