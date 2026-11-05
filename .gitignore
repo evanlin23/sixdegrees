@@ -6,3 +6,5 @@ models/
 episodes/*/out/
 episodes/*/work/
 .queue/
+assets/music/*
+!assets/music/README.txt

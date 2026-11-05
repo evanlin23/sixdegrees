@@ -16,7 +16,9 @@ python -m sixdeg setup          # face + voice models into models/ (~400 MB, cac
 
 ## 1. Pick the pair
 
-Take the first entry in `data/pairs.json` with `"status": "todo"`. If none are
+Take the first entry in `data/pairs.json` with `"status": "todo"` (viewer requests come first, sorted by
+likes). If the entry has `requested_by`, copy `requested_by` into episode.json: the hook then shows that
+viewer's request as a comment bubble and the first comment credits them. If none are
 left, invent five more following the formula in `docs/STYLE.md`, append them,
 and take the first. Slug = `<from>-to-<to>`, lowercase, dashes.
 
@@ -41,6 +43,13 @@ first link is the character with their actor or creator (a still or a premiere
 photo), and the line says so plainly ("Steve is played by Jack Black in the
 movie"). For such images use `{"url": ..., "credit": ..., "license": "Fair use
 (commentary)", "source": <page url>}`.
+
+**Crossing centuries: succession chains.** Before photography, people were rarely painted
+together. Bridge long gaps with a line of succession (popes, emperors, monarchs, presidents' oaths),
+where each link is two consecutive office-holders: `"image": {"pair": [{"file": ...}, {"file": ...}]}`
+renders their portraits side by side. The line must say so honestly ("Pope Linus succeeded Saint Peter").
+Paintings, statues and coins are fine as pictures. Their faces never match automatically, so pin them by hand.
+Prefer a real shared photo or painting whenever one exists; use succession links only for the gap.
 
 Pick the chain with:
 1. 3-7 photos (best: 4-6),
@@ -82,38 +91,19 @@ If a face is wrong or `unverified`/`missing`, pin it in episode.json with
 statues and cartoons never match SFace, so pin them after you have looked. Re-run
 `prep` after edits.
 
-## 5. Render, QA, look again
+## 5. Hand off to GitHub (rendering is not done in the Claude session)
 
-```bash
-python -m sixdeg render <slug>
-python -m sixdeg qa <slug>          # must print "pass": true
-python -m sixdeg kit <slug>         # out/upload.md + out/metadata.json
-```
+Commit `episodes/<slug>/episode.json` (with your face pins and respellings), mark the pair `"done"` in
+`data/pairs.json`, and push to `main`. `.github/workflows/render.yml` then runs prep, voice, render, QA
+and the upload kit on GitHub's runners, and puts the video on the `queue` branch. `upload.yml` (cron-job.org)
+posts it in the next slot. If QA fails, the workflow opens a "Render failed" issue. The next session fixes
+episode.json from the review images in the run artifact and pushes again.
 
-Open `episodes/<slug>/out/contact.jpg` and check the name tags sit on the right
-heads and the captions read well. Fix and re-render until QA passes. Never ship a
-QA failure.
-
-## 6. Upload and deliver
-
-```bash
-python -m sixdeg upload <slug>      # private, scheduled into the next free slot (2 a day)
-```
-
-YouTube is the backlog. Every video goes up private with a scheduled publish time,
-so it doesn't matter that this container disappears. The command appends to
-`data/uploads.json`. If the `YT_*` environment variables are missing, it does a dry
-run and says so; then the creator uploads by hand from the kit.
-
-1. In `data/pairs.json`, set the pair's `status` to `"done"` and add the slug.
-2. Commit `episodes/<slug>/episode.json`, `data/pairs.json` and `data/uploads.json`
-   (the video itself is gitignored) and push to `main`.
-3. Open a GitHub issue titled `Scheduled: <title> (<publish time>)` with the
-   YouTube link and `out/upload.md`, so the creator can see what's queued.
-4. Send the mp4 to the user with SendUserFile (`display: "attach"`).
+A local render is still useful to preview a tricky episode before pushing:
+`python -m sixdeg render <slug> && python -m sixdeg qa <slug>`, then open `out/contact.jpg`.
 
 ## Cadence
 
-The scheduled run makes **two** episodes per run (one per publish slot). If
+Each scheduled run makes **two** episodes, one per daily upload slot. If
 `data/uploads.json` already has 4 or more videos scheduled in the future, make
 only one; never let the queue grow past about 6.

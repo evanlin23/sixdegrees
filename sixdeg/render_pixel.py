@@ -1,6 +1,6 @@
 """Pixel-arcade style renderer (the channel look).
 
-Real photos in a white card with a hard shadow, on a scrolling two-tone pixel checkerboard;
+Photos and paintings in a white card with a hard shadow, on a scrolling two-tone pixel checkerboard;
 chunky pixel name tags and captions (Press Start 2P); Pin (pixel pushpin in a detective hat)
 thrown along the red evidence string; "?" blocks that fill in as people are revealed;
 pixelate-dissolve cuts; 8-bit SFX; CONNECTED! on the final reveal.
@@ -223,7 +223,7 @@ def render(slug: str, log=print) -> Path:
         dr.rectangle([0, 0, W, BAND], fill=INK)
         paste(base, title_im, W / 2, 80)
         if i is not None:
-            paste(base, pixel_text(f"PHOTO {i + 1}/{n_links}", 22, fill=YELLOW, shadow=False), W / 2, 160)
+            paste(base, pixel_text(f"LINK {i + 1}/{n_links}", 22, fill=YELLOW, shadow=False), W / 2, 160)
 
     def blocks(base, upto, active, tt):
         n = len(C.people)
@@ -374,6 +374,13 @@ def render(slug: str, log=print) -> Path:
             card.alpha_composite(flat, (14, 14))
             paste(base, card, W / 2, cy, scale=sc, nearest=False)
             paste(base, pixel_tag(C.labels[nm].upper(), col, 30), W / 2, cy + 225, scale=sc)
+        if spec.get("requested_by"):   # real viewer request: pixel comment bubble under the band
+            req = f'{spec["requested_by"]}: "{short_name(spec["from"]).upper()} TO {short_name(spec["to"]).upper()}"'
+            fsz = 24
+            while pf(fsz).getlength(req) > W - 140 and fsz > 14:
+                fsz -= 2
+            bub = pixel_tag(req, WHITE, fsz)
+            paste(base, bub, W / 2, 272, scale=min(1, ease_out_back(k / 0.15)))
         q = pixel_text("?", 150, fill=YELLOW)
         paste(base, q, W / 2 - 290, 945, scale=min(1, ease_out_back((k - 0.3) / 0.2)) * (1 + 0.08 * math.sin(k * 10)))
         # Pin falls in and bounces

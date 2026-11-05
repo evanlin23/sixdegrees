@@ -12,6 +12,7 @@ episodes/<slug>/episode.json
   "links": [
     {"a": "Adolf Hitler", "b": "Wernher von Braun",
      "image": {"file": "File:Some photo.jpg"}            # Wikimedia file (credit auto)
+        or {"pair": [{"file": "File:Pope A.jpg"}, {"file": "File:Pope B.jpg"}]}   # succession: two portraits side by side
         or {"url": "https://...", "credit": "...", "license": "...", "source": "page url"},
      "line": "spoken narration for this photo",
      "a_face": 2,  "b_face": [x, y, w, h]                 # optional manual pins (index or box)
@@ -104,6 +105,26 @@ def clean_artist(a: str) -> str:
     return a
 
 
+def _fetch_pair(specs: list[dict], dest_stem: Path) -> dict:
+    """Two portraits joined into one picture (same height, thin white gutter). Credits are merged."""
+    recs, ims = [], []
+    for j, sp in enumerate(specs[:2]):
+        r = _fetch_image(sp, dest_stem.with_name(dest_stem.name + f"_p{j}"))
+        recs.append(r)
+        ims.append(Image.open(dest_stem.parent / r["path"]).convert("RGB"))
+    h = min(1400, min(im.height for im in ims))
+    ims = [im.resize((int(im.width * h / im.height), h)) for im in ims]
+    gut = 24
+    out = Image.new("RGB", (sum(im.width for im in ims) + gut, h), (255, 255, 255))
+    out.paste(ims[0], (0, 0)); out.paste(ims[1], (ims[0].width + gut, 0))
+    dest = dest_stem.with_suffix(".jpg")
+    out.save(dest, quality=93)
+    return {"path": dest.name, "source": " + ".join(r["source"] for r in recs),
+            "license": " / ".join(dict.fromkeys(r["license"] for r in recs)),
+            "artist": ", ".join(a for a in (r.get("artist") for r in recs) if a), "credit": "",
+            "file": recs[0].get("file"), "free": all(r.get("free") for r in recs), "parts": recs}
+
+
 def _pin_to_box(pin, det: list[dict]):
     if pin is None:
         return None
@@ -145,7 +166,10 @@ def prep(slug: str, log=print) -> dict:
     # ---- each link photo
     links_out, credits = [], []
     for i, link in enumerate(spec["links"]):
-        rec = _fetch_image(link["image"], work / f"link{i}")
+        if "pair" in link["image"]:   # succession link: two portraits side by side ("line of popes")
+            rec = _fetch_pair(link["image"]["pair"], work / f"link{i}")
+        else:
+            rec = _fetch_image(link["image"], work / f"link{i}")
         credits.append(rec)
         img = faces.load(work / rec["path"])
         det = faces.detect(img)

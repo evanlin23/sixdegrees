@@ -7,6 +7,7 @@ from __future__ import annotations
 import hashlib
 import json
 import subprocess
+from pathlib import Path
 
 import numpy as np
 
@@ -44,7 +45,14 @@ def sfx(name: str, gain: float = 1.0, max_len: float = 1.5) -> np.ndarray:
     return a / (np.abs(a).max() + 1e-9) * gain
 
 
+LOCAL_MUSIC = DATA.parent / "assets" / "music"   # creator-supplied tracks (e.g. a trending song), used first
+
+
 def pick_track(slug: str, override: str | None = None) -> dict:
+    local = sorted(p for p in LOCAL_MUSIC.glob("*") if p.suffix.lower() in (".mp3", ".m4a", ".wav", ".ogg"))
+    if local and not override:
+        p = local[int(hashlib.sha1(slug.encode()).hexdigest(), 16) % len(local)]
+        return {"id": "local", "title": p.stem, "path": str(p)}
     tracks = registry()["music"]
     if override:
         return next(t for t in tracks if t["id"] == override or t["title"] == override)
@@ -54,7 +62,7 @@ def pick_track(slug: str, override: str | None = None) -> dict:
 
 def music(track: dict, seconds: float) -> np.ndarray:
     """The most energetic `seconds` of the track (skips quiet intros), with short fades."""
-    p = DIR / f"music_{track['id']}.mp3"
+    p = Path(track["path"]) if track.get("path") else DIR / f"music_{track['id']}.mp3"
     if not p.exists():
         ensure()
     a = _decode(p)

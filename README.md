@@ -1,7 +1,7 @@
 # sixdegrees
 
 Fully automated "Six Degrees" YouTube Shorts: pick two people who could not be
-further apart, find a chain of **real photos** that connects them, and render a
+further apart, find a chain of **real photos or paintings** that connects them, and render a
 narrated 1080×1920 Short.
 
 ```bash
