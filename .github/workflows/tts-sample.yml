@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       slug: {description: "episode to voice", default: "marilyn-monroe-to-vladimir-putin"}
-      models: {description: "space-separated Gemini TTS models", default: "gemini-3.8-flash-tts gemini-2.5-pro-preview-tts"}
+      models: {description: "space-separated Gemini TTS models", default: "gemini-3.8-flash-tts"}
 permissions:
   contents: write
 jobs:

@@ -31,7 +31,7 @@ def list_tts_models() -> list[str]:
     return [m["name"].split("/")[-1] for m in r.json().get("models", []) if "tts" in m["name"].lower()]
 
 
-def synth(lines: list[str], voice: str = "Puck", model: str = "gemini-2.5-flash-preview-tts",
+def synth(lines: list[str], voice: str = "Puck", model: str = "gemini-3.8-flash-tts",
           style: str = STYLE, tries: int = 4) -> np.ndarray:
     prompt = style + "\n\n" + "\n\n".join(lines)
     body = {"contents": [{"parts": [{"text": prompt}]}],
@@ -62,8 +62,12 @@ if __name__ == "__main__":   # samples for the voice comparison: python -m sixde
     print("TTS models:", list_tts_models())
     spec = json.load(open(f"episodes/{slug}/episode.json"))
     lines = [speakable(spec["hook"])] + [speakable(l["line"]) for l in spec["links"]]
-    for model in sys.argv[3:] or ["gemini-2.5-flash-preview-tts"]:
-        a = synth(lines, "Puck", model)
+    for model in sys.argv[3:] or ["gemini-3.8-flash-tts"]:
+        try:
+            a = synth(lines, "Puck", model, tries=2)
+        except RuntimeError as e:
+            print("skipped", model, e)
+            continue
         wav = f"{outdir}/puck-{model}.wav"
         sf.write(wav, a, SR)
         subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", wav, "-b:a", "160k", wav[:-4] + ".mp3"], check=True)
