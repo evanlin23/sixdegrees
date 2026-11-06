@@ -41,11 +41,12 @@
  {
   "from": "P. Diddy",
   "to": "George Washington",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@Snubbenson",
   "comment": "P diddy to george Washington",
   "likes": 2,
-  "source": "comment on 'joseph stalin to sophie rain' (old channel)"
+  "source": "comment on 'joseph stalin to sophie rain' (old channel)",
+  "slug": "diddy-to-george-washington"
  },
  {
   "from": "MatPat",
@@ -89,11 +90,12 @@
  {
   "from": "Zeus",
   "to": "One Piece",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@Sealswowzazer",
   "comment": "Zeus to one piece",
   "likes": 1,
-  "source": "comment on 'leonardo da vinci to naruto' (old channel)"
+  "source": "comment on 'leonardo da vinci to naruto' (old channel)",
+  "slug": "zeus-to-one-piece"
  },
  {
   "from": "Rivaldo",
@@ -108,11 +110,12 @@
  {
   "from": "King Henry VII",
   "to": "Lamine Yamal",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@iasser656",
   "comment": "King herny vii to yamal",
   "likes": 0,
-  "source": "comment on 'pythagoras to virgil van dijk' (old channel)"
+  "source": "comment on 'pythagoras to virgil van dijk' (old channel)",
+  "slug": "henry-vii-to-lamine-yamal"
  },
  {
   "from": "Grug",
@@ -127,11 +130,12 @@
  {
   "from": "Jesus",
   "to": "Mia Khalifa",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@spikethetrike",
   "comment": "Jesus to Mia Khalifa",
   "likes": 0,
-  "source": "comment on 'george washington to adolf h' (old channel)"
+  "source": "comment on 'george washington to adolf h' (old channel)",
+  "slug": "jesus-to-mia-khalifa"
  },
  {
   "from": "Neymar",
@@ -146,40 +150,42 @@
  {
   "from": "Queen Elizabeth",
   "to": "Freddy Fazbear",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@Summer_Bain",
   "comment": "Do queen Elizabeth to freddy fazbear",
   "likes": 0,
-  "source": "comment on 'adolf h to luffy' (old channel)"
+  "source": "comment on 'adolf h to luffy' (old channel)",
+  "slug": "elizabeth-ii-to-freddy-fazbear"
  },
  {
   "from": "Franklin D. Roosevelt",
   "to": "Lee Jung-jae",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@jamiewyatt8140",
   "comment": "Franklyn d roseveld to Lee Jung Jae",
   "likes": 0,
-  "source": "comment on 'adolf h to luffy' (old channel)"
+  "source": "comment on 'adolf h to luffy' (old channel)",
+  "slug": "franklin-d-roosevelt-to-lee-jung-jae"
  },
  {
   "from": "Joseph Stalin",
   "to": "Optimus Prime",
-  "status": "skipped",
+  "status": "done",
   "requested_by": "@Thegreatskibidisigmalord",
   "comment": "Connect Joseph Stalin to Optimus prime",
   "likes": 0,
   "source": "comment on 'adolf h to luffy' (old channel)",
-  "reason": "No real photo of Peter Cullen (Optimus Prime's voice) with anyone notable could be found: Commons only has solo/convention shots and NASA student events; press galleries (premieres, 2014 handprint ceremony) show no verifiable shared photo. Retry if one turns up."
+  "slug": "joseph-stalin-to-optimus-prime"
  },
  {
   "from": "Augustus",
   "to": "Tom Cruise",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@bluescreenperson",
   "comment": "Connect augustus to tom cruise",
   "likes": 0,
   "source": "comment on 'adolf h to luffy' (old channel)",
-  "reason": "redo: Caesar to John Gavin is an actor link, not allowed for real people"
+  "slug": "augustus-to-tom-cruise"
  },
  {
   "from": "Magnus Carlsen",
@@ -193,11 +199,12 @@
  {
   "from": "Nelson Mandela",
   "to": "Napoleon",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@Watermelon.cat.7121",
   "comment": "Do nelson mandela to napolean",
   "likes": 0,
-  "source": "comment on 'george washington to adolf h' (old channel)"
+  "source": "comment on 'george washington to adolf h' (old channel)",
+  "slug": "nelson-mandela-to-napoleon"
  },
  {
   "from": "Jesus",
@@ -211,11 +218,12 @@
  {
   "from": "Donald Trump",
   "to": "Julius Caesar",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@TheEditer-c7f",
   "comment": "Dobold Trump to Julius Caesar",
   "likes": 0,
-  "source": "comment on 'leonardo da vinci to naruto' (old channel)"
+  "source": "comment on 'leonardo da vinci to naruto' (old channel)",
+  "slug": "donald-trump-to-julius-caesar"
  },
  {
   "from": "Zeus",
@@ -239,20 +247,22 @@
  {
   "from": "Christopher Columbus",
   "to": "Baby Yoda",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@Hampterguy49",
   "comment": "Christopher Columbus to baby yoda",
   "likes": 0,
-  "source": "comment on 'leonardo da vinci to naruto' (old channel)"
+  "source": "comment on 'leonardo da vinci to naruto' (old channel)",
+  "slug": "christopher-columbus-to-baby-yoda"
  },
  {
   "from": "Virgil van Dijk",
   "to": "Pythagoras",
-  "status": "todo",
+  "status": "skipped",
   "requested_by": "@Devoted_99",
   "comment": "Plz do Van dijk to Pythagoras ive commented on majority of vids (also first)",
   "likes": 0,
-  "source": "comment on 'adolf h to p diddy' (old channel)"
+  "source": "comment on 'adolf h to p diddy' (old channel)",
+  "reason": "already on the channel: Pythagoras to Virgil van Dijk (hZ6Wpqnlvvg, May 2025)"
  },
  {
   "from": "Kim Jong Un",
@@ -412,5 +422,53 @@
   "from": "Salvador Dalí",
   "to": "Walt Disney",
   "status": "todo"
+ },
+ {
+  "from": "Pythagoras",
+  "to": "Virgil van Dijk",
+  "status": "done",
+  "source": "old upload on this channel (May 2025)",
+  "video_id": "hZ6Wpqnlvvg",
+  "views_nov2026": 1018
+ },
+ {
+  "from": "Adolf Hitler",
+  "to": "P. Diddy",
+  "status": "done",
+  "source": "old upload on this channel (May 2025)",
+  "video_id": "zmgKN0vrE8M",
+  "views_nov2026": 1097
+ },
+ {
+  "from": "George Washington",
+  "to": "Adolf Hitler",
+  "status": "done",
+  "source": "old upload on this channel (May 2025)",
+  "video_id": "SppcW1xMA44",
+  "views_nov2026": 2941
+ },
+ {
+  "from": "Adolf Hitler",
+  "to": "Monkey D. Luffy",
+  "status": "done",
+  "source": "old upload on this channel (May 2025)",
+  "video_id": "aAemiEK4qAI",
+  "views_nov2026": 2190
+ },
+ {
+  "from": "Joseph Stalin",
+  "to": "Sophie Rain",
+  "status": "done",
+  "source": "old upload on this channel (May 2025)",
+  "video_id": "EJeNVZi7GG4",
+  "views_nov2026": 3712
+ },
+ {
+  "from": "Leonardo da Vinci",
+  "to": "Naruto",
+  "status": "done",
+  "source": "old upload on this channel (May 2025)",
+  "video_id": "oRWGkZcktlA",
+  "views_nov2026": 39838
  }
 ]

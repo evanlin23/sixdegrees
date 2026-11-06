@@ -31,9 +31,15 @@ PURPLE_Q = (60, 50, 110)
 # per-photo background tones (light, dark)
 TONES = [((255, 46, 99), (226, 26, 82)), ((40, 170, 255), (20, 130, 225)), ((255, 170, 0), (236, 140, 0)),
          ((140, 70, 255), (112, 46, 220)), ((0, 205, 130), (0, 170, 105)), ((255, 90, 200), (225, 60, 170))]
-FF, RW = 0.95, 0.60                   # hook: flash-forward to the payoff, then a rewind scrub
-CARD = (40, 300, 1040, 1600)          # photo window: x0, y0, x1, y1
-BAND = 210                            # top title band height
+FF, RW = 0.0, 0.0                     # hook: no flash-forward/rewind; the two faces are on screen from frame 0
+# Shorts UI safe zone: the feed covers the top ~140 px (search/menu), the right ~140 px from mid-height down
+# (like/comment/share buttons) and the bottom ~470 px (title, channel, sound). Everything that matters stays inside.
+SAFE = (60, 150, 930, 1440)           # x0, y0, x1, y1
+CX = (SAFE[0] + SAFE[2]) / 2          # content centre (left of the button column)
+CARD = (50, 430, 930, 1380)           # photo window: x0, y0, x1, y1
+BAND = 270                            # top title band height
+BAR_Y = 352                           # chain bar (faces) centre line
+CAP_Y = 1300                          # captions
 
 
 def pf(size):  # pixel font
@@ -132,16 +138,16 @@ class PixelCaptions:
         if cur:
             self.groups.append(cur)
 
-    def draw(self, base, t, y=1470):
+    def draw(self, base, t, y=CAP_Y):
         for g in self.groups:
             if g[0][1] - 0.02 <= t < g[-1][2] + 0.12:
                 parts = [w.upper().strip(",.:;") or w.upper() for w, _, _ in g]
                 size = 54
-                while size > 30 and pf(size).getlength(" ".join(parts)) > W - 120:
+                while size > 30 and pf(size).getlength(" ".join(parts)) > SAFE[2] - SAFE[0] - 20:
                     size -= 4
                 f = pf(size)
                 total = f.getlength(" ".join(parts))
-                x = W / 2 - total / 2
+                x = CX - total / 2
                 cur = max([j for j, (_, a, _) in enumerate(g) if a <= t] or [0])
                 pop = ease_out_back((t - g[0][1]) / 0.1)
                 for j, p in enumerate(parts):
@@ -170,10 +176,9 @@ def render(slug: str, log=print) -> Path:
     d = max(len(a) / audio.SR + 0.3 + HOOK_VO, FF + RW + 1.3)
     segs.append({"kind": "hook", "t0": t, "t1": t + d, "cap": PixelCaptions(words, t + HOOK_VO)})
     voice_clips.append((t + HOOK_VO, a))
-    sfx += [(0.0, assets.sfx("impact", 0.4)),                              # one clean hit on the payoff
-            (FF, assets.sfx("rewind", 0.28, max_len=RW + 0.1)),             # quieter tape rewind
-            (FF + RW + 0.02, assets.sfx("bass_hit", 0.4)),                  # A and B land
-            (FF + RW + 0.5, assets.sfx("px_coin", 0.3))]
+    sfx += [(0.0, assets.sfx("impact", 0.4)),                              # A slams in on frame 0
+            (0.18, assets.sfx("bass_hit", 0.4)),                            # B lands
+            (0.5, assets.sfx("px_coin", 0.3))]
     t += d
     for i, link in enumerate(spec["links"]):
         a, words = audio.say(link["line"], voice)
@@ -228,7 +233,7 @@ def render(slug: str, log=print) -> Path:
         return lab if (len(lab) <= 12 or len(last) <= 3) else last
     title = f"{short_label(spec['from'])} > {short_label(spec['to'])}"
     tsize = 46
-    while pf(tsize).getlength(title) > W - 80 and tsize > 24:
+    while pf(tsize).getlength(title) > SAFE[2] - SAFE[0] and tsize > 24:
         tsize -= 2
     title_im = pixel_text(title, tsize, shadow=False)
     def _flat(im):
@@ -239,20 +244,21 @@ def render(slug: str, log=print) -> Path:
     def band(base, i=None):
         dr = ImageDraw.Draw(base)
         dr.rectangle([0, 0, W, BAND], fill=INK)
-        paste(base, title_im, W / 2, 80)
+        paste(base, title_im, CX, 165)
         if i is not None:
-            paste(base, pixel_text(f"LINK {i + 1}/{n_links}", 22, fill=YELLOW, shadow=False), W / 2, 160)
+            paste(base, pixel_text(f"LINK {i + 1}/{n_links}", 22, fill=YELLOW, shadow=False), CX, 232)
 
     def blocks(base, upto, active, tt, sharpen=1.0):
         """Chain bar: revealed faces sharp, upcoming faces blurred; the newest one sharpens in (sharpen 0..1)."""
         n = len(C.people)
-        size = min(120, int((W - 80) / n) - 24)
-        gap = (W - 80) / n
-        y = 1760
+        span = SAFE[2] - SAFE[0]
+        size = min(92, int(span / n) - 16)
+        gap = span / n
+        y = BAR_Y
         dr = ImageDraw.Draw(base)
         for k, nm in enumerate(C.people):
-            cx = 40 + gap * (k + 0.5)
-            bob = -10 * abs(math.sin(tt * 6)) if k in active else 0
+            cx = SAFE[0] + gap * (k + 0.5)
+            bob = -6 * abs(math.sin(tt * 6)) if k in active else 0
             x0, y0 = cx - size / 2, y - size / 2 + bob
             dr.rectangle([x0 + 8, y0 + 8, x0 + size + 8, y0 + size + 8], fill=INK)
             dr.rectangle([x0, y0, x0 + size, y0 + size], fill=YELLOW if k in active else WHITE, outline=INK, width=6)
@@ -273,7 +279,7 @@ def render(slug: str, log=print) -> Path:
         if len(who) > 26 or "(" in who or "http" in who:
             who = "Wikimedia Commons" if cr.get("file") else ""
         txt = f"PHOTO: {who + ' / ' if who else ''}{cr.get('license', '')}".upper()
-        ImageDraw.Draw(base).text((CARD[2], CARD[3] + 30), txt, font=sf(20), fill=(255, 255, 255), anchor="rm",
+        ImageDraw.Draw(base).text((CARD[2], CARD[3] + 32), txt, font=sf(18), fill=(255, 255, 255), anchor="rm",
                                   stroke_width=2, stroke_fill=INK)
 
     # ---------- frames
@@ -320,19 +326,19 @@ def render(slug: str, log=print) -> Path:
         for j in range(n):
             y = 960 + (j - p) * STEP
             if -500 < y < H + 500:
-                paste(base, lineage_card(i, j), W / 2 - 40, y)
+                paste(base, lineage_card(i, j), CX - 20, y, scale=0.9)
         # Buh rides along the right edge
         bob = abs(math.sin(tt * 9)) * 30
         ex = "shock" if 0.2 < k < END else ("smug" if land > 0.3 else "happy")
-        paste_pin(base, pin_sprite(ex, 15 * math.sin(tt * 6) if 0.1 < k < END else 0, 0, -1), W - 150, 900 - bob)
+        paste_pin(base, pin_sprite(ex, 15 * math.sin(tt * 6) if 0.1 < k < END else 0, 0, -1), SAFE[2] - 40, 720 - bob)
         dr = ImageDraw.Draw(base)
         dr.rectangle([0, 0, W, BAND], fill=INK)
-        paste(base, title_im, W / 2, 80)
+        paste(base, title_im, CX, 165)
         lab = C.fj["links"][i].get("label", "LINE OF SUCCESSION").upper()
-        paste(base, pixel_text(f"{lab}  {min(n, int(p) + 1)}/{n}", 22, fill=YELLOW, shadow=False), W / 2, 160)
+        paste(base, pixel_text(f"{lab}  {min(n, int(p) + 1)}/{n}", 22, fill=YELLOW, shadow=False), CX, 232)
         if last and land > 0.35:
             st = min(1.0, (land - 0.35) / 0.12)
-            paste(base, pixel_text("CONNECTED!", 80, fill=RED), W / 2, 1180, scale=2.0 - ease(st))
+            paste(base, pixel_text("CONNECTED!", 72, fill=RED), CX, 1020, scale=2.0 - ease(st))
         upto = i + (1 if land >= 0 else 0)
         blocks(base, upto, {upto} if land >= 0 else {i}, tt, sharpen=min(1.0, land / 0.35) if land >= 0 else 1.0)
         seg["cap"].draw(base, tt)
@@ -406,7 +412,7 @@ def render(slug: str, log=print) -> Path:
                 pop = ease_out_back((k - appear) * seg["speech"] / 0.12)
                 tag = pixel_tag(C.labels[nm].upper(), col, 26 if len(C.labels[nm]) < 15 else 22)
                 tx, ty = to_screen(M, bx[0] + bx[2] / 2, bx[1] + bx[3])   # under the chin
-                tx = max(tag.width / 2 + 10, min(W - tag.width / 2 - 10, tx))
+                tx = max(SAFE[0] + tag.width / 2, min(SAFE[2] - tag.width / 2, tx))
                 ty = max(CARD[1] + 60, min(CARD[3] - 230, ty + 34))
                 paste(base, tag, tx, ty, scale=pop)
         # Pin
@@ -427,7 +433,7 @@ def render(slug: str, log=print) -> Path:
         # CONNECTED!
         if last and land > 0.35:
             st = min(1.0, (land - 0.35) / 0.12)
-            paste(base, pixel_text("CONNECTED!", 80, fill=RED), W / 2, 1180, scale=2.0 - ease(st))
+            paste(base, pixel_text("CONNECTED!", 72, fill=RED), CX, 1020, scale=2.0 - ease(st))
         band(base, i)
         upto = i + (1 if land >= 0 else 0)
         blocks(base, upto, {upto} if land >= 0 else {i}, tt, sharpen=min(1.0, land / 0.35) if land >= 0 else 1.0)
@@ -487,14 +493,10 @@ def render(slug: str, log=print) -> Path:
             base = checker(tt * 3, ((90, 40, 200), (70, 26, 170)))   # faster scroll keeps the screen moving
             dr = ImageDraw.Draw(base)
             dr.rectangle([0, 0, W, BAND], fill=INK)
-            pulse = 1 + 0.05 * math.sin(kk * 9)
-            paste(base, pixel_text(f"{n_links} PICTURES", 50, fill=YELLOW, shadow=False), W / 2, 75,
-                  scale=(min(1, ease_out_back((kk - 0.4) / 0.15)) if kk > 0.4 else 0.01) * pulse)
-            paste(base, pixel_text("APART", 40, fill=WHITE, shadow=False), W / 2, 150,
-                  scale=1 if kk > 0.5 else 0.01)
+            paste(base, title_im, CX, 190)            # same "A > B" header as the links, no count
             centers = {}
-            for nm, cy, delay, col, (dx, dy) in ((spec["from"], 610, 0.0, CYAN, (sx, sy)),
-                                                 (spec["to"], 1290, 0.18, YELLOW, (sx2, sy2))):
+            for nm, cy, delay, col, (dx, dy) in ((spec["from"], 590, 0.0, CYAN, (sx, sy)),
+                                                 (spec["to"], 1060, 0.18, YELLOW, (sx2, sy2))):
                 if kk < delay:
                     continue
                 sc = 1.6 - 0.6 * ease(min(1, (kk - delay) / 0.12))     # slams down from big to size
@@ -508,13 +510,13 @@ def render(slug: str, log=print) -> Path:
                 cd.rectangle([0, 0, size + 28, size + 28], fill=WHITE, outline=INK, width=6)
                 flat = Image.new("RGBA", (size, size), (30, 30, 30, 255)); flat.alpha_composite(face)
                 card.alpha_composite(flat, (14, 14))
-                paste(base, card, W / 2 + dx, cy + dy, scale=sc, nearest=False)
-                paste(base, pixel_tag(C.labels[nm].upper(), col, 30), W / 2 + dx, cy + 225 + dy, scale=min(1, sc))
-                centers[nm] = (W / 2 + dx, cy + dy)
+                paste(base, card, CX + dx, cy + dy, scale=sc, nearest=False)
+                paste(base, pixel_tag(C.labels[nm].upper(), col, 30), CX + dx, cy + 222 + dy, scale=min(1, sc))
+                centers[nm] = (CX + dx, cy + dy)
             if len(centers) == 2 and kk > 0.3:                          # the string snaps between them
                 (ax, ay), (bx, by) = centers[spec["from"]], centers[spec["to"]]
                 g = min(1.0, (kk - 0.3) / 0.12)
-                p0, p1 = (ax + 210, ay + 120), (bx + 210, by - 200)
+                p0, p1 = (ax + 210, ay + 110), (bx + 210, by - 190)
                 pe = (p0[0] + (p1[0] - p0[0]) * g, p0[1] + (p1[1] - p0[1]) * g)
                 dr = ImageDraw.Draw(base)
                 dr.line([p0, pe], fill=INK, width=14); dr.line([p0, pe], fill=RED, width=8)
@@ -525,16 +527,14 @@ def render(slug: str, log=print) -> Path:
                 hop = abs(math.sin(kk * 8)) * 40
                 walk = 120 * math.sin(kk * 2.2)                           # Buh paces along the string
                 paste_pin(base, pin_sprite("shock" if kk < 0.8 else ("smug" if int(kk * 2) % 2 else "angry"),
-                                           0, 0, 1 if math.cos(kk * 2.2) > 0 else -1), p1[0] + 40 + walk, p1[1] - hop)
+                                           0, 0, 1 if math.cos(kk * 2.2) > 0 else -1), min(SAFE[2] - 60, p1[0] + walk * 0.4), p1[1] - hop)
             if spec.get("requested_by"):
                 req = f'{spec["requested_by"]}: "{short_name(spec["from"]).upper()} TO {short_name(spec["to"]).upper()}"'
                 fsz = 24
-                while pf(fsz).getlength(req) > W - 140 and fsz > 14:
+                while pf(fsz).getlength(req) > SAFE[2] - SAFE[0] - 40 and fsz > 14:
                     fsz -= 2
-                paste(base, pixel_tag(req, WHITE, fsz), W / 2, 272, scale=min(1, ease_out_back(kk / 0.15)))
-            if kk < 0.08:
-                base.alpha_composite(Image.new("RGBA", (W, H), (255, 255, 255, int(110 * (1 - kk / 0.08)))))
-        seg["cap"].draw(base, tt, y=1690)
+                paste(base, pixel_tag(req, WHITE, fsz), CX, 340, scale=1)   # readable from frame 0
+        seg["cap"].draw(base, tt, y=1370)
         return base
 
     draw = {"hook": frame_hook, "link": frame_link}

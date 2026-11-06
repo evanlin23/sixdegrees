@@ -1,260 +1,93 @@
 {
-  "from": "Kim Jong Un",
-  "to": "Henry VIII",
-  "requested_by": "@y4p_Genius_Severus",
-  "title": "Kim Jong Un to Henry VIII in 15 pictures",
-  "description": "Real photos and royal portraits link Kim Jong Un to King Henry VIII through the British throne.",
-  "hook": "How is Kim Jong Un connected to King Henry the Eighth?",
-  "people": {
-    "Elizabeth II": {
-      "label": "Elizabeth II"
-    },
-    "George V": {
-      "label": "George V"
-    },
-    "Queen Victoria": {
-      "label": "Queen Victoria"
-    },
-    "William IV": {
-      "label": "William IV"
-    },
-    "George IV": {
-      "label": "George IV"
-    },
-    "George III": {
-      "label": "George III"
-    },
-    "George II of Great Britain": {
-      "label": "George II"
-    },
-    "George I of Great Britain": {
-      "label": "George I"
-    },
-    "Anne, Queen of Great Britain": {
-      "label": "Queen Anne"
-    },
-    "James II of England": {
-      "label": "James II"
-    },
-    "Charles I of England": {
-      "label": "Charles I"
-    },
-    "James VI and I": {
-      "label": "James I"
-    },
-    "Elizabeth I": {
-      "label": "Elizabeth I"
-    },
-    "Henry VIII": {
-      "label": "Henry VIII"
-    }
+ "from": "Kim Jong Un",
+ "to": "Henry VIII",
+ "requested_by": "@y4p_Genius_Severus",
+ "title": "Kim Jong Un and Henry VIII are only three links apart",
+ "description": "A border handshake, a D-Day ceremony and four centuries of English monarchs link Kim Jong Un to Henry VIII.",
+ "hook": "How is Kim Jong Un connected to King Henry the Eighth?",
+ "people": {
+  "Elizabeth II": {
+   "label": "Queen Elizabeth II"
   },
-  "links": [
-    {
-      "a": "Kim Jong Un",
-      "b": "Donald Trump",
-      "image": {
-        "file": "File:President Trump Meets with Chairman Kim Jong Un (48162628746).jpg"
-      },
-      "line": "In 2019, Kim Jong Un shook Trump's hand at the Korean border.",
-      "a_face": 2,
-      "b_face": 4
-    },
-    {
-      "a": "Donald Trump",
-      "b": "Elizabeth II",
-      "image": {
-        "file": "File:Trump with national leaders at 75th D-Day.jpg"
-      },
-      "line": "Weeks earlier, Trump marked D-Day beside Queen Elizabeth the Second.",
-      "a_face": 13,
-      "b_face": 12
-    },
-    {
-      "a": "Elizabeth II",
-      "b": "George V",
-      "image": {
-        "file": "File:3-5 (i.e. 6)-33, anniversaire du roi George V (la famille royale au balcon de Buckingham Palace) - btv1b532749892.jpg"
-      },
-      "line": "In 1933, she stood beside her grandfather, King George the Fifth.",
-      "a_face": 0,
-      "b_face": 5
-    },
-    {
-      "a": "George V",
-      "b": "Queen Victoria",
-      "image": {
-        "file": "File:Edward VIII Christening.webp"
-      },
-      "line": "In 1894, George posed with his grandmother, Queen Victoria.",
-      "a_face": 2,
-      "b_face": 1
-    },
-    {
-      "a": "Queen Victoria",
-      "b": "William IV",
-      "image": {
-        "pair": [
-          {
-            "file": "File:Queen_Victoria_by_Bassano.jpg"
-          },
-          {
-            "file": "File:William_IV_in_1833_by_Shee_cropped.jpg"
-          }
-        ]
-      },
-      "line": "In 1837, Victoria succeeded her uncle, William the Fourth.",
-      "a_face": 0,
-      "b_face": 1
-    },
-    {
-      "a": "William IV",
-      "b": "George IV",
-      "image": {
-        "pair": [
-          {
-            "file": "File:William_IV_in_1833_by_Shee_cropped.jpg"
-          },
-          {
-            "file": "File:Thomas_Lawrence_(1769-1830)_-_George_IV_(1762-1830)_-_RCIN_405918_-_Royal_Collection.jpg"
-          }
-        ]
-      },
-      "line": "He succeeded his brother, George the Fourth.",
-      "a_face": 0,
-      "b_face": 2
-    },
-    {
-      "a": "George IV",
-      "b": "George III",
-      "image": {
-        "pair": [
-          {
-            "file": "File:Thomas_Lawrence_(1769-1830)_-_George_IV_(1762-1830)_-_RCIN_405918_-_Royal_Collection.jpg"
-          },
-          {
-            "file": "File:Allan_Ramsay_-_King_George_III_in_coronation_robes_-_Google_Art_Project.jpg"
-          }
-        ]
-      },
-      "line": "Son of George the Third.",
-      "a_face": 0,
-      "b_face": 1
-    },
-    {
-      "a": "George III",
-      "b": "George II of Great Britain",
-      "image": {
-        "pair": [
-          {
-            "file": "File:Allan_Ramsay_-_King_George_III_in_coronation_robes_-_Google_Art_Project.jpg"
-          },
-          {
-            "file": "File:George_II_by_Thomas_Hudson.jpg"
-          }
-        ]
-      },
-      "line": "Grandson of George the Second.",
-      "a_face": 2,
-      "b_face": 8
-    },
-    {
-      "a": "George II of Great Britain",
-      "b": "George I of Great Britain",
-      "image": {
-        "pair": [
-          {
-            "file": "File:George_II_by_Thomas_Hudson.jpg"
-          },
-          {
-            "file": "File:King_George_I_by_Sir_Godfrey_Kneller,_Bt_(3).jpg"
-          }
-        ]
-      },
-      "line": "Son of George the First.",
-      "a_face": 1,
-      "b_face": 2
-    },
-    {
-      "a": "George I of Great Britain",
-      "b": "Anne, Queen of Great Britain",
-      "image": {
-        "pair": [
-          {
-            "file": "File:King_George_I_by_Sir_Godfrey_Kneller,_Bt_(3).jpg"
-          },
-          {
-            "file": "File:Dahl,_Michael_-_Queen_Anne_-_NPG_6187.jpg"
-          }
-        ]
-      },
-      "line": "In 1714, George succeeded his cousin, Queen Anne.",
-      "a_face": 0,
-      "b_face": 3
-    },
-    {
-      "a": "Anne, Queen of Great Britain",
-      "b": "James II of England",
-      "image": {
-        "file": "File:The Duke and Duchess of York with their two daughters..jpg"
-      },
-      "line": "Anne was painted as a girl beside her father, James the Second.",
-      "a_face": 2,
-      "b_face": 3
-    },
-    {
-      "a": "James II of England",
-      "b": "Charles I of England",
-      "image": {
-        "file": "File:Charles I and young James II.jpg"
-      },
-      "line": "In 1647, James posed with his captive father, Charles the First.",
-      "a_face": 1,
-      "b_face": 0
-    },
-    {
-      "a": "Charles I of England",
-      "b": "James VI and I",
-      "image": {
-        "pair": [
-          {
-            "file": "File:King_Charles_I_after_original_by_van_Dyck.jpg"
-          },
-          {
-            "file": "File:JamesIEngland_(cropped_2).jpg"
-          }
-        ]
-      },
-      "line": "Son of James the First.",
-      "a_face": 0,
-      "b_face": 1
-    },
-    {
-      "a": "James VI and I",
-      "b": "Elizabeth I",
-      "image": {
-        "pair": [
-          {
-            "file": "File:JamesIEngland_(cropped_2).jpg"
-          },
-          {
-            "file": "File:Darnley_stage_3.jpg"
-          }
-        ]
-      },
-      "line": "In 1603, James succeeded Elizabeth the First.",
-      "a_face": 0,
-      "b_face": 1
-    },
-    {
-      "a": "Elizabeth I",
-      "b": "Henry VIII",
-      "image": {
-        "file": "File:Family of Henry VIII c 1545.jpg"
-      },
-      "line": "Around 1545, Elizabeth was painted with her father, King Henry the Eighth.",
-      "a_face": 5,
-      "b_face": 3
-    }
-  ]
+  "Henry VIII": {
+   "label": "King Henry VIII"
+  }
+ },
+ "links": [
+  {
+   "a": "Kim Jong Un",
+   "b": "Donald Trump",
+   "image": {
+    "file": "File:President Trump Meets with Chairman Kim Jong Un (48162628746).jpg"
+   },
+   "line": "In 2019, Kim Jong Un shook Donald Trump's hand at the Korean border.",
+   "a_face": 2,
+   "b_face": 4
+  },
+  {
+   "a": "Donald Trump",
+   "b": "Elizabeth II",
+   "image": {
+    "file": "File:Trump with national leaders at 75th D-Day.jpg"
+   },
+   "line": "Weeks earlier, Trump marked D-Day's 75th anniversary beside Queen Elizabeth the Second.",
+   "a_face": 13,
+   "b_face": 12
+  },
+  {
+   "a": "Elizabeth II",
+   "b": "Henry VIII",
+   "lineage": {
+    "label": "LINE OF ENGLISH MONARCHS",
+    "people": [
+     {
+      "name": "Elizabeth II",
+      "file": "File:Queen_Elizabeth_II_official_portrait_for_1959_tour_(retouched)_(cropped)_(3-to-4_aspect_ratio).jpg",
+      "label": "1952"
+     },
+     {
+      "name": "George V",
+      "file": "File:King_George_1923_LCCN2014715558_(cropped).jpg",
+      "label": "1910"
+     },
+     {
+      "name": "Queen Victoria",
+      "file": "File:Queen_Victoria_by_Bassano.jpg",
+      "label": "1837"
+     },
+     {
+      "name": "George III",
+      "file": "File:Allan_Ramsay_-_King_George_III_in_coronation_robes_-_Google_Art_Project.jpg",
+      "label": "1760"
+     },
+     {
+      "name": "Queen Anne",
+      "file": "File:Dahl,_Michael_-_Queen_Anne_-_NPG_6187.jpg",
+      "label": "1702"
+     },
+     {
+      "name": "Charles I",
+      "file": "File:King_Charles_I_after_original_by_van_Dyck.jpg",
+      "label": "1625"
+     },
+     {
+      "name": "James I",
+      "file": "File:JamesIEngland_(cropped_2).jpg",
+      "label": "1603"
+     },
+     {
+      "name": "Elizabeth I",
+      "file": "File:Darnley_stage_3.jpg",
+      "label": "1558"
+     },
+     {
+      "name": "Henry VIII",
+      "file": "File:After_Hans_Holbein_the_Younger_-_Portrait_of_Henry_VIII_-_Google_Art_Project.jpg",
+      "label": "1509"
+     }
+    ]
+   },
+   "line": "Elizabeth sat on the throne of Henry the Eighth, handed down through four centuries of kings and queens."
+  }
+ ]
 }
