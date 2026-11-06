@@ -1,0 +1,70 @@
+{
+  "from": "Elizabeth II",
+  "to": "Freddy Fazbear",
+  "requested_by": "@Summer_Bain",
+  "title": "How is the Queen connected to Freddy Fazbear?",
+  "description": "Five real pictures connect Queen Elizabeth II to Freddy Fazbear from Five Nights at Freddy's.",
+  "hook": "How is Queen Elizabeth the Second connected to Freddy Fazbear?",
+  "people": {
+    "Elizabeth II": {
+      "label": "Elizabeth II"
+    },
+    "Freddy Fazbear": {
+      "label": "Freddy Fazbear"
+    }
+  },
+  "links": [
+    {
+      "a": "Elizabeth II",
+      "b": "Barack Obama",
+      "image": {
+        "file": "File:Barack Obama Michelle Obama Queen Elizabeth II Buckingham Palace London.jpg"
+      },
+      "line": "In 2009, Queen Elizabeth the Second welcomed Barack Obama to Buckingham Palace.",
+      "a_face": 3,
+      "b_face": 0
+    },
+    {
+      "a": "Barack Obama",
+      "b": "Jimmy Kimmel",
+      "image": {
+        "file": "File:President Barack Obama talks with Jimmy Kimmel during a Jimmy Kimmel Live! video taping in Los Angeles, California, March 12, 2015. (Official White House Photo by Pete Souza).jpg"
+      },
+      "line": "In 2015, Obama was a guest on Jimmy Kimmel's late-night show."
+    },
+    {
+      "a": "Jimmy Kimmel",
+      "b": "Conan O'Brien",
+      "image": {
+        "file": "File:WillFerellGreekLA061018-21.jpg"
+      },
+      "line": "In 2018, Kimmel shared a Los Angeles stage with fellow host Conan O'Brien."
+    },
+    {
+      "a": "Conan O'Brien",
+      "b": "Josh Hutcherson",
+      "image": {
+        "file": "File:SDCC 2015 - Conan O'Brien, Francis Lawrence, Josh Hutcherson, Jennifer Lawrence & Liam Hemsworth (19035435903).jpg"
+      },
+      "line": "At Comic-Con 2015, Conan hosted a Hunger Games panel with Josh Hutcherson."
+    },
+    {
+      "a": "Josh Hutcherson",
+      "b": "Freddy Fazbear",
+      "image": {
+        "url": "https://static.wikia.nocookie.net/freddy-fazbears-pizza/images/5/50/FNaF_Movie_-_Freddy_behind_Mike.png/revision/latest?cb=20230924050049&format=original",
+        "credit": "Universal Pictures / Blumhouse (film still)",
+        "license": "Fair use (commentary)",
+        "source": "https://freddy-fazbears-pizza.fandom.com/wiki/File:FNaF_Movie_-_Freddy_behind_Mike.png"
+      },
+      "line": "And in 2023, Hutcherson played the night guard hunted by Freddy Fazbear in the Five Nights at Freddy's movie.",
+      "a_face": 0,
+      "b_face": [
+        0,
+        175,
+        320,
+        300
+      ]
+    }
+  ]
+}

@@ -107,11 +107,12 @@
  {
   "from": "King Henry VII",
   "to": "Lamine Yamal",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@iasser656",
   "comment": "King herny vii to yamal",
   "likes": 0,
-  "source": "comment on 'pythagoras to virgil van dijk' (old channel)"
+  "source": "comment on 'pythagoras to virgil van dijk' (old channel)",
+  "slug": "henry-vii-to-lamine-yamal"
  },
  {
   "from": "Grug",
@@ -145,20 +146,22 @@
  {
   "from": "Queen Elizabeth",
   "to": "Freddy Fazbear",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@Summer_Bain",
   "comment": "Do queen Elizabeth to freddy fazbear",
   "likes": 0,
-  "source": "comment on 'adolf h to luffy' (old channel)"
+  "source": "comment on 'adolf h to luffy' (old channel)",
+  "slug": "elizabeth-ii-to-freddy-fazbear"
  },
  {
   "from": "Franklin D. Roosevelt",
   "to": "Lee Jung-jae",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@jamiewyatt8140",
   "comment": "Franklyn d roseveld to Lee Jung Jae",
   "likes": 0,
-  "source": "comment on 'adolf h to luffy' (old channel)"
+  "source": "comment on 'adolf h to luffy' (old channel)",
+  "slug": "franklin-d-roosevelt-to-lee-jung-jae"
  },
  {
   "from": "Joseph Stalin",
