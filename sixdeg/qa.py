@@ -107,10 +107,15 @@ def qa(slug: str) -> dict:
         heard = [w for w, _, _ in transcribe(wav)]
         res["transcript"] = " ".join(heard)
         script = " ".join([spec.get("hook", "")] + [l["line"] for l in spec["links"]] + [spec.get("outro", "")])
+        # names with a hand-set or Wikipedia pronunciation are already verified; Whisper often can't spell
+        # foreign names it hears correctly ("Jair" -> "Jourier"), so don't fail on those
+        from .audio import PHONEMES
+        from .pronounce import load as wiki_pron
+        set_words = set(" ".join(list(PHONEMES) + list(wiki_pron())).split())
         for name in people_order(spec):
             core = re.sub(r"\s*\(.*?\)", "", name)
             for part in core.split():
-                if len(part) < 4 or part.lower() not in script.lower():
+                if len(part) < 4 or part.lower() not in script.lower() or part in set_words:
                     continue
                 if not _heard(part, heard):
                     fails.append(f"'{part}' is in the script but not heard in the audio (TTS mispronounced?) "
