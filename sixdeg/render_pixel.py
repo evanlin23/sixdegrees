@@ -171,7 +171,9 @@ def render(slug: str, log=print) -> Path:
     t = 0.0
     n_words = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"]
     hook = spec.get("hook") or f"How is {short_name(spec['from'])} connected to {short_name(spec['to'])}?"
-    audio.prefetch([hook] + [l["line"] for l in spec["links"]], voice, log)   # Gemini: one request per episode
+    script = [hook] + [l["line"] for l in spec["links"]]
+    audio.prefetch(script, voice, log)                                       # Gemini: one request per episode
+    (out_dir / "voice.json").write_text(json.dumps({"engine": audio.narrator(script, voice)}))
     a, words = audio.say(hook, voice)
     HOOK_VO = 0.0    # the question starts on the very first frame
     d = max(len(a) / audio.SR + 0.3 + HOOK_VO, FF + RW + 1.3)

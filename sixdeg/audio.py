@@ -355,6 +355,15 @@ def prefetch(lines: list[str], voice: dict | None = None, log=print) -> None:
     log(f"voice: Gemini {cfg.get('voice')} voiced {len(todo)} lines in one request")
 
 
+def narrator(lines: list[str], voice: dict | None = None) -> str:
+    """'gemini' if every line is voiced by the configured Gemini voice, else the engine actually used."""
+    cfg = voice_config(voice)
+    if cfg.get("engine") != "gemini":
+        return cfg.get("engine", "kokoro")
+    ok = all((GEMINI_CACHE / f"{_gemini_key(speakable(t), cfg)}.flac").exists() for t in lines)
+    return "gemini" if ok else "fallback"
+
+
 def _synth(text: str, cfg: dict) -> np.ndarray:
     eng = cfg.get("engine", "kokoro")
     if eng == "gemini":
