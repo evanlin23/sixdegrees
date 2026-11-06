@@ -25,8 +25,6 @@ _kokoro = None
 
 # Names TTS tends to mangle -> phonetic respelling. Extend as episodes need.
 RESPELL = {
-    "Kanye": "Kahn-yay",
-    "Zedong": "Zeh-dong",
     "Wernher": "Vairner",
     "Göring": "Gerring",
     "Goebbels": "Gerbels",
@@ -48,6 +46,8 @@ RESPELL = {
 # QA fails when a capitalized word is in neither PHONEMES nor CMU, so every unusual name gets a human-set IPA.
 # Keys are matched as whole words, case-sensitive; multi-word keys are fine.
 PHONEMES = {
+    "Kanye": "kˈɑːnjeɪ",
+    "Durk": "dˈɜːɹk",
     "Kim Jong Un": "kˌɪm dʒʌŋˈʊn",  # "Jong Un" as one word, or Kokoro pauses before "Un"
     "Kim Jong-un": "kˌɪm dʒʌŋˈʊn",
     "Khrushchev": "kɹuːʃtʃˈɔf",
@@ -62,8 +62,8 @@ PHONEMES = {
     "Hendaye": "ɑːndˈaɪ",
     "Yosuke": "jˈoʊskeɪ",
     "Matsuoka": "mˌɑːtsuːˈoʊkə",
-    "Zedong": "dzˌʌdˈʊŋ",
-    "Mao Zedong": "mˈaʊ dzˌʌdˈʊŋ",
+    "Zedong": "zˌɛdˈɑːŋ",
+    "Mao Zedong": "mˈaʊ zˌɛdˈɑːŋ",
     "Medvedev": "mɛdvˈɛdɛf",
     "Adolf": "ˈædɑːlf",
     "Barack": "bəɹˈɑːk",
