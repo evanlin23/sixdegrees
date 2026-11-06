@@ -34,13 +34,6 @@ RESPELL = {
     "Jae-in": "Jay In",
     "Mr. T": "Mister T",
     "F. Kennedy": "F Kennedy",
-    "FUBAR": "Foo-bar",
-    "Sadat": "Sah-dot",
-    "Neymar": "Nay-mar",
-    "Ronaldinho": "Ronal-deen-yo",
-    "Hendaye": "On-dye",
-    "Qin Shi Huang": "Chin Shee Hwang",
-    "Plácido": "Plassido",
 }
 
 # How names get pronounced (Kokoro's espeak front end guesses names by English spelling rules, so it says
@@ -75,6 +68,7 @@ PHONEMES = {
     "Dmitry": "dəmˈiːtɹi",
     "Sadat": "sɑːdˈɑːt",
     "FUBAR": "fˈuːbɑːɹ",
+    "Qin Shi Huang": "tʃˈɪn ʃˈɜː hwˈɑːŋ",
     # CMU entries that read worse than espeak
     "de Gaulle": "də ɡˈɔːl",
     "Hogan": "hˈoʊɡən",
