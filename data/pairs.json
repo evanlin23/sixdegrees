@@ -192,11 +192,12 @@
  {
   "from": "Magnus Carlsen",
   "to": "Bill Cipher",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@rip_bosco",
   "comment": "MAGNUS CARLSEN TO BILL CIPHER",
   "likes": 0,
-  "source": "comment on 'leonardo da vinci to naruto' (old channel)"
+  "source": "comment on 'leonardo da vinci to naruto' (old channel)",
+  "slug": "magnus-carlsen-to-bill-cipher"
  },
  {
   "from": "Nelson Mandela",
