@@ -23,6 +23,12 @@ def render_any(slug):
     """Render in the channel style from data/style.json (pixel by default; "classic" = the original look)."""
     from .common import DATA
     style = json.loads((DATA / "style.json").read_text()).get("style", "pixel") if (DATA / "style.json").exists() else "pixel"
+    try:  # English name pronunciations from Wikipedia, used by the narrator
+        from .episode import load, people_order
+        from .pronounce import update
+        print("pronunciations:", update(people_order(load(slug)[1])))
+    except Exception as e:
+        print("pronunciations: skipped", e)
     if style == "pixel":
         from .render_pixel import render
     else:
@@ -60,6 +66,10 @@ def main(argv):
     elif cmd == "prep":
         from .episode import prep
         prep(args[0])
+    elif cmd == "pronounce":  # pull Wikipedia pronunciations for everyone in the episode
+        from .episode import load, people_order
+        from .pronounce import update
+        print(json.dumps(update(people_order(load(argv[1])[1])), indent=1, ensure_ascii=False))
     elif cmd == "render":
         render_any(args[0])
     elif cmd == "qa":
