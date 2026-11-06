@@ -53,16 +53,17 @@ mass-produced, template-only videos. It is judged per channel. So:
 
 ## Voice and look
 
-- Narrator (creator's pick, round 2 #3): Kokoro blend 70% `am_michael` + 30% `am_onyx`,
-  speed 1.15, broadcast EQ/compression. Configured in `data/voice.json`.
-- Music and SFX: generated procedurally in `audio.py`, so there are no Content ID claims.
-- Colours: cyan (#22D3EE) for the earlier person, yellow (#FFD60A) for the newly
-  revealed one. Font: Inter Black.
-- Length: as short as the chain allows (the reference channel's hits ran 33-50 s). QA fails past 3:00 and warns past 60 s.
+- Narrator: Gemini TTS voice **Achird** (creator's pick), the only voice the channel uses. Upbeat, curious,
+  fast, American. Configured in `data/voice.json`; details in `docs/RUNBOOK.md`.
+- Opening: both faces with names on frame 0, the question "How is A connected to B?" spoken immediately, no
+  count ("N pictures apart") and no flash-forward.
+- Everything important stays inside the Shorts safe zone (clear of the top icons, the right-hand buttons and the
+  bottom title/channel overlay); the chain bar sits at the top.
+- Pixel-arcade style with Buh, the pushpin detective; upbeat Mixkit music only; voice above music and SFX.
+- Length: as short as the chain allows (the reference channel's hits ran 31–51 s). QA fails past 3:00 and warns
+  past 60 s.
 
 ## Upload
 
-`python -m sixdeg upload <slug>` uses the official YouTube Data API, as
-`blocky-stories` does: no audit is needed, and uploads go private with
-`publishAt` set to the next free slot (11:30 AM / 6:30 PM Central plus jitter).
-Setup is in `docs/youtube-setup.md`. Browser automation is not used.
+`upload.yml` (started by two cron-job.org jobs at 11:22 AM and 6:22 PM Central) uploads one ready video each time,
+publicly, through the official YouTube Data API (no audit needed). See `docs/RUNBOOK.md`.

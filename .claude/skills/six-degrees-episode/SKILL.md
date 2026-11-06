@@ -119,12 +119,9 @@ operator can see the effort.
 - `hook` is always the question "How is <A> connected to <B>?"
 - Each `line` is one sentence of about 18 words or fewer, starting with a year or a hook word, with a concrete fact.
 - Don't type years as words. The voice reads "1973" as "nineteen seventy-three" automatically.
-- **Pronunciation.** Names are read from the CMU pronouncing dictionary. Every capitalized word it doesn't know
-  (Neymar, Bolsonaro, Tereshkova) must get exact IPA in `PHONEMES` in `sixdeg/audio.py`, or QA fails with
-  "no pronunciation for X". Take the IPA from the person's Wikipedia lead (/.../). Write it in Kokoro's style:
-  stress mark directly before the vowel, e.g. Putin = pˈuːtɪn, Bolsonaro = bˌoʊlsənˈɑːɹoʊ. Check every line
-  with `python -c "from sixdeg.audio import phonemes; print(phonemes('<line>'))"`. If a dictionary name still
-  reads wrong, add it to `PHONEMES` too, since that table wins.
+- **Pronunciation.** The narrator is Gemini's Achird voice, which reads names from context. If a name comes out
+  wrong in the PR's render, rephrase the line or write the name the way it sounds; regnal numbers and initials
+  are handled automatically ("Henry VIII" is read "Henry the Eighth").
 
 ## 4. Verify faces by eye
 ```bash
