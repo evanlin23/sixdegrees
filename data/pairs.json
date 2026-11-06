@@ -499,9 +499,10 @@
  {
   "from": "Napoleon",
   "to": "Pikachu",
-  "status": "todo",
+  "status": "done",
   "source": "viral formula (Nov 2026 research)",
-  "hint": "Ryan Reynolds (Detective Pikachu) or Pikachu costume at events"
+  "hint": "Ryan Reynolds (Detective Pikachu) or Pikachu costume at events",
+  "slug": "napoleon-to-pikachu"
  },
  {
   "from": "Benito Mussolini",

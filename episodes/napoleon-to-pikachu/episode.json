@@ -1,0 +1,124 @@
+{
+  "from": "Napoleon",
+  "to": "Pikachu",
+  "title": "Napoleon to Pikachu in four links",
+  "description": "France's line of rulers, a state dinner at Versailles and a royal visit to Wrexham connect Napoleon to Pikachu.",
+  "hook": "How is Napoleon connected to Pikachu?",
+  "people": {
+    "Napoleon": {
+      "label": "Napoleon"
+    },
+    "Emmanuel Macron": {
+      "label": "Emmanuel Macron"
+    },
+    "Charles III": {
+      "label": "King Charles"
+    },
+    "Ryan Reynolds": {
+      "label": "Ryan Reynolds"
+    },
+    "Pikachu": {
+      "label": "Pikachu"
+    }
+  },
+  "links": [
+    {
+      "a": "Napoleon",
+      "b": "Emmanuel Macron",
+      "line": "In 1804, Napoleon crowned himself emperor, and France's line of rulers runs from him to Emmanuel Macron.",
+      "lineage": {
+        "label": "RULERS OF FRANCE",
+        "people": [
+          {
+            "name": "Napoleon",
+            "file": "File:Jacques-Louis_David_-_The_Emperor_Napoleon_in_His_Study_at_the_Tuileries_-_Google_Art_Project.jpg",
+            "label": "1804"
+          },
+          {
+            "name": "Louis XVIII",
+            "file": "File:Gérard_-_Louis_XVIII_of_France_in_Coronation_Robes.jpg",
+            "label": "1814"
+          },
+          {
+            "name": "Louis Philippe I",
+            "file": "File:1841_portrait_painting_of_Louis_Philippe_I_(King_of_the_French)_by_Winterhalter.jpg",
+            "label": "1830"
+          },
+          {
+            "name": "Napoleon III",
+            "file": "File:Alexandre_Cabanel_002.jpg",
+            "label": "1848"
+          },
+          {
+            "name": "Adolphe Thiers",
+            "file": "File:Adolphe_Thiers_Nadar_2.JPG",
+            "label": "1871"
+          },
+          {
+            "name": "Raymond Poincaré",
+            "file": "File:Raymond_Poincaré_officiel_(cropped).jpg",
+            "label": "1913"
+          },
+          {
+            "name": "Charles de Gaulle",
+            "file": "File:De_Gaulle-OWI_(cropped)_(c)(2).jpg",
+            "label": "1959"
+          },
+          {
+            "name": "François Mitterrand",
+            "file": "File:President_François_Mitterrand_in_1983_(cropped).jpg",
+            "label": "1981"
+          },
+          {
+            "name": "Jacques Chirac",
+            "file": "File:Jacques_Chirac_(1997)_(cropped).jpg",
+            "label": "1995"
+          },
+          {
+            "name": "Emmanuel Macron",
+            "file": "File:Emmanuel_Macron_2025_(cropped).jpg",
+            "label": "2017"
+          }
+        ]
+      }
+    },
+    {
+      "a": "Emmanuel Macron",
+      "b": "Charles III",
+      "image": {
+        "file": "File:King Charles III and Emmanuel Macron State Dinner 2023.jpg"
+      },
+      "line": "In 2023, Macron hosted King Charles the Third at a state dinner in the Palace of Versailles."
+    },
+    {
+      "a": "Charles III",
+      "b": "Ryan Reynolds",
+      "image": {
+        "url": "https://www.etonline.com/sites/default/files/styles/1280x720/public/images/2022-12/ryan-reynolds-royalsGettyImages-1245475573.jpg?h=42979922&width=1024&quality=80",
+        "credit": "Oli Scarff/AFP via Getty Images",
+        "license": "Fair use (commentary)",
+        "source": "https://www.etonline.com/ryan-reynolds-meets-king-charles-iii-and-camilla-at-wrexham-soccer-club-with-rob-mcelhenney-195752"
+      },
+      "line": "In 2022, Ryan Reynolds showed the King around Wrexham, the Welsh football club he co-owns."
+    },
+    {
+      "a": "Ryan Reynolds",
+      "b": "Pikachu",
+      "image": {
+        "pair": [
+          {
+            "file": "File:Ryan Reynolds by Gage Skidmore 3.jpg"
+          },
+          {
+            "url": "http://www.impawards.com/2019/posters/pokemon_detective_pikachu_ver4_xlg.jpg",
+            "credit": "Legendary Pictures / Warner Bros. (via IMP Awards)",
+            "license": "Fair use (commentary)",
+            "source": "http://www.impawards.com/2019/pokemon_detective_pikachu_ver4.html"
+          }
+        ]
+      },
+      "line": "And in 2019, Reynolds became the voice of Pikachu in the movie Detective Pikachu.",
+      "b_face": 2
+    }
+  ]
+}
