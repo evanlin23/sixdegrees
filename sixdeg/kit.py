@@ -60,7 +60,9 @@ def kit(slug: str) -> str:
             "kind": "request" if spec.get("requested_by") else "formula"}
     vj = d / "out" / "voice.json"
     if vj.exists():
-        meta["voice"] = json.loads(vj.read_text()).get("engine")
+        vinfo = json.loads(vj.read_text())
+        meta["voice"] = vinfo.get("engine")
+        meta["outro"] = bool(vinfo.get("outro"))       # A/B test: spoken "And that's how." at the end
     out = d / "out"
     out.mkdir(exist_ok=True)
     mp4 = out / f"{slug}.mp4"
