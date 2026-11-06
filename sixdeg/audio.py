@@ -34,6 +34,7 @@ RESPELL = {
     "Jae-in": "Jay In",
     "Mr. T": "Mister T",
     "F. Kennedy": "F Kennedy",
+    "Jung-jae": "Joongjay",
 }
 
 # How names get pronounced (Kokoro's espeak front end guesses names by English spelling rules, so it says
@@ -57,6 +58,14 @@ PHONEMES = {
     "Tereshkova": "tˌɛɹɛʃkˈoʊvə",
     "Valentina": "vˌæləntˈiːnə",
     "Grug": "ɡɹˈʌɡ",
+    "Fazbear": "fˈæzbɛɹ",  # Wikipedia pull gives the "FNAF" acronym for this one
+    "Emmanuel Macron": "ɪmˈænjuəl məkɹˈɒn",
+    "Macron": "məkɹˈɒn",
+    "Lamine Yamal": "ləmˈiːn jəmˈɑːl",
+    "Yamal": "jəmˈɑːl",
+    "Pedro Sánchez": "pˈɛdɹoʊ sˈɑːntʃɛz",
+    "Sánchez": "sˈɑːntʃɛz",
+    "Comic-Con": "kˈɑːmɪk kˌɑːn",
     "Hendaye": "ɑːndˈaɪ",
     "Yosuke": "jˈoʊskeɪ",
     "Matsuoka": "mˌɑːtsuːˈoʊkə",
