@@ -34,18 +34,21 @@ RESPELL = {
     "Jae-in": "Jay In",
     "Mr. T": "Mister T",
     "F. Kennedy": "F Kennedy",
+    "Jung-jae": "Joongjay",
 }
 
 # How names get pronounced (Kokoro's espeak front end guesses names by English spelling rules, so it says
 # MON-roe, PYOO-tin, PEN-tag-un):
 #   1. PHONEMES: exact IPA we set by hand (wins over everything). Use Wikipedia's pronunciation as the source.
+#   1b. data/pronunciations.json: English IPA pulled automatically from each person's Wikipedia article
+#       (sixdeg/pronounce.py, run before every render).
 #   2. The CMU Pronouncing Dictionary (134k words, many names) for every capitalized word it knows.
 #   3. espeak's guess, only for ordinary lowercase words.
 # QA fails when a capitalized word is in neither PHONEMES nor CMU, so every unusual name gets a human-set IPA.
 # Keys are matched as whole words, case-sensitive; multi-word keys are fine.
 PHONEMES = {
-    "Kim Jong Un": "kˈɪm dʒˌʌŋ ˈʊn",
-    "Kim Jong-un": "kˈɪm dʒˌʌŋ ˈʊn",
+    "Kim Jong Un": "kˌɪm dʒʌŋˈʊn",  # "Jong Un" as one word, or Kokoro pauses before "Un"
+    "Kim Jong-un": "kˌɪm dʒʌŋˈʊn",
     "Khrushchev": "kɹuːʃtʃˈɔf",
     "Rivaldo": "ɹᵻvˈɑːldoʊ",
     "Ronaldinho": "ɹˌɑːnəldˈiːnjoʊ",
@@ -55,10 +58,18 @@ PHONEMES = {
     "Tereshkova": "tˌɛɹɛʃkˈoʊvə",
     "Valentina": "vˌæləntˈiːnə",
     "Grug": "ɡɹˈʌɡ",
+    "Fazbear": "fˈæzbɛɹ",  # Wikipedia pull gives the "FNAF" acronym for this one
+    "Emmanuel Macron": "ɪmˈænjuəl mækɹˈɔːn",
+    "Lamine Yamal": "ləmˈiːn jəmˈɑːl",
+    "Yamal": "jəmˈɑːl",
+    "Pedro Sánchez": "pˈɛdɹoʊ sˈɑːntʃɛz",
+    "Sánchez": "sˈɑːntʃɛz",
+    "Comic-Con": "kˈɑːmɪk kˌɑːn",
     "Hendaye": "ɑːndˈaɪ",
     "Yosuke": "jˈoʊskeɪ",
     "Matsuoka": "mˌɑːtsuːˈoʊkə",
     "Zedong": "dzˌʌdˈʊŋ",
+    "Mao Zedong": "mˈaʊ dzˌʌdˈʊŋ",
     "Medvedev": "mɛdvˈɛdɛf",
     "Adolf": "ˈædɑːlf",
     "Barack": "bəɹˈɑːk",
@@ -68,6 +79,15 @@ PHONEMES = {
     "Dmitry": "dəmˈiːtɹi",
     "Sadat": "sɑːdˈɑːt",
     "FUBAR": "fˈuːbɑːɹ",
+    # regnal numbers and Renaissance names (Adam/Zeus to The Rock)
+    "Sixtus IV": "sˈɪkstəs ðə fˈɔːɹθ",
+    "John Paul II": "dʒˈɑːn pˈɔːl ðə sˈɛkənd",
+    "Sixtus": "sˈɪkstəs",
+    "Henry IV": "hˈɛnɹi ðə fˈɔːɹθ",
+    "Louis XIV": "lˈuːi ðə fˈɔːɹtiːnθ",
+    "Raphael": "ɹˈæfiəl",
+    "Disputa": "dˌɪspuːtˈɑː",
+    "Macron": "mækɹˈɔːn",
     # CMU entries that read worse than espeak
     "de Gaulle": "də ɡˈɔːl",
     "Hogan": "hˈoʊɡən",
@@ -113,8 +133,9 @@ _COMMON = {"I", "A", "In", "And", "The", "On", "At", "By", "As", "Then", "But", 
 
 def name_ipa(text: str) -> dict[str, str]:
     """Every capitalized word/phrase in `text` we have a pronunciation for -> IPA."""
+    from .pronounce import load
     found = {}
-    for k, ipa in PHONEMES.items():
+    for k, ipa in {**load(), **PHONEMES}.items():
         if re.search(rf"\b{re.escape(k)}\b", text):
             found[k] = ipa
     covered = " ".join(found)
@@ -129,7 +150,8 @@ def name_ipa(text: str) -> dict[str, str]:
 
 def unknown_names(text: str) -> list[str]:
     """Capitalized words with no PHONEMES or CMU entry: their pronunciation would be espeak's guess."""
-    known = " ".join(list(PHONEMES) + list(RESPELL.values())).split()
+    from .pronounce import load
+    known = " ".join(list(PHONEMES) + list(load()) + list(RESPELL.values())).split()
     return sorted({w for w in _NAME.findall(speakable(text)) if w not in _COMMON and w not in known
                    and not cmu_ipa(w)})
 
