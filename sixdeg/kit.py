@@ -66,6 +66,7 @@ def kit(slug: str) -> str:
         vinfo = json.loads(vj.read_text())
         meta["voice"] = vinfo.get("engine")
         meta["outro"] = bool(vinfo.get("outro"))       # A/B test: spoken "And that's how." at the end
+        meta["voice_rev"] = vinfo.get("rev", 1)
     out = d / "out"
     out.mkdir(exist_ok=True)
     mp4 = out / f"{slug}.mp4"

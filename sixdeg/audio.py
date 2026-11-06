@@ -315,6 +315,15 @@ def _gemini_batch(spoken_lines: list[str], cfg: dict) -> list[np.ndarray]:
 
 
 RAW = GEMINI_CACHE / "raw"
+VOICE_REV = 2          # bump when the splitting/trimming changes; the uploader only posts the current revision
+
+
+def clipped_end(a: np.ndarray) -> bool:
+    """A line that stops mid-sound (the last 30 ms still loud) was cut inside a word."""
+    if len(a) < int(0.1 * SR):
+        return False
+    n = int(0.03 * SR)
+    return 20 * np.log10(np.sqrt(np.mean(a[-n:] ** 2)) / (np.abs(a).max() + 1e-9) + 1e-9) > -32
 
 
 def _save_raw(a, heard, spoken_lines, cfg) -> None:
