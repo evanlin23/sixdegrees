@@ -117,6 +117,33 @@ def requeue(slugs: list[str] | None = None) -> str:
     return f"requeued {done}; refused (QA not passed) {refused}"
 
 
+def _kind(meta: dict) -> str:
+    if meta.get("kind"):
+        return meta["kind"]
+    return "request" if "asked for this one" in (meta.get("first_comment") or "") else "formula"
+
+
+def pick(wt: Path, log: list[dict], n: int) -> list[Path]:
+    """Next videos to upload: only ones narrated by the Gemini voice (the channel's voice), alternating viewer
+    requests and viral-formula pairs, oldest first within each kind."""
+    vf = ROOT / "data" / "voice.json"         # read directly: the upload job doesn't install the audio stack
+    want_gemini = vf.exists() and json.loads(vf.read_text()).get("engine") == "gemini"
+    ready = []
+    for it in items(wt):
+        meta = json.loads((it / "metadata.json").read_text())
+        if want_gemini and meta.get("voice") != "gemini":
+            continue
+        ready.append((it, _kind(meta)))
+    last = log[-1].get("kind") if log else None
+    out = []
+    while ready and len(out) < n:
+        nxt = next((x for x in ready if x[1] != last), ready[0])
+        out.append(nxt[0])
+        ready.remove(nxt)
+        last = nxt[1]
+    return out
+
+
 def consume(max_items: int = 2, dry_run: bool = False) -> list[dict]:
     from .upload import comment_if_public, have_credentials, upload_file, youtube
     wt = worktree()
@@ -130,12 +157,13 @@ def consume(max_items: int = 2, dry_run: bool = False) -> list[dict]:
                 if c:
                     r["comment"] = c
         (wt / "uploaded.json").write_text(json.dumps(log, indent=1, ensure_ascii=False) + "\n")
-    for it in items(wt)[:max_items]:
+    for it in pick(wt, log, max_items):
         meta = json.loads((it / "metadata.json").read_text())
         thumb = it / "thumb.jpg" if (it / "thumb.jpg").exists() else None
         rec = upload_file(it / "video.mp4", meta, dry_run=dry_run, taken_extra=[r["publish_at"] for r in done],
                           thumb=thumb)
         rec["first_comment"] = meta.get("first_comment")
+        rec["kind"] = _kind(meta)
         rec["n"] = int(it.name.split("-", 1)[0])
         done.append(rec)
         if dry_run:
