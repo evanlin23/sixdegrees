@@ -343,16 +343,25 @@ def prefetch(lines: list[str], voice: dict | None = None, log=print) -> None:
     if not todo:
         return
     if not os.environ.get("GEMINI_API_KEY"):
-        log("voice: no GEMINI_API_KEY here, using the fallback voice")
+        log("voice: no GEMINI_API_KEY here (local preview): narration is silent; GitHub renders Achird")
         return
     try:
         clips = _gemini_batch(todo, cfg)
-    except Exception as e:  # noqa: BLE001 - the fallback voice keeps the episode renderable
-        log(f"voice: Gemini batch failed ({e}); using the fallback voice")
+    except Exception as e:  # noqa: BLE001 - reported here; the render then stops on the first unvoiced line
+        log(f"voice: Gemini batch failed ({e})")
         return
     for s, c in zip(todo, clips):
         sf.write(GEMINI_CACHE / f"{_gemini_key(s, cfg)}.flac", c, SR)
     log(f"voice: Gemini {cfg.get('voice')} voiced {len(todo)} lines in one request")
+
+
+def narrator(lines: list[str], voice: dict | None = None) -> str:
+    """'gemini' if every line is voiced by the configured Gemini voice, else the engine actually used."""
+    cfg = voice_config(voice)
+    if cfg.get("engine") != "gemini":
+        return cfg.get("engine", "kokoro")
+    ok = all((GEMINI_CACHE / f"{_gemini_key(speakable(t), cfg)}.flac").exists() for t in lines)
+    return "gemini" if ok else "none"
 
 
 def _synth(text: str, cfg: dict) -> np.ndarray:
@@ -362,7 +371,13 @@ def _synth(text: str, cfg: dict) -> np.ndarray:
         if p.exists():
             a, _ = sf.read(p, dtype="float32")
             return a
-        return _synth(text, cfg.get("fallback") or DEFAULT_VOICE)
+        import os
+        if os.environ.get("GEMINI_API_KEY") or os.environ.get("GITHUB_ACTIONS"):
+            raise RuntimeError("line not voiced by Gemini (daily quota?); the render waits, there is no backup voice: "
+                               + text[:60])
+        # local session without a key: silent placeholder so faces/layout can still be previewed.
+        # QA marks this render as not publishable; GitHub renders the real voice in the PR check.
+        return np.zeros(int(SR * max(1.0, 0.065 * len(text))), np.float32)
     if eng == "kokoro":
         k = _tts()
         v = cfg.get("voice", "am_michael")
@@ -427,7 +442,7 @@ def say(text: str, voice: dict | None = None) -> tuple[np.ndarray, list[tuple[st
     cfg = voice_config(voice)
     src = cfg
     if cfg.get("engine") == "gemini" and not (GEMINI_CACHE / f"{_gemini_key(speakable(text), cfg)}.flac").exists():
-        src = cfg.get("fallback") or DEFAULT_VOICE          # not voiced by Gemini (yet): fallback voice
+        src = {"engine": "silent-preview"}                   # local preview without a key: never cached as real
     key = hashlib.sha1(f"{json.dumps(src, sort_keys=True)}|{json.dumps(PHONEMES, sort_keys=True)}|trim2|{speakable(text)}".encode()).hexdigest()  # respellings change the audio
     p = CACHE / "tts" / f"{key}.wav"
     if p.exists():

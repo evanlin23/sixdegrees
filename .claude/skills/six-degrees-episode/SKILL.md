@@ -71,7 +71,8 @@ episode.json: the hook shows the viewer's request bubble and the first comment c
 - **Name tags use the name people know.** Every real person is labelled with the name the audience
   recognises: THE ROCK (not Dwayne Johnson), POPE FRANCIS (not Jorge Bergoglio), DIDDY, LIL WAYNE, MATPAT. Set it
   with `"people": {"Dwayne Johnson": {"label": "The Rock"}}`; the key stays the Wikipedia name so faces still
-  match. A character's name only ever labels the character's own artwork, never the actor in a real photo.
+  match. The header ("A > B") shows labels up to 15 letters in full; for a longer one set a short form, e.g.
+  `"SpongeBob SquarePants": {"short": "SpongeBob"}`. A character's name only ever labels the character's own artwork, never the actor in a real photo.
 - **No limit on the number of links.** A Short can be up to 3 minutes, and QA fails only past 3:00 (it warns past
   60 s). Shorter is better for retention, so prefer the most surprising chain with tight lines.
 - Never invent a meeting, a photo or a caption.
@@ -138,7 +139,11 @@ face, or a stranger in the background.
 ```bash
 python -m sixdeg render <slug> && python -m sixdeg qa <slug>
 ```
-QA must print `"pass": true`. Open `out/contact.jpg` and check that tags sit on the right heads and nothing is clipped.
+Narration is always Gemini's **Achird** voice; there is no other voice. Your session has no Gemini key, so the
+local render has silent narration and QA fails with exactly one line, "narration is not the Achird voice".
+That one is expected locally; every other check must pass. Open `out/contact.jpg` and check that tags sit on the
+right heads and nothing is clipped. The PR's `render` check on GitHub voices it with Achird and must pass fully.
+If it fails only because the daily Gemini quota ran out, say so in the PR; the operator re-runs it the next day.
 
 ## 6. Hand off with a PR (never push to main)
 1. Set the pair to `"done"` (with `"slug"`) or `"skipped"` (with `"reason"`) in `data/pairs.json`.
