@@ -126,7 +126,8 @@ def _kind(meta: dict) -> str:
 
 def pick(wt: Path, log: list[dict], n: int) -> list[Path]:
     """Next videos to upload: only ones narrated by the Gemini voice (the channel's voice), alternating viewer
-    requests and viral-formula pairs, oldest first within each kind."""
+    requests and viral-formula pairs. Within each kind, slugs listed in data/upload_order.json go first in that
+    order, then the rest oldest first."""
     vf = ROOT / "data" / "voice.json"         # read directly: the upload job doesn't install the audio stack
     want_gemini = vf.exists() and json.loads(vf.read_text()).get("engine") == "gemini"
     ready = []
@@ -135,6 +136,10 @@ def pick(wt: Path, log: list[dict], n: int) -> list[Path]:
         if want_gemini and (meta.get("voice") != "gemini" or meta.get("voice_rev", 1) < VOICE_REV):
             continue                       # old voice, or voiced before the clipping fix: wait for a re-render
         ready.append((it, _kind(meta)))
+    of = ROOT / "data" / "upload_order.json"
+    first = [s for k, v in json.loads(of.read_text()).items() if not k.startswith("_") for s in v] if of.exists() else []
+    rank = {s: i for i, s in enumerate(first)}
+    ready.sort(key=lambda x: rank.get(x[0].name.split("-", 1)[1], len(rank)))   # stable: oldest first otherwise
     last = log[-1].get("kind") if log else None
     out = []
     while ready and len(out) < n:
