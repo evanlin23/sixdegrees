@@ -162,12 +162,12 @@
  {
   "from": "Joseph Stalin",
   "to": "Optimus Prime",
-  "status": "skipped",
+  "status": "done",
   "requested_by": "@Thegreatskibidisigmalord",
   "comment": "Connect Joseph Stalin to Optimus prime",
   "likes": 0,
   "source": "comment on 'adolf h to luffy' (old channel)",
-  "reason": "No real photo of Peter Cullen (Optimus Prime's voice) with anyone notable could be found: Commons only has solo/convention shots and NASA student events; press galleries (premieres, 2014 handprint ceremony) show no verifiable shared photo. Retry if one turns up."
+  "slug": "joseph-stalin-to-optimus-prime"
  },
  {
   "from": "Augustus",
