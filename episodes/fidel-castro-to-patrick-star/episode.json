@@ -1,0 +1,87 @@
+{
+  "from": "Fidel Castro",
+  "to": "Patrick Star",
+  "title": "From Fidel Castro to Patrick Star in five photos",
+  "description": "Two presidents, a Star Wars legend and a Hollywood ceremony connect Fidel Castro to Patrick Star, through the voice of Patrick, Bill Fagerbakke.",
+  "hook": "How is Fidel Castro connected to Patrick Star?",
+  "people": {
+    "Patrick Star": {
+      "label": "Patrick Star"
+    },
+    "Bill Fagerbakke": {
+      "refs": [
+        "File:Bill Fagerbakke by Gage Skidmore.jpg"
+      ]
+    },
+    "Mark Hamill": {
+      "refs": [
+        "File:Mark Hamill at CinemaCon 2025.jpg"
+      ]
+    }
+  },
+  "links": [
+    {
+      "a": "Fidel Castro",
+      "b": "Enrique Peña Nieto",
+      "image": {
+        "file": "File:Enrique Peña Nieto y Fidel Castro.jpg"
+      },
+      "line": "In 2014, Mexican president Enrique Peña Nieto visited Fidel Castro in Havana.",
+      "a_face": 2,
+      "b_face": 0
+    },
+    {
+      "a": "Enrique Peña Nieto",
+      "b": "Joe Biden",
+      "image": {
+        "file": "File:Joe Biden with Enrique Peña Nieto in Mexico City.jpg"
+      },
+      "line": "In 2016, Vice President Joe Biden flew to Mexico City for talks with Peña Nieto.",
+      "a_face": 4,
+      "b_face": 3
+    },
+    {
+      "a": "Joe Biden",
+      "b": "Mark Hamill",
+      "image": {
+        "file": "File:P20240503AS-0590 (53783780087).jpg"
+      },
+      "line": "In 2024, Star Wars legend Mark Hamill visited President Biden in the Oval Office."
+    },
+    {
+      "a": "Mark Hamill",
+      "b": "Bill Fagerbakke",
+      "image": {
+        "url": "https://mulderville.net/images/Movies/TheSpongeBobMovieSearchForSquarePants/TheSpongeBobMovieSearchForSquarePants_HFCeremony_004.jpg",
+        "credit": "Getty Images for Paramount Pictures, via Mulderville",
+        "license": "Fair use (commentary)",
+        "source": "https://mulderville.net/en/events/2990/the-spongebob-movie-search-for-squarepants-hollywood-honors-spongebob-squarepants-with-a-hand-footprint-ceremony"
+      },
+      "line": "In 2025, Hamill joined the SpongeBob cast, including Bill Fagerbakke, at a Hollywood handprint ceremony.",
+      "a_face": 6,
+      "b_face": 7
+    },
+    {
+      "a": "Bill Fagerbakke",
+      "b": "Patrick Star",
+      "image": {
+        "pair": [
+          {
+            "file": "File:Bill Fagerbakke by Gage Skidmore.jpg"
+          },
+          {
+            "file": "File:Patrick Star character.png"
+          }
+        ]
+      },
+      "line": "And Bill Fagerbakke has been the voice of Patrick Star since 1999.",
+      "a_face": 0,
+      "b_face": [
+        478,
+        60,
+        115,
+        135
+      ]
+    }
+  ]
+}
