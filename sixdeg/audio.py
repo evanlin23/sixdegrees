@@ -46,6 +46,8 @@ RESPELL = {
 # QA fails when a capitalized word is in neither PHONEMES nor CMU, so every unusual name gets a human-set IPA.
 # Keys are matched as whole words, case-sensitive; multi-word keys are fine.
 PHONEMES = {
+    "Kanye": "kˈɑːnjeɪ",
+    "Durk": "dˈɜːɹk",
     "Mandalorian": "mˌændəlˈɔːɹiən",
     "Grogu": "ɡɹˈoʊɡuː",
     "Kim Jong Un": "kˌɪm dʒʌŋˈʊn",  # "Jong Un" as one word, or Kokoro pauses before "Un"
@@ -77,8 +79,8 @@ PHONEMES = {
     "Hendaye": "ɑːndˈaɪ",
     "Yosuke": "jˈoʊskeɪ",
     "Matsuoka": "mˌɑːtsuːˈoʊkə",
-    "Zedong": "dzˌʌdˈʊŋ",
-    "Mao Zedong": "mˈaʊ dzˌʌdˈʊŋ",
+    "Zedong": "zˌɛdˈɑːŋ",
+    "Mao Zedong": "mˈaʊ zˌɛdˈɑːŋ",
     "Medvedev": "mɛdvˈɛdɛf",
     "Adolf": "ˈædɑːlf",
     "Barack": "bəɹˈɑːk",

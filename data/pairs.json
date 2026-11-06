@@ -32,11 +32,12 @@
  {
   "from": "King Von",
   "to": "Mao Zedong",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@coreychen7092",
   "comment": "king von to mao ze dong",
   "likes": 2,
-  "source": "comment on 'george washington to adolf h' (old channel)"
+  "source": "comment on 'george washington to adolf h' (old channel)",
+  "slug": "king-von-to-mao-zedong"
  },
  {
   "from": "P. Diddy",
