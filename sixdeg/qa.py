@@ -94,7 +94,9 @@ def qa(slug: str) -> dict:
         if peak is not None and peak > -0.5:
             fails.append(f"true peak {peak} dBTP")
         # speech check on the final mix
-        from .audio import transcribe
+        from .audio import transcribe, unknown_names
+        for w in unknown_names(" ".join([spec.get("hook", "")] + [l["line"] for l in spec["links"]])):
+            fails.append(f"no pronunciation for '{w}': add its IPA to audio.PHONEMES (see the SKILL)")
         wav = CACHE / "qa" / f"{slug}.wav"
         wav.parent.mkdir(parents=True, exist_ok=True)
         subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(mp4), "-ac", "1", "-ar", "16000", str(wav)],
