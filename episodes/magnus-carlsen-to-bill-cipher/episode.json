@@ -3,7 +3,7 @@
   "to": "Bill Cipher",
   "requested_by": "@rip_bosco",
   "title": "How is Magnus Carlsen connected to Bill Cipher?",
-  "description": "A world chess final, two presidents, a comedy show for troops and a Comic-Con panel link Magnus Carlsen to Bill Cipher.",
+  "description": "A world chess final, two presidents, a comedy show for troops and a Gravity Falls film-festival panel link Magnus Carlsen to Bill Cipher.",
   "hook": "How is Magnus Carlsen connected to Bill Cipher?",
   "people": {
     "Magnus Carlsen": {
@@ -57,14 +57,12 @@
       "a": "Kristen Schaal",
       "b": "Alex Hirsch",
       "image": {
-        "url": "https://raw.githubusercontent.com/evanlin23/sixdegrees/36fc8234814ba6557f55447b382e4be2d6a18806/episodes/magnus-carlsen-to-bill-cipher/hirsch-schaal-sdcc-flickr-19667677605.jpg",
-        "credit": "Spifferella (Flickr)",
-        "license": "CC BY-NC-SA 2.0",
-        "source": "https://www.flickr.com/photos/saynathespiffy/19667677605/"
+        "url": "https://i.ytimg.com/vi/j02gtPJ1Rkw/hqdefault.jpg",
+        "credit": "Vincent Sandoval/WireImage (Getty Images 450624820)",
+        "license": "Fair use (commentary)",
+        "source": "https://www.gettyimages.com/detail/450624820"
       },
-      "line": "At San Diego Comic-Con, Schaal, the voice of Mabel, shared a Gravity Falls panel with creator Alex Hirsch.",
-      "a_face": 1,
-      "b_face": 0
+      "line": "In 2014, Schaal, the voice of Mabel, posed with Gravity Falls creator Alex Hirsch in Los Angeles."
     },
     {
       "a": "Alex Hirsch",
