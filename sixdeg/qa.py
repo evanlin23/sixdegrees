@@ -72,6 +72,15 @@ def qa(slug: str) -> dict:
         if not c.get("free"):
             warns.append(f"photo {i + 1}: non-free image ({c['license']}) - relies on fair use commentary")
 
+    vj = out / "voice.json"
+    used = json.loads(vj.read_text()).get("engine") if vj.exists() else None
+    import os
+    from .audio import voice_config
+    if voice_config(spec.get("voice")).get("engine") == "gemini" and used != "gemini":
+        msg = ("narration is not the Achird voice (Gemini quota or error); re-render once the quota resets"
+               if os.environ.get("GEMINI_API_KEY") else
+               "preview only: narration uses the fallback voice (no GEMINI_API_KEY here); GitHub renders the real one")
+        (fails if os.environ.get("GEMINI_API_KEY") or os.environ.get("GITHUB_ACTIONS") else warns).append(msg)
     mp4 = out / f"{slug}.mp4"
     res = {}
     if not mp4.exists():
