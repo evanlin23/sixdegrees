@@ -243,11 +243,12 @@
  {
   "from": "Christopher Columbus",
   "to": "Baby Yoda",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@Hampterguy49",
   "comment": "Christopher Columbus to baby yoda",
   "likes": 0,
-  "source": "comment on 'leonardo da vinci to naruto' (old channel)"
+  "source": "comment on 'leonardo da vinci to naruto' (old channel)",
+  "slug": "christopher-columbus-to-baby-yoda"
  },
  {
   "from": "Virgil van Dijk",
