@@ -109,6 +109,7 @@ PHONEMES = {
     "Khalifa": "kəlˈiːfə",
     "Ovechkin": "ˈoʊvətʃkɪn",
     "Perugino": "pˌɛɹʊdʒˈiːnoʊ",
+    "SquarePants": "skwˈɛɹpˌænts",
 }
 
 _ARPA = {"AA": "ɑː", "AE": "æ", "AH": "ʌ", "AO": "ɔː", "AW": "aʊ", "AY": "aɪ", "EH": "ɛ", "ER": "ɜː", "EY": "eɪ",
