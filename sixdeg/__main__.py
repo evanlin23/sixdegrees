@@ -88,6 +88,8 @@ def main(argv):
             for sl in slugs[i:i + per]:
                 sp = load(sl)[1]
                 lines += [sp.get("hook", "")] + [l["line"] for l in sp["links"]]
+            if i == 0:
+                lines.append("And that's how.")   # the A/B outro line, shared by every episode: voice it once
             audio.prefetch([l for l in lines if l])
             time.sleep(21)
     elif cmd == "render":
