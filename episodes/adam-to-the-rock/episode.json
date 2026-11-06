@@ -2,16 +2,19 @@
   "from": "Adam",
   "to": "The Rock",
   "requested_by": "@hatzgt",
-  "title": "The first man to The Rock in five real photos",
-  "description": "Michelangelo's Adam, a vice president's oath and a Pentagon gift connect the first man in the Bible to Dwayne Johnson.",
+  "title": "The first man to The Rock, through a Vatican fresco",
+  "description": "Raphael's Disputa, the line of popes and a 1980 Vatican visit connect the first man in the Bible to Dwayne Johnson.",
   "hook": "How is Adam connected to The Rock?",
   "people": {
     "Adam": {
       "label": "Adam",
       "wiki": "Adam"
     },
-    "JD Vance": {
-      "label": "JD Vance"
+    "Pope Sixtus IV": {
+      "label": "Pope Sixtus IV"
+    },
+    "Pope John Paul II": {
+      "label": "Pope John Paul II"
     },
     "Joe Biden": {
       "label": "Joe Biden"
@@ -31,37 +34,68 @@
   "links": [
     {
       "a": "Adam",
-      "b": "JD Vance",
+      "b": "Pope Sixtus IV",
       "image": {
-        "url": "https://mcusercontent.com/dace49741569f7585670378b3/images/13e8d563-c532-0167-5e46-8b4b8d95f22c.jpg",
-        "credit": "Official White House photo by Emily Higgins",
-        "license": "Public domain (U.S. government work)",
-        "source": "https://www.presidency.ucsb.edu/documents/white-house-press-release-vice-president-jd-vance-departs-italy",
-        "free": true
+        "file": "File:Disputa del Sacramento (Rafael).jpg"
       },
-      "line": "Michelangelo painted Adam on the Sistine Chapel ceiling, and at Easter 2025, JD Vance stood right beneath him.",
-      "a_face": [
-        420,
-        45,
-        42,
-        34
-      ],
-      "b_face": [
-        240,
-        335,
-        240,
-        220
-      ]
+      "line": "Raphael painted Adam in heaven above Pope Sixtus IV in his Vatican fresco, the Disputa.",
+      "a_face": 6,
+      "b_face": 35
     },
     {
-      "a": "JD Vance",
+      "a": "Pope Sixtus IV",
+      "b": "Pope John Paul II",
+      "line": "Sixtus was the 212th pope, and the line runs down to the 264th, Pope John Paul II.",
+      "lineage": {
+        "label": "LINE OF POPES",
+        "people": [
+          {
+            "name": "Pope Sixtus IV",
+            "file": "File:Pedro_Berruguete_-_Portrait_of_Pope_Sixtus_IV_della_Rovere_-_1916.815_-_Cleveland_Museum_of_ArtFXD.jpg",
+            "label": "212th"
+          },
+          {
+            "name": "Pope Paul III",
+            "file": "File:Portrait_of_Pope_Paul_III_Farnese_(by_Titian)_-_National_Museum_of_Capodimonte.jpg",
+            "label": "220th"
+          },
+          {
+            "name": "Pope Sixtus V",
+            "file": "File:(Albi)_Cathédrale_Sainte-Cécile_-_Trèsor_-_Portrait_du_pape_Sixte_V_-_PalissyIM81001477.jpg",
+            "label": "227th"
+          },
+          {
+            "name": "Pope Pius IX",
+            "file": "File:Pius_IX,_by_Adolphe_Braun,_1875.jpg",
+            "label": "255th"
+          },
+          {
+            "name": "Pope Pius XII",
+            "file": "File:Pius_XII_with_tabard,_by_Michael_Pitcairn,_1951_(retouched).jpg",
+            "label": "260th"
+          },
+          {
+            "name": "Pope John XXIII",
+            "file": "File:Ioannes_XXIII,_by_De_Agostini,_1958–1963.jpg",
+            "label": "261st"
+          },
+          {
+            "name": "Pope John Paul II",
+            "file": "File:ADAMELLO_-_PAPA_-_Giovanni_Paolo_II_-_panoramio_(cropped).jpg",
+            "label": "264th"
+          }
+        ]
+      }
+    },
+    {
+      "a": "Pope John Paul II",
       "b": "Joe Biden",
       "image": {
-        "file": "File:JD_Vance_takes_the_oath_of_office_(2025).jpg"
+        "file": "File:Pope_John_Paul_II_with_Joe_and_Jill_Biden.jpg"
       },
-      "line": "Three months earlier, Vance took the vice president's oath while outgoing president Joe Biden looked on.",
-      "a_face": 12,
-      "b_face": 32
+      "line": "In 1980, John Paul II welcomed a young senator, Joe Biden, and his wife Jill to the Vatican.",
+      "a_face": 2,
+      "b_face": 4
     },
     {
       "a": "Joe Biden",
