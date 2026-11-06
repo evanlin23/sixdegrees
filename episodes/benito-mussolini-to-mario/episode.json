@@ -1,0 +1,92 @@
+{
+  "from": "Benito Mussolini",
+  "to": "Mario",
+  "title": "Mussolini to Mario in five links",
+  "description": "Two dictators, a future president, the Terminator and Star-Lord connect Benito Mussolini to Mario.",
+  "hook": "How is Benito Mussolini connected to Mario?",
+  "people": {
+    "Benito Mussolini": {
+      "label": "Benito Mussolini"
+    },
+    "Francisco Franco": {
+      "label": "Francisco Franco"
+    },
+    "Ronald Reagan": {
+      "label": "Ronald Reagan"
+    },
+    "Arnold Schwarzenegger": {
+      "label": "Arnold Schwarzenegger"
+    },
+    "Chris Pratt": {
+      "label": "Chris Pratt"
+    },
+    "Mario": {
+      "label": "Mario"
+    }
+  },
+  "links": [
+    {
+      "a": "Benito Mussolini",
+      "b": "Francisco Franco",
+      "image": {
+        "file": "File:Entrevista de Bordighera (Franco y Mussolini).jpg"
+      },
+      "line": "In 1941, Mussolini met Spain's dictator Francisco Franco on the Italian Riviera, pressing him to join the war.",
+      "a_face": 2,
+      "b_face": 0
+    },
+    {
+      "a": "Francisco Franco",
+      "b": "Ronald Reagan",
+      "image": {
+        "file": "File:Francisco Franco Ronald Reagan 1972.jpg"
+      },
+      "line": "Spain stayed out, and in 1972 Franco received California's governor, Ronald Reagan, in Madrid.",
+      "a_face": [
+        60,
+        82,
+        40,
+        42
+      ],
+      "b_face": 1
+    },
+    {
+      "a": "Ronald Reagan",
+      "b": "Arnold Schwarzenegger",
+      "image": {
+        "file": "File:President Ronald Reagan with Arnold Schwarzenegger Retouched (cropped).jpg"
+      },
+      "line": "In 1984, President Reagan met Arnold Schwarzenegger, fresh from The Terminator, at the Republican convention."
+    },
+    {
+      "a": "Arnold Schwarzenegger",
+      "b": "Chris Pratt",
+      "image": {
+        "url": "https://i.abcnewsfe.com/a/8bc75bcd-175a-4012-b614-81a94f41b5c8/fubar-1-gty-gmh-250612_1749748355376_hpMain.jpg?w=1600",
+        "credit": "Charley Gallay/Getty Images",
+        "license": "Fair use (commentary)",
+        "source": "https://www.goodmorningamerica.com/culture/story/arnold-schwarzeneggers-family-supports-fubar-premiere-122790066"
+      },
+      "line": "In 2025, Arnold brought his son-in-law, Chris Pratt, to the premiere of his show FUBAR."
+    },
+    {
+      "a": "Chris Pratt",
+      "b": "Mario",
+      "image": {
+        "pair": [
+          {
+            "file": "File:Chris Pratt by Gage Skidmore.jpg"
+          },
+          {
+            "url": "https://i0.wp.com/screen-connections.com/wp-content/uploads/2023/03/The.Super_.Mario_.Bros_.Movie-New.Character.Posters-Mario.jpg",
+            "credit": "Nintendo / Illumination / Universal Pictures",
+            "license": "Fair use (commentary)",
+            "source": "https://screen-connections.com/2023/03/09/the-super-mario-bros-movie-final-trailer-main-poster-6-more-character-posters/"
+          }
+        ]
+      },
+      "line": "And in 2023, Chris Pratt became the voice of Mario in the Super Mario Bros Movie.",
+      "b_face": 1
+    }
+  ]
+}
