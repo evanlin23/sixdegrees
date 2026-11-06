@@ -428,7 +428,7 @@ def say(text: str, voice: dict | None = None) -> tuple[np.ndarray, list[tuple[st
     src = cfg
     if cfg.get("engine") == "gemini" and not (GEMINI_CACHE / f"{_gemini_key(speakable(text), cfg)}.flac").exists():
         src = cfg.get("fallback") or DEFAULT_VOICE          # not voiced by Gemini (yet): fallback voice
-    key = hashlib.sha1(f"{json.dumps(src, sort_keys=True)}|{json.dumps(PHONEMES, sort_keys=True)}|{speakable(text)}".encode()).hexdigest()  # respellings change the audio
+    key = hashlib.sha1(f"{json.dumps(src, sort_keys=True)}|{json.dumps(PHONEMES, sort_keys=True)}|trim2|{speakable(text)}".encode()).hexdigest()  # respellings change the audio
     p = CACHE / "tts" / f"{key}.wav"
     if p.exists():
         a, _ = sf.read(p, dtype="float32")
@@ -487,12 +487,25 @@ def aligned_word_times(text: str, wav: Path, dur: float) -> list[tuple[str, floa
 
 
 def _trim(a: np.ndarray, thr: float = 0.01) -> np.ndarray:
-    idx = np.where(np.abs(a) > thr)[0]
-    if len(idx) == 0:
+    """Cut leading/trailing silence. Speech starts where the level stays up for 60 ms, so a lone click
+    before the first word (Gemini adds one) doesn't count as speech."""
+    hop = int(0.01 * SR)
+    n = len(a) // hop
+    if n < 8:
         return a
-    s = max(0, idx[0] - int(0.03 * SR))
-    e = min(len(a), idx[-1] + int(0.08 * SR))
-    return a[s:e]
+    peak = np.abs(a).max() + 1e-9
+    db = np.array([20 * np.log10(np.sqrt(np.mean(a[i * hop:(i + 1) * hop] ** 2)) / peak + 1e-9) for i in range(n)])
+    loud = db > -35
+    run = np.convolve(loud.astype(int), np.ones(6, int), "valid")      # 6 x 10 ms frames in a row
+    on = np.where(run == 6)[0]
+    if len(on) == 0:
+        return a
+    s = max(0, (on[0] - 2) * hop)                                     # 20 ms before the onset
+    e = min(len(a), (on[-1] + 6 + 8) * hop)                           # 80 ms after the last sustained sound
+    out = a[s:e].copy()
+    f = min(len(out), int(0.005 * SR))
+    out[:f] *= np.linspace(0, 1, f)                                   # no click at the cut
+    return out
 
 
 def _word_times(text: str, dur: float) -> list[tuple[str, float, float]]:
