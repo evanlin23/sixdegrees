@@ -15,9 +15,17 @@ import requests
 
 API = "https://generativelanguage.googleapis.com/v1beta"
 SR = 24000
-STYLE = ("Read this as an upbeat, curious YouTube Shorts narrator: American accent, quick but clear, natural "
-         "energy, a hint of 'no way!' on the reveals. Read every line exactly as written, in order, with a short "
-         "beat between lines:")
+# Google's recommended TTS prompt layout: notes for the "director", then a clearly marked transcript.
+# Only the transcript is spoken. (A plain instruction line in front of the text gets read aloud.)
+NOTES = """# AUDIO PROFILE: Buh, narrator of a YouTube Shorts channel about surprising connections between famous people.
+
+## DIRECTOR'S NOTES
+Style: upbeat, curious, confident; a quick "no way!" energy on each reveal. American accent.
+Pace: fast, like a Shorts narrator, with only a short beat between lines.
+Do not read these notes aloud. Speak only the transcript below, exactly as written, in order.
+
+## TRANSCRIPT
+"""
 
 
 def _headers():
@@ -32,8 +40,8 @@ def list_tts_models() -> list[str]:
 
 
 def synth(lines: list[str], voice: str = "Puck", model: str = "gemini-3.8-flash-tts",
-          style: str = STYLE, tries: int = 4) -> np.ndarray:
-    prompt = style + "\n\n" + "\n\n".join(lines)
+          notes: str = NOTES, tries: int = 4) -> np.ndarray:
+    prompt = notes + "\n".join(lines)
     body = {"contents": [{"parts": [{"text": prompt}]}],
             "generationConfig": {"responseModalities": ["AUDIO"],
                                  "speechConfig": {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": voice}}}}}
