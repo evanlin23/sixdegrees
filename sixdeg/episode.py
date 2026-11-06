@@ -208,6 +208,8 @@ def prep(slug: str, log=print) -> dict:
         refs = list(ov.get("refs", []))
         if r.get("portrait"):
             refs.insert(0, r["portrait"])
+        if ov.get("hook_photo"):   # the photo the opening shows full width (refs[0]); default: the Wikipedia portrait
+            refs.insert(0, ov["hook_photo"])
         paths = []
         for k, ref in enumerate(refs[:4]):
             stem = work / "refs" / f"{slugify(name)}_{k}"

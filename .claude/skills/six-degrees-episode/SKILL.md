@@ -139,7 +139,12 @@ python -m sixdeg render <slug> && python -m sixdeg qa <slug>
 Narration is always Gemini's **Achird** voice; there is no other voice. Your session has no Gemini key, so the
 local render has silent narration and QA fails with exactly one line, "narration is not the Achird voice".
 That one is expected locally; every other check must pass. Open `out/contact.jpg` and check that tags sit on the
-right heads and nothing is clipped. The PR's `render` check on GitHub voices it with Achird and must pass fully.
+right heads and nothing is clipped. Then check the opening, which decides whether viewers stay:
+`ffmpeg -ss 0.5 -i out/<slug>.mp4 -frames:v 1 out/hook.png` and look at it. A and B fill the screen as big
+full-width photos, cropped from each person's first portrait (`refs[0]`) or their boxed face in a link photo.
+Both faces must be sharp, frontal, instantly recognisable and the right person. If one is blurry, tiny, side-on
+or wrong, set a better one (large, face-on) with `"people": {"<Name>": {"hook_photo": "File:<name>.jpg"}}` and run
+prep again. The PR's `render` check on GitHub voices it with Achird and must pass fully.
 If it fails only because the daily Gemini quota ran out, say so in the PR; the operator re-runs it the next day.
 
 ## 6. Hand off with a PR (never push to main)
