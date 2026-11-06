@@ -88,6 +88,8 @@ PHONEMES = {
     "Dmitry": "dəmˈiːtɹi",
     "Sadat": "sɑːdˈɑːt",
     "FUBAR": "fˈuːbɑːɹ",
+    "LaBeouf": "ləbˈʌf",
+    "Shia": "ʃˈaɪə",
     "Filippino": "fˌɪlɪpˈiːnoʊ",
     # regnal numbers and Renaissance names (Adam/Zeus to The Rock)
     "Sixtus IV": "sˈɪkstəs ðə fˈɔːɹθ",
