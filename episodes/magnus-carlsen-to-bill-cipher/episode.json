@@ -1,0 +1,91 @@
+{
+  "from": "Magnus Carlsen",
+  "to": "Bill Cipher",
+  "requested_by": "@rip_bosco",
+  "title": "How is Magnus Carlsen connected to Bill Cipher?",
+  "description": "A world chess final, two presidents, a comedy show for troops and a Comic-Con panel link Magnus Carlsen to Bill Cipher.",
+  "hook": "How is Magnus Carlsen connected to Bill Cipher?",
+  "people": {
+    "Magnus Carlsen": {
+      "label": "Magnus Carlsen"
+    }
+  },
+  "links": [
+    {
+      "a": "Magnus Carlsen",
+      "b": "Vladimir Putin",
+      "image": {
+        "file": "File:Closing ceremony World Chess Championship 2014.jpeg"
+      },
+      "line": "In 2014, Magnus Carlsen lifted the world chess trophy in Sochi while Vladimir Putin applauded beside him.",
+      "a_face": 2,
+      "b_face": 0
+    },
+    {
+      "a": "Vladimir Putin",
+      "b": "Barack Obama",
+      "image": {
+        "file": "File:Vladimir Putin and Barack Obama (2015-09-29) 01.jpg"
+      },
+      "line": "In 2015, Putin met Barack Obama at the United Nations in New York."
+    },
+    {
+      "a": "Barack Obama",
+      "b": "Jon Stewart",
+      "image": {
+        "file": "File:Stewart, Obamas (26240104033).jpg"
+      },
+      "line": "In 2016, Obama and Michelle joined Jon Stewart at a comedy show for troops near Washington.",
+      "a_face": 1,
+      "b_face": 0
+    },
+    {
+      "a": "Jon Stewart",
+      "b": "Kristen Schaal",
+      "image": {
+        "url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/1605/2625774/1000w_q95.jpg",
+        "credit": "A1C Philip Bryant, U.S. Air Force",
+        "license": "Public domain (U.S. Air Force)",
+        "source": "https://www.dvidshub.net/image/2625774/celebration-service-held-jba",
+        "free": true
+      },
+      "line": "That same night, Stewart took a bow on stage with comedian Kristen Schaal.",
+      "a_face": 0,
+      "b_face": 2
+    },
+    {
+      "a": "Kristen Schaal",
+      "b": "Alex Hirsch",
+      "image": {
+        "url": "https://live.staticflickr.com/3672/19667677605_bcd48d6d20_b.jpg",
+        "credit": "Spifferella (Flickr)",
+        "license": "CC BY-NC-SA 2.0",
+        "source": "https://www.flickr.com/photos/saynathespiffy/19667677605/"
+      },
+      "line": "At San Diego Comic-Con, Schaal, the voice of Mabel, shared a Gravity Falls panel with creator Alex Hirsch.",
+      "a_face": 1,
+      "b_face": 0
+    },
+    {
+      "a": "Alex Hirsch",
+      "b": "Bill Cipher",
+      "image": {
+        "pair": [
+          {
+            "file": "File:Alex Hirsch with Microphone.jpg"
+          },
+          {
+            "file": "File:The Book of Bill Cover.png"
+          }
+        ]
+      },
+      "line": "And Hirsch created Bill Cipher and voices him himself.",
+      "b_face": [
+        346,
+        100,
+        75,
+        86
+      ]
+    }
+  ]
+}

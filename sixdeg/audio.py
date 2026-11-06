@@ -60,6 +60,7 @@ PHONEMES = {
     "Tereshkova": "tˌɛɹɛʃkˈoʊvə",
     "Valentina": "vˌæləntˈiːnə",
     "Grug": "ɡɹˈʌɡ",
+    "Cipher": "sˈaɪfəɹ",
     "Fazbear": "fˈæzbɛɹ",  # Wikipedia pull gives the "FNAF" acronym for this one
     "Emmanuel Macron": "ɪmˈænjuəl mækɹˈɔːn",
     "Lamine Yamal": "ləmˈiːn jəmˈɑːl",
