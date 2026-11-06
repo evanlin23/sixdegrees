@@ -171,9 +171,14 @@ def render(slug: str, log=print) -> Path:
     t = 0.0
     n_words = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"]
     hook = spec.get("hook") or f"How is {short_name(spec['from'])} connected to {short_name(spec['to'])}?"
-    script = [hook] + [l["line"] for l in spec["links"]]
+    # A/B test: half the episodes end with a spoken "And that's how." over the CONNECTED! stamp (loops into the
+    # opening question on replay). Deterministic per slug; an episode can force it with "outro": true/false.
+    import hashlib
+    OUTRO = "And that's how."
+    use_outro = spec["outro"] if "outro" in spec else int(hashlib.sha1(slug.encode()).hexdigest(), 16) % 2 == 0
+    script = [hook] + [l["line"] for l in spec["links"]] + ([OUTRO] if use_outro else [])
     audio.prefetch(script, voice, log)                                       # Gemini: one request per episode
-    (out_dir / "voice.json").write_text(json.dumps({"engine": audio.narrator(script, voice)}))
+    (out_dir / "voice.json").write_text(json.dumps({"engine": audio.narrator(script, voice), "outro": use_outro}))
     a, words = audio.say(hook, voice)
     HOOK_VO = 0.0    # the question starts on the very first frame
     d = max(len(a) / audio.SR + 0.3 + HOOK_VO, FF + RW + 1.3)
@@ -189,10 +194,16 @@ def render(slug: str, log=print) -> Path:
         speech = len(a) / audio.SR + 0.08
         # last photo: cut hard right after the final word / the CONNECTED! slam, for a seamless loop
         d = max(speech + 0.05, seg_reveal(speech) + THROW + 0.5) if last else speech + PAD
+        reveal = t + (speech * 0.9 - THROW if link.get("lineage") else seg_reveal(speech))
+        if last and use_outro:   # "And that's how." lands with the CONNECTED! stamp, then a hard cut
+            oa, ow = audio.say(OUTRO, voice)
+            ot = max(t + 0.08 + speech, reveal + THROW + 0.3)
+            voice_clips.append((ot, oa))
+            words = list(words) + [(w, a0 + ot - (t + 0.08), b0 + ot - (t + 0.08)) for w, a0, b0 in ow]
+            d = max(d, ot - t + len(oa) / audio.SR + 0.12)
         segs.append({"kind": "link", "i": i, "t0": t, "t1": t + d, "cap": PixelCaptions(words, t + 0.08),
                      "speech": speech})
         voice_clips.append((t + 0.08, a))
-        reveal = t + (speech * 0.9 - THROW if link.get("lineage") else seg_reveal(speech))
         sfx += [(t, assets.sfx("px_cut", 0.45)), (t, assets.sfx("shutter", 0.35)),
                 (reveal, assets.sfx("px_jump", 0.35)),
                 (reveal + THROW, assets.sfx("px_coin", 0.45))]
