@@ -70,7 +70,12 @@ def _fetch_image(img_spec: dict, dest_stem: Path, width: int = 2000) -> dict:
         if ext in (".tif", ".tiff", ".gif", ".svg", ".webp"):
             ext = ".jpg" if ext != ".png" else ext
         dest = dest_stem.with_suffix(ext if ext in (".jpg", ".jpeg", ".png") else ".jpg")
-        download(info["thumb"], dest)
+        try:
+            download(info["thumb"], dest)
+        except RuntimeError:                       # thumb refused or rate-limited: try the other URL once
+            if info["thumb"] == info["url"]:
+                raise
+            download(info["url"], dest)
         rec = {"path": dest.name, "source": info["page"], "license": info["license"],
                "artist": clean_artist(info["artist"]), "credit": info["credit"][:200], "file": info["file"],
                "free": not info["nonfree"]}
