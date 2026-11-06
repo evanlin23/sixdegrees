@@ -164,7 +164,8 @@ def name_ipa(text: str) -> dict[str, str]:
 
 
 def unknown_names(text: str) -> list[str]:
-    """Capitalized words with no PHONEMES or CMU entry: their pronunciation would be espeak's guess."""
+    """Capitalized words with no PHONEMES or CMU entry: their pronunciation would be espeak's guess.
+    (Only the Kokoro voice reads our phonemes; QA skips this gate for the Gemini voice.)"""
     from .pronounce import load
     known = " ".join(list(PHONEMES) + list(load()) + list(RESPELL.values())).split()
     return sorted({w for w in _NAME.findall(speakable(text)) if w not in _COMMON and w not in known
@@ -275,8 +276,93 @@ def _resample(a: np.ndarray, sr: int) -> np.ndarray:
     return np.interp(np.linspace(0, len(a) - 1, n), np.arange(len(a)), a).astype(np.float32)
 
 
+GEMINI_CACHE = CACHE / "gemini"     # one .flac per spoken line; synced with the tts-cache branch in CI
+
+
+def _gemini_key(spoken: str, cfg: dict) -> str:
+    import json
+    from .tts_gemini import NOTES
+    sig = {k: cfg.get(k) for k in ("voice", "model")}
+    return hashlib.sha1(f"{json.dumps(sig, sort_keys=True)}|{NOTES}|{spoken}".encode()).hexdigest()
+
+
+def _norm_words(text: str) -> list[str]:
+    return [w for w in (re.sub(r"[^a-z0-9]", "", t.lower()) for t in text.replace("-", " ").split()) if w]
+
+
+def _gemini_batch(spoken_lines: list[str], cfg: dict) -> list[np.ndarray]:
+    """Voice all lines in ONE Gemini request, then cut the result back into lines with Whisper word timings."""
+    import difflib
+    import tempfile
+    from .tts_gemini import SR as GSR, synth
+    a = synth(spoken_lines, cfg.get("voice", "Achird"), cfg.get("model", "gemini-3.8-flash-tts"))
+    a = _resample(a, GSR)
+    with tempfile.TemporaryDirectory() as td:
+        wav = Path(td) / "batch.wav"
+        sf.write(wav, a, SR)
+        heard = transcribe(wav)
+    hw = [re.sub(r"[^a-z0-9]", "", w.lower()) for w, _, _ in heard]
+    script, owner = [], []
+    for li, line in enumerate(spoken_lines):
+        for w in _norm_words(line):
+            script.append(w)
+            owner.append(li)
+    match = {}
+    for blk in difflib.SequenceMatcher(None, script, hw, autojunk=False).get_matching_blocks():
+        for k in range(blk.size):
+            match[blk.a + k] = blk.b + k
+    n = len(spoken_lines)
+    first, last = [None] * n, [None] * n
+    for si, li in enumerate(owner):
+        if si in match:
+            if first[li] is None:
+                first[li] = match[si]
+            last[li] = match[si]
+    for li in range(n):
+        words = sum(1 for o in owner if o == li)
+        got = sum(1 for si, o in enumerate(owner) if o == li and si in match)
+        if first[li] is None or got < 0.6 * words:
+            raise RuntimeError(f"Gemini skipped or garbled line {li + 1}: {spoken_lines[li][:60]}")
+    cuts = [0.0]
+    for li in range(n - 1):
+        e, s2 = heard[last[li]][2], heard[first[li + 1]][1]
+        cuts.append((e + s2) / 2 if s2 > e else s2)
+    cuts.append(len(a) / SR)
+    return [_trim(a[int(cuts[i] * SR):int(cuts[i + 1] * SR)]) for i in range(n)]
+
+
+def prefetch(lines: list[str], voice: dict | None = None, log=print) -> None:
+    """Gemini engine: voice every not-yet-cached line of an episode in one request (free tier: ~15 a day)."""
+    cfg = voice_config(voice)
+    if cfg.get("engine") != "gemini":
+        return
+    import os
+    GEMINI_CACHE.mkdir(parents=True, exist_ok=True)
+    spoken = [speakable(t) for t in lines]
+    todo = [s for s in dict.fromkeys(spoken) if not (GEMINI_CACHE / f"{_gemini_key(s, cfg)}.flac").exists()]
+    if not todo:
+        return
+    if not os.environ.get("GEMINI_API_KEY"):
+        log("voice: no GEMINI_API_KEY here, using the fallback voice")
+        return
+    try:
+        clips = _gemini_batch(todo, cfg)
+    except Exception as e:  # noqa: BLE001 - the fallback voice keeps the episode renderable
+        log(f"voice: Gemini batch failed ({e}); using the fallback voice")
+        return
+    for s, c in zip(todo, clips):
+        sf.write(GEMINI_CACHE / f"{_gemini_key(s, cfg)}.flac", c, SR)
+    log(f"voice: Gemini {cfg.get('voice')} voiced {len(todo)} lines in one request")
+
+
 def _synth(text: str, cfg: dict) -> np.ndarray:
     eng = cfg.get("engine", "kokoro")
+    if eng == "gemini":
+        p = GEMINI_CACHE / f"{_gemini_key(text, cfg)}.flac"
+        if p.exists():
+            a, _ = sf.read(p, dtype="float32")
+            return a
+        return _synth(text, cfg.get("fallback") or DEFAULT_VOICE)
     if eng == "kokoro":
         k = _tts()
         v = cfg.get("voice", "am_michael")
@@ -339,14 +425,17 @@ def say(text: str, voice: dict | None = None) -> tuple[np.ndarray, list[tuple[st
     """Synthesize `text`. Returns (mono float32 @ SR, word timings [(word, t0, t1)])."""
     import json
     cfg = voice_config(voice)
-    key = hashlib.sha1(f"{json.dumps(cfg, sort_keys=True)}|{json.dumps(PHONEMES, sort_keys=True)}|{speakable(text)}".encode()).hexdigest()  # respellings change the audio
+    src = cfg
+    if cfg.get("engine") == "gemini" and not (GEMINI_CACHE / f"{_gemini_key(speakable(text), cfg)}.flac").exists():
+        src = cfg.get("fallback") or DEFAULT_VOICE          # not voiced by Gemini (yet): fallback voice
+    key = hashlib.sha1(f"{json.dumps(src, sort_keys=True)}|{json.dumps(PHONEMES, sort_keys=True)}|{speakable(text)}".encode()).hexdigest()  # respellings change the audio
     p = CACHE / "tts" / f"{key}.wav"
     if p.exists():
         a, _ = sf.read(p, dtype="float32")
     else:
         a = _synth(speakable(text), cfg)
-        if cfg.get("broadcast") or cfg.get("tempo", 1.0) != 1.0:
-            a = post_chain(a, tempo=cfg.get("tempo", 1.0), broadcast=bool(cfg.get("broadcast")))
+        if src.get("broadcast") or src.get("tempo", 1.0) != 1.0:
+            a = post_chain(a, tempo=src.get("tempo", 1.0), broadcast=bool(src.get("broadcast")))
         a = _trim(a / (np.abs(a).max() + 1e-9) * 0.9)
         p.parent.mkdir(parents=True, exist_ok=True)
         sf.write(p, a, SR)

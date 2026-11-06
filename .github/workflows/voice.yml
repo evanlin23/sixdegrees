@@ -1,0 +1,39 @@
+name: voice
+# Voice episodes with Gemini ahead of rendering, a few episodes per request, into the tts-cache branch.
+on:
+  workflow_dispatch:
+    inputs:
+      slugs: {description: "space-separated episode slugs (empty = everything on the queue)", default: ""}
+      batch: {description: "episodes per Gemini request", default: "4"}
+permissions: {contents: write}
+concurrency: {group: voice}
+jobs:
+  voice:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12", cache: pip, cache-dependency-path: requirements-render.txt}
+      - run: sudo apt-get update -q && sudo apt-get install -yq ffmpeg && pip install -r requirements-render.txt
+      - uses: actions/cache@v4
+        with:
+          path: models
+          key: models-${{ hashFiles('sixdeg/setup_models.py', 'data/assets.json') }}
+      - run: python -m sixdeg setup
+      - name: voice
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          VOICE_BATCH: ${{ inputs.batch }}
+        run: |
+          mkdir -p .cache/gemini
+          if git fetch -q origin tts-cache 2>/dev/null; then git --work-tree=.cache/gemini checkout origin/tts-cache -- . && git reset -q; fi
+          S="${{ inputs.slugs }}"
+          if [ -z "$S" ]; then git fetch -q origin queue && S=$(git ls-tree --name-only origin/queue:queue | grep -v '^\.' | sed 's/^[0-9]*-//' | tr '\n' ' '); fi
+          python -m sixdeg voice $S
+          git config user.name "github-actions[bot]"; git config user.email "41898729+github-actions[bot]@users.noreply.github.com"
+          git worktree add -q /tmp/tc origin/tts-cache 2>/dev/null || { git worktree add -q --detach /tmp/tc && git -C /tmp/tc checkout -q --orphan tts-cache && git -C /tmp/tc rm -rqf . ; }
+          cp -n .cache/gemini/*.flac /tmp/tc/ 2>/dev/null || true
+          cd /tmp/tc && git add -A && (git diff --cached --quiet || git commit -qm "voice lines") && git push -q origin HEAD:tts-cache
+          ls | wc -l

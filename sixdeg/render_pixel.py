@@ -171,6 +171,7 @@ def render(slug: str, log=print) -> Path:
     t = 0.0
     n_words = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"]
     hook = spec.get("hook") or f"How is {short_name(spec['from'])} connected to {short_name(spec['to'])}?"
+    audio.prefetch([hook] + [l["line"] for l in spec["links"]], voice, log)   # Gemini: one request per episode
     a, words = audio.say(hook, voice)
     HOOK_VO = 0.05   # the claim starts immediately, over the flash-forward
     d = max(len(a) / audio.SR + 0.3 + HOOK_VO, FF + RW + 1.3)

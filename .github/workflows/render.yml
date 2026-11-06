@@ -36,6 +36,11 @@ jobs:
           path: .cache
           key: wiki-cache-${{ github.run_id }}
           restore-keys: wiki-cache-
+      - name: restore voice cache (Gemini lines, shared across runs on the tts-cache branch)
+        run: |
+          mkdir -p .cache/gemini
+          if git fetch -q origin tts-cache 2>/dev/null; then git --work-tree=.cache/gemini checkout origin/tts-cache -- . && git reset -q; fi
+          ls .cache/gemini | wc -l
       - name: which episodes
         id: which
         run: |
@@ -45,6 +50,7 @@ jobs:
           echo "slugs=$s" >> "$GITHUB_OUTPUT"
       - name: render, check, queue
         env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           SLUGS: ${{ steps.which.outputs.slugs }}
           ENQUEUE: ${{ github.event_name == 'pull_request' && 'false' || inputs.enqueue || 'true' }}
         run: |
@@ -64,6 +70,17 @@ jobs:
             echo "::endgroup::"
           done
           exit $fail
+      - name: save new voice lines to the tts-cache branch
+        if: always()
+        run: |
+          ls .cache/gemini/*.flac >/dev/null 2>&1 || exit 0
+          for i in 1 2 3 4; do
+            rm -rf /tmp/tc; git worktree prune
+            if git fetch -q origin tts-cache 2>/dev/null; then git worktree add -q /tmp/tc origin/tts-cache; else git worktree add -q --detach /tmp/tc && git -C /tmp/tc checkout -q --orphan tts-cache && git -C /tmp/tc rm -rqf . || true; fi
+            cp -n .cache/gemini/*.flac /tmp/tc/ 2>/dev/null || true
+            (cd /tmp/tc && git add -A && { git diff --cached --quiet || git commit -qm "voice lines"; } && git push -q origin HEAD:tts-cache) && break
+            sleep $((i*3))
+          done
       - uses: actions/upload-artifact@v4
         if: always()
         with:
