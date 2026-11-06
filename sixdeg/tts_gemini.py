@@ -91,13 +91,15 @@ if __name__ == "__main__":   # samples for the voice comparison: python -m sixde
     print("TTS models:", list_tts_models())
     spec = json.load(open(f"episodes/{slug}/episode.json"))
     lines = [speakable(spec["hook"])] + [speakable(l["line"]) for l in spec["links"]]
+    voices = os.environ.get("VOICES", "Puck").split()
     for model in sys.argv[3:] or ["gemini-3.8-flash-tts"]:
+      for voice in voices:
         try:
-            a = synth(lines, "Puck", model, tries=2)
+            a = synth(lines, voice, model, tries=2)
         except RuntimeError as e:
-            print("skipped", model, e)
+            print("skipped", voice, model, e)
             continue
-        wav = f"{outdir}/puck-{model}.wav"
+        wav = f"{outdir}/{voice.lower()}-{model}.wav"
         sf.write(wav, a, SR)
         subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", wav, "-b:a", "160k", wav[:-4] + ".mp3"], check=True)
         os.remove(wav)

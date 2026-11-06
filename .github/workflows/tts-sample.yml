@@ -4,6 +4,7 @@ on:
     inputs:
       slug: {description: "episode to voice", default: "marilyn-monroe-to-vladimir-putin"}
       models: {description: "space-separated Gemini TTS models", default: "gemini-3.8-flash-tts"}
+      voices: {description: "space-separated voice names", default: "Puck"}
 permissions:
   contents: write
 jobs:
@@ -16,6 +17,7 @@ jobs:
       - run: sudo apt-get install -y -qq ffmpeg >/dev/null && pip install -q numpy soundfile requests
       - env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          VOICES: ${{ inputs.voices }}
         run: python -c "import sys; sys.argv=['x','${{ inputs.slug }}','samples',*'${{ inputs.models }}'.split()]; import runpy; runpy.run_module('sixdeg.tts_gemini', run_name='__main__')"
       - name: Push samples to the tts-samples branch
         run: |
