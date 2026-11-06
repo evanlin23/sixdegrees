@@ -524,9 +524,10 @@
  {
   "from": "Mao Zedong",
   "to": "Shrek",
-  "status": "todo",
+  "status": "done",
   "source": "viral formula (Nov 2026 research)",
-  "hint": "voice actor Mike Myers"
+  "hint": "voice actor Mike Myers",
+  "slug": "mao-zedong-to-shrek"
  },
  {
   "from": "Julius Caesar",

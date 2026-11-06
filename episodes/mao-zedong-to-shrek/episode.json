@@ -1,0 +1,90 @@
+{
+  "from": "Mao Zedong",
+  "to": "Shrek",
+  "title": "Mao Zedong to Shrek in four links",
+  "description": "A 1975 handshake in Beijing, an Oval Office meeting and a White House concert connect Mao Zedong to Shrek.",
+  "hook": "How is Mao Zedong connected to Shrek?",
+  "people": {
+    "Mao Zedong": {
+      "label": "Mao Zedong"
+    },
+    "Henry Kissinger": {
+      "label": "Henry Kissinger"
+    },
+    "Barack Obama": {
+      "label": "Barack Obama"
+    },
+    "Mike Myers": {
+      "label": "Mike Myers"
+    },
+    "Shrek": {
+      "label": "Shrek"
+    }
+  },
+  "links": [
+    {
+      "a": "Mao Zedong",
+      "b": "Henry Kissinger",
+      "image": {
+        "file": "File:Kissinger, Ford and Mao, 1975 A7912.jpg"
+      },
+      "line": "In 1975, Mao Zedong shook hands with Henry Kissinger in Beijing, as President Gerald Ford looked on.",
+      "a_face": 0,
+      "b_face": 2
+    },
+    {
+      "a": "Henry Kissinger",
+      "b": "Barack Obama",
+      "image": {
+        "file": "File:P051909PS-0435 (3582763391).jpg"
+      },
+      "line": "In 2009, Kissinger came to the Oval Office to advise President Barack Obama on nuclear weapons.",
+      "a_face": 7,
+      "b_face": 5
+    },
+    {
+      "a": "Barack Obama",
+      "b": "Mike Myers",
+      "image": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/052112_Mike_Myers.webm/1280px-seek%3D148-052112_Mike_Myers.webm.jpg",
+        "credit": "The White House (video frame)",
+        "license": "Public domain",
+        "source": "https://commons.wikimedia.org/wiki/File:052112_Mike_Myers.webm",
+        "free": true
+      },
+      "a_face": [
+        1190,
+        325,
+        85,
+        100
+      ],
+      "b_face": [
+        300,
+        82,
+        92,
+        100
+      ],
+      "line": "In 2012, Mike Myers performed for Obama at a White House concert honoring Burt Bacharach."
+    },
+    {
+      "a": "Mike Myers",
+      "b": "Shrek",
+      "image": {
+        "pair": [
+          {
+            "file": "File:Mike Myers 2017 (37220071326) (cropped).jpg"
+          },
+          {
+            "url": "http://www.impawards.com/2001/posters/shrek_ver3_xlg.jpg",
+            "credit": "DreamWorks Pictures (via IMP Awards)",
+            "license": "Fair use (commentary)",
+            "source": "http://www.impawards.com/2001/shrek_ver3.html"
+          }
+        ]
+      },
+      "a_face": 1,
+      "line": "And since 2001, Mike Myers has been the voice of Shrek.",
+      "b_face": 3
+    }
+  ]
+}
