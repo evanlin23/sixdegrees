@@ -23,7 +23,10 @@ def kit(slug: str) -> str:
     fj = json.loads((d / "work" / "faces.json").read_text())
     ppl = people_order(spec)
     a, b = _short(spec["from"]), _short(spec["to"])
-    title = spec.get("title") or f"How is {a} connected to {b}?"
+    # Title is always the plain question with the names people know (the reference channel's hits used bare
+    # "A to B" titles; a question adds the curiosity gap). An episode can force one with "title_override".
+    lab = lambda n: spec.get("people", {}).get(n, {}).get("label") or _short(n)
+    title = spec.get("title_override") or f"How is {lab(spec['from'])} connected to {lab(spec['to'])}?"
     if len(title) > 95:
         title = title[:92] + "..."
     chain = " → ".join(_short(p) for p in ppl)
@@ -66,9 +69,9 @@ def kit(slug: str) -> str:
     out = d / "out"
     out.mkdir(exist_ok=True)
     mp4 = out / f"{slug}.mp4"
-    if mp4.exists():  # thumbnail: the hook frame (both faces, the "?" and Pin)
+    if mp4.exists() and not (out / "thumb.jpg").exists():  # the renderer writes thumb.jpg; fallback: a frame
         import subprocess
-        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-ss", "1.2", "-i", str(mp4), "-frames:v", "1",
+        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-ss", "0.9", "-i", str(mp4), "-frames:v", "1",
                         "-q:v", "3", str(out / "thumb.jpg")], check=True)
     (out / "metadata.json").write_text(json.dumps(meta, indent=1, ensure_ascii=False))
     md = "\n".join([
