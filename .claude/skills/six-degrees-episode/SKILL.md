@@ -138,7 +138,11 @@ face, or a stranger in the background.
 ```bash
 python -m sixdeg render <slug> && python -m sixdeg qa <slug>
 ```
-QA must print `"pass": true`. Open `out/contact.jpg` and check that tags sit on the right heads and nothing is clipped.
+Narration is always Gemini's **Achird** voice; there is no other voice. Your session has no Gemini key, so the
+local render has silent narration and QA fails with exactly one line, "narration is not the Achird voice".
+That one is expected locally; every other check must pass. Open `out/contact.jpg` and check that tags sit on the
+right heads and nothing is clipped. The PR's `render` check on GitHub voices it with Achird and must pass fully.
+If it fails only because the daily Gemini quota ran out, say so in the PR; the operator re-runs it the next day.
 
 ## 6. Hand off with a PR (never push to main)
 1. Set the pair to `"done"` (with `"slug"`) or `"skipped"` (with `"reason"`) in `data/pairs.json`.
