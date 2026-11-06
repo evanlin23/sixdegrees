@@ -1,5 +1,5 @@
 {
- "title": "How is the Queen connected to Freddy Fazbear?",
+ "title": "How is Queen Elizabeth II connected to Freddy Fazbear?",
  "description": "Five real pictures connect Queen Elizabeth II to Freddy Fazbear from Five Nights at Freddy's.\n\nElizabeth II → Barack Obama → Jimmy Kimmel → Conan O'Brien → Josh Hutcherson → Freddy Fazbear\n\nGive me two names in the comments and I'll find the photos that connect them.\n\nPhoto credits:\nPhoto 1 by Pete Souza, Public domain: https://commons.wikimedia.org/wiki/File:Barack_Obama_Michelle_Obama_Queen_Elizabeth_II_Buckingham_Palace_London.jpg\nPhoto 2 by Pete Souza, Public domain: https://commons.wikimedia.org/wiki/File:President_Barack_Obama_talks_with_Jimmy_Kimmel_during_a_Jimmy_Kimmel_Live!_video_taping_in_Los_Angeles,_California,_March_12,_2015._(Official_White_House_Photo_by_Pete_Souza).jpg\nPhoto 3 by Raph_PH, CC BY 2.0: https://commons.wikimedia.org/wiki/File:WillFerellGreekLA061018-21.jpg\nPhoto 4 by Gage Skidmore from Peoria, AZ, United States of America, CC BY-SA 2.0: https://commons.wikimedia.org/wiki/File:SDCC_2015_-_Conan_O%27Brien,_Francis_Lawrence,_Josh_Hutcherson,_Jennifer_Lawrence_%26_Liam_Hemsworth_(19035435903).jpg\nPhoto 5 by Universal Pictures / Blumhouse (film still), Fair use (commentary): https://freddy-fazbears-pizza.fandom.com/wiki/File:FNaF_Movie_-_Freddy_behind_Mike.png\n\n#elizabethii #freddyfazbear #sixdegrees #history #didyouknow #shorts",
  "tags": [
   "Elizabeth II",
@@ -19,5 +19,8 @@
  "madeForKids": false,
  "containsSyntheticMedia": false,
  "file": "elizabeth-ii-to-freddy-fazbear.mp4",
+ "kind": "request",
+ "voice": "gemini",
+ "outro": true,
  "slug": "elizabeth-ii-to-freddy-fazbear"
 }
