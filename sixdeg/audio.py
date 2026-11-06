@@ -88,6 +88,7 @@ PHONEMES = {
     "Dmitry": "dəmˈiːtɹi",
     "Sadat": "sɑːdˈɑːt",
     "FUBAR": "fˈuːbɑːɹ",
+    "Qin Shi Huang": "tʃˈɪn ʃˈɜː hwˈɑːŋ",
     "LaBeouf": "ləbˈʌf",
     "Shia": "ʃˈaɪə",
     "Filippino": "fˌɪlɪpˈiːnoʊ",
