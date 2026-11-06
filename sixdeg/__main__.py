@@ -24,10 +24,12 @@ def render_any(slug):
     """Render in the channel style from data/style.json (pixel by default; "classic" = the original look)."""
     from .common import DATA
     style = json.loads((DATA / "style.json").read_text()).get("style", "pixel") if (DATA / "style.json").exists() else "pixel"
-    try:  # English name pronunciations from Wikipedia, used by the narrator
+    try:  # English name pronunciations from Wikipedia: only the Kokoro voice reads them (Achird doesn't)
+        from .audio import voice_config
         from .episode import load, people_order
         from .pronounce import update
-        print("pronunciations:", update(people_order(load(slug)[1])))
+        if voice_config().get("engine", "kokoro") == "kokoro":
+            print("pronunciations:", update(people_order(load(slug)[1])))
     except Exception as e:
         print("pronunciations: skipped", e)
     if style == "pixel":
