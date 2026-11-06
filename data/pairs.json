@@ -227,11 +227,12 @@
  {
   "from": "Charlemagne",
   "to": "Rin Itoshi",
-  "status": "todo",
+  "status": "skipped",
   "requested_by": "@Zorito-y4v",
   "comment": "Can do Carlo magno to rin itoshi pls",
   "likes": 0,
-  "source": "comment on 'leonardo da vinci to naruto' (old channel)"
+  "source": "comment on 'leonardo da vinci to naruto' (old channel)",
+  "reason": "No honest picture chain found. Rin's voice actors (Koki Uchiyama, Matt Shipman) have no findable photos with well-known people; no photo of Nicolo Barella meeting the Blue Lock authors exists online; the only real creator photo (writer Muneyuki Kaneshiro, face masked, with Hidetoshi Nakata, June 2026) dead-ends because no verifiable photo links Nakata to anyone on the Wikimedia graph (popes, presidents)."
  },
  {
   "from": "Christopher Columbus",
