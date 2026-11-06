@@ -32,12 +32,134 @@ RESPELL = {
     "IShowSpeed": "I Show Speed",
     "MrBeast": "Mister Beast",
     "Jae-in": "Jay In",
-    "FUBAR": "Foo-bar",
-    "Sadat": "Sah-dot",
-    "Neymar": "Nay-mar",
-    "Ronaldinho": "Ronal-deen-yo",
-    "Hendaye": "On-dye",
+    "Mr. T": "Mister T",
+    "F. Kennedy": "F Kennedy",
 }
+
+# How names get pronounced (Kokoro's espeak front end guesses names by English spelling rules, so it says
+# MON-roe, PYOO-tin, PEN-tag-un):
+#   1. PHONEMES: exact IPA we set by hand (wins over everything). Use Wikipedia's pronunciation as the source.
+#   1b. data/pronunciations.json: English IPA pulled automatically from each person's Wikipedia article
+#       (sixdeg/pronounce.py, run before every render).
+#   2. The CMU Pronouncing Dictionary (134k words, many names) for every capitalized word it knows.
+#   3. espeak's guess, only for ordinary lowercase words.
+# QA fails when a capitalized word is in neither PHONEMES nor CMU, so every unusual name gets a human-set IPA.
+# Keys are matched as whole words, case-sensitive; multi-word keys are fine.
+PHONEMES = {
+    "Kim Jong Un": "kˌɪm dʒʌŋˈʊn",  # "Jong Un" as one word, or Kokoro pauses before "Un"
+    "Kim Jong-un": "kˌɪm dʒʌŋˈʊn",
+    "Khrushchev": "kɹuːʃtʃˈɔf",
+    "Rivaldo": "ɹᵻvˈɑːldoʊ",
+    "Ronaldinho": "ɹˌɑːnəldˈiːnjoʊ",
+    "Neymar": "neɪmˈɑːɹ",
+    "Bolsonaro": "bˌoʊlsənˈɑːɹoʊ",
+    "Jair": "ʒɑːˈiːɹ",
+    "Tereshkova": "tˌɛɹɛʃkˈoʊvə",
+    "Valentina": "vˌæləntˈiːnə",
+    "Grug": "ɡɹˈʌɡ",
+    "Hendaye": "ɑːndˈaɪ",
+    "Yosuke": "jˈoʊskeɪ",
+    "Matsuoka": "mˌɑːtsuːˈoʊkə",
+    "Zedong": "dzˌʌdˈʊŋ",
+    "Mao Zedong": "mˈaʊ dzˌʌdˈʊŋ",
+    "Medvedev": "mɛdvˈɛdɛf",
+    "Adolf": "ˈædɑːlf",
+    "Barack": "bəɹˈɑːk",
+    "JD": "dʒˌeɪdˈiː",
+    "Croods": "kɹˈuːdz",
+    "WrestleMania": "ɹˌɛsəlmˈeɪniə",
+    "Dmitry": "dəmˈiːtɹi",
+    "Sadat": "sɑːdˈɑːt",
+    "FUBAR": "fˈuːbɑːɹ",
+    # CMU entries that read worse than espeak
+    "de Gaulle": "də ɡˈɔːl",
+    "Hogan": "hˈoʊɡən",
+    "Sistine": "sˈɪstiːn",
+    "Marie": "mɚɹˈiː",
+    "Korea": "kəɹˈiːə",
+}
+
+_ARPA = {"AA": "ɑː", "AE": "æ", "AH": "ʌ", "AO": "ɔː", "AW": "aʊ", "AY": "aɪ", "EH": "ɛ", "ER": "ɜː", "EY": "eɪ",
+         "IH": "ɪ", "IY": "iː", "OW": "oʊ", "OY": "ɔɪ", "UH": "ʊ", "UW": "uː", "B": "b", "CH": "tʃ", "D": "d",
+         "DH": "ð", "F": "f", "G": "ɡ", "HH": "h", "JH": "dʒ", "K": "k", "L": "l", "M": "m", "N": "n", "NG": "ŋ",
+         "P": "p", "R": "ɹ", "S": "s", "SH": "ʃ", "T": "t", "TH": "θ", "V": "v", "W": "w", "Y": "j", "Z": "z",
+         "ZH": "ʒ"}
+_cmu = None
+
+
+def cmu_ipa(word: str) -> str | None:
+    """CMU dictionary pronunciation of `word` in Kokoro's IPA (stress mark before the vowel), or None."""
+    global _cmu
+    if _cmu is None:
+        import cmudict
+        _cmu = cmudict.dict()
+    prons = _cmu.get(word.lower())
+    if not prons:
+        return None
+    out = []
+    for ph in prons[0]:
+        base, st = ph.rstrip("012"), ph[len(ph.rstrip("012")):]
+        if base == "AH" and st == "0":
+            out.append("ə")
+        elif base == "ER" and st == "0":
+            out.append("ɚ")
+        elif base == "IY" and st == "0":
+            out.append("i")
+        else:
+            out.append(("ˈ" if st == "1" else "") + _ARPA[base])  # CMU's secondary stresses sound robotic
+    return "".join(out)
+
+
+_NAME = re.compile(r"\b[A-Z][a-zA-Z]+(?:-[A-Za-z]+)*\b")
+_COMMON = {"I", "A", "In", "And", "The", "On", "At", "By", "As", "Then", "But", "So", "That", "This", "His", "Her"}
+
+
+def name_ipa(text: str) -> dict[str, str]:
+    """Every capitalized word/phrase in `text` we have a pronunciation for -> IPA."""
+    from .pronounce import load
+    found = {}
+    for k, ipa in {**load(), **PHONEMES}.items():
+        if re.search(rf"\b{re.escape(k)}\b", text):
+            found[k] = ipa
+    covered = " ".join(found)
+    for w in set(_NAME.findall(text)):
+        if w in _COMMON or w in covered.split():
+            continue
+        ipa = cmu_ipa(w)
+        if ipa:
+            found[w] = ipa
+    return found
+
+
+def unknown_names(text: str) -> list[str]:
+    """Capitalized words with no PHONEMES or CMU entry: their pronunciation would be espeak's guess."""
+    from .pronounce import load
+    known = " ".join(list(PHONEMES) + list(load()) + list(RESPELL.values())).split()
+    return sorted({w for w in _NAME.findall(speakable(text)) if w not in _COMMON and w not in known
+                   and not cmu_ipa(w)})
+
+
+def phonemes(text: str) -> str:
+    """Phonemize `text` for Kokoro with names taken from PHONEMES, then CMU, then espeak."""
+    t = _tts().tokenizer
+    todo = dict(sorted(name_ipa(text).items(), key=lambda kv: -len(kv[0])))
+    for _ in range(3):
+        sub, marks = text, {}
+        for i, (k, ipa) in enumerate(todo.items()):
+            tok = "Zqx" + "".join("bcdfghjklmnprstvw"[int(c)] for c in f"{i:02d}")
+            new = re.sub(rf"\b{re.escape(k)}\b", tok, sub)
+            if new != sub:
+                sub = new
+                marks[k] = (t.phonemize(tok, "en-us").strip(" .,?!"), ipa)
+        ph = t.phonemize(sub, "en-us")
+        missing = [k for k, (m, _) in marks.items() if m not in ph]
+        if not missing:
+            for m, ipa in marks.values():
+                ph = ph.replace(m, ipa)
+            return ph
+        for k in missing:
+            todo.pop(k)
+    return t.phonemize(text, "en-us")
 
 
 def _tts():
@@ -110,7 +232,7 @@ def _synth(text: str, cfg: dict) -> np.ndarray:
         v = cfg.get("voice", "am_michael")
         if isinstance(v, dict):  # blend, e.g. {"am_michael": 0.7, "am_onyx": 0.3}
             v = sum(k.get_voice_style(name) * w for name, w in v.items())
-        a, sr = k.create(text, voice=v, speed=cfg.get("speed", 1.12), lang="en-us")
+        a, sr = k.create(phonemes(text), voice=v, speed=cfg.get("speed", 1.12), lang="en-us", is_phonemes=True)
         return _resample(np.asarray(a), sr)
     if eng == "pocket":
         global _pocket
@@ -167,7 +289,7 @@ def say(text: str, voice: dict | None = None) -> tuple[np.ndarray, list[tuple[st
     """Synthesize `text`. Returns (mono float32 @ SR, word timings [(word, t0, t1)])."""
     import json
     cfg = voice_config(voice)
-    key = hashlib.sha1(f"{json.dumps(cfg, sort_keys=True)}|{speakable(text)}".encode()).hexdigest()  # respellings change the audio
+    key = hashlib.sha1(f"{json.dumps(cfg, sort_keys=True)}|{json.dumps(PHONEMES, sort_keys=True)}|{speakable(text)}".encode()).hexdigest()  # respellings change the audio
     p = CACHE / "tts" / f"{key}.wav"
     if p.exists():
         a, _ = sf.read(p, dtype="float32")
