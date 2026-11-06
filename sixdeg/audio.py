@@ -68,7 +68,6 @@ PHONEMES = {
     "Comicon": "kˈɑːmɪk kˌɑːn",
     "Imahara": "ˌiːməhˈɑːɹə",
     "Luffy": "lˈʌfi",
-    "Macron": "mækɹˈɒn",
     "MythBusters": "mˈɪθbʌstɚz",
     "MythBuster": "mˈɪθbʌstɚ",
     "Haberkorn": "hˈeɪbɚkɔːɹn",
