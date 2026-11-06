@@ -1,0 +1,103 @@
+{
+  "from": "Joseph Stalin",
+  "to": "Steve",
+  "title": "How is Joseph Stalin connected to Steve from Minecraft?",
+  "description": "Five real pictures connect Joseph Stalin to Minecraft's Steve, through Churchill, the Queen, Angelina Jolie and Jack Black.",
+  "hook": "How is Joseph Stalin connected to Steve from Minecraft?",
+  "people": {
+    "Joseph Stalin": {
+      "label": "Joseph Stalin"
+    },
+    "Winston Churchill": {
+      "label": "Winston Churchill"
+    },
+    "Elizabeth II": {
+      "label": "Queen Elizabeth II"
+    },
+    "Angelina Jolie": {
+      "label": "Angelina Jolie"
+    },
+    "Jack Black": {
+      "label": "Jack Black"
+    },
+    "Steve": {
+      "label": "Steve"
+    }
+  },
+  "links": [
+    {
+      "a": "Joseph Stalin",
+      "b": "Winston Churchill",
+      "image": {
+        "file": "File:Yalta summit 1945 with Churchill, Roosevelt, Stalin.jpg"
+      },
+      "line": "In 1945, Joseph Stalin sat beside Winston Churchill at Yalta to plan the end of World War Two.",
+      "a_face": 9,
+      "b_face": 4
+    },
+    {
+      "a": "Winston Churchill",
+      "b": "Elizabeth II",
+      "image": {
+        "file": "File:Churchill queen Elizabeth 1953.jpg"
+      },
+      "line": "In 1953, Prime Minister Churchill greeted the new Queen, Elizabeth the Second, and her children.",
+      "a_face": 3,
+      "b_face": 2
+    },
+    {
+      "a": "Elizabeth II",
+      "b": "Angelina Jolie",
+      "image": {
+        "url": "https://cdn.abcotvs.com/dip/images/345818_101014-ap-queen-angelina-jolie-06-img.jpg",
+        "credit": "AP Photo/Anthony Devlin, pool",
+        "license": "Fair use (commentary)",
+        "source": "https://abc7.com/post/photos-queen-elizabeth-honors-angelina-jolie/345841/"
+      },
+      "line": "In 2014, the Queen made Angelina Jolie an honorary dame at Buckingham Palace.",
+      "a_face": 0,
+      "b_face": 1
+    },
+    {
+      "a": "Angelina Jolie",
+      "b": "Jack Black",
+      "image": {
+        "url": "https://img.festival-cannes.com/eyJidWNrZXQiOiJtZWRpYSIsImtleSI6InVwbG9hZHNcLzIwMTdcLzAzXC9pbWFnZS05MTk3LmpwZyIsImVkaXRzIjp7InJlc2l6ZSI6eyJ3aWR0aCI6MTYwMCwiZml0IjoiY292ZXIifX19",
+        "credit": "AFP / Festival de Cannes",
+        "license": "Fair use (commentary)",
+        "source": "https://www.festival-cannes.com/en/medialibrary/jack-black-angelina-jolie-and-dustin-hoffman-photocall-of-the-film-film-kung-fu-panda/"
+      },
+      "line": "In 2008, Jolie and Jack Black brought Kung Fu Panda to the Cannes Film Festival.",
+      "a_face": 9,
+      "b_face": 4
+    },
+    {
+      "a": "Jack Black",
+      "b": "Steve",
+      "image": {
+        "pair": [
+          {
+            "url": "https://minecraft.wiki/images/AMCM_Steve_glare.jpeg",
+            "credit": "Warner Bros. Pictures / Legendary (A Minecraft Movie, via Minecraft Wiki)",
+            "license": "Fair use (commentary)",
+            "source": "https://minecraft.wiki/w/File:AMCM_Steve_glare.jpeg"
+          },
+          {
+            "url": "https://minecraft.wiki/images/Steve_%28classic%29_JE6.png",
+            "credit": "Mojang Studios (via Minecraft Wiki)",
+            "license": "Fair use (commentary)",
+            "source": "https://minecraft.wiki/w/File:Steve_(classic)_JE6.png"
+          }
+        ]
+      },
+      "line": "And in 2025, Jack Black became Steve in A Minecraft Movie.",
+      "a_face": 0,
+      "b_face": [
+        2010,
+        60,
+        340,
+        330
+      ]
+    }
+  ]
+}
