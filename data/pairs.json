@@ -566,9 +566,10 @@
  {
   "from": "Leonardo da Vinci",
   "to": "Luigi",
-  "status": "todo",
+  "status": "done",
   "source": "viral formula (Nov 2026 research)",
-  "hint": "Charlie Day voices Luigi"
+  "hint": "Charlie Day voices Luigi",
+  "slug": "leonardo-da-vinci-to-luigi"
  },
  {
   "from": "Fidel Castro",
