@@ -58,11 +58,12 @@
  {
   "from": "Kim Jong Un",
   "to": "King Henry VIII",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@y4p_Genius_Severus",
   "comment": "Connect Kim Jong in to King Henry Viii of Britain",
   "likes": 1,
-  "source": "comment on 'adolf h to luffy' (old channel)"
+  "source": "comment on 'adolf h to luffy' (old channel)",
+  "slug": "kim-jong-un-to-henry-viii"
  },
  {
   "from": "Nikola Tesla",
