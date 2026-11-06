@@ -535,7 +535,7 @@ def render(slug: str, log=print) -> Path:
             if len(centers) == 2 and kk > 0.3:                          # the string snaps between them
                 (ax, ay), (bx, by) = centers[spec["from"]], centers[spec["to"]]
                 g = min(1.0, (kk - 0.3) / 0.12)
-                p0, p1 = (ax + 210, ay + 110), (bx + 210, by - 190)
+                p0, p1 = (ax + 210, ay + 110), (bx + 265, by - 150)    # Buh clear of A's name tag
                 pe = (p0[0] + (p1[0] - p0[0]) * g, p0[1] + (p1[1] - p0[1]) * g)
                 dr = ImageDraw.Draw(base)
                 dr.line([p0, pe], fill=INK, width=14); dr.line([p0, pe], fill=RED, width=8)
@@ -564,6 +564,21 @@ def render(slug: str, log=print) -> Path:
                 return draw[sg["kind"]](sg, tt)
         raise AssertionError
 
+    # thumbnail: the settled opening (both faces, names, Buh) without captions, plus a big yellow "?"
+    try:
+        hs = segs[0]
+        g = globals()
+        saved = g["CX"]
+        g["CX"] = W / 2                      # no feed buttons over a thumbnail: centre it properly
+        try:
+            th = frame_hook({**hs, "cap": _NoCap()}, hs["t0"] + 1.1)
+        finally:
+            g["CX"] = saved
+        q = pixel_text("?", 260, fill=YELLOW)
+        th.alpha_composite(q, (int(W / 2 - q.width / 2), int(1560 - q.height / 2)))
+        th.convert("RGB").save(out_dir / "thumb.jpg", quality=92)
+    except Exception as e:  # noqa: BLE001 - kit falls back to a video frame
+        log(f"thumbnail skipped: {e}")
     out = out_dir / f"{slug}.mp4"
     nframes = int(total * FPS)
     cmd = ["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}",
