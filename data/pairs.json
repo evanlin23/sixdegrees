@@ -531,9 +531,10 @@
  {
   "from": "Julius Caesar",
   "to": "Sonic the Hedgehog",
-  "status": "todo",
+  "status": "done",
   "source": "viral formula (Nov 2026 research)",
-  "hint": "voice actor Ben Schwartz / Jim Carrey"
+  "hint": "voice actor Ben Schwartz / Jim Carrey",
+  "slug": "julius-caesar-to-sonic-the-hedgehog"
  },
  {
   "from": "Vladimir Lenin",
