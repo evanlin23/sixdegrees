@@ -59,8 +59,7 @@ PHONEMES = {
     "Valentina": "vˌæləntˈiːnə",
     "Grug": "ɡɹˈʌɡ",
     "Fazbear": "fˈæzbɛɹ",  # Wikipedia pull gives the "FNAF" acronym for this one
-    "Emmanuel Macron": "ɪmˈænjuəl məkɹˈɒn",
-    "Macron": "məkɹˈɒn",
+    "Emmanuel Macron": "ɪmˈænjuəl mækɹˈɔːn",
     "Lamine Yamal": "ləmˈiːn jəmˈɑːl",
     "Yamal": "jəmˈɑːl",
     "Pedro Sánchez": "pˈɛdɹoʊ sˈɑːntʃɛz",
