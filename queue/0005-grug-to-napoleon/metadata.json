@@ -1,5 +1,5 @@
 {
- "title": "A caveman to an emperor in six links",
+ "title": "How is Grug connected to Napoleon?",
  "description": "Grug from The Croods connects to Napoleon through Nicolas Cage, Elvis, two presidents and France's line of rulers.\n\nGrug → Nicolas Cage → Lisa Marie Presley → Elvis Presley → Richard Nixon → Charles de Gaulle → Napoleon\n\nGive me two names in the comments and I'll find the photos that connect them.\n\nPhoto credits:\nPhoto 1 by DreamWorks Animation (via Entertainment Weekly), Georges Biard, Fair use (commentary) / CC BY-SA 3.0: https://www.filmofilia.com/the-croods-new-images-114199/ + https://commons.wikimedia.org/wiki/File:Nicolas_Cage_Deauville_2013.jpg\nPhoto 2 by Mark Wilson/Getty Images, Fair use (commentary): https://www.cbsnews.com/pictures/nicolas-cage/\nPhoto 3 by United Press International (UPI), Public domain: https://commons.wikimedia.org/wiki/File:Elvis,_Priscilla_and_Lisa_Marie.jpg\nPhoto 4, Public domain: https://commons.wikimedia.org/wiki/File:Elvis-nixon.jpg\nPhoto 5 by or not provided, Public domain: https://commons.wikimedia.org/wiki/File:President_Nixon_and_staff_members_with_President_Charles_DeGaulle_of_France_-_NARA_-_194610.jpg\nPhoto 6, Public domain: https://commons.wikimedia.org/wiki/File:De_Gaulle-OWI_(cropped)_(c)(2).jpg + https://commons.wikimedia.org/wiki/File:Portrait_officiel_Vincent_Auriol.jpg + https://commons.wikimedia.org/wiki/File:Raymond_Poincar%C3%A9_officiel_(cropped).jpg + https://commons.wikimedia.org/wiki/File:Adolphe_Thiers_Nadar_2.JPG + https://commons.wikimedia.org/wiki/File:Alexandre_Cabanel_002.jpg + https://commons.wikimedia.org/wiki/File:1841_portrait_painting_of_Louis_Philippe_I_(King_of_the_French)_by_Winterhalter.jpg + https://commons.wikimedia.org/wiki/File:G%C3%A9rard_-_Louis_XVIII_of_France_in_Coronation_Robes.jpg + https://commons.wikimedia.org/wiki/File:Jacques-Louis_David_-_The_Emperor_Napoleon_in_His_Study_at_the_Tuileries_-_Google_Art_Project.jpg\n\n#grug #napoleon #sixdegrees #history #didyouknow #shorts",
  "tags": [
   "Grug",
@@ -20,5 +20,8 @@
  "madeForKids": false,
  "containsSyntheticMedia": false,
  "file": "grug-to-napoleon.mp4",
+ "kind": "request",
+ "voice": "gemini",
+ "outro": false,
  "slug": "grug-to-napoleon"
 }
