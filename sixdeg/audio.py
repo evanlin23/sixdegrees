@@ -80,6 +80,7 @@ PHONEMES = {
     "Raphael": "ɹˈæfiəl",
     "Disputa": "dˌɪspuːtˈɑː",
     "Macron": "mækɹˈɔːn",
+    "Filippino": "fˌɪlɪpˈiːnoʊ",
     # CMU entries that read worse than espeak
     "de Gaulle": "də ɡˈɔːl",
     "Hogan": "hˈoʊɡən",
