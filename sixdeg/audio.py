@@ -33,7 +33,6 @@ RESPELL = {
     "MrBeast": "Mister Beast",
     "Jae-in": "Jay In",
     "Mr. T": "Mister T",
-    "F. Kennedy": "F Kennedy",
     "Jung-jae": "Joongjay",
 }
 
@@ -227,9 +226,27 @@ def say_year(y: int) -> str:
     return _two(hi) + " " + _two(lo)
 
 
+_ROMAN = {"II": "the Second", "III": "the Third", "IV": "the Fourth", "V": "the Fifth", "VI": "the Sixth",
+          "VII": "the Seventh", "VIII": "the Eighth", "IX": "the Ninth", "X": "the Tenth", "XI": "the Eleventh",
+          "XII": "the Twelfth", "XIII": "the Thirteenth", "XIV": "the Fourteenth", "XV": "the Fifteenth",
+          "XVI": "the Sixteenth"}
+
+
 def speakable(text: str) -> str:
     for k, v in RESPELL.items():
         text = text.replace(k, v)
+    # A period after an initial or title reads as a full stop, so the voice pauses mid-name
+    # ("George W... Bush", "Franklin D... Roosevelt"): drop it when the name continues.
+    text = re.sub(r"\b(Mr|Mrs|Dr|St|Jr|Sr)\.(?=\s)", lambda m: {"Mr": "Mister", "Mrs": "Missus", "Dr": "Doctor",
+                  "St": "Saint", "Jr": "Junior", "Sr": "Senior"}[m.group(1)], text)
+    text = re.sub(r"\b([A-Z])\.(?=\s*[A-Z])(?!\s*(?:In|The|And|A|An|But|He|She|They|It|That|This|Then|After|"
+                  r"Before|Later|When|Years|Two|Three|Four|Five|Six|Seven|Eight|Nine|Ten)\b)", r"\1", text)
+    # Regnal numbers after a name: "Henry VIII" -> "Henry the Eighth" (I alone is left alone: it's a pronoun)
+    text = re.sub(r"\b([A-Z][a-z]+)\s+(XVI|XV|XIV|XIII|XII|XI|IX|VIII|VII|VI|IV|III|II)\b",
+                  lambda m: f"{m.group(1)} {_ROMAN[m.group(2)]}", text)
+    text = re.sub(r"\b(Henry|Charles|Louis|George|Edward|William|Pius|Leo|Gregory|Philip|Ferdinand|Alfonso|Frederick|"
+                  r"Clement|Boniface|Innocent|Urban|Paul|John|Peter|Ivan)\s+(V|X)\b",
+                  lambda m: f"{m.group(1)} {_ROMAN[m.group(2)]}", text)
     # years: Kokoro reads "1973" as "nineteen hundred seventy-three"
     text = re.sub(r"\b(1[0-9]{3}|20[0-9]{2})\b(?![,.]?\d)", lambda m: say_year(int(m.group(1))), text)
     return text
