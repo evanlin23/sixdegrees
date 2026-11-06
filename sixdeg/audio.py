@@ -25,7 +25,6 @@ _kokoro = None
 
 # Names TTS tends to mangle -> phonetic respelling. Extend as episodes need.
 RESPELL = {
-    "Grogu": "Grow-goo",
     "Wernher": "Vairner",
     "Göring": "Gerring",
     "Goebbels": "Gerbels",
@@ -47,6 +46,8 @@ RESPELL = {
 # QA fails when a capitalized word is in neither PHONEMES nor CMU, so every unusual name gets a human-set IPA.
 # Keys are matched as whole words, case-sensitive; multi-word keys are fine.
 PHONEMES = {
+    "Mandalorian": "mˌændəlˈɔːɹiən",
+    "Grogu": "ɡɹˈoʊɡuː",
     "Kim Jong Un": "kˌɪm dʒʌŋˈʊn",  # "Jong Un" as one word, or Kokoro pauses before "Un"
     "Kim Jong-un": "kˌɪm dʒʌŋˈʊn",
     "Khrushchev": "kɹuːʃtʃˈɔf",
