@@ -56,7 +56,10 @@ mass-produced, template-only videos. It is judged per channel. So:
 - Narrator: Gemini TTS voice **Achird** (creator's pick), the only voice the channel uses. Upbeat, curious,
   fast, American. Configured in `data/voice.json`; details in `docs/RUNBOOK.md`.
 - Opening: both faces with names on frame 0, the question "How is A connected to B?" spoken immediately, no
-  count ("N pictures apart") and no flash-forward.
+  count ("N pictures apart") and no flash-forward. The two faces are **big, full-width photos** (A on top, B
+  below, the spoken question on the seam between them), not small cards: the first two uploads in the card
+  layout kept only 22–25% of viewers past the first second, so the first frame has to read as "these two?!" at
+  feed size. The thumbnail is the same frame with a "?" on the seam.
 - Everything important stays inside the Shorts safe zone (clear of the top icons, the right-hand buttons and the
   bottom title/channel overlay); the chain bar sits at the top.
 - Pixel-arcade style with Buh, the pushpin detective; upbeat Mixkit music only; voice above music and SFX.

@@ -169,6 +169,7 @@ class Ctx:
         self.imgs = [grade(cv2.imread(str(self.work / l["image"]))) for l in self.fj["links"]]
         # face thumbnails: prefer the person's Wikipedia portrait (big, frontal); fall back to a link photo
         self.thumbs = {}
+        self.hero_src = {}   # name -> (image, face box): the hook crops big rectangular faces from these
         from .faces import detect
         for name in self.people:
             refs = self.fj["people"][name]["refs"]
@@ -182,6 +183,7 @@ class Ctx:
                 big = max(fs, key=lambda f: f["box"][2] * f["box"][3])
                 if big["box"][3] >= 60:
                     self.thumbs[name] = face_crop(im, big["box"], 220, pad=0.55)
+                    self.hero_src[name] = (im, big["box"])
         for i, l in enumerate(self.fj["links"]):
             if l.get("lineage"):   # lineage boxes belong to individual portraits, not to links[i]["image"]
                 continue
@@ -190,11 +192,13 @@ class Ctx:
                 bx = l[role]["box"]
                 if name not in self.thumbs and bx:
                     self.thumbs[name] = face_crop(self.imgs[i], bx, 220)
+                    self.hero_src[name] = (self.imgs[i], bx)
         for name in self.people:
             if name not in self.thumbs:  # no usable portrait and never boxed in a photo
                 refs = self.fj["people"][name]["refs"]
                 im = cv2.imread(str(self.work / "refs" / refs[0])) if refs else np.full((300, 300, 3), 60, np.uint8)
                 self.thumbs[name] = face_crop(im, None, 220)
+                self.hero_src[name] = (im, None)
         self.labels = {n: self.spec.get("people", {}).get(n, {}).get("label", short_name(n)) for n in self.people}
 
 
