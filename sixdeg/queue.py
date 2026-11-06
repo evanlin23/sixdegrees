@@ -75,17 +75,21 @@ def enqueue(slug: str) -> str:
     meta = json.loads((d / "metadata.json").read_text())
     wt = worktree()
     uploaded = json.loads((wt / "uploaded.json").read_text())
-    if any(u["slug"] == slug for u in uploaded) or any(p.name.split("-", 1)[1] == slug for p in items(wt)):
-        raise SystemExit(f"{slug}: already queued or uploaded")
-    n = max([int(p.name.split("-", 1)[0]) for p in items(wt)] + [u.get("n", 0) for u in uploaded] + [0]) + 1
-    dst = wt / "queue" / f"{n:04d}-{slug}"
-    dst.mkdir(parents=True)
+    if any(u["slug"] == slug for u in uploaded):
+        raise SystemExit(f"{slug}: already uploaded")
+    same = [p for p in items(wt) if p.name.split("-", 1)[1] == slug]
+    if same:                      # re-render of a queued video: replace it in place, keeping its slot
+        dst = same[0]
+    else:
+        n = max([int(p.name.split("-", 1)[0]) for p in items(wt)] + [u.get("n", 0) for u in uploaded] + [0]) + 1
+        dst = wt / "queue" / f"{n:04d}-{slug}"
+        dst.mkdir(parents=True)
     shutil.copy(d / meta["file"], dst / "video.mp4")
     if (d / "thumb.jpg").exists():
         shutil.copy(d / "thumb.jpg", dst / "thumb.jpg")
     meta["slug"] = slug
     (dst / "metadata.json").write_text(json.dumps(meta, indent=1, ensure_ascii=False))
-    _push(f"Queue {slug}")
+    _push(f"{'Re-render' if same else 'Queue'} {slug}")
     return f"queued {dst.name} ({(dst / 'video.mp4').stat().st_size / 1e6:.1f} MB); {len(items(wt))} waiting"
 
 
