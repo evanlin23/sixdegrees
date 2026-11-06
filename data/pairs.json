@@ -480,9 +480,10 @@
  {
   "from": "Adolf Hitler",
   "to": "Kermit the Frog",
-  "status": "todo",
+  "status": "done",
   "source": "viral formula (Nov 2026 research)",
-  "hint": "puppet; Kermit has photos with presidents and celebrities"
+  "hint": "puppet; Kermit has photos with presidents and celebrities",
+  "slug": "adolf-hitler-to-kermit-the-frog"
  },
  {
   "from": "Kim Jong Un",
