@@ -571,8 +571,9 @@
  {
   "from": "Attila the Hun",
   "to": "Squidward",
-  "status": "todo",
+  "status": "done",
   "source": "viral formula (Nov 2026 research)",
-  "hint": "voice actor Rodger Bumpass"
+  "hint": "voice actor Rodger Bumpass",
+  "slug": "attila-to-squidward"
  }
 ]
