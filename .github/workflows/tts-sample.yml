@@ -1,0 +1,28 @@
+name: tts-sample
+on:
+  workflow_dispatch:
+    inputs:
+      slug: {description: "episode to voice", default: "marilyn-monroe-to-vladimir-putin"}
+      models: {description: "space-separated Gemini TTS models", default: "gemini-2.5-flash-preview-tts gemini-2.5-pro-preview-tts"}
+permissions:
+  contents: write
+jobs:
+  sample:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install -q numpy soundfile requests
+      - env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python -c "import sys; sys.argv=['x','${{ inputs.slug }}','samples',*'${{ inputs.models }}'.split()]; import runpy; runpy.run_module('sixdeg.tts_gemini', run_name='__main__')"
+      - name: Push samples to the tts-samples branch
+        run: |
+          git config user.name "sixdegrees-bot"; git config user.email "bot@users.noreply.github.com"
+          mv samples /tmp/samples
+          git checkout --orphan tts-samples
+          git rm -rfq . && rm -rf ./*
+          cp /tmp/samples/* .
+          git add -A && git commit -qm "TTS samples for ${{ inputs.slug }}"
+          git push -f origin tts-samples
