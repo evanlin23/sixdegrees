@@ -20,5 +20,8 @@
  "madeForKids": false,
  "containsSyntheticMedia": false,
  "file": "christopher-columbus-to-baby-yoda.mp4",
+ "kind": "request",
+ "voice": "gemini",
+ "outro": false,
  "slug": "christopher-columbus-to-baby-yoda"
 }
