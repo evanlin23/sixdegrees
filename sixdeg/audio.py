@@ -71,6 +71,15 @@ PHONEMES = {
     "Dmitry": "dəmˈiːtɹi",
     "Sadat": "sɑːdˈɑːt",
     "FUBAR": "fˈuːbɑːɹ",
+    # regnal numbers and Renaissance names (Adam/Zeus to The Rock)
+    "Sixtus IV": "sˈɪkstəs ðə fˈɔːɹθ",
+    "John Paul II": "dʒˈɑːn pˈɔːl ðə sˈɛkənd",
+    "Sixtus": "sˈɪkstəs",
+    "Henry IV": "hˈɛnɹi ðə fˈɔːɹθ",
+    "Louis XIV": "lˈuːi ðə fˈɔːɹtiːnθ",
+    "Raphael": "ɹˈæfiəl",
+    "Disputa": "dˌɪspuːtˈɑː",
+    "Macron": "mækɹˈɔːn",
     # CMU entries that read worse than espeak
     "de Gaulle": "də ɡˈɔːl",
     "Hogan": "hˈoʊɡən",
