@@ -39,6 +39,32 @@ RESPELL = {
     "Hendaye": "On-dye",
 }
 
+# Exact pronunciations (IPA as Kokoro's espeak front end writes it). Used when a respelling can't fix the
+# stress, e.g. Monroe is "mun-ROE" not "MON-roe". Keys are matched as whole words, case-sensitive.
+PHONEMES = {
+    "Monroe": "mənɹˈoʊ",
+    "Putin": "pˈuːtɪn",
+    "Kim Jong Un": "kˈɪm dʒˌʌŋ ˈʊn",
+    "Kim Jong-un": "kˈɪm dʒˌʌŋ ˈʊn",
+    "Khrushchev": "kɹuːʃtʃˈɔf",
+    "Pentagon": "pˈɛntəɡˌɑːn",
+}
+
+
+def phonemes(text: str) -> str:
+    """Phonemize `text` for Kokoro, forcing the PHONEMES pronunciations."""
+    t = _tts().tokenizer
+    marks = {}
+    for i, (k, ipa) in enumerate(sorted(PHONEMES.items(), key=lambda kv: -len(kv[0]))):
+        tok = f"Zqx{'abcdefghijklmnop'[i]}"
+        if re.search(rf"\b{re.escape(k)}\b", text):
+            text = re.sub(rf"\b{re.escape(k)}\b", tok, text)
+            marks[t.phonemize(tok, "en-us").strip(" .,")] = ipa
+    ph = t.phonemize(text, "en-us")
+    for m, ipa in marks.items():
+        ph = ph.replace(m, ipa)
+    return ph
+
 
 def _tts():
     global _kokoro
@@ -110,7 +136,7 @@ def _synth(text: str, cfg: dict) -> np.ndarray:
         v = cfg.get("voice", "am_michael")
         if isinstance(v, dict):  # blend, e.g. {"am_michael": 0.7, "am_onyx": 0.3}
             v = sum(k.get_voice_style(name) * w for name, w in v.items())
-        a, sr = k.create(text, voice=v, speed=cfg.get("speed", 1.12), lang="en-us")
+        a, sr = k.create(phonemes(text), voice=v, speed=cfg.get("speed", 1.12), lang="en-us", is_phonemes=True)
         return _resample(np.asarray(a), sr)
     if eng == "pocket":
         global _pocket
@@ -167,7 +193,7 @@ def say(text: str, voice: dict | None = None) -> tuple[np.ndarray, list[tuple[st
     """Synthesize `text`. Returns (mono float32 @ SR, word timings [(word, t0, t1)])."""
     import json
     cfg = voice_config(voice)
-    key = hashlib.sha1(f"{json.dumps(cfg, sort_keys=True)}|{speakable(text)}".encode()).hexdigest()  # respellings change the audio
+    key = hashlib.sha1(f"{json.dumps(cfg, sort_keys=True)}|{json.dumps(PHONEMES, sort_keys=True)}|{speakable(text)}".encode()).hexdigest()  # respellings change the audio
     p = CACHE / "tts" / f"{key}.wav"
     if p.exists():
         a, _ = sf.read(p, dtype="float32")

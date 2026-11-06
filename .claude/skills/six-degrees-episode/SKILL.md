@@ -37,6 +37,11 @@ episode.json: the hook shows the viewer's request bubble and the first comment c
   ```
   The first and last names must equal `a` and `b`. Use 6-15 portraits, choosing well-known holders to skip
   through a long line. It counts as one link.
+- **Artwork links: both people must be IN the artwork.** A photo of a real person standing in front of a painting
+  or statue (a tourist under the Sistine ceiling, a president next to a Zeus statue) is **not** a link. That is a
+  cheat, and viewers notice. An artwork links two people only when it depicts both of them, e.g. Michelangelo's
+  *Last Judgment* shows Adam and also Michelangelo's self-portrait; Raphael's *School of Athens* shows Michelangelo
+  and Raphael. Then continue from the real person (the artist, a patron pope, a donor portrait).
 - **Fictional characters** connect through a real photo of their voice actor, creator or puppeteer, and the
   line says so ("Grug is voiced by Nicolas Cage"). The character itself appears only in its own artwork
   (official art or a film still, fair use), as the endpoint link: `{"a": "Grug", "b": "Nicolas Cage", "image": <a
@@ -92,7 +97,10 @@ operator can see the effort.
 - `hook` is always the question "How is <A> connected to <B>?"
 - Each `line` is one sentence of about 18 words or fewer, starting with a year or a hook word, with a concrete fact.
 - Don't type years as words. The voice reads "1973" as "nineteen seventy-three" automatically.
-- A name the voice mispronounces: add it to `RESPELL` in `sixdeg/audio.py`, or phrase around it (QA tells you).
+- A name the voice mispronounces: add its exact IPA to `PHONEMES` in `sixdeg/audio.py` (best: fixes stress, e.g.
+  Monroe = mənɹˈoʊ), or a respelling to `RESPELL`. QA only catches names Whisper cannot hear at all, so check
+  every name with `python -c "from sixdeg.audio import phonemes; print(phonemes(\"<line>\"))"`: a wrong
+  stress or vowel (MON-roe, PYOO-tin, PEN-tag-un) is still wrong.
 
 ## 4. Verify faces by eye
 ```bash
