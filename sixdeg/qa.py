@@ -120,7 +120,7 @@ def qa(slug: str) -> dict:
         from .audio import PHONEMES
         from .pronounce import load as wiki_pron
         set_words = set(" ".join(list(PHONEMES) + list(wiki_pron())).split())
-        for name in people_order(spec):
+        for name in (people_order(spec) if used == "gemini" or used is None else []):   # silent preview: nothing to hear
             core = re.sub(r"\s*\(.*?\)", "", name)
             for part in core.split():
                 if (len(part) < 4 or part.lower() not in script.lower() or part in set_words

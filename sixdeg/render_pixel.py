@@ -231,9 +231,14 @@ def render(slug: str, log=print) -> Path:
 
     # ---------- static bits
     def short_label(n):
+        """Header name: the full label when it fits (COOKIE MONSTER, KERMIT THE FROG, MARILYN MONROE); for long
+        ones the episode's people[n]["short"] if set (SPONGEBOB), else the surname."""
         lab = C.labels[n].upper()
+        override = spec.get("people", {}).get(n, {}).get("short")
+        if override:
+            return override.upper()
         last = lab.split()[-1]
-        return lab if (len(lab) <= 12 or len(last) <= 3) else last
+        return lab if (len(lab) <= 15 or len(last) <= 3) else last
     title = f"{short_label(spec['from'])} > {short_label(spec['to'])}"
     tsize = 46
     while pf(tsize).getlength(title) > SAFE[2] - SAFE[0] and tsize > 24:
