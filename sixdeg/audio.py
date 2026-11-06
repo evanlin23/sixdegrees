@@ -37,6 +37,7 @@ RESPELL = {
     "Neymar": "Nay-mar",
     "Ronaldinho": "Ronal-deen-yo",
     "Hendaye": "On-dye",
+    "Khalifa": "Kah-lee-fah",
 }
 
 
