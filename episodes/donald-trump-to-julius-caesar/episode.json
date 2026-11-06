@@ -1,0 +1,130 @@
+{
+  "from": "Donald Trump",
+  "to": "Julius Caesar",
+  "requested_by": "@TheEditer-c7f",
+  "title": "From Trump to Julius Caesar through 266 popes",
+  "description": "A Vatican visit, the line of popes, a Renaissance fresco and Rome's first emperors connect Donald Trump to Julius Caesar.",
+  "hook": "How is Donald Trump connected to Julius Caesar?",
+  "links": [
+    {
+      "a": "Donald Trump",
+      "b": "Pope Francis",
+      "image": {
+        "file": "File:Donald Trump Pope Francis Melania Trump in 2017.jpg"
+      },
+      "line": "In May 2017, President Donald Trump visited Pope Francis at the Vatican.",
+      "a_face": 0,
+      "b_face": 4
+    },
+    {
+      "a": "Pope Francis",
+      "b": "Saint Peter",
+      "lineage": {
+        "label": "LINE OF POPES",
+        "people": [
+          {
+            "name": "Pope Francis",
+            "file": "File:Pope Francis Korea Haemi Castle 19 (4x5 cropped).jpg",
+            "label": "266th pope"
+          },
+          {
+            "name": "Pope John Paul II",
+            "file": "File:ADAMELLO - PAPA - Giovanni Paolo II - panoramio (cropped).jpg",
+            "label": "264th"
+          },
+          {
+            "name": "Pope Pius XII",
+            "file": "File:Pius XII with tabard, by Michael Pitcairn, 1951 (retouched).jpg",
+            "label": "260th"
+          },
+          {
+            "name": "Pope Pius IX",
+            "file": "File:Pius IX, by Adolphe Braun, 1875.jpg",
+            "label": "255th"
+          },
+          {
+            "name": "Pope Alexander VI",
+            "file": "File:Portrait of Pope Alexander VI Borgia (Vatican Museums - Musei Vaticani, Vatican).jpg",
+            "label": "214th"
+          },
+          {
+            "name": "Pope Sixtus IV",
+            "file": "File:Pedro Berruguete - Portrait of Pope Sixtus IV della Rovere - 1916.815 - Cleveland Museum of ArtFXD.jpg",
+            "label": "212th"
+          },
+          {
+            "name": "Pope Innocent III",
+            "file": "File:Pope Innocent III (Monastery of Subiaco).jpg",
+            "label": "176th"
+          },
+          {
+            "name": "Pope Gregory VII",
+            "file": "File:Exultet Rolls of Southern Italy, detail of Pope Gregory VII.jpg",
+            "label": "157th"
+          },
+          {
+            "name": "Pope Leo I",
+            "file": "File:Herrera mozo San León magno Lienzo. Óvalo. 164 x 105 cm. Museo del Prado.png",
+            "label": "45th"
+          },
+          {
+            "name": "Saint Peter",
+            "file": "File:St. Peter (portrayed as a Roman consul).jpg",
+            "label": "1st pope"
+          }
+        ]
+      },
+      "line": "Francis was the 266th pope, in an unbroken line of popes running back to Saint Peter."
+    },
+    {
+      "a": "Saint Peter",
+      "b": "Nero",
+      "image": {
+        "file": "File:Cappella brancacci, Disputa di Simon Mago (restaurato), Filippino Lippi.jpg"
+      },
+      "line": "Around 1482, Filippino Lippi painted Saint Peter on trial before the Roman emperor Nero.",
+      "a_face": 2,
+      "b_face": 6
+    },
+    {
+      "a": "Nero",
+      "b": "Julius Caesar",
+      "lineage": {
+        "label": "CAESAR'S DYNASTY",
+        "people": [
+          {
+            "name": "Nero",
+            "file": "File:Nero Glyptothek Munich 321.jpg",
+            "label": "5th emperor"
+          },
+          {
+            "name": "Claudius",
+            "file": "File:Claudius crop.jpg",
+            "label": "4th"
+          },
+          {
+            "name": "Caligula",
+            "file": "File:Caligula.Carlsberg Glyptotek.(cropped).jpg",
+            "label": "3rd"
+          },
+          {
+            "name": "Tiberius",
+            "file": "File:8095 - Roma - Ara Pacis - Tiberio - Foto Giovanni Dall'Orto - 28-Mar-2008.jpg",
+            "label": "2nd"
+          },
+          {
+            "name": "Augustus",
+            "file": "File:Augustus of Prima Porta.jpg",
+            "label": "1st emperor"
+          },
+          {
+            "name": "Julius Caesar",
+            "file": "File:Retrato de Julio César (26724093101) (cropped).jpg",
+            "label": "dictator"
+          }
+        ]
+      },
+      "line": "And Nero was the last emperor of the dynasty that began with Julius Caesar and his heir Augustus."
+    }
+  ]
+}

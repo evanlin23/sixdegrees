@@ -47,6 +47,8 @@ RESPELL = {
 # QA fails when a capitalized word is in neither PHONEMES nor CMU, so every unusual name gets a human-set IPA.
 # Keys are matched as whole words, case-sensitive; multi-word keys are fine.
 PHONEMES = {
+    "Mandalorian": "mˌændəlˈɔːɹiən",
+    "Grogu": "ɡɹˈoʊɡuː",
     "Kim Jong Un": "kˌɪm dʒʌŋˈʊn",  # "Jong Un" as one word, or Kokoro pauses before "Un"
     "Kim Jong-un": "kˌɪm dʒʌŋˈʊn",
     "Khrushchev": "kɹuːʃtʃˈɔf",
@@ -66,6 +68,13 @@ PHONEMES = {
     "Sánchez": "sˈɑːntʃɛz",
     "Comic-Con": "kˈɑːmɪk kˌɑːn",
     "MatPat": "mˈæt pˈæt",
+    "Comicon": "kˈɑːmɪk kˌɑːn",
+    "Imahara": "ˌiːməhˈɑːɹə",
+    "Luffy": "lˈʌfi",
+    "MythBusters": "mˈɪθbʌstɚz",
+    "MythBuster": "mˈɪθbʌstɚ",
+    "Haberkorn": "hˈeɪbɚkɔːɹn",
+    "Clinkenbeard": "klˈɪŋkənbˌɪɹd",
     "Hendaye": "ɑːndˈaɪ",
     "Yosuke": "jˈoʊskeɪ",
     "Matsuoka": "mˌɑːtsuːˈoʊkə",
@@ -80,6 +89,9 @@ PHONEMES = {
     "Dmitry": "dəmˈiːtɹi",
     "Sadat": "sɑːdˈɑːt",
     "FUBAR": "fˈuːbɑːɹ",
+    "LaBeouf": "ləbˈʌf",
+    "Shia": "ʃˈaɪə",
+    "Filippino": "fˌɪlɪpˈiːnoʊ",
     # regnal numbers and Renaissance names (Adam/Zeus to The Rock)
     "Sixtus IV": "sˈɪkstəs ðə fˈɔːɹθ",
     "John Paul II": "dʒˈɑːn pˈɔːl ðə sˈɛkənd",
@@ -89,12 +101,16 @@ PHONEMES = {
     "Raphael": "ɹˈæfiəl",
     "Disputa": "dˌɪspuːtˈɑː",
     "Macron": "mækɹˈɔːn",
+    "Filippino": "fˌɪlɪpˈiːnoʊ",
     # CMU entries that read worse than espeak
     "de Gaulle": "də ɡˈɔːl",
     "Hogan": "hˈoʊɡən",
     "Sistine": "sˈɪstiːn",
     "Marie": "mɚɹˈiː",
     "Korea": "kəɹˈiːə",
+    "Khalifa": "kəlˈiːfə",
+    "Ovechkin": "ˈoʊvətʃkɪn",
+    "Perugino": "pˌɛɹʊdʒˈiːnoʊ",
 }
 
 _ARPA = {"AA": "ɑː", "AE": "æ", "AH": "ʌ", "AO": "ɔː", "AW": "aʊ", "AY": "aɪ", "EH": "ɛ", "ER": "ɜː", "EY": "eɪ",
