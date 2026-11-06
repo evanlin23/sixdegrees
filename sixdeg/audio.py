@@ -25,6 +25,7 @@ _kokoro = None
 
 # Names TTS tends to mangle -> phonetic respelling. Extend as episodes need.
 RESPELL = {
+    "Grogu": "Grow-goo",
     "Wernher": "Vairner",
     "Göring": "Gerring",
     "Goebbels": "Gerbels",
