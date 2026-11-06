@@ -473,9 +473,10 @@
  {
   "from": "Joseph Stalin",
   "to": "Elmo",
-  "status": "todo",
+  "status": "done",
   "source": "viral formula (Nov 2026 research)",
-  "hint": "puppet; Elmo is photographed with presidents and first ladies"
+  "hint": "puppet; Elmo is photographed with presidents and first ladies",
+  "slug": "joseph-stalin-to-elmo"
  },
  {
   "from": "Adolf Hitler",
