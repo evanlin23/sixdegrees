@@ -94,6 +94,9 @@ PHONEMES = {
     "Sistine": "sˈɪstiːn",
     "Marie": "mɚɹˈiː",
     "Korea": "kəɹˈiːə",
+    "Khalifa": "kəlˈiːfə",
+    "Ovechkin": "ˈoʊvətʃkɪn",
+    "Perugino": "pˌɛɹʊdʒˈiːnoʊ",
 }
 
 _ARPA = {"AA": "ɑː", "AE": "æ", "AH": "ʌ", "AO": "ɔː", "AW": "aʊ", "AY": "aɪ", "EH": "ɛ", "ER": "ɜː", "EY": "eɪ",
