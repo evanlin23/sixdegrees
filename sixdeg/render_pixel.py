@@ -171,7 +171,9 @@ def render(slug: str, log=print) -> Path:
     t = 0.0
     n_words = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"]
     hook = spec.get("hook") or f"How is {short_name(spec['from'])} connected to {short_name(spec['to'])}?"
-    audio.prefetch([hook] + [l["line"] for l in spec["links"]], voice, log)   # Gemini: one request per episode
+    script = [hook] + [l["line"] for l in spec["links"]]
+    audio.prefetch(script, voice, log)                                       # Gemini: one request per episode
+    (out_dir / "voice.json").write_text(json.dumps({"engine": audio.narrator(script, voice)}))
     a, words = audio.say(hook, voice)
     HOOK_VO = 0.0    # the question starts on the very first frame
     d = max(len(a) / audio.SR + 0.3 + HOOK_VO, FF + RW + 1.3)
@@ -229,9 +231,14 @@ def render(slug: str, log=print) -> Path:
 
     # ---------- static bits
     def short_label(n):
+        """Header name: the full label when it fits (COOKIE MONSTER, KERMIT THE FROG, MARILYN MONROE); for long
+        ones the episode's people[n]["short"] if set (SPONGEBOB), else the surname."""
         lab = C.labels[n].upper()
+        override = spec.get("people", {}).get(n, {}).get("short")
+        if override:
+            return override.upper()
         last = lab.split()[-1]
-        return lab if (len(lab) <= 12 or len(last) <= 3) else last
+        return lab if (len(lab) <= 15 or len(last) <= 3) else last
     title = f"{short_label(spec['from'])} > {short_label(spec['to'])}"
     tsize = 46
     while pf(tsize).getlength(title) > SAFE[2] - SAFE[0] and tsize > 24:

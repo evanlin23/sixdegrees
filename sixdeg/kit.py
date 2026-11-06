@@ -56,7 +56,11 @@ def kit(slug: str) -> str:
             "madeForKids": False,
             # narrator is a generic TTS voice, not a real person, and photos are unaltered:
             # YouTube's altered/synthetic disclosure is not required
-            "containsSyntheticMedia": False, "file": f"{slug}.mp4"}
+            "containsSyntheticMedia": False, "file": f"{slug}.mp4",
+            "kind": "request" if spec.get("requested_by") else "formula"}
+    vj = d / "out" / "voice.json"
+    if vj.exists():
+        meta["voice"] = json.loads(vj.read_text()).get("engine")
     out = d / "out"
     out.mkdir(exist_ok=True)
     mp4 = out / f"{slug}.mp4"

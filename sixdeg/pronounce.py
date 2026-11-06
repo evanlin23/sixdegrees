@@ -20,7 +20,8 @@ _MAP = [("ʤ", "dʒ"), ("ʧ", "tʃ"), ("aɪər", "aɪɚ"), ("aʊər", "aʊɚ"), 
         ("ɒr", "ɔːɹ"), ("ɪər", "ɪɹ"), ("ɛər", "ɛɹ"), ("ʊər", "ʊɹ"), ("ər", "ɚ"), ("ɒ", "ɑː"), ("r", "ɹ"), ("ʔ", ""),
         ("x", "k"), (".", ""), ("ɡ", "ɡ"), ("g", "ɡ"), ("'", "ˈ"), ("ʼ", "ˈ")]
 _VOWELS = set("aeiouæɑɒɔəɚɛɜɪʊʌɐᵻ")
-_LABELS = {"lang", "pron", "US", "UK", "local", "also", "Aus", "NZ", "CA", "Can", "Ireland", "Scot", "nopron", "icon"}
+_LABELS = {l.lower() for l in ("lang", "pron", "US", "UK", "local", "also", "Aus", "NZ", "CA", "Can", "Ireland",
+                                  "Scot", "nopron", "icon", "AU", "IE", "SA", "IN", "audio")}
 
 
 def _token(t: str) -> str:
@@ -39,7 +40,7 @@ def convert(template_args: list[str]) -> list[str] | None:
         if optional:
             optional = not t.endswith(")")
             continue
-        if not t or "=" in t or t in _LABELS:
+        if not t or "=" in t or t.lower() in _LABELS:
             continue
         if t.startswith(","):  # ", ..." starts an alternative pronunciation: keep the first one only
             break
