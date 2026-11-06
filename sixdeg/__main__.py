@@ -16,6 +16,7 @@
   consume [--max N] [--dry-run]  consumer (GitHub Actions): upload the oldest N queued videos
 """
 import json
+import os
 import sys
 
 
@@ -70,6 +71,23 @@ def main(argv):
         from .episode import load, people_order
         from .pronounce import update
         print(json.dumps(update(people_order(load(argv[1])[1])), indent=1, ensure_ascii=False))
+    elif cmd == "research":  # competitor channel report via the YouTube API
+        from .research import channel_report
+        for h in args:
+            channel_report(h)
+    elif cmd == "voice":  # Gemini: voice several episodes, a few per request (free tier ~15 requests/day, 3/min)
+        import time
+        from . import audio
+        from .episode import load
+        per = int(os.environ.get("VOICE_BATCH", "4"))
+        slugs = args
+        for i in range(0, len(slugs), per):
+            lines = []
+            for sl in slugs[i:i + per]:
+                sp = load(sl)[1]
+                lines += [sp.get("hook", "")] + [l["line"] for l in sp["links"]]
+            audio.prefetch([l for l in lines if l])
+            time.sleep(21)
     elif cmd == "render":
         render_any(args[0])
     elif cmd == "qa":

@@ -95,7 +95,9 @@ def qa(slug: str) -> dict:
             fails.append(f"true peak {peak} dBTP")
         # speech check on the final mix
         from .audio import transcribe, unknown_names
-        for w in unknown_names(" ".join([spec.get("hook", "")] + [l["line"] for l in spec["links"]])):
+        from .audio import voice_config
+        kokoro = voice_config(spec.get("voice")).get("engine", "kokoro") == "kokoro"
+        for w in (unknown_names(" ".join([spec.get("hook", "")] + [l["line"] for l in spec["links"]])) if kokoro else []):
             fails.append(f"no pronunciation for '{w}': add its IPA to audio.PHONEMES (see the SKILL)")
         wav = CACHE / "qa" / f"{slug}.wav"
         wav.parent.mkdir(parents=True, exist_ok=True)
@@ -115,7 +117,8 @@ def qa(slug: str) -> dict:
         for name in people_order(spec):
             core = re.sub(r"\s*\(.*?\)", "", name)
             for part in core.split():
-                if len(part) < 4 or part.lower() not in script.lower() or part in set_words:
+                if (len(part) < 4 or part.lower() not in script.lower() or part in set_words
+                        or re.fullmatch(r"[IVXL]+", part)):          # regnal numbers are spoken as "the Eighth"
                     continue
                 if not _heard(part, heard):
                     fails.append(f"'{part}' is in the script but not heard in the audio (TTS mispronounced?) "

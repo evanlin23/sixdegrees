@@ -1,9 +1,14 @@
 {
- "engine": "kokoro",
- "voice": {
-  "am_michael": 0.7,
-  "am_onyx": 0.3
- },
- "speed": 1.25,
- "broadcast": false
+ "engine": "gemini",
+ "voice": "Achird",
+ "model": "gemini-3.8-flash-tts",
+ "fallback": {
+  "engine": "kokoro",
+  "voice": {
+   "am_michael": 0.7,
+   "am_onyx": 0.3
+  },
+  "speed": 1.25,
+  "broadcast": false
+ }
 }
