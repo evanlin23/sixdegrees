@@ -19,5 +19,8 @@
  "madeForKids": false,
  "containsSyntheticMedia": false,
  "file": "jesus-to-mia-khalifa.mp4",
+ "kind": "request",
+ "voice": "gemini",
+ "outro": false,
  "slug": "jesus-to-mia-khalifa"
 }
