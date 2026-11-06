@@ -1,25 +1,37 @@
 # Style and policy
 
-## What works (from @6degreesofseperation, Nov 2026)
+## What goes viral (the reference channel, @6degreesofseperation, pulled via the API in Nov 2026)
 
-That channel has 24 Shorts, 45.1M views and 41.2K subscribers since Feb 2025.
-Median Short ≈ 300K views.
+24 Shorts, 45.1M views, 41.2K subscribers, all posted Apr–Jun 2025. The channel then went quiet, so the niche is open.
+Two videos made 73% of all views:
 
-| Pattern | Examples (views) |
-|---|---|
-| Historical villain/icon × modern meme, fiction or streamer | Adolf H. → Steve (Minecraft) 17M · Adolf H. → Hatsune Miku 15M · Fanum → Adolf H. 3.6M |
-| Ancient/historic × celebrity | Cleopatra → Diddy 1.8M · Ryan Trahan → Nikola Tesla 1.4M |
-| Two meme characters | Blue Shirt Guy → Grug 1.1M |
-| Weak: two niche or non-person things | T-34 tank → Paimon 17K · Stalin → Twilight Sparkle 29K |
+| Views | Pair | Why it worked |
+|---|---|---|
+| 17.3M | Adolf H. → Steve (Minecraft) | most evil person in history × the most innocent kids' game hero |
+| 15.5M | Adolf H. → Hatsune Miku | same, with a cute virtual idol |
+| 3.6M | Fanum → Adolf H. | streamer meme × villain |
+| 1.9M | Cleopatra → Diddy | ancient icon × current-scandal celebrity |
+| 1.5M | Ryan Trahan → Nikola Tesla | YouTuber × genius |
+| 1.2M | Blue Shirt Guy → Grug | meme × meme |
+| 17K–110K | T-34 tank → Paimon, Stalin → Twilight Sparkle, Pelé → Modi, Post Malone → Einstein, Hitler → Netanyahu | niche, or no absurd gap, or just political |
 
-**Pair formula:** one side instantly recognisable *and* serious (a dictator,
-emperor, scientist, pope or president), the other side young-audience pop culture
-(a streamer, YouTuber, rapper, game or anime character, meme). The bigger the
-"no way these are connected" gap, the better.
+Our own old uploads say the same: Leonardo da Vinci → Naruto did 39.8K, ten times the rest.
 
-Their format is music only, cyan name tags over heads, and pans between faces.
-We add **narration that explains each link**. That makes every video original
-commentary and is our edge for monetization (see below).
+**The formula: "how could they possibly be connected?"** Every hit pairs someone instantly recognisable and
+*serious or dark* (a dictator, an ancient ruler, a genius) with something *innocent, cute or kid/gamer-coded* that
+everyone under 25 knows (a game hero, a cartoon, a mascot, a virtual idol, a streamer meme). The bigger the
+"that's impossible" gap, the better. Both ends must be recognisable from the thumbnail alone. Avoid two serious
+people, two niche things, or a pair that only makes a political point.
+
+**Best endpoints that are honest and doable:**
+- **Costume/puppet characters that appear in real photos with real people.** Elmo, Kermit, Big Bird and Cookie
+  Monster at the White House; Mickey Mouse, Pikachu, Hello Kitty and SpongeBob costume characters at events,
+  premieres and parades. They are *in the same picture* as presidents and celebrities, so the last link is a real
+  photo.
+- **Voiced characters** through their voice actor or the actor who played them, e.g. Mario (Chris Pratt), Shrek
+  (Mike Myers), SpongeBob (Tom Kenny), Sonic (Ben Schwartz), Gru and the Minions (Steve Carell), Pikachu (Ryan
+  Reynolds).
+- **Game heroes and virtual idols** through their creators at events (Notch, Shigeru Miyamoto, Crypton).
 
 ## Monetization rules (must stay YPP-eligible)
 

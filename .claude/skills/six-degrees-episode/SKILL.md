@@ -17,7 +17,10 @@ git checkout -b claude/ep-<slug>          # your own branch; never commit to mai
 
 ## 1. The pair
 Use the pair you were given, or the first `"status": "todo"` entry in `data/pairs.json` (viewer requests come
-first). Slug: `<from>-to-<to>`, lowercase with dashes. If the entry has `requested_by`, copy it into
+first). When you pick new pairs yourself, follow "What goes viral" in `docs/STYLE.md`: a serious or dark,
+instantly recognisable person × something innocent, cute or kid/gamer-coded (Hitler → Minecraft's Steve made
+17M views). Costume and puppet characters (Elmo, Kermit, Mickey, Pikachu) are ideal endpoints because they appear
+in real photos with presidents and celebrities. Never repeat a pair already in `data/pairs.json`. Slug: `<from>-to-<to>`, lowercase with dashes. If the entry has `requested_by`, copy it into
 episode.json: the hook shows the viewer's request bubble and the first comment credits them.
 
 ## 2. The chain (honesty rules)
