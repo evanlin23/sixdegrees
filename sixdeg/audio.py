@@ -66,6 +66,7 @@ PHONEMES = {
     "Pedro Sánchez": "pˈɛdɹoʊ sˈɑːntʃɛz",
     "Sánchez": "sˈɑːntʃɛz",
     "Comic-Con": "kˈɑːmɪk kˌɑːn",
+    "MatPat": "mˈæt pˈæt",
     "Comicon": "kˈɑːmɪk kˌɑːn",
     "Imahara": "ˌiːməhˈɑːɹə",
     "Luffy": "lˈʌfi",
