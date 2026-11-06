@@ -1,0 +1,142 @@
+{
+  "from": "Charlemagne",
+  "to": "Rin Itoshi",
+  "requested_by": "@Zorito-y4v",
+  "hook": "How is Charlemagne connected to Rin Itoshi?",
+  "title": "How is Charlemagne connected to Rin Itoshi?",
+  "description": "A Raphael fresco, 170 popes, a Vatican audience and Expo 2025 link the first Holy Roman Emperor to Blue Lock's Rin Itoshi.",
+  "people": {
+    "Pope Leo III": {
+      "label": "Pope Leo III"
+    },
+    "Yusei Yagi": {
+      "label": "Yusei Yagi"
+    }
+  },
+  "links": [
+    {
+      "a": "Charlemagne",
+      "b": "Pope Leo III",
+      "image": {
+        "file": "File:Raphael - Coronation of Charlemagne (cropped).jpg"
+      },
+      "line": "Raphael's workshop painted Pope Leo the Third crowning Charlemagne emperor in Rome in 800.",
+      "a_face": 5,
+      "b_face": 6
+    },
+    {
+      "a": "Pope Leo III",
+      "b": "Pope Francis",
+      "line": "Leo the Third was the 96th pope, and the line runs 170 more popes to Pope Francis.",
+      "lineage": {
+        "label": "LINE OF POPES",
+        "people": [
+          {
+            "name": "Pope Leo III",
+            "file": "File:Pope Leo III.jpg",
+            "label": "96th"
+          },
+          {
+            "name": "Pope Gregory VII",
+            "file": "File:Exultet Rolls of Southern Italy, detail of Pope Gregory VII.jpg",
+            "label": "157th"
+          },
+          {
+            "name": "Pope Innocent III",
+            "file": "File:Pope Innocent III (Monastery of Subiaco).jpg",
+            "label": "176th"
+          },
+          {
+            "name": "Pope Sixtus IV",
+            "file": "File:Pedro Berruguete - Portrait of Pope Sixtus IV della Rovere - 1916.815 - Cleveland Museum of ArtFXD.jpg",
+            "label": "212th"
+          },
+          {
+            "name": "Pope Paul III",
+            "file": "File:Portrait_of_Pope_Paul_III_Farnese_(by_Titian)_-_National_Museum_of_Capodimonte.jpg",
+            "label": "220th"
+          },
+          {
+            "name": "Pope Pius IX",
+            "file": "File:Pius IX, by Adolphe Braun, 1875.jpg",
+            "label": "255th"
+          },
+          {
+            "name": "Pope John XXIII",
+            "file": "File:Ioannes_XXIII,_by_De_Agostini,_1958–1963.jpg",
+            "label": "261st"
+          },
+          {
+            "name": "Pope John Paul II",
+            "file": "File:ADAMELLO - PAPA - Giovanni Paolo II - panoramio (cropped).jpg",
+            "label": "264th"
+          },
+          {
+            "name": "Pope Francis",
+            "file": "File:Pope Francis Korea Haemi Castle 19 (4x5 cropped).jpg",
+            "label": "266th"
+          }
+        ]
+      }
+    },
+    {
+      "a": "Pope Francis",
+      "b": "Fumio Kishida",
+      "image": {
+        "url": "https://japan.kantei.go.jp/content/0320220504_1_vatican_01.jpg",
+        "credit": "Prime Minister's Office of Japan (photo: Vatican Media)",
+        "license": "Fair use (commentary)",
+        "source": "https://japan.kantei.go.jp/101_kishida/actions/202205/_00004.html"
+      },
+      "line": "In 2022, Pope Francis received Japan's prime minister Fumio Kishida at the Vatican."
+    },
+    {
+      "a": "Fumio Kishida",
+      "b": "Masakazu Tokura",
+      "image": {
+        "url": "https://www.keidanren.or.jp/journal/times/2022/0804/11.jpg",
+        "credit": "Japan Association for the 2025 World Exposition, via Keidanren Times",
+        "license": "Fair use (commentary)",
+        "source": "https://www.keidanren.or.jp/journal/times/2022/0804_11.html"
+      },
+      "line": "That July in Tokyo, Kishida counted down 1000 days to Expo 2025 with Expo chairman Masakazu Tokura.",
+      "b_face": 3
+    },
+    {
+      "a": "Masakazu Tokura",
+      "b": "Yusei Yagi",
+      "image": {
+        "url": "https://cdn.kyodonewsprwire.jp/prwfile/release/M106088/202312053857/_prw_PI1lg_d5V1bw9e.jpg",
+        "credit": "Japan Association for the 2025 World Exposition, via Kyodo News PR Wire",
+        "license": "Fair use (commentary)",
+        "source": "https://kyodonewsprwire.jp/release/202312053857"
+      },
+      "line": "In 2023, Tokura launched Expo ticket sales with the band Fantastics, including singer Yusei Yagi.",
+      "a_face": 7,
+      "b_face": 6
+    },
+    {
+      "a": "Yusei Yagi",
+      "b": "Rin Itoshi",
+      "image": {
+        "pair": [
+          {
+            "url": "https://img.cinematoday.jp/a/0w29F-zqeLwJ/_size_1280x/_v_1786346777/main.jpg",
+            "credit": "Blue Lock film (Toho / Kodansha), via Cinema Today",
+            "license": "Fair use (commentary)",
+            "source": "https://www.cinematoday.jp/news/N0156290"
+          },
+          {
+            "url": "https://bluelock-anime-en.com/wp-content/themes/anime/assets/images/chara11.png",
+            "credit": "\"Blue Lock\" Production Committee / Kodansha",
+            "license": "Fair use (commentary)",
+            "source": "https://bluelock-anime-en.com/"
+          }
+        ]
+      },
+      "line": "And in 2026, Yagi played Rin Itoshi in the live-action Blue Lock movie.",
+      "a_face": 1,
+      "b_face": 3
+    }
+  ]
+}

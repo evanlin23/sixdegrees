@@ -237,11 +237,12 @@
  {
   "from": "Charlemagne",
   "to": "Rin Itoshi",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@Zorito-y4v",
   "comment": "Can do Carlo magno to rin itoshi pls",
   "likes": 0,
-  "source": "comment on 'leonardo da vinci to naruto' (old channel)"
+  "source": "comment on 'leonardo da vinci to naruto' (old channel)",
+  "slug": "charlemagne-to-rin-itoshi"
  },
  {
   "from": "Christopher Columbus",
