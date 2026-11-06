@@ -1,0 +1,112 @@
+{
+  "from": "Henry VII",
+  "to": "Lamine Yamal",
+  "requested_by": "@iasser656",
+  "title": "From the first Tudor king to Lamine Yamal",
+  "description": "Four centuries of English monarchs and three real photos link King Henry VII to Lamine Yamal.",
+  "hook": "How is King Henry the Seventh connected to Lamine Yamal?",
+  "people": {
+    "Elizabeth II": {
+      "label": "Elizabeth II"
+    },
+    "Pedro Sánchez": {
+      "label": "Pedro Sánchez"
+    },
+    "Henry VII": {
+      "label": "Henry VII",
+      "wiki": "Henry VII of England"
+    }
+  },
+  "links": [
+    {
+      "a": "Henry VII",
+      "b": "Elizabeth II",
+      "lineage": {
+        "label": "LINE OF ENGLISH MONARCHS",
+        "people": [
+          {
+            "name": "Henry VII",
+            "file": "File:Enrique_VII_de_Inglaterra,_por_un_artista_anónimo.jpg",
+            "label": "1485"
+          },
+          {
+            "name": "Henry VIII",
+            "file": "File:After_Hans_Holbein_the_Younger_-_Portrait_of_Henry_VIII_-_Google_Art_Project.jpg",
+            "label": "1509"
+          },
+          {
+            "name": "Elizabeth I",
+            "file": "File:Darnley_stage_3.jpg",
+            "label": "1558"
+          },
+          {
+            "name": "James I",
+            "file": "File:JamesIEngland_(cropped_2).jpg",
+            "label": "1603"
+          },
+          {
+            "name": "Charles I",
+            "file": "File:King_Charles_I_after_original_by_van_Dyck.jpg",
+            "label": "1625"
+          },
+          {
+            "name": "Queen Anne",
+            "file": "File:Dahl,_Michael_-_Queen_Anne_-_NPG_6187.jpg",
+            "label": "1702"
+          },
+          {
+            "name": "George III",
+            "file": "File:Allan_Ramsay_-_King_George_III_in_coronation_robes_-_Google_Art_Project.jpg",
+            "label": "1760"
+          },
+          {
+            "name": "Queen Victoria",
+            "file": "File:Queen_Victoria_by_Bassano.jpg",
+            "label": "1837"
+          },
+          {
+            "name": "George V",
+            "file": "File:King_George_1923_LCCN2014715558_(cropped).jpg",
+            "label": "1910"
+          },
+          {
+            "name": "Elizabeth II",
+            "file": "File:Queen_Elizabeth_II_official_portrait_for_1959_tour_(retouched)_(cropped)_(3-to-4_aspect_ratio).jpg",
+            "label": "1952"
+          }
+        ]
+      },
+      "line": "Henry the Seventh's throne passed down for four centuries to Queen Elizabeth the Second."
+    },
+    {
+      "a": "Elizabeth II",
+      "b": "Donald Trump",
+      "image": {
+        "file": "File:Trump with national leaders at 75th D-Day.jpg"
+      },
+      "a_face": 12,
+      "b_face": 13,
+      "line": "In 2019, the Queen marked D-Day's 75th anniversary beside Donald Trump."
+    },
+    {
+      "a": "Donald Trump",
+      "b": "Pedro Sánchez",
+      "image": {
+        "file": "File:President Donald Trump and Pedro Sánchez.jpg"
+      },
+      "a_face": 1,
+      "b_face": 0,
+      "line": "A year earlier, Trump had hosted Spain's prime minister, Pedro Sánchez, in New York."
+    },
+    {
+      "a": "Pedro Sánchez",
+      "b": "Lamine Yamal",
+      "image": {
+        "file": "File:Sánchez se reunió con los futbolistas de la selección española tras ganar la Eurocopa 2024 (3).jpg"
+      },
+      "a_face": 1,
+      "b_face": 3,
+      "line": "And in 2024, Sánchez welcomed Lamine Yamal and Spain's Euro champions in Madrid."
+    }
+  ]
+}
