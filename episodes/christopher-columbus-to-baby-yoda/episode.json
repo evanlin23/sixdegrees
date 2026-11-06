@@ -1,0 +1,143 @@
+{
+  "from": "Christopher Columbus",
+  "to": "Baby Yoda",
+  "requested_by": "@Hampterguy49",
+  "title": "How is Christopher Columbus connected to Baby Yoda?",
+  "description": "A painting, five centuries of Spanish monarchs and four real photos connect Christopher Columbus to Baby Yoda.",
+  "hook": "How is Christopher Columbus connected to Baby Yoda?",
+  "people": {
+    "Christopher Columbus": {
+      "label": "Christopher Columbus"
+    },
+    "Isabella I": {
+      "label": "Queen Isabella"
+    },
+    "King Juan Carlos": {
+      "label": "King Juan Carlos"
+    },
+    "Ronald Reagan": {
+      "label": "Ronald Reagan"
+    },
+    "Sigourney Weaver": {
+      "label": "Sigourney Weaver"
+    },
+    "Jon Favreau": {
+      "label": "Jon Favreau"
+    },
+    "Baby Yoda": {
+      "label": "Baby Yoda"
+    }
+  },
+  "links": [
+    {
+      "a": "Christopher Columbus",
+      "b": "Isabella I",
+      "image": {
+        "file": "File:Emanuel Leutze (American, 1816-1868). Columbus before the Queen, 1843.jpg"
+      },
+      "line": "In 1843, an American artist painted Columbus pleading with Queen Isabella of Spain to fund his voyage.",
+      "a_face": 11,
+      "b_face": 5
+    },
+    {
+      "a": "Isabella I",
+      "b": "King Juan Carlos",
+      "line": "Isabella's crown passed down five centuries of Spanish monarchs to King Juan Carlos in 1975.",
+      "lineage": {
+        "label": "SPAIN'S CROWN",
+        "people": [
+          {
+            "name": "Isabella I",
+            "file": "File:IsabellaofCastile03.jpg",
+            "label": "1474"
+          },
+          {
+            "name": "Charles V",
+            "file": "File:Portrait_of_Charles_V,_Holy_Roman_Emperor,_seated_(1500–1558),_formerly_attributed_to_Titian_(Alte_Pinakothek,_Munich).jpg",
+            "label": "1516"
+          },
+          {
+            "name": "Philip II",
+            "file": "File:Portrait_of_Philip_II_of_Spain_by_Sofonisba_Anguissola_-_002b.jpg",
+            "label": "1556"
+          },
+          {
+            "name": "Philip IV",
+            "file": "File:Philip_IV_of_Spain_-_Velázquez_1644.jpg",
+            "label": "1621"
+          },
+          {
+            "name": "Philip V",
+            "file": "File:Philip_V_of_Spain.jpg",
+            "label": "1700"
+          },
+          {
+            "name": "Charles III",
+            "file": "File:Charles_III_of_Spain_high_resolution.jpg",
+            "label": "1759"
+          },
+          {
+            "name": "Isabella II",
+            "file": "File:Isabel_de_Borbón_y_Borbón-Dos_Sicilias.jpg",
+            "label": "1833"
+          },
+          {
+            "name": "King Juan Carlos",
+            "file": "File:Rey_Juan_Carlos_2013.jpg",
+            "label": "1975"
+          }
+        ]
+      }
+    },
+    {
+      "a": "King Juan Carlos",
+      "b": "Ronald Reagan",
+      "image": {
+        "file": "File:President Reagan and Mrs. Reagan greet King Juan Carlos I and Queen Sophia of Spain 1981.jpg"
+      },
+      "line": "In 1981, Ronald Reagan welcomed King Juan Carlos to the White House for a state dinner.",
+      "a_face": 3,
+      "b_face": 4
+    },
+    {
+      "a": "Ronald Reagan",
+      "b": "Sigourney Weaver",
+      "image": {
+        "file": "File:Reagan Contact Sheet C27275 (cropped).jpg"
+      },
+      "line": "In 1985, Reagan hosted Alien star Sigourney Weaver at another White House state dinner.",
+      "a_face": 2,
+      "b_face": 3
+    },
+    {
+      "a": "Sigourney Weaver",
+      "b": "Jon Favreau",
+      "image": {
+        "file": "File:Jon Favreau, Sigourney Weaver et Pedro Pascal 2026.jpg"
+      },
+      "line": "In 2026, Weaver joined director Jon Favreau in Paris to present The Mandalorian and Grogu.",
+      "a_face": 3,
+      "b_face": 2
+    },
+    {
+      "a": "Jon Favreau",
+      "b": "Baby Yoda",
+      "image": {
+        "pair": [
+          {
+            "file": "File:Jon Favreau 2016.jpeg"
+          },
+          {
+            "url": "https://cmg-cmg-tv-10080-prod.cdn.arcpublishing.com/resizer/v2/PNIZ4OQ37VEOTLWTBETIRAERMI.jpg?auth=8dacf9b269863caeb9d7988e1ff0aad3919d681122726acb99cbc1a71d0c73fd&height=900",
+            "credit": "Jesse Grant/Getty Images for Disney",
+            "license": "Fair use (commentary)",
+            "source": "https://www.wpxi.com/news/trending/photos-pedro-pascal/YR6N2UCEGVHLFKDUIFLG4JKRUQ/"
+          }
+        ]
+      },
+      "line": "Favreau created Grogu, the puppet fans call Baby Yoda, for The Mandalorian in 2019.",
+      "a_face": 0,
+      "b_face": 2
+    }
+  ]
+}

@@ -1,0 +1,136 @@
+{
+  "from": "Jesus",
+  "to": "Mia Khalifa",
+  "requested_by": "@spikethetrike",
+  "title": "How is Jesus connected to Mia Khalifa?",
+  "description": "A Renaissance fresco, 2,000 years of popes and three real photos connect Jesus to sports streamer Mia Khalifa.",
+  "hook": "How is Jesus connected to Mia Khalifa?",
+  "people": {
+    "Jesus": {
+      "label": "Jesus"
+    },
+    "Saint Peter": {
+      "label": "Saint Peter"
+    },
+    "Pope Francis": {
+      "label": "Pope Francis"
+    },
+    "John Kerry": {
+      "label": "John Kerry"
+    },
+    "Alexander Ovechkin": {
+      "label": "Alex Ovechkin"
+    },
+    "Mia Khalifa": {
+      "label": "Mia Khalifa"
+    }
+  },
+  "links": [
+    {
+      "a": "Jesus",
+      "b": "Saint Peter",
+      "image": {
+        "file": "File:Gesupietrochiave.jpg"
+      },
+      "line": "In 1482, Perugino painted Jesus handing the apostle Peter the keys of heaven, on the Sistine Chapel wall.",
+      "a_face": 4,
+      "b_face": [
+        668,
+        395,
+        85,
+        100
+      ]
+    },
+    {
+      "a": "Saint Peter",
+      "b": "Pope Francis",
+      "line": "Peter is counted as the first pope, and the line runs unbroken to Pope Francis in 2013.",
+      "lineage": {
+        "label": "LINE OF POPES",
+        "people": [
+          {
+            "name": "Saint Peter",
+            "file": "File:St._Peter_(portrayed_as_a_Roman_consul).jpg",
+            "label": "1st pope"
+          },
+          {
+            "name": "Pope Leo I",
+            "file": "File:Herrera_mozo_San_León_magno_Lienzo._Óvalo._164_x_105_cm._Museo_del_Prado.png",
+            "label": "440"
+          },
+          {
+            "name": "Pope Urban II",
+            "file": "File:Urbano_II_in_consacrazione_de_l'altare_del_monastero_di_Cluny_(detail)_(crop).png",
+            "label": "1088"
+          },
+          {
+            "name": "Pope Innocent X",
+            "file": "File:Retrato_del_Papa_Inocencio_X._Roma,_by_Diego_Velázquez.jpg",
+            "label": "1644"
+          },
+          {
+            "name": "Pope Pius IX",
+            "file": "File:Pius_IX,_by_Adolphe_Braun,_1875.jpg",
+            "label": "1846"
+          },
+          {
+            "name": "Pope Pius XII",
+            "file": "File:Pius_XII_with_tabard,_by_Michael_Pitcairn,_1951_(retouched).jpg",
+            "label": "1939"
+          },
+          {
+            "name": "Pope John Paul II",
+            "file": "File:ADAMELLO_-_PAPA_-_Giovanni_Paolo_II_-_panoramio_(cropped).jpg",
+            "label": "1978"
+          },
+          {
+            "name": "Pope Benedict XVI",
+            "file": "File:Benedykt_XVI_(2010-10-17)_2.jpg",
+            "label": "2005"
+          },
+          {
+            "name": "Pope Francis",
+            "file": "File:Pope_Francis_Korea_Haemi_Castle_19_(4x5_cropped).jpg",
+            "label": "2013"
+          }
+        ]
+      }
+    },
+    {
+      "a": "Pope Francis",
+      "b": "John Kerry",
+      "image": {
+        "file": "File:Secretary Kerry and Pope Francis Pose for a Photo Before Their Meeting at the Vatican (31258189871).jpg"
+      },
+      "line": "In 2016, Pope Francis welcomed America's Secretary of State, John Kerry, to the Vatican."
+    },
+    {
+      "a": "John Kerry",
+      "b": "Alexander Ovechkin",
+      "image": {
+        "file": "File:Secretary Kerry Meets Capitals Star Ovechkin Before Olympics Send-Off (12354241463).jpg"
+      },
+      "line": "In 2014, Kerry visited the Washington Capitals locker room to send Alex Ovechkin off to the Olympics.",
+      "a_face": [
+        580,
+        55,
+        200,
+        205
+      ],
+      "b_face": 12
+    },
+    {
+      "a": "Alexander Ovechkin",
+      "b": "Mia Khalifa",
+      "image": {
+        "url": "https://i0.wp.com/russianmachineneverbreaks.com/wp-content/uploads/2025/12/alex-ovechkin-mia-khalifa.jpg?resize=799%2C1109&ssl=1",
+        "credit": "@miakhalifa/Instagram via Russian Machine Never Breaks",
+        "license": "Fair use (commentary)",
+        "source": "https://russianmachineneverbreaks.com/2025/12/30/mia-khalifa-washington-capitals-fan-alex-ovechkin/"
+      },
+      "line": "And superfan Mia Khalifa, now a sports streamer, met her hero Ovechkin and gave him a custom Capitals shirt.",
+      "a_face": 1,
+      "b_face": 0
+    }
+  ]
+}
