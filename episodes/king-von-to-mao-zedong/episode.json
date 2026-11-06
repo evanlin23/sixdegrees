@@ -1,0 +1,72 @@
+{
+  "from": "King Von",
+  "to": "Mao Zedong",
+  "requested_by": "@coreychen7092",
+  "title": "King Von to Chairman Mao takes only five photos",
+  "description": "Five real photos link Chicago rapper King Von to Mao Zedong, through Lil Durk, Kanye West, Donald Trump and Henry Kissinger.",
+  "hook": "How is King Von connected to Mao Zedong?",
+  "people": {
+    "Kanye West": {
+      "label": "Kanye West"
+    }
+  },
+  "links": [
+    {
+      "a": "King Von",
+      "b": "Lil Durk",
+      "image": {
+        "url": "https://www.hotnewhiphop.com/wp-content/uploads/cover/17/91/1608999117_e94ebf03d85c7c6d238fe17efc86ad10.jpg",
+        "credit": "via HotNewHipHop",
+        "license": "Fair use (commentary)",
+        "source": "https://hotnewhiphop.com/343484-lil-durk-pays-tribute-to-king-von-by-livestreaming-his-music-news"
+      },
+      "line": "In 2018, Lil Durk signed King Von to his label OTF, and the two Chicago rappers became inseparable.",
+      "a_face": 5,
+      "b_face": 3
+    },
+    {
+      "a": "Lil Durk",
+      "b": "Kanye West",
+      "image": {
+        "url": "https://www.booska-p.com/wp-content/uploads/2023/11/Kanye-x-Lil-Durk.png",
+        "credit": "via Booska-P",
+        "license": "Fair use (commentary)",
+        "source": "https://www.booska-p.com/musique/actualites/lil-durk-en-arabie-saoudite-avec-kanye-west/"
+      },
+      "line": "Durk idolizes Kanye West, even naming a 2021 song Kanye Krazy, and the two have hung out.",
+      "a_face": 0,
+      "b_face": 1
+    },
+    {
+      "a": "Kanye West",
+      "b": "Donald Trump",
+      "image": {
+        "url": "https://cdn.abcotvs.com/dip/images/1654069_121316-wabc-ap-trump-kanye-trump-tower-img.jpg?w=1600",
+        "credit": "Seth Wenig / AP, via ABC7 New York",
+        "license": "Fair use (commentary)",
+        "source": "https://abc7ny.com/post/kanye-west-meets-with-donald-trump-in-nyc/1653731/"
+      },
+      "line": "In December 2016, Kanye visited President-elect Donald Trump at Trump Tower in New York."
+    },
+    {
+      "a": "Donald Trump",
+      "b": "Henry Kissinger",
+      "image": {
+        "file": "File:President Trump Meets with Henry Kissinger (33787724293).jpg"
+      },
+      "line": "Months later, President Trump hosted Henry Kissinger, the diplomat who opened America's door to China.",
+      "a_face": 2,
+      "b_face": 1
+    },
+    {
+      "a": "Henry Kissinger",
+      "b": "Mao Zedong",
+      "image": {
+        "file": "File:Kissinger, Ford and Mao, 1975 A7912.jpg"
+      },
+      "line": "And in 1975 in Beijing, Kissinger shook hands with Chairman Mao Zedong himself.",
+      "a_face": 2,
+      "b_face": 0
+    }
+  ]
+}
