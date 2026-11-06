@@ -52,6 +52,8 @@ PHONEMES = {
     "Grogu": "ɡɹˈoʊɡuː",
     "Kim Jong Un": "kˌɪm dʒʌŋˈʊn",  # "Jong Un" as one word, or Kokoro pauses before "Un"
     "Kim Jong-un": "kˌɪm dʒʌŋˈʊn",
+    "Bongbong": "bˈɑːŋbɑːŋ",
+    "Svetek": "svˈɛtɛk",
     "Khrushchev": "kɹuːʃtʃˈɔf",
     "Rivaldo": "ɹᵻvˈɑːldoʊ",
     "Ronaldinho": "ɹˌɑːnəldˈiːnjoʊ",
