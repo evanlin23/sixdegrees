@@ -560,9 +560,10 @@
  {
   "from": "Saddam Hussein",
   "to": "Cookie Monster",
-  "status": "todo",
+  "status": "done",
   "source": "viral formula (Nov 2026 research)",
-  "hint": "puppet; Sesame Street at the White House"
+  "hint": "puppet; Sesame Street at the White House",
+  "slug": "saddam-hussein-to-cookie-monster"
  },
  {
   "from": "Leonardo da Vinci",
