@@ -164,6 +164,7 @@ def consume(max_items: int = 2, dry_run: bool = False) -> list[dict]:
                           thumb=thumb)
         rec["first_comment"] = meta.get("first_comment")
         rec["kind"] = _kind(meta)
+        rec["outro"] = bool(meta.get("outro"))     # A/B test flag, compared in the stats review
         rec["n"] = int(it.name.split("-", 1)[0])
         done.append(rec)
         if dry_run:
