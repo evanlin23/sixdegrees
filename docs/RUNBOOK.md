@@ -12,10 +12,12 @@ for producer sessions. What goes viral and the pair formula are in **`docs/STYLE
 | When | Who | What |
 |---|---|---|
 | 3:07 AM daily | "Six Degrees daily producer" scheduled task → operator session | 1–2 new episodes (1 if 14+ videos are waiting), each in a **fresh** worker session, alternating a viewer request and a viral-formula pair; the operator invents new formula pairs when the list runs out |
+| when merging episode PRs | operator session | strong pairs go near the top of `data/upload_order.json` in the same merge |
 | on each episode PR | `render.yml` | voices (Gemini Achird), renders and runs QA as a check; nothing is queued |
 | operator check-ins | operator session | merges PRs whose check passed; archives finished workers |
 | on merge to main | `render.yml` | renders again and appends the video to the `queue` branch |
 | 11:22 AM and 6:22 PM | cron-job.org (two jobs) → `upload.yml` with `{"max":"1","privacy":"public"}` | uploads the next ready video publicly, posts the first comment (and the thumbnail once the channel is phone-verified) |
+| Fri 9:37 PM weekly | "Six Degrees: weekly performance review" scheduled task → operator session | stats, compares opening/kind/outro groups, proposes up to 3 changes, waits for the creator's go-ahead; re-schedules itself for next Friday |
 | on demand | `stats.yml` | views/likes/comments + retention (yt-analytics scope) into `stats.json` on `queue` |
 | on demand | `voice.yml` | voices several episodes per Gemini request into the `tts-cache` branch |
 | on demand | `research.yml` | a competitor channel's uploads + stats into the `research-data` branch |
@@ -51,6 +53,13 @@ for producer sessions. What goes viral and the pair formula are in **`docs/STYLE
   photo credits, hashtags; first comment credits the requester.
 - A/B test: half the episodes (hash of the slug) end with Achird saying "And that's how." Compare completion and
   replays by the `outro` flag in the stats review.
+
+## Opening (what keeps viewers past second 1)
+
+A on top and B below as big full-width photos from frame 0, the spoken question on the seam between them
+(`render_pixel.frame_hook`, `HERO_A`/`HERO_B`). The photo is the person's first portrait, or
+`people.<Name>.hook_photo` in episode.json to choose a better one. The small-card opening it replaced kept
+22–25% of viewers. The thumbnail is the same frame with a "?" on the seam.
 
 ## Re-rendering
 
