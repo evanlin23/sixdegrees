@@ -1,0 +1,57 @@
+{
+  "from": "Donald Trump",
+  "to": "Julius Caesar",
+  "requested_by": "@TheEditer-c7f",
+  "title": "Trump to Julius Caesar in just four pictures",
+  "description": "A White House handshake, a Hollywood marriage and an earthquake visit connect Donald Trump to Julius Caesar.",
+  "hook": "How is Donald Trump connected to Julius Caesar?",
+  "links": [
+    {
+      "a": "Donald Trump",
+      "b": "Ronald Reagan",
+      "image": {
+        "file": "File:Trump Meets Reagan.jpg"
+      },
+      "line": "In 1987, a young Donald Trump shook President Ronald Reagan's hand at a White House reception.",
+      "a_face": 5,
+      "b_face": 0
+    },
+    {
+      "a": "Ronald Reagan",
+      "b": "Nancy Reagan",
+      "image": {
+        "file": "File:Formal Engagement Photograph of Ronald Reagan and Nancy Davis - DPLA - 152c17bc0721ccd2fb0d1b9282cd7620.jpg"
+      },
+      "line": "Back in 1952, Hollywood actor Ronald Reagan married actress Nancy Davis, the future First Lady.",
+      "a_face": 0,
+      "b_face": 1
+    },
+    {
+      "a": "Nancy Reagan",
+      "b": "John Gavin",
+      "image": {
+        "file": "File:Nancy Reagan Visits Mexico City with Ambassador John Gavin After The Earthquake - DPLA - 5d1211646d7bc088f9908cfadc641730.jpg"
+      },
+      "line": "In 1985, Nancy toured Mexico City's earthquake ruins with the US ambassador, former movie star John Gavin.",
+      "a_face": 4,
+      "b_face": 3
+    },
+    {
+      "a": "John Gavin",
+      "b": "Julius Caesar",
+      "image": {
+        "pair": [
+          {
+            "file": "File:John Gavin Destry 1964 (cropped).JPG"
+          },
+          {
+            "file": "File:Retrato de Julio César (26724093101).jpg"
+          }
+        ]
+      },
+      "line": "And in the 1960 epic Spartacus, Gavin played the young Julius Caesar.",
+      "a_face": 0,
+      "b_face": 1
+    }
+  ]
+}
