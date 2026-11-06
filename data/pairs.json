@@ -501,9 +501,10 @@
  {
   "from": "Benito Mussolini",
   "to": "Mario",
-  "status": "todo",
+  "status": "done",
   "source": "viral formula (Nov 2026 research)",
-  "hint": "Chris Pratt voices Mario"
+  "hint": "Chris Pratt voices Mario",
+  "slug": "benito-mussolini-to-mario"
  },
  {
   "from": "Genghis Khan",
