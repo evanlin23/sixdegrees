@@ -172,11 +172,12 @@
  {
   "from": "Augustus",
   "to": "Tom Cruise",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@bluescreenperson",
   "comment": "Connect augustus to tom cruise",
   "likes": 0,
-  "source": "comment on 'adolf h to luffy' (old channel)"
+  "source": "comment on 'adolf h to luffy' (old channel)",
+  "slug": "augustus-to-tom-cruise"
  },
  {
   "from": "Magnus Carlsen",
