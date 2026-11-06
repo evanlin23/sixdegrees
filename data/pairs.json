@@ -529,9 +529,10 @@
  {
   "from": "Vladimir Lenin",
   "to": "Minions",
-  "status": "todo",
+  "status": "done",
   "source": "viral formula (Nov 2026 research)",
-  "hint": "Steve Carell / Pierre Coffin"
+  "hint": "Steve Carell / Pierre Coffin",
+  "slug": "vladimir-lenin-to-minions"
  },
  {
   "from": "Cleopatra",
