@@ -1,0 +1,71 @@
+{
+  "from": "Joseph Stalin",
+  "to": "Elmo",
+  "title": "Stalin to Elmo in four real photos",
+  "description": "Four real photos connect Joseph Stalin to Elmo from Sesame Street, through Churchill, the Queen and a first lady.",
+  "hook": "How is Joseph Stalin connected to Elmo?",
+  "people": {
+    "Joseph Stalin": {
+      "label": "Joseph Stalin"
+    },
+    "Winston Churchill": {
+      "label": "Winston Churchill"
+    },
+    "Elizabeth II": {
+      "label": "Queen Elizabeth II"
+    },
+    "Laura Bush": {
+      "label": "Laura Bush"
+    },
+    "Elmo": {
+      "label": "Elmo"
+    }
+  },
+  "links": [
+    {
+      "a": "Joseph Stalin",
+      "b": "Winston Churchill",
+      "image": {
+        "file": "File:Yalta summit 1945 with Churchill, Roosevelt, Stalin.jpg"
+      },
+      "line": "In 1945, Joseph Stalin sat beside Winston Churchill at Yalta to plan the end of World War Two.",
+      "a_face": 9,
+      "b_face": 4
+    },
+    {
+      "a": "Winston Churchill",
+      "b": "Elizabeth II",
+      "image": {
+        "file": "File:Churchill queen Elizabeth 1953.jpg"
+      },
+      "line": "In February 1953, Prime Minister Churchill greeted the new Queen, Elizabeth the Second, and her children.",
+      "a_face": 3,
+      "b_face": 2
+    },
+    {
+      "a": "Elizabeth II",
+      "b": "Laura Bush",
+      "image": {
+        "file": "File:Elizabeth II and Laura Bush.jpg"
+      },
+      "line": "In May 2007, on a state visit to America, the Queen toured a Washington children's hospital with Laura Bush.",
+      "a_face": 1,
+      "b_face": 3
+    },
+    {
+      "a": "Laura Bush",
+      "b": "Elmo",
+      "image": {
+        "file": "File:Mrs. Laura Bush and daughters pose for a photo with Sesame Street character Elmo.jpg"
+      },
+      "line": "And that same month, Laura Bush posed with Elmo at a Sesame Street benefit dinner in New York.",
+      "a_face": 1,
+      "b_face": [
+        258,
+        208,
+        70,
+        68
+      ]
+    }
+  ]
+}

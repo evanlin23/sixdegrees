@@ -1,0 +1,76 @@
+{
+  "from": "Saddam Hussein",
+  "to": "Cookie Monster",
+  "title": "Saddam Hussein to Cookie Monster in four real photos",
+  "description": "Four real photos connect Iraq's Saddam Hussein to Cookie Monster from Sesame Street, through a defense secretary, a president and a first lady.",
+  "hook": "How is Saddam Hussein connected to Cookie Monster?",
+  "people": {
+    "Saddam Hussein": {
+      "label": "Saddam Hussein"
+    },
+    "Donald Rumsfeld": {
+      "label": "Donald Rumsfeld"
+    },
+    "George W. Bush": {
+      "label": "George W. Bush"
+    },
+    "Michelle Obama": {
+      "label": "Michelle Obama"
+    },
+    "Cookie Monster": {
+      "label": "Cookie Monster"
+    }
+  },
+  "links": [
+    {
+      "a": "Saddam Hussein",
+      "b": "Donald Rumsfeld",
+      "image": {
+        "file": "File:Saddam rumsfeld.jpg"
+      },
+      "line": "In 1983, Saddam Hussein shook hands with Donald Rumsfeld, sent to Baghdad as Reagan's special envoy.",
+      "a_face": [
+        174,
+        15,
+        40,
+        48
+      ],
+      "b_face": 0
+    },
+    {
+      "a": "Donald Rumsfeld",
+      "b": "George W. Bush",
+      "image": {
+        "file": "File:Bush and Rumsfeld shakes hands, November 8, 2006.jpg"
+      },
+      "line": "In 2006, after leading the Pentagon through the Iraq War, Rumsfeld resigned as George W. Bush's defense secretary.",
+      "a_face": 1,
+      "b_face": 0
+    },
+    {
+      "a": "George W. Bush",
+      "b": "Michelle Obama",
+      "image": {
+        "file": "File:Bushes with Obamas 2.jpg"
+      },
+      "line": "In 2008, days after the election, Bush welcomed Barack and Michelle Obama to the White House.",
+      "a_face": 1,
+      "b_face": 3
+    },
+    {
+      "a": "Michelle Obama",
+      "b": "Cookie Monster",
+      "image": {
+        "file": "File:Jill Biden and Michelle Obama pose with some of the cast of Sesame Street, 2011.jpg"
+      },
+      "line": "And in 2011, Michelle Obama posed on stage with Cookie Monster at an event for military families in Ohio.",
+      "a_face": 2,
+      "b_face": [
+        60,
+        170,
+        200,
+        170
+      ]
+    }
+  ]
+}

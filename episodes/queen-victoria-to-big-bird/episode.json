@@ -1,0 +1,71 @@
+{
+  "from": "Queen Victoria",
+  "to": "Big Bird",
+  "title": "Queen Victoria to Big Bird in four real photos",
+  "description": "Four real photos connect Queen Victoria to Big Bird from Sesame Street, through a king who gave up his throne, a president and a first lady.",
+  "hook": "How is Queen Victoria connected to Big Bird?",
+  "people": {
+    "Queen Victoria": {
+      "label": "Queen Victoria"
+    },
+    "Edward VIII": {
+      "label": "Edward VIII"
+    },
+    "Richard Nixon": {
+      "label": "Richard Nixon"
+    },
+    "Pat Nixon": {
+      "label": "Pat Nixon"
+    },
+    "Big Bird": {
+      "label": "Big Bird"
+    }
+  },
+  "links": [
+    {
+      "a": "Queen Victoria",
+      "b": "Edward VIII",
+      "image": {
+        "file": "File:Queen Victoria with family members.jpg"
+      },
+      "line": "In 1895 at Balmoral, Queen Victoria posed with her baby great-grandson, the future King Edward the Eighth.",
+      "a_face": 3,
+      "b_face": 5
+    },
+    {
+      "a": "Edward VIII",
+      "b": "Richard Nixon",
+      "image": {
+        "file": "File:President Nixon greets the Duke and Duchess of Windsor - NARA - 194310.tif"
+      },
+      "line": "In 1970, Edward, who gave up the throne to become Duke of Windsor, dined at Richard Nixon's White House.",
+      "a_face": 4,
+      "b_face": 3
+    },
+    {
+      "a": "Richard Nixon",
+      "b": "Pat Nixon",
+      "image": {
+        "file": "File:President Richard Nixon and First Lady Pat Nixon.jpg"
+      },
+      "line": "From 1969 to 1974, Pat Nixon served beside him as first lady.",
+      "a_face": 1,
+      "b_face": 0
+    },
+    {
+      "a": "Pat Nixon",
+      "b": "Big Bird",
+      "image": {
+        "file": "File:Pat Nixon and Big Bird.jpg"
+      },
+      "line": "And in December 1970, Big Bird visited Pat Nixon at the White House with a Christmas gift feather.",
+      "a_face": 0,
+      "b_face": [
+        200,
+        950,
+        560,
+        560
+      ]
+    }
+  ]
+}

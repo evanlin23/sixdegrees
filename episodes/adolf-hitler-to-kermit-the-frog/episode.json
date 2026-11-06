@@ -1,0 +1,84 @@
+{
+  "from": "Adolf Hitler",
+  "to": "Kermit the Frog",
+  "title": "How is Hitler connected to Kermit the Frog?",
+  "description": "Five real photos connect Adolf Hitler to Kermit the Frog, through two prime ministers, the Queen and a first lady.",
+  "hook": "How is Hitler connected to Kermit the Frog?",
+  "people": {
+    "Adolf Hitler": {
+      "label": "Adolf Hitler"
+    },
+    "Neville Chamberlain": {
+      "label": "Neville Chamberlain"
+    },
+    "Winston Churchill": {
+      "label": "Winston Churchill"
+    },
+    "Elizabeth II": {
+      "label": "Queen Elizabeth II"
+    },
+    "Michelle Obama": {
+      "label": "Michelle Obama"
+    },
+    "Kermit the Frog": {
+      "label": "Kermit"
+    }
+  },
+  "links": [
+    {
+      "a": "Adolf Hitler",
+      "b": "Neville Chamberlain",
+      "image": {
+        "file": "File:Munich Agreement Bundesarchiv Bild 183-R69173.jpg"
+      },
+      "line": "In 1938, British prime minister Neville Chamberlain signed the Munich Agreement with Hitler, hoping to avoid war.",
+      "a_face": 4,
+      "b_face": 1
+    },
+    {
+      "a": "Neville Chamberlain",
+      "b": "Winston Churchill",
+      "image": {
+        "file": "File:Churchill and Chamberlain.jpg"
+      },
+      "line": "In 1940, Chamberlain's fellow Conservative, Winston Churchill, replaced him as prime minister.",
+      "a_face": 2,
+      "b_face": 1
+    },
+    {
+      "a": "Winston Churchill",
+      "b": "Elizabeth II",
+      "image": {
+        "file": "File:Special Film Project 186 - Buckingham Palace 2.jpg"
+      },
+      "line": "On Victory in Europe Day, 1945, Churchill stood on the palace balcony beside young Princess Elizabeth.",
+      "a_face": 2,
+      "b_face": 0
+    },
+    {
+      "a": "Elizabeth II",
+      "b": "Michelle Obama",
+      "image": {
+        "file": "File:Barack Obama Michelle Obama Queen Elizabeth II Buckingham Palace London.jpg"
+      },
+      "line": "In 2009, Queen Elizabeth the Second welcomed Barack and Michelle Obama to Buckingham Palace.",
+      "a_face": 3,
+      "b_face": 1
+    },
+    {
+      "a": "Michelle Obama",
+      "b": "Kermit the Frog",
+      "image": {
+        "file": "File:General Dempsey, Kermit the Frog, and Michelle Obama (13115193523).jpg"
+      },
+      "line": "And in 2014, Michelle Obama introduced Kermit the Frog at a White House screening of Muppets Most Wanted.",
+      "a_face": 1,
+      "b_face": [
+        830,
+        840,
+        135,
+        135
+      ]
+    }
+  ]
+}

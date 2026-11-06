@@ -22,20 +22,22 @@
  {
   "from": "Qin Shi Huang",
   "to": "Kevin Hart",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@TFC_GTAG3",
   "comment": "Qin Shi Huangdi to Keven Heart",
   "likes": 6,
-  "source": "comment on 'leonardo da vinci to naruto' (old channel)"
+  "source": "comment on 'leonardo da vinci to naruto' (old channel)",
+  "slug": "qin-shi-huang-to-kevin-hart"
  },
  {
   "from": "King Von",
   "to": "Mao Zedong",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@coreychen7092",
   "comment": "king von to mao ze dong",
   "likes": 2,
-  "source": "comment on 'george washington to adolf h' (old channel)"
+  "source": "comment on 'george washington to adolf h' (old channel)",
+  "slug": "king-von-to-mao-zedong"
  },
  {
   "from": "P. Diddy",
@@ -50,11 +52,12 @@
  {
   "from": "MatPat",
   "to": "Napoleon",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@Tuff_boi911",
   "comment": "Matpat to napoleon",
   "likes": 1,
-  "source": "comment on 'george washington to adolf h' (old channel)"
+  "source": "comment on 'george washington to adolf h' (old channel)",
+  "slug": "matpat-to-napoleon"
  },
  {
   "from": "Kim Jong Un",
@@ -189,11 +192,12 @@
  {
   "from": "Magnus Carlsen",
   "to": "Bill Cipher",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@rip_bosco",
   "comment": "MAGNUS CARLSEN TO BILL CIPHER",
   "likes": 0,
-  "source": "comment on 'leonardo da vinci to naruto' (old channel)"
+  "source": "comment on 'leonardo da vinci to naruto' (old channel)",
+  "slug": "magnus-carlsen-to-bill-cipher"
  },
  {
   "from": "Nelson Mandela",
@@ -208,11 +212,12 @@
  {
   "from": "Jesus",
   "to": "Roxy (FNAF)",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@TheFacelessIllustrator",
   "comment": "Jesus to Roxy from fnaf",
   "likes": 0,
-  "source": "comment on 'leonardo da vinci to naruto' (old channel)"
+  "source": "comment on 'leonardo da vinci to naruto' (old channel)",
+  "slug": "jesus-to-roxy"
  },
  {
   "from": "Donald Trump",
@@ -237,11 +242,12 @@
  {
   "from": "Charlemagne",
   "to": "Rin Itoshi",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@Zorito-y4v",
   "comment": "Can do Carlo magno to rin itoshi pls",
   "likes": 0,
-  "source": "comment on 'leonardo da vinci to naruto' (old channel)"
+  "source": "comment on 'leonardo da vinci to naruto' (old channel)",
+  "slug": "charlemagne-to-rin-itoshi"
  },
  {
   "from": "Christopher Columbus",
@@ -473,106 +479,121 @@
  {
   "from": "Joseph Stalin",
   "to": "Elmo",
-  "status": "todo",
+  "status": "done",
   "source": "viral formula (Nov 2026 research)",
-  "hint": "puppet; Elmo is photographed with presidents and first ladies"
+  "hint": "puppet; Elmo is photographed with presidents and first ladies",
+  "slug": "joseph-stalin-to-elmo"
  },
  {
   "from": "Adolf Hitler",
   "to": "Kermit the Frog",
-  "status": "todo",
+  "status": "done",
   "source": "viral formula (Nov 2026 research)",
-  "hint": "puppet; Kermit has photos with presidents and celebrities"
+  "hint": "puppet; Kermit has photos with presidents and celebrities",
+  "slug": "adolf-hitler-to-kermit-the-frog"
  },
  {
   "from": "Kim Jong Un",
   "to": "Mickey Mouse",
-  "status": "todo",
+  "status": "done",
   "source": "viral formula (Nov 2026 research)",
-  "hint": "costume character at White House / Disney events"
+  "hint": "costume character at White House / Disney events",
+  "slug": "kim-jong-un-to-mickey-mouse"
  },
  {
   "from": "Napoleon",
   "to": "Pikachu",
-  "status": "todo",
+  "status": "done",
   "source": "viral formula (Nov 2026 research)",
-  "hint": "Ryan Reynolds (Detective Pikachu) or Pikachu costume at events"
+  "hint": "Ryan Reynolds (Detective Pikachu) or Pikachu costume at events",
+  "slug": "napoleon-to-pikachu"
  },
  {
   "from": "Benito Mussolini",
   "to": "Mario",
-  "status": "todo",
+  "status": "done",
   "source": "viral formula (Nov 2026 research)",
-  "hint": "Chris Pratt voices Mario"
+  "hint": "Chris Pratt voices Mario",
+  "slug": "benito-mussolini-to-mario"
  },
  {
   "from": "Genghis Khan",
   "to": "SpongeBob SquarePants",
-  "status": "todo",
+  "status": "done",
   "source": "viral formula (Nov 2026 research)",
-  "hint": "voice actor Tom Kenny / costume character"
+  "hint": "voice actor Tom Kenny / costume character",
+  "slug": "genghis-khan-to-spongebob-squarepants"
  },
  {
   "from": "Mao Zedong",
   "to": "Shrek",
-  "status": "todo",
+  "status": "done",
   "source": "viral formula (Nov 2026 research)",
-  "hint": "voice actor Mike Myers"
+  "hint": "voice actor Mike Myers",
+  "slug": "mao-zedong-to-shrek"
  },
  {
   "from": "Julius Caesar",
   "to": "Sonic the Hedgehog",
-  "status": "todo",
+  "status": "done",
   "source": "viral formula (Nov 2026 research)",
-  "hint": "voice actor Ben Schwartz / Jim Carrey"
+  "hint": "voice actor Ben Schwartz / Jim Carrey",
+  "slug": "julius-caesar-to-sonic-the-hedgehog"
  },
  {
   "from": "Vladimir Lenin",
   "to": "Minions",
-  "status": "todo",
+  "status": "done",
   "source": "viral formula (Nov 2026 research)",
-  "hint": "Steve Carell / Pierre Coffin"
+  "hint": "Steve Carell / Pierre Coffin",
+  "slug": "vladimir-lenin-to-minions"
  },
  {
   "from": "Cleopatra",
   "to": "Hello Kitty",
-  "status": "todo",
+  "status": "done",
   "source": "viral formula (Nov 2026 research)",
-  "hint": "Sanrio costume character at events"
+  "hint": "Sanrio costume character at events",
+  "slug": "cleopatra-to-hello-kitty"
  },
  {
   "from": "Queen Victoria",
   "to": "Big Bird",
-  "status": "todo",
+  "status": "done",
   "source": "viral formula (Nov 2026 research)",
-  "hint": "puppet; Big Bird at the White House"
+  "hint": "puppet; Big Bird at the White House",
+  "slug": "queen-victoria-to-big-bird"
  },
  {
   "from": "Saddam Hussein",
   "to": "Cookie Monster",
-  "status": "todo",
+  "status": "done",
   "source": "viral formula (Nov 2026 research)",
-  "hint": "puppet; Sesame Street at the White House"
+  "hint": "puppet; Sesame Street at the White House",
+  "slug": "saddam-hussein-to-cookie-monster"
  },
  {
   "from": "Leonardo da Vinci",
   "to": "Luigi",
-  "status": "todo",
+  "status": "done",
   "source": "viral formula (Nov 2026 research)",
-  "hint": "Charlie Day voices Luigi"
+  "hint": "Charlie Day voices Luigi",
+  "slug": "leonardo-da-vinci-to-luigi"
  },
  {
   "from": "Fidel Castro",
   "to": "Patrick Star",
-  "status": "todo",
+  "status": "done",
   "source": "viral formula (Nov 2026 research)",
-  "hint": "voice actor Bill Fagerbakke"
+  "hint": "voice actor Bill Fagerbakke",
+  "slug": "fidel-castro-to-patrick-star"
  },
  {
   "from": "Attila the Hun",
   "to": "Squidward",
-  "status": "todo",
+  "status": "done",
   "source": "viral formula (Nov 2026 research)",
-  "hint": "voice actor Rodger Bumpass"
+  "hint": "voice actor Rodger Bumpass",
+  "slug": "attila-to-squidward"
  }
 ]

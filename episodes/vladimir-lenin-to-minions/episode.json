@@ -1,0 +1,107 @@
+{
+  "from": "Vladimir Lenin",
+  "to": "Minions",
+  "title": "Lenin to the Minions in five links",
+  "description": "The line of Kremlin leaders, a summit, a window knock on the Oval Office, two comedians and a Paris premiere connect Vladimir Lenin to the Minions.",
+  "hook": "How is Vladimir Lenin connected to the Minions?",
+  "people": {
+    "Minions": {
+      "wiki": "Minions (Despicable Me)",
+      "label": "Minions"
+    }
+  },
+  "links": [
+    {
+      "a": "Vladimir Lenin",
+      "b": "Vladimir Putin",
+      "lineage": {
+        "label": "KREMLIN LEADERS",
+        "people": [
+          {
+            "name": "Vladimir Lenin",
+            "file": "File:Lenin in 1920 (cropped).jpg",
+            "label": "from 1917"
+          },
+          {
+            "name": "Joseph Stalin",
+            "file": "File:StalinCropped1943.jpg",
+            "label": "1924"
+          },
+          {
+            "name": "Nikita Khrushchev",
+            "file": "File:1956 Press Photo Communist Party Secretary Nikita S. Khrushchev in Moscow (cropped).jpg",
+            "label": "1953"
+          },
+          {
+            "name": "Leonid Brezhnev",
+            "file": "File:Leonid Brezhnev, Staatshoofden, portretten, Bestanddeelnr 925-6564 (cropped)(2).jpg",
+            "label": "1964"
+          },
+          {
+            "name": "Mikhail Gorbachev",
+            "file": "File:GorbachevMS.jpg",
+            "label": "1985"
+          },
+          {
+            "name": "Boris Yeltsin",
+            "file": "File:Boris Yeltsin (3x4 cropped).jpg",
+            "label": "1991"
+          },
+          {
+            "name": "Vladimir Putin",
+            "file": "File:Vladimir Putin (2026 02 23) (cropped).jpg",
+            "label": "from 2000"
+          }
+        ]
+      },
+      "line": "Lenin founded the Soviet state in 1917, and the line of Kremlin leaders runs to Vladimir Putin."
+    },
+    {
+      "a": "Vladimir Putin",
+      "b": "Barack Obama",
+      "image": {
+        "file": "File:Vladimir Putin and Barack Obama (2015-09-29) 01.jpg"
+      },
+      "line": "In 2015, Putin met President Barack Obama at the United Nations in New York."
+    },
+    {
+      "a": "Barack Obama",
+      "b": "Jerry Seinfeld",
+      "image": {
+        "file": "File:Jerry Seinfeld knocks on the Oval Office window.jpg"
+      },
+      "line": "That December, Jerry Seinfeld knocked on Obama's Oval Office window to film Comedians in Cars Getting Coffee."
+    },
+    {
+      "a": "Jerry Seinfeld",
+      "b": "Gad Elmaleh",
+      "image": {
+        "url": "https://brioux.tv/wp-content/uploads/2017/07/012-seinfeld-gad-elmaleh-photo-susan-moss-1-1024x552.jpg",
+        "credit": "Susan Moss / brioux.tv",
+        "license": "Fair use (commentary)",
+        "source": "https://brioux.tv/blog/2017/07/28/jfl35-seinfeld-and-elmaleh-face-off-at-bell-centre/"
+      },
+      "line": "In 2017, Seinfeld shared a Montreal stage with his friend, French comedian Gad Elmaleh.",
+      "a_face": 1,
+      "b_face": 0
+    },
+    {
+      "a": "Gad Elmaleh",
+      "b": "Minions",
+      "image": {
+        "url": "https://mulderville.net/images/Premiere/MinionsTheRiseOfGruParis/MinionsTheRiseOfGruParis_001.JPG",
+        "credit": "Universal Pictures France, via Mulderville",
+        "license": "Fair use (commentary)",
+        "source": "https://mulderville.net/en/events/1787/minions-the-rise-of-gru-discover-the-official-photos-of-the-paris-premiere"
+      },
+      "line": "And Elmaleh, the French voice of Gru, posed with the Minions at their 2022 Paris premiere.",
+      "a_face": 0,
+      "b_face": [
+        80,
+        385,
+        200,
+        200
+      ]
+    }
+  ]
+}

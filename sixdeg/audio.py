@@ -46,10 +46,15 @@ RESPELL = {
 # QA fails when a capitalized word is in neither PHONEMES nor CMU, so every unusual name gets a human-set IPA.
 # Keys are matched as whole words, case-sensitive; multi-word keys are fine.
 PHONEMES = {
+    "Kanye": "kˈɑːnjeɪ",
+    "Durk": "dˈɜːɹk",
     "Mandalorian": "mˌændəlˈɔːɹiən",
     "Grogu": "ɡɹˈoʊɡuː",
+    "Emmanuel": "ɪmˈænjuəl",  # Wikipedia's IPAc-en for Macron starts with a "us" label the parser keeps
     "Kim Jong Un": "kˌɪm dʒʌŋˈʊn",  # "Jong Un" as one word, or Kokoro pauses before "Un"
     "Kim Jong-un": "kˌɪm dʒʌŋˈʊn",
+    "Bongbong": "bˈɑːŋbɑːŋ",
+    "Svetek": "svˈɛtɛk",
     "Khrushchev": "kɹuːʃtʃˈɔf",
     "Rivaldo": "ɹᵻvˈɑːldoʊ",
     "Ronaldinho": "ɹˌɑːnəldˈiːnjoʊ",
@@ -59,6 +64,7 @@ PHONEMES = {
     "Tereshkova": "tˌɛɹɛʃkˈoʊvə",
     "Valentina": "vˌæləntˈiːnə",
     "Grug": "ɡɹˈʌɡ",
+    "Cipher": "sˈaɪfəɹ",
     "Fazbear": "fˈæzbɛɹ",  # Wikipedia pull gives the "FNAF" acronym for this one
     "Emmanuel Macron": "ɪmˈænjuəl mækɹˈɔːn",
     "Lamine Yamal": "ləmˈiːn jəmˈɑːl",
@@ -66,6 +72,7 @@ PHONEMES = {
     "Pedro Sánchez": "pˈɛdɹoʊ sˈɑːntʃɛz",
     "Sánchez": "sˈɑːntʃɛz",
     "Comic-Con": "kˈɑːmɪk kˌɑːn",
+    "MatPat": "mˈæt pˈæt",
     "Comicon": "kˈɑːmɪk kˌɑːn",
     "Imahara": "ˌiːməhˈɑːɹə",
     "Luffy": "lˈʌfi",
@@ -76,8 +83,8 @@ PHONEMES = {
     "Hendaye": "ɑːndˈaɪ",
     "Yosuke": "jˈoʊskeɪ",
     "Matsuoka": "mˌɑːtsuːˈoʊkə",
-    "Zedong": "dzˌʌdˈʊŋ",
-    "Mao Zedong": "mˈaʊ dzˌʌdˈʊŋ",
+    "Zedong": "zˌɛdˈɑːŋ",
+    "Mao Zedong": "mˈaʊ zˌɛdˈɑːŋ",
     "Medvedev": "mɛdvˈɛdɛf",
     "Adolf": "ˈædɑːlf",
     "Barack": "bəɹˈɑːk",
@@ -87,6 +94,7 @@ PHONEMES = {
     "Dmitry": "dəmˈiːtɹi",
     "Sadat": "sɑːdˈɑːt",
     "FUBAR": "fˈuːbɑːɹ",
+    "Qin Shi Huang": "tʃˈɪn ʃˈɜː hwˈɑːŋ",
     "LaBeouf": "ləbˈʌf",
     "Shia": "ʃˈaɪə",
     "Filippino": "fˌɪlɪpˈiːnoʊ",
@@ -109,6 +117,7 @@ PHONEMES = {
     "Khalifa": "kəlˈiːfə",
     "Ovechkin": "ˈoʊvətʃkɪn",
     "Perugino": "pˌɛɹʊdʒˈiːnoʊ",
+    "SquarePants": "skwˈɛɹpˌænts",
 }
 
 _ARPA = {"AA": "ɑː", "AE": "æ", "AH": "ʌ", "AO": "ɔː", "AW": "aʊ", "AY": "aɪ", "EH": "ɛ", "ER": "ɜː", "EY": "eɪ",

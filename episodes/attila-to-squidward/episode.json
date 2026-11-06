@@ -1,0 +1,151 @@
+{
+  "from": "Attila",
+  "to": "Squidward Tentacles",
+  "title": "Attila the Hun to Squidward: a fresco, 266 popes and a Jedi",
+  "description": "A Raphael fresco, the line of popes, two White House visits and a Hollywood ceremony connect Attila the Hun to Squidward, through his voice, Rodger Bumpass.",
+  "hook": "How is Attila the Hun connected to Squidward?",
+  "people": {
+    "Attila": {
+      "label": "Attila the Hun"
+    },
+    "Squidward Tentacles": {
+      "label": "Squidward"
+    },
+    "Rodger Bumpass": {
+      "refs": [
+        "File:Rodger Bumpass by Gage Skidmore.jpg",
+        "File:Rodger Bumpass Comic Con April 2022.png"
+      ]
+    },
+    "Mark Hamill": {
+      "refs": [
+        "File:Mark Hamill at CinemaCon 2025.jpg"
+      ]
+    }
+  },
+  "links": [
+    {
+      "a": "Attila",
+      "b": "Pope Leo I",
+      "image": {
+        "file": "File:Raphael - The Meeting of Leo the Great and Attila.jpg"
+      },
+      "line": "Around 1514, Raphael painted Pope Leo I meeting Attila the Hun, who spared Rome in 452.",
+      "a_face": [
+        1080,
+        620,
+        36,
+        42
+      ],
+      "b_face": 5
+    },
+    {
+      "a": "Pope Leo I",
+      "b": "Pope Francis",
+      "lineage": {
+        "label": "LINE OF POPES",
+        "people": [
+          {
+            "name": "Pope Leo I",
+            "file": "File:Herrera mozo San León magno Lienzo. Óvalo. 164 x 105 cm. Museo del Prado.png",
+            "label": "45th pope"
+          },
+          {
+            "name": "Pope Gregory VII",
+            "file": "File:Exultet Rolls of Southern Italy, detail of Pope Gregory VII.jpg",
+            "label": "157th"
+          },
+          {
+            "name": "Pope Innocent III",
+            "file": "File:Pope Innocent III (Monastery of Subiaco).jpg",
+            "label": "176th"
+          },
+          {
+            "name": "Pope Sixtus IV",
+            "file": "File:Pedro Berruguete - Portrait of Pope Sixtus IV della Rovere - 1916.815 - Cleveland Museum of ArtFXD.jpg",
+            "label": "212th"
+          },
+          {
+            "name": "Pope Pius IX",
+            "file": "File:Pius IX, by Adolphe Braun, 1875.jpg",
+            "label": "255th"
+          },
+          {
+            "name": "Pope Pius XII",
+            "file": "File:Pius XII with tabard, by Michael Pitcairn, 1951 (retouched).jpg",
+            "label": "260th"
+          },
+          {
+            "name": "Pope John Paul II",
+            "file": "File:ADAMELLO - PAPA - Giovanni Paolo II - panoramio (cropped).jpg",
+            "label": "264th"
+          },
+          {
+            "name": "Pope Benedict XVI",
+            "file": "File:Benedykt XVI (2010-10-17) 2.jpg",
+            "label": "265th"
+          },
+          {
+            "name": "Pope Francis",
+            "file": "File:Pope Francis Korea Haemi Castle 19 (4x5 cropped).jpg",
+            "label": "266th pope"
+          }
+        ]
+      },
+      "line": "From Leo, the 45th pope, the line runs unbroken to the 266th, Pope Francis."
+    },
+    {
+      "a": "Pope Francis",
+      "b": "Joe Biden",
+      "image": {
+        "file": "File:Pope Francis and Joe Biden at the White House.jpg"
+      },
+      "line": "In 2015, Vice President Joe Biden greeted Pope Francis at the White House.",
+      "a_face": 1,
+      "b_face": 3
+    },
+    {
+      "a": "Joe Biden",
+      "b": "Mark Hamill",
+      "image": {
+        "file": "File:P20240503AS-0590 (53783780087).jpg"
+      },
+      "line": "In 2024, President Biden welcomed Star Wars legend Mark Hamill to the Oval Office."
+    },
+    {
+      "a": "Mark Hamill",
+      "b": "Rodger Bumpass",
+      "image": {
+        "url": "https://mulderville.net/images/Movies/TheSpongeBobMovieSearchForSquarePants/TheSpongeBobMovieSearchForSquarePants_HFCeremony_004.jpg",
+        "credit": "Getty Images for Paramount Pictures, via Mulderville",
+        "license": "Fair use (commentary)",
+        "source": "https://mulderville.net/en/events/2990/the-spongebob-movie-search-for-squarepants-hollywood-honors-spongebob-squarepants-with-a-hand-footprint-ceremony"
+      },
+      "line": "In 2025, Hamill, the Flying Dutchman in the new SpongeBob movie, posed with the cast, including Rodger Bumpass.",
+      "a_face": 6,
+      "b_face": 4
+    },
+    {
+      "a": "Rodger Bumpass",
+      "b": "Squidward Tentacles",
+      "image": {
+        "pair": [
+          {
+            "file": "File:Rodger Bumpass by Gage Skidmore.jpg"
+          },
+          {
+            "file": "File:Squidward Tentacles character.png"
+          }
+        ]
+      },
+      "line": "And Rodger Bumpass has been the voice of Squidward since 1999.",
+      "a_face": 0,
+      "b_face": [
+        370,
+        20,
+        140,
+        140
+      ]
+    }
+  ]
+}
