@@ -178,12 +178,12 @@
  {
   "from": "Augustus",
   "to": "Tom Cruise",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@bluescreenperson",
   "comment": "Connect augustus to tom cruise",
   "likes": 0,
   "source": "comment on 'adolf h to luffy' (old channel)",
-  "reason": "redo: Caesar to John Gavin is an actor link, not allowed for real people"
+  "slug": "augustus-to-tom-cruise"
  },
  {
   "from": "Magnus Carlsen",
