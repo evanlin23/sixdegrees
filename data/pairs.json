@@ -253,11 +253,12 @@
  {
   "from": "Virgil van Dijk",
   "to": "Pythagoras",
-  "status": "todo",
+  "status": "skipped",
   "requested_by": "@Devoted_99",
   "comment": "Plz do Van dijk to Pythagoras ive commented on majority of vids (also first)",
   "likes": 0,
-  "source": "comment on 'adolf h to p diddy' (old channel)"
+  "source": "comment on 'adolf h to p diddy' (old channel)",
+  "reason": "already on the channel: Pythagoras to Virgil van Dijk (hZ6Wpqnlvvg, May 2025)"
  },
  {
   "from": "Kim Jong Un",
@@ -417,5 +418,53 @@
   "from": "Salvador Dalí",
   "to": "Walt Disney",
   "status": "todo"
+ },
+ {
+  "from": "Pythagoras",
+  "to": "Virgil van Dijk",
+  "status": "done",
+  "source": "old upload on this channel (May 2025)",
+  "video_id": "hZ6Wpqnlvvg",
+  "views_nov2026": 1018
+ },
+ {
+  "from": "Adolf Hitler",
+  "to": "P. Diddy",
+  "status": "done",
+  "source": "old upload on this channel (May 2025)",
+  "video_id": "zmgKN0vrE8M",
+  "views_nov2026": 1097
+ },
+ {
+  "from": "George Washington",
+  "to": "Adolf Hitler",
+  "status": "done",
+  "source": "old upload on this channel (May 2025)",
+  "video_id": "SppcW1xMA44",
+  "views_nov2026": 2941
+ },
+ {
+  "from": "Adolf Hitler",
+  "to": "Monkey D. Luffy",
+  "status": "done",
+  "source": "old upload on this channel (May 2025)",
+  "video_id": "aAemiEK4qAI",
+  "views_nov2026": 2190
+ },
+ {
+  "from": "Joseph Stalin",
+  "to": "Sophie Rain",
+  "status": "done",
+  "source": "old upload on this channel (May 2025)",
+  "video_id": "EJeNVZi7GG4",
+  "views_nov2026": 3712
+ },
+ {
+  "from": "Leonardo da Vinci",
+  "to": "Naruto",
+  "status": "done",
+  "source": "old upload on this channel (May 2025)",
+  "video_id": "oRWGkZcktlA",
+  "views_nov2026": 39838
  }
 ]
