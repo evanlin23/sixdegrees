@@ -1,0 +1,220 @@
+{
+  "from": "Jesus",
+  "to": "Roxy",
+  "requested_by": "@TheFacelessIllustrator",
+  "title": "How is Jesus connected to Roxy from FNAF?",
+  "description": "A Renaissance fresco, 2,000 years of popes and eight real photos connect Jesus to Roxanne Wolf from Five Nights at Freddy's.",
+  "hook": "How is Jesus connected to Roxy?",
+  "people": {
+    "Jesus": {
+      "label": "Jesus"
+    },
+    "Saint Peter": {
+      "label": "Saint Peter"
+    },
+    "Pope Francis": {
+      "label": "Pope Francis"
+    },
+    "Donald Trump": {
+      "label": "Donald Trump"
+    },
+    "Bongbong Marcos": {
+      "label": "Bongbong Marcos"
+    },
+    "Vanessa Hudgens": {
+      "label": "Vanessa Hudgens"
+    },
+    "Josh Hutcherson": {
+      "label": "Josh Hutcherson"
+    },
+    "Piper Rubio": {
+      "label": "Piper Rubio"
+    },
+    "Kellen Goff": {
+      "label": "Kellen Goff"
+    },
+    "Marta Svetek": {
+      "label": "Marta Svetek"
+    },
+    "Roxy": {
+      "label": "Roxy"
+    }
+  },
+  "links": [
+    {
+      "a": "Jesus",
+      "b": "Saint Peter",
+      "image": {
+        "file": "File:Gesupietrochiave.jpg"
+      },
+      "line": "In 1482, Perugino painted Jesus handing the apostle Peter the keys of heaven, on the Sistine Chapel wall.",
+      "a_face": 4,
+      "b_face": [
+        668,
+        395,
+        85,
+        100
+      ]
+    },
+    {
+      "a": "Saint Peter",
+      "b": "Pope Francis",
+      "line": "Peter is counted as the first pope, and the line runs unbroken to Pope Francis in 2013.",
+      "lineage": {
+        "label": "LINE OF POPES",
+        "people": [
+          {
+            "name": "Saint Peter",
+            "file": "File:St._Peter_(portrayed_as_a_Roman_consul).jpg",
+            "label": "1st pope"
+          },
+          {
+            "name": "Pope Leo I",
+            "file": "File:Herrera_mozo_San_León_magno_Lienzo._Óvalo._164_x_105_cm._Museo_del_Prado.png",
+            "label": "440"
+          },
+          {
+            "name": "Pope Urban II",
+            "file": "File:Urbano_II_in_consacrazione_de_l'altare_del_monastero_di_Cluny_(detail)_(crop).png",
+            "label": "1088"
+          },
+          {
+            "name": "Pope Innocent X",
+            "file": "File:Retrato_del_Papa_Inocencio_X._Roma,_by_Diego_Velázquez.jpg",
+            "label": "1644"
+          },
+          {
+            "name": "Pope Pius IX",
+            "file": "File:Pius_IX,_by_Adolphe_Braun,_1875.jpg",
+            "label": "1846"
+          },
+          {
+            "name": "Pope Pius XII",
+            "file": "File:Pius_XII_with_tabard,_by_Michael_Pitcairn,_1951_(retouched).jpg",
+            "label": "1939"
+          },
+          {
+            "name": "Pope John Paul II",
+            "file": "File:ADAMELLO_-_PAPA_-_Giovanni_Paolo_II_-_panoramio_(cropped).jpg",
+            "label": "1978"
+          },
+          {
+            "name": "Pope Benedict XVI",
+            "file": "File:Benedykt_XVI_(2010-10-17)_2.jpg",
+            "label": "2005"
+          },
+          {
+            "name": "Pope Francis",
+            "file": "File:Pope_Francis_Korea_Haemi_Castle_19_(4x5_cropped).jpg",
+            "label": "2013"
+          }
+        ]
+      }
+    },
+    {
+      "a": "Pope Francis",
+      "b": "Donald Trump",
+      "image": {
+        "file": "File:Donald Trump Pope Francis Melania Trump in 2017.jpg"
+      },
+      "line": "In 2017, Pope Francis received President Donald Trump at the Vatican.",
+      "a_face": 4,
+      "b_face": 0
+    },
+    {
+      "a": "Donald Trump",
+      "b": "Bongbong Marcos",
+      "image": {
+        "file": "File:Philippine President Bongbong Marcos and U.S. President Donald Trump meet at the funeral of Pope Francis.jpg"
+      },
+      "line": "In 2025, at Pope Francis's funeral, Trump met Philippine president Bongbong Marcos.",
+      "a_face": 8,
+      "b_face": 15
+    },
+    {
+      "a": "Bongbong Marcos",
+      "b": "Vanessa Hudgens",
+      "image": {
+        "file": "File:Vanessa Hudgens Global Tourism Ambassador Award 1.jpg"
+      },
+      "line": "In 2023, Marcos gave actress Vanessa Hudgens a Philippine tourism ambassador award.",
+      "a_face": 0,
+      "b_face": 2
+    },
+    {
+      "a": "Vanessa Hudgens",
+      "b": "Josh Hutcherson",
+      "image": {
+        "file": "File:Vanessa Hudgens, Josh Hutcherson 2012.jpg"
+      },
+      "line": "In 2012, Hudgens toured Sydney with her Journey 2 co-star Josh Hutcherson.",
+      "a_face": 0,
+      "b_face": 1
+    },
+    {
+      "a": "Josh Hutcherson",
+      "b": "Piper Rubio",
+      "image": {
+        "url": "https://media.gettyimages.com/id/2226875812/photo/san-diego-california-josh-hutcherson-and-piper-rubio-speak-onstage-at-blumhouses-five-nights.jpg?s=612x612&w=0&k=20&c=Z3V0QAcyXgUn73GGqOsTyS0CSzQoXLueH7u2q25FLj8=",
+        "credit": "Amy Sussman/Getty Images",
+        "license": "Fair use (commentary)",
+        "source": "https://www.gettyimages.com.au/detail/news-photo/josh-hutcherson-and-piper-rubio-speak-onstage-at-blumhouses-news-photo/2226875812"
+      },
+      "line": "In 2025, Hutcherson and his Five Nights at Freddy's co-star Piper Rubio took the stage at Comic-Con.",
+      "a_face": 0,
+      "b_face": 1
+    },
+    {
+      "a": "Piper Rubio",
+      "b": "Kellen Goff",
+      "image": {
+        "url": "https://media.gettyimages.com/id/2233776464/photo/universal-city-california-kellen-goff-and-piper-rubio-attend-halloween-horror-nights-opening.jpg?s=612x612&w=0&k=20&c=VPIy0lLK_UzpSHw-VxHq9UTNVKDzzwyqgynaVPAVkzQ=",
+        "credit": "Rich Polk/Getty Images for Universal Studios Hollywood",
+        "license": "Fair use (commentary)",
+        "source": "https://www.gettyimages.com.au/detail/news-photo/kellen-goff-and-piper-rubio-attend-halloween-horror-nights-news-photo/2233776464"
+      },
+      "line": "Weeks later, Rubio posed at Halloween Horror Nights with the voice actor behind Freddy Fazbear.",
+      "a_face": 1,
+      "b_face": 0
+    },
+    {
+      "a": "Kellen Goff",
+      "b": "Marta Svetek",
+      "image": {
+        "url": "https://live.staticflickr.com/65535/54344908422_8fb15661aa_b.jpg",
+        "credit": "John Manard (Wandering Dork Photography)",
+        "license": "CC BY-SA 2.0",
+        "free": true,
+        "source": "https://www.flickr.com/photos/145739041@N05/54344908422"
+      },
+      "line": "At a 2025 Miami convention, he shared a panel with his Security Breach co-star Marta Svetek.",
+      "a_face": 0,
+      "b_face": 1
+    },
+    {
+      "a": "Marta Svetek",
+      "b": "Roxy",
+      "image": {
+        "pair": [
+          {
+            "file": "File:Marta Svetek (53336382809).jpg"
+          },
+          {
+            "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/747660/library_600x900_2x.jpg",
+            "credit": "Steel Wool Studios / ScottGames",
+            "license": "Fair use (commentary)",
+            "source": "https://store.steampowered.com/app/747660/Five_Nights_at_Freddys_Security_Breach/"
+          }
+        ]
+      },
+      "line": "And Svetek voices Roxy, the wolf animatronic in Five Nights at Freddy's: Security Breach.",
+      "a_face": 0,
+      "b_face": [
+        820,
+        315,
+        150,
+        120
+      ]
+    }
+  ]
+}

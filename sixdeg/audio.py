@@ -49,6 +49,11 @@ RESPELL = {
 PHONEMES = {
     "Kim Jong Un": "kˌɪm dʒʌŋˈʊn",  # "Jong Un" as one word, or Kokoro pauses before "Un"
     "Kim Jong-un": "kˌɪm dʒʌŋˈʊn",
+    "Bongbong": "bˈɑːŋbɑːŋ",
+    "Comic-Con": "kˈɑːmɪk kˌɑːn",
+    "Fazbear": "fˈæzbɛɹ",
+    "Perugino": "pˌɛɹʊdʒˈiːnoʊ",
+    "Svetek": "svˈɛtɛk",
     "Khrushchev": "kɹuːʃtʃˈɔf",
     "Rivaldo": "ɹᵻvˈɑːldoʊ",
     "Ronaldinho": "ɹˌɑːnəldˈiːnjoʊ",

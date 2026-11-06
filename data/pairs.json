@@ -204,11 +204,12 @@
  {
   "from": "Jesus",
   "to": "Roxy (FNAF)",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@TheFacelessIllustrator",
   "comment": "Jesus to Roxy from fnaf",
   "likes": 0,
-  "source": "comment on 'leonardo da vinci to naruto' (old channel)"
+  "source": "comment on 'leonardo da vinci to naruto' (old channel)",
+  "slug": "jesus-to-roxy"
  },
  {
   "from": "Donald Trump",
