@@ -115,7 +115,8 @@ def qa(slug: str) -> dict:
         for name in people_order(spec):
             core = re.sub(r"\s*\(.*?\)", "", name)
             for part in core.split():
-                if len(part) < 4 or part.lower() not in script.lower() or part in set_words:
+                if (len(part) < 4 or part.lower() not in script.lower() or part in set_words
+                        or re.fullmatch(r"[IVXL]+", part)):          # regnal numbers are spoken as "the Eighth"
                     continue
                 if not _heard(part, heard):
                     fails.append(f"'{part}' is in the script but not heard in the audio (TTS mispronounced?) "
