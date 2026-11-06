@@ -47,10 +47,11 @@ RESPELL = {
 # QA fails when a capitalized word is in neither PHONEMES nor CMU, so every unusual name gets a human-set IPA.
 # Keys are matched as whole words, case-sensitive; multi-word keys are fine.
 PHONEMES = {
+    "Mandalorian": "mˌændəlˈɔːɹiən",
+    "Grogu": "ɡɹˈoʊɡuː",
     "Kim Jong Un": "kˌɪm dʒʌŋˈʊn",  # "Jong Un" as one word, or Kokoro pauses before "Un"
     "Kim Jong-un": "kˌɪm dʒʌŋˈʊn",
     "Bongbong": "bˈɑːŋbɑːŋ",
-    "Perugino": "pˌɛɹʊdʒˈiːnoʊ",
     "Svetek": "svˈɛtɛk",
     "Khrushchev": "kɹuːʃtʃˈɔf",
     "Rivaldo": "ɹᵻvˈɑːldoʊ",
@@ -82,6 +83,7 @@ PHONEMES = {
     "Dmitry": "dəmˈiːtɹi",
     "Sadat": "sɑːdˈɑːt",
     "FUBAR": "fˈuːbɑːɹ",
+    "Filippino": "fˌɪlɪpˈiːnoʊ",
     # regnal numbers and Renaissance names (Adam/Zeus to The Rock)
     "Sixtus IV": "sˈɪkstəs ðə fˈɔːɹθ",
     "John Paul II": "dʒˈɑːn pˈɔːl ðə sˈɛkənd",
@@ -97,6 +99,9 @@ PHONEMES = {
     "Sistine": "sˈɪstiːn",
     "Marie": "mɚɹˈiː",
     "Korea": "kəɹˈiːə",
+    "Khalifa": "kəlˈiːfə",
+    "Ovechkin": "ˈoʊvətʃkɪn",
+    "Perugino": "pˌɛɹʊdʒˈiːnoʊ",
 }
 
 _ARPA = {"AA": "ɑː", "AE": "æ", "AH": "ʌ", "AO": "ɔː", "AW": "aʊ", "AY": "aɪ", "EH": "ɛ", "ER": "ɜː", "EY": "eɪ",
