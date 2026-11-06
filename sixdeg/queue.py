@@ -19,6 +19,7 @@ from pathlib import Path
 from .common import ROOT, EPISODES
 
 BRANCH = "queue"
+VOICE_REV = 2          # keep in step with audio.VOICE_REV (the upload job doesn't import audio)
 WT = ROOT / ".queue"          # git worktree of the queue branch
 
 
@@ -131,8 +132,8 @@ def pick(wt: Path, log: list[dict], n: int) -> list[Path]:
     ready = []
     for it in items(wt):
         meta = json.loads((it / "metadata.json").read_text())
-        if want_gemini and meta.get("voice") != "gemini":
-            continue
+        if want_gemini and (meta.get("voice") != "gemini" or meta.get("voice_rev", 1) < VOICE_REV):
+            continue                       # old voice, or voiced before the clipping fix: wait for a re-render
         ready.append((it, _kind(meta)))
     last = log[-1].get("kind") if log else None
     out = []

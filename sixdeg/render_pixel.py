@@ -178,7 +178,9 @@ def render(slug: str, log=print) -> Path:
     use_outro = spec["outro"] if "outro" in spec else int(hashlib.sha1(slug.encode()).hexdigest(), 16) % 2 == 0
     script = [hook] + [l["line"] for l in spec["links"]] + ([OUTRO] if use_outro else [])
     audio.prefetch(script, voice, log)                                       # Gemini: one request per episode
-    (out_dir / "voice.json").write_text(json.dumps({"engine": audio.narrator(script, voice), "outro": use_outro}))
+    vinfo = {"engine": audio.narrator(script, voice), "outro": use_outro, "rev": audio.VOICE_REV}
+    vinfo["clipped"] = [t[:60] for t in script if audio.clipped_end(audio.say(t, voice)[0])]
+    (out_dir / "voice.json").write_text(json.dumps(vinfo))
     a, words = audio.say(hook, voice)
     HOOK_VO = 0.0    # the question starts on the very first frame
     d = max(len(a) / audio.SR + 0.3 + HOOK_VO, FF + RW + 1.3)

@@ -82,6 +82,9 @@ def qa(slug: str) -> dict:
     vj = out / "voice.json"
     used = json.loads(vj.read_text()).get("engine") if vj.exists() else None
     from .audio import voice_config
+    vinfo = json.loads(vj.read_text()) if vj.exists() else {}
+    for t in vinfo.get("clipped", []):
+        fails.append(f"narration line ends mid-word (clipped): '{t}' - re-voice it")
     if voice_config(spec.get("voice")).get("engine") == "gemini" and used != "gemini":
         fails.append("narration is not the Achird voice (local preview without a key, or Gemini quota); "
                      "only GitHub's render with the Achird voice can be published")
