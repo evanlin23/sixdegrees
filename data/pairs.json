@@ -87,11 +87,12 @@
  {
   "from": "Zeus",
   "to": "One Piece",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@Sealswowzazer",
   "comment": "Zeus to one piece",
   "likes": 1,
-  "source": "comment on 'leonardo da vinci to naruto' (old channel)"
+  "source": "comment on 'leonardo da vinci to naruto' (old channel)",
+  "slug": "zeus-to-one-piece"
  },
  {
   "from": "Rivaldo",
