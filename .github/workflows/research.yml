@@ -1,0 +1,27 @@
+name: research
+# Pull every upload of one or more channels (views/likes/comments) to the `research` branch.
+on:
+  workflow_dispatch:
+    inputs:
+      handles: {description: "space-separated channel handles", default: "@6degreesofseperation"}
+permissions: {contents: write}
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install requests google-api-python-client google-auth
+      - env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: |
+          python -m sixdeg research ${{ inputs.handles }} | tee -a "$GITHUB_STEP_SUMMARY"
+          git config user.name "github-actions[bot]"; git config user.email "41898729+github-actions[bot]@users.noreply.github.com"
+          mv research /tmp/research
+          git checkout -q --orphan research-data && git rm -rqf . && rm -rf ./*
+          cp /tmp/research/*.json . && git add -A && git commit -qm "research: ${{ inputs.handles }}" && git push -qf origin research-data
