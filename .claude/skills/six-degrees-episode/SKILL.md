@@ -37,6 +37,19 @@ episode.json: the hook shows the viewer's request bubble and the first comment c
   ```
   The first and last names must equal `a` and `b`. Use 6-15 portraits, choosing well-known holders to skip
   through a long line. It counts as one link.
+- **Same picture, same medium.** Both people in a link must be depicted *in the same picture*. Real people link
+  through a photo of them together. People from the past link through an artwork that depicts **both** of them:
+  the same painting, the same mosaic, or two figures in the same sculpture group. A real person photographed
+  standing in front of a painting or next to a statue is **not** a link, and viewers call it a cheat. The way
+  across from art to the modern world is an artwork that also depicts a real, photographed-era person (a donor or
+  patron portrait, the artist's self-portrait in the work, a pope in a fresco), a lineage link, or an actor link
+  (below). Examples:
+  - Michelangelo's *Last Judgment* depicts Adam and Michelangelo himself (his self-portrait).
+  - Raphael's *School of Athens* depicts Michelangelo and Raphael.
+  - From there, link to a pope the artist painted, and continue down the line of popes.
+- **Actor links are allowed.** An actor who played a person or character connects to them: "John Gavin played
+  Julius Caesar in Spartacus." The picture is a film still or poster of the actor in the role, and the line says
+  "played". It's the same idea as a voice actor for a cartoon character.
 - **Fictional characters** connect through a real photo of their voice actor, creator or puppeteer, and the
   line says so ("Grug is voiced by Nicolas Cage"). The character itself appears only in its own artwork
   (official art or a film still, fair use), as the endpoint link: `{"a": "Grug", "b": "Nicolas Cage", "image": <a
@@ -92,7 +105,12 @@ operator can see the effort.
 - `hook` is always the question "How is <A> connected to <B>?"
 - Each `line` is one sentence of about 18 words or fewer, starting with a year or a hook word, with a concrete fact.
 - Don't type years as words. The voice reads "1973" as "nineteen seventy-three" automatically.
-- A name the voice mispronounces: add it to `RESPELL` in `sixdeg/audio.py`, or phrase around it (QA tells you).
+- **Pronunciation.** Names are read from the CMU pronouncing dictionary. Every capitalized word it doesn't know
+  (Neymar, Bolsonaro, Tereshkova) must get exact IPA in `PHONEMES` in `sixdeg/audio.py`, or QA fails with
+  "no pronunciation for X". Take the IPA from the person's Wikipedia lead (/.../). Write it in Kokoro's style:
+  stress mark directly before the vowel, e.g. Putin = pˈuːtɪn, Bolsonaro = bˌoʊlsənˈɑːɹoʊ. Check every line
+  with `python -c "from sixdeg.audio import phonemes; print(phonemes('<line>'))"`. If a dictionary name still
+  reads wrong, add it to `PHONEMES` too, since that table wins.
 
 ## 4. Verify faces by eye
 ```bash
