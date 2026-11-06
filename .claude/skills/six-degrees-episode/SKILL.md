@@ -42,10 +42,14 @@ episode.json: the hook shows the viewer's request bubble and the first comment c
   the same painting, the same mosaic, or two figures in the same sculpture group. A real person photographed
   standing in front of a painting or next to a statue is **not** a link, and viewers call it a cheat. The way
   across from art to the modern world is an artwork that also depicts a real, photographed-era person (a donor or
-  patron portrait, the artist's self-portrait in the work, a pope in a fresco), or a lineage link. Examples:
+  patron portrait, the artist's self-portrait in the work, a pope in a fresco), a lineage link, or an actor link
+  (below). Examples:
   - Michelangelo's *Last Judgment* depicts Adam and Michelangelo himself (his self-portrait).
   - Raphael's *School of Athens* depicts Michelangelo and Raphael.
   - From there, link to a pope the artist painted, and continue down the line of popes.
+- **Actor links are allowed.** An actor who played a person or character connects to them: "John Gavin played
+  Julius Caesar in Spartacus." The picture is a film still or poster of the actor in the role, and the line says
+  "played". It's the same idea as a voice actor for a cartoon character.
 - **Fictional characters** connect through a real photo of their voice actor, creator or puppeteer, and the
   line says so ("Grug is voiced by Nicolas Cage"). The character itself appears only in its own artwork
   (official art or a film still, fair use), as the endpoint link: `{"a": "Grug", "b": "Nicolas Cage", "image": <a
