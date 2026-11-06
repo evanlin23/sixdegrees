@@ -68,6 +68,7 @@ PHONEMES = {
     "Dmitry": "dəmˈiːtɹi",
     "Sadat": "sɑːdˈɑːt",
     "FUBAR": "fˈuːbɑːɹ",
+    "Filippino": "fˌɪlɪpˈiːnoʊ",
     # CMU entries that read worse than espeak
     "de Gaulle": "də ɡˈɔːl",
     "Hogan": "hˈoʊɡən",
