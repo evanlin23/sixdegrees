@@ -1,5 +1,5 @@
 {
- "title": "Zeus to The Rock, starting with a Rubens painting",
+ "title": "How is Zeus connected to The Rock?",
  "description": "A Rubens painting, four centuries of French rulers and a Kremlin handshake connect the king of the Greek gods to Dwayne Johnson.\n\nZeus → Henry IV of France → Emmanuel Macron → Vladimir Putin → Barack Obama → Ash Carter → Kevin Hart → The Rock\n\nGive me two names in the comments and I'll find the photos that connect them.\n\nPhoto credits:\nPhoto 1 by Peter Paul Rubens, Public domain: https://commons.wikimedia.org/wiki/File:0_Henri_IV_re%C3%A7oit_le_portrait_de_Marie_de_M%C3%A9dicis_-_P.P._Rubens_-_1771_-_Louvre_2.JPG\nPhoto 2, Public domain / CC BY-SA 4.0 / CC BY 4.0: https://commons.wikimedia.org/wiki/File:Frans_Pourbus_the_Younger_(Antwerp_1569_-_Paris_1622)_-_Henri_IV,_King_of_France_(1553-1610)_-_RCIN_402972_-_Royal_Collection.jpg + https://commons.wikimedia.org/wiki/File:Luis_XIII,_rey_de_Francia_(Philippe_de_Champaigne).jpg + https://commons.wikimedia.org/wiki/File:Louis_XIV_of_France.jpg + https://commons.wikimedia.org/wiki/File:Antoine-Fran%C3%A7ois_Callet_-_Louis_XVI,_roi_de_France_et_de_Navarre_(1754-1793),_rev%C3%AAtu_du_grand_costume_royal_en_1779_-_Google_Art_Project.jpg + https://commons.wikimedia.org/wiki/File:Jacques-Louis_David_-_The_Emperor_Napoleon_in_His_Study_at_the_Tuileries_-_Google_Art_Project.jpg + https://commons.wikimedia.org/wiki/File:1841_portrait_painting_of_Louis_Philippe_I_(King_of_the_French)_by_Winterhalter.jpg + https://commons.wikimedia.org/wiki/File:Alexandre_Cabanel_002.jpg + https://commons.wikimedia.org/wiki/File:De_Gaulle-OWI_(cropped)_(c)(2).jpg + https://commons.wikimedia.org/wiki/File:President_Fran%C3%A7ois_Mitterrand_in_1983_(cropped).jpg + https://commons.wikimedia.org/wiki/File:Jacques_Chirac_(1997)_(cropped).jpg + https://commons.wikimedia.org/wiki/File:Emmanuel_Macron_2025_(cropped).jpg\nPhoto 3 by kremlin.ru, CC BY 4.0: https://commons.wikimedia.org/wiki/File:Vladimir_Putin_and_Emmanuel_Macron_(2018-05-24)_07.jpg\nPhoto 4 by Pete Souza, Public domain: https://commons.wikimedia.org/wiki/File:Barack_Obama_and_Vladimir_Putin_shake_hands_at_G8_summit,_2013.jpg\nPhoto 5 by The White House from Washington, DC, Public domain: https://commons.wikimedia.org/wiki/File:Barack_Obama_and_Ashton_Carter_on_6_July_2015.jpg\nPhoto 6 by Ash Carter, CC BY 2.0: https://commons.wikimedia.org/wiki/File:161013-D-SV709-078_(30012677960).jpg\nPhoto 7 by Michaelbruhn, CC BY-SA 4.0: https://commons.wikimedia.org/wiki/File:Albert_mit_the_Rock_and_Kevin_Hart.jpg\n\n#zeus #therock #sixdegrees #history #didyouknow #shorts",
  "tags": [
   "Zeus",
@@ -21,5 +21,8 @@
  "madeForKids": false,
  "containsSyntheticMedia": false,
  "file": "zeus-to-the-rock.mp4",
+ "kind": "request",
+ "voice": "gemini",
+ "outro": false,
  "slug": "zeus-to-the-rock"
 }
