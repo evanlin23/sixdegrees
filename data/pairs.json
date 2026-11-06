@@ -40,11 +40,12 @@
  {
   "from": "P. Diddy",
   "to": "George Washington",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@Snubbenson",
   "comment": "P diddy to george Washington",
   "likes": 2,
-  "source": "comment on 'joseph stalin to sophie rain' (old channel)"
+  "source": "comment on 'joseph stalin to sophie rain' (old channel)",
+  "slug": "diddy-to-george-washington"
  },
  {
   "from": "MatPat",
