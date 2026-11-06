@@ -39,6 +39,27 @@ def list_tts_models() -> list[str]:
     return [m["name"].split("/")[-1] for m in r.json().get("models", []) if "tts" in m["name"].lower()]
 
 
+def clean_tail(a: np.ndarray, sr: int = SR) -> np.ndarray:
+    """Gemini sometimes ends with a short loud noise burst after the speech has finished (a 'scratch').
+    Cut at the last real silence if what follows it is under 0.6 s, then fade out."""
+    hop = int(sr * 0.01)
+    n = len(a) // hop
+    db = np.array([20 * np.log10(np.sqrt(np.mean(a[i * hop:(i + 1) * hop] ** 2)) + 1e-9) for i in range(n)])
+    quiet = db < -50
+    i = n - 1
+    while i > 0 and not quiet[i]:          # walk back over the trailing burst
+        i -= 1
+    if (n - 1 - i) * 0.01 < 0.6 and i > 0:
+        j = i
+        while j > 0 and quiet[j]:          # and back over the silence before it
+            j -= 1
+        a = a[:min(len(a), (j + 15) * hop)]   # keep 150 ms after the last sound
+    f = min(len(a), int(sr * 0.03))
+    a = a.copy()
+    a[-f:] *= np.linspace(1, 0, f)
+    return a
+
+
 def synth(lines: list[str], voice: str = "Puck", model: str = "gemini-3.8-flash-tts",
           notes: str = NOTES, tries: int = 4) -> np.ndarray:
     prompt = notes + "\n".join(lines)
@@ -54,7 +75,7 @@ def synth(lines: list[str], voice: str = "Puck", model: str = "gemini-3.8-flash-
             raise RuntimeError(f"Gemini TTS {r.status_code}: {r.text[:400]}")
         part = r.json()["candidates"][0]["content"]["parts"][0]["inlineData"]
         pcm = np.frombuffer(base64.b64decode(part["data"]), dtype="<i2")
-        return pcm.astype(np.float32) / 32768.0
+        return clean_tail(pcm.astype(np.float32) / 32768.0)
     raise RuntimeError("Gemini TTS: rate-limited, gave up")
 
 
