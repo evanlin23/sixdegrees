@@ -40,6 +40,8 @@ CARD = (50, 430, 930, 1380)           # photo window: x0, y0, x1, y1
 BAND = 270                            # top title band height
 BAR_Y = 352                           # chain bar (faces) centre line
 CAP_Y = 1300                          # captions
+HERO_A = (0, 790, 470)                # hook: face A photo spans y0..y1 (full bleed), face centred at y=fy within it
+HERO_B = (900, H, 340)                # face B photo; the 790..900 seam between them carries the spoken question
 
 
 def pf(size):  # pixel font
@@ -483,6 +485,31 @@ def render(slug: str, log=print) -> Path:
             _strip[i] = fake_link_frame(i, 0.75)
         return _strip[i]
 
+    _hero = {}
+
+    def hero(nm, h, fy):
+        """A full-width rectangular photo of nm's face (face ~340 px tall, centred at (CX, fy)); gaps are a blur."""
+        key = (nm, h, fy)
+        if key not in _hero:
+            img, box = C.hero_src[nm]
+            ih, iw = img.shape[:2]
+            if box is None:
+                box = (iw * 0.3, ih * 0.15, iw * 0.4, iw * 0.4)
+            x, y, bw, bh = box
+            s_ = 340 / max(bh, bw * 1.1)
+            fx, fyy = x + bw / 2, y + bh * 0.45
+            M = np.float32([[s_, 0, CX - fx * s_], [0, s_, fy - fyy * s_]])
+            crop = cv2.warpAffine(img, M, (W, h), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_CONSTANT)
+            mask = cv2.warpAffine(np.full((ih, iw), 255, np.uint8), M, (W, h), flags=cv2.INTER_LINEAR)
+            cover = max(W / iw, h / ih)                                   # blurred cover fill behind the photo
+            bg = cv2.resize(img, (int(iw * cover) + 1, int(ih * cover) + 1))
+            by0, bx0 = (bg.shape[0] - h) // 2, (bg.shape[1] - W) // 2
+            bg = cv2.GaussianBlur(bg[by0:by0 + h, bx0:bx0 + W], (0, 0), 25) * 0.55
+            m = (mask.astype(np.float32) / 255)[..., None]
+            out = (crop * m + bg * (1 - m)).astype(np.uint8)
+            _hero[key] = Image.fromarray(cv2.cvtColor(out, cv2.COLOR_BGR2RGB)).convert("RGBA")
+        return _hero[key]
+
     def frame_hook(seg, tt):
         k = tt - seg["t0"]
         last = n_links - 1
@@ -507,55 +534,36 @@ def render(slug: str, log=print) -> Path:
             base.alpha_composite(a_im, (0, off))
             base.alpha_composite(b_im, (0, off - H))
             paste(base, pixel_text("<< REWIND", 56, fill=WHITE), 270, 360)
-        else:                                        # 3) versus: A and B slam in, string snaps, count pops
+        else:                                        # 3) versus: two big faces, full width, from frame 0
             kk = k - FF - RW
-            sx, sy = shake(kk, 12, 0.25)
-            sx2, sy2 = shake(kk - 0.2, 12, 0.25)
-            base = checker(tt * 3, ((90, 40, 200), (70, 26, 170)))   # faster scroll keeps the screen moving
+            base = Image.new("RGBA", (W, H), INK + (255,))
+            for nm, (y0, y1, fy), col, sgn in ((spec["from"], HERO_A, CYAN, -1), (spec["to"], HERO_B, YELLOW, 1)):
+                sx, sy = shake(kk - (0 if sgn < 0 else 0.06), 14, 0.22)
+                z = 1.0 + 0.07 * min(1.0, kk / 3.0)                      # slow push-in on the face
+                im = hero(nm, y1 - y0, fy)
+                if z > 1.001:
+                    im = im.resize((int(W * z), int((y1 - y0) * z)), Image.BICUBIC)
+                    ox, oy = int(CX * (z - 1)), int(fy * (z - 1))
+                    im = im.crop((ox, oy, ox + W, oy + (y1 - y0)))
+                slide = int(sgn * 70 * (1 - ease(min(1.0, kk / 0.22))))  # A slides in from the left, B from the right
+                base.alpha_composite(im, (slide + int(sx), y0 + int(sy)))
+                tag = pixel_tag(C.labels[nm].upper(), col, 44)
+                ty = y1 - tag.height // 2 - 24 if sgn < 0 else y0 + tag.height // 2 + 30   # A under its face, B above
+                paste(base, tag, CX + int(sx), ty + int(sy))
             dr = ImageDraw.Draw(base)
-            dr.rectangle([0, 0, W, BAND], fill=INK)
-            paste(base, title_im, CX, 190)            # same "A > B" header as the links, no count
-            centers = {}
-            for nm, cy, delay, col, (dx, dy) in ((spec["from"], 590, 0.0, CYAN, (sx, sy)),
-                                                 (spec["to"], 1060, 0.18, YELLOW, (sx2, sy2))):
-                if kk < delay:
-                    continue
-                sc = 1.6 - 0.6 * ease(min(1, (kk - delay) / 0.12))     # slams down from big to size
-                sc *= 1 + 0.06 * min(1.0, kk / 2.0)                       # then a slow push-in
-                dy += 10 * math.sin(kk * 5 + (0 if nm == spec["from"] else 2))   # and keeps bobbing
-                size = 360
-                face = C.thumbs[nm].resize((size, size), Image.BICUBIC).convert("RGBA")
-                card = Image.new("RGBA", (size + 44, size + 44), (0, 0, 0, 0))
-                cd = ImageDraw.Draw(card)
-                cd.rectangle([16, 16, size + 44, size + 44], fill=INK)
-                cd.rectangle([0, 0, size + 28, size + 28], fill=WHITE, outline=INK, width=6)
-                flat = Image.new("RGBA", (size, size), (30, 30, 30, 255)); flat.alpha_composite(face)
-                card.alpha_composite(flat, (14, 14))
-                paste(base, card, CX + dx, cy + dy, scale=sc, nearest=False)
-                paste(base, pixel_tag(C.labels[nm].upper(), col, 30), CX + dx, cy + 222 + dy, scale=min(1, sc))
-                centers[nm] = (CX + dx, cy + dy)
-            if len(centers) == 2 and kk > 0.3:                          # the string snaps between them
-                (ax, ay), (bx, by) = centers[spec["from"]], centers[spec["to"]]
-                g = min(1.0, (kk - 0.3) / 0.12)
-                p0, p1 = (ax + 210, ay + 110), (bx + 265, by - 150)    # Buh clear of A's name tag
-                pe = (p0[0] + (p1[0] - p0[0]) * g, p0[1] + (p1[1] - p0[1]) * g)
-                dr = ImageDraw.Draw(base)
-                dr.line([p0, pe], fill=INK, width=14); dr.line([p0, pe], fill=RED, width=8)
-                if g >= 1:   # a glow travels along the string
-                    q = (kk * 1.6) % 1.0
-                    gx, gy = p0[0] + (p1[0] - p0[0]) * q, p0[1] + (p1[1] - p0[1]) * q
-                    dr.rectangle([gx - 9, gy - 9, gx + 9, gy + 9], fill=YELLOW, outline=INK, width=3)
-                hop = abs(math.sin(kk * 8)) * 40
-                walk = 120 * math.sin(kk * 2.2)                           # Buh paces along the string
-                paste_pin(base, pin_sprite("shock" if kk < 0.8 else ("smug" if int(kk * 2) % 2 else "angry"),
-                                           0, 0, 1 if math.cos(kk * 2.2) > 0 else -1), min(SAFE[2] - 60, p1[0] + walk * 0.4), p1[1] - hop)
+            dr.rectangle([0, HERO_A[1], W, HERO_B[0]], fill=INK)               # the seam carries the question
+            dr.rectangle([0, HERO_A[1] - 6, W, HERO_A[1]], fill=CYAN)
+            dr.rectangle([0, HERO_B[0], W, HERO_B[0] + 6], fill=YELLOW)
+            hop = abs(math.sin(kk * 8)) * 26
+            paste_pin(base, pin_sprite("shock" if kk < 0.8 else ("smug" if int(kk * 2) % 2 else "angry"), 0, 0, -1),
+                      SAFE[2] - 50, HERO_A[1] - 6 - hop)                 # Buh stands on the seam
             if spec.get("requested_by"):
                 req = f'{spec["requested_by"]}: "{short_name(spec["from"]).upper()} TO {short_name(spec["to"]).upper()}"'
                 fsz = 24
                 while pf(fsz).getlength(req) > SAFE[2] - SAFE[0] - 40 and fsz > 14:
                     fsz -= 2
-                paste(base, pixel_tag(req, WHITE, fsz), CX, 340, scale=1)   # readable from frame 0
-        seg["cap"].draw(base, tt, y=1370)
+                paste(base, pixel_tag(req, WHITE, fsz), CX, SAFE[1] + 40, scale=1)   # readable from frame 0
+        seg["cap"].draw(base, tt, y=(HERO_A[1] + HERO_B[0]) // 2)
         return base
 
     draw = {"hook": frame_hook, "link": frame_link}
@@ -566,7 +574,7 @@ def render(slug: str, log=print) -> Path:
                 return draw[sg["kind"]](sg, tt)
         raise AssertionError
 
-    # thumbnail: the settled opening (both faces, names, Buh) without captions, plus a big yellow "?"
+    # thumbnail: the settled opening (both faces, names, Buh) without captions, plus a yellow "?" on the seam
     try:
         hs = segs[0]
         g = globals()
@@ -576,8 +584,8 @@ def render(slug: str, log=print) -> Path:
             th = frame_hook({**hs, "cap": _NoCap()}, hs["t0"] + 1.1)
         finally:
             g["CX"] = saved
-        q = pixel_text("?", 260, fill=YELLOW)
-        th.alpha_composite(q, (int(W / 2 - q.width / 2), int(1560 - q.height / 2)))
+        q = pixel_text("?", 170, fill=YELLOW)                       # on the seam, between the two faces
+        th.alpha_composite(q, (int(W / 2 - q.width / 2), int((HERO_A[1] + HERO_B[0]) / 2 - q.height / 2)))
         th.convert("RGB").save(out_dir / "thumb.jpg", quality=92)
     except Exception as e:  # noqa: BLE001 - kit falls back to a video frame
         log(f"thumbnail skipped: {e}")
