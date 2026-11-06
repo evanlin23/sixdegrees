@@ -550,9 +550,10 @@
  {
   "from": "Cleopatra",
   "to": "Hello Kitty",
-  "status": "todo",
+  "status": "done",
   "source": "viral formula (Nov 2026 research)",
-  "hint": "Sanrio costume character at events"
+  "hint": "Sanrio costume character at events",
+  "slug": "cleopatra-to-hello-kitty"
  },
  {
   "from": "Queen Victoria",
