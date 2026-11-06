@@ -559,9 +559,10 @@
  {
   "from": "Queen Victoria",
   "to": "Big Bird",
-  "status": "todo",
+  "status": "done",
   "source": "viral formula (Nov 2026 research)",
-  "hint": "puppet; Big Bird at the White House"
+  "hint": "puppet; Big Bird at the White House",
+  "slug": "queen-victoria-to-big-bird"
  },
  {
   "from": "Saddam Hussein",
