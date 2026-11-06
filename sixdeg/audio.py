@@ -55,6 +55,7 @@ PHONEMES = {
     "Tereshkova": "tˌɛɹɛʃkˈoʊvə",
     "Valentina": "vˌæləntˈiːnə",
     "Grug": "ɡɹˈʌɡ",
+    "MatPat": "mˈæt pˈæt",
     "Hendaye": "ɑːndˈaɪ",
     "Yosuke": "jˈoʊskeɪ",
     "Matsuoka": "mˌɑːtsuːˈoʊkə",
