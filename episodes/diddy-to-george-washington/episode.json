@@ -1,0 +1,91 @@
+{
+  "from": "Sean Combs",
+  "to": "George Washington",
+  "requested_by": "@Snubbenson",
+  "title": "How is Diddy connected to George Washington?",
+  "description": "Two real photos link Diddy to Barack Obama, and the line of presidents runs from Obama back to George Washington.",
+  "hook": "How is Diddy connected to George Washington?",
+  "people": {
+    "Sean Combs": {
+      "label": "Diddy"
+    }
+  },
+  "links": [
+    {
+      "a": "Sean Combs",
+      "b": "Donald Trump",
+      "image": {
+        "url": "https://www.hot97.com/wp-content/uploads/sites/2/2026/01/GettyImages-2254462097.jpg?w=1024",
+        "credit": "Sonia Moskowitz / Getty Images, via Hot 97",
+        "license": "Fair use (commentary)",
+        "source": "https://www.hot97.com/news/president-donald-trump-responds-to-diddy-pardon-allegations/"
+      },
+      "line": "In 1998, Diddy and Donald Trump posed together at a celebrity polo match in the Hamptons.",
+      "a_face": 5,
+      "b_face": 6
+    },
+    {
+      "a": "Donald Trump",
+      "b": "Barack Obama",
+      "image": {
+        "file": "File:Barack Obama meets with Donald Trump in the Oval Office.jpg"
+      },
+      "line": "In November 2016, President-elect Trump met outgoing President Barack Obama in the Oval Office."
+    },
+    {
+      "a": "Barack Obama",
+      "b": "George Washington",
+      "line": "Obama was the 44th president, and that line of presidents runs all the way back to the first, George Washington.",
+      "lineage": {
+        "label": "LINE OF PRESIDENTS",
+        "people": [
+          {
+            "name": "Barack Obama",
+            "file": "File:President_Barack_Obama.jpg",
+            "label": "44th"
+          },
+          {
+            "name": "Ronald Reagan",
+            "file": "File:Official_Portrait_of_President_Reagan_1981.jpg",
+            "label": "40th"
+          },
+          {
+            "name": "Richard Nixon",
+            "file": "File:Richard_Nixon_presidential_portrait_(2).jpg",
+            "label": "37th"
+          },
+          {
+            "name": "John F. Kennedy",
+            "file": "File:John_F._Kennedy,_White_House_color_photo_portrait.jpg",
+            "label": "35th"
+          },
+          {
+            "name": "Franklin D. Roosevelt",
+            "file": "File:FDR-1944-Campaign-Portrait_(3x4_retouched,_cropped).jpg",
+            "label": "32nd"
+          },
+          {
+            "name": "Theodore Roosevelt",
+            "file": "File:Theodore_Roosevelt_by_the_Pach_Bros_(4x5_cropped)_(3).jpg",
+            "label": "26th"
+          },
+          {
+            "name": "Abraham Lincoln",
+            "file": "File:Abraham_Lincoln_O-77_matte_collodion_print.jpg",
+            "label": "16th"
+          },
+          {
+            "name": "Thomas Jefferson",
+            "file": "File:Official_Presidential_portrait_of_Thomas_Jefferson_(by_Rembrandt_Peale,_1800).jpg",
+            "label": "3rd"
+          },
+          {
+            "name": "George Washington",
+            "file": "File:Gilbert_Stuart_Williamstown_Portrait_of_George_Washington.jpg",
+            "label": "1st"
+          }
+        ]
+      }
+    }
+  ]
+}
