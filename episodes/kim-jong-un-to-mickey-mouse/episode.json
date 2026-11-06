@@ -1,0 +1,57 @@
+{
+  "from": "Kim Jong Un",
+  "to": "Mickey Mouse",
+  "title": "Kim Jong Un to Mickey Mouse in three real photos?",
+  "description": "Three real photos connect North Korea's Kim Jong Un to Mickey Mouse, through two American presidents.",
+  "hook": "How is Kim Jong Un connected to Mickey Mouse?",
+  "people": {
+    "Kim Jong Un": {
+      "label": "Kim Jong Un"
+    },
+    "Donald Trump": {
+      "label": "Donald Trump"
+    },
+    "Ronald Reagan": {
+      "label": "Ronald Reagan"
+    },
+    "Mickey Mouse": {
+      "label": "Mickey Mouse"
+    }
+  },
+  "links": [
+    {
+      "a": "Kim Jong Un",
+      "b": "Donald Trump",
+      "image": {
+        "file": "File:Kim and Trump shaking hands at the red carpet during the DPRK–USA Singapore Summit.jpg"
+      },
+      "line": "In 2018, Kim Jong Un shook hands with Donald Trump in Singapore, the first summit between their two countries.",
+      "a_face": 0
+    },
+    {
+      "a": "Donald Trump",
+      "b": "Ronald Reagan",
+      "image": {
+        "file": "File:Trump Meets Reagan.jpg"
+      },
+      "line": "Back in 1987, real-estate developer Donald Trump met President Ronald Reagan at a White House reception.",
+      "a_face": 5,
+      "b_face": 0
+    },
+    {
+      "a": "Ronald Reagan",
+      "b": "Mickey Mouse",
+      "image": {
+        "file": "File:President Ronald Reagan and Nancy Reagan during a trip to Orlando, Florida and a visit to Epcot Center at Disney World and a group photograph with Mickey Mouse and Minnie Mouse - DPLA - 5810c0c969617ab7f42e1b068ba08dca.jpg"
+      },
+      "line": "And in 1985, after cold weather cancelled his inaugural parade, Reagan held it at Epcot, with Mickey Mouse.",
+      "a_face": 2,
+      "b_face": [
+        1360,
+        330,
+        350,
+        350
+      ]
+    }
+  ]
+}

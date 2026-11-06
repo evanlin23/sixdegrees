@@ -492,9 +492,10 @@
  {
   "from": "Kim Jong Un",
   "to": "Mickey Mouse",
-  "status": "todo",
+  "status": "done",
   "source": "viral formula (Nov 2026 research)",
-  "hint": "costume character at White House / Disney events"
+  "hint": "costume character at White House / Disney events",
+  "slug": "kim-jong-un-to-mickey-mouse"
  },
  {
   "from": "Napoleon",
