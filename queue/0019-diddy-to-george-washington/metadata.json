@@ -17,5 +17,8 @@
  "madeForKids": false,
  "containsSyntheticMedia": false,
  "file": "diddy-to-george-washington.mp4",
+ "kind": "request",
+ "voice": "gemini",
+ "outro": false,
  "slug": "diddy-to-george-washington"
 }
