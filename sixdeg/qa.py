@@ -42,11 +42,18 @@ def _norm(w):
     return re.sub(r"[^a-z0-9]", "", w.lower())
 
 
-def _heard(name_word, heard_words):
+_ABBR = {"st": "saint", "mt": "mount", "dr": "doctor", "jr": "junior"}
+
+
+def _heard(name_word, heard_words, cutoff=0.75):
+    """Was this name word in the transcript? Whisper spells names its own way: it writes 'St.' for Saint,
+    splits 'Jung-jae' into two words and approximates rare surnames, so also try adjacent word pairs."""
     t = _norm(name_word)
     if not t:
         return True
-    return any(difflib.SequenceMatcher(None, t, _norm(h)).ratio() >= 0.75 for h in heard_words)
+    hw = [_ABBR.get(_norm(h), _norm(h)) for h in heard_words]
+    cands = hw + [a + b for a, b in zip(hw, hw[1:])]
+    return any(difflib.SequenceMatcher(None, t, h).ratio() >= cutoff for h in cands)
 
 
 def qa(slug: str) -> dict:
@@ -126,7 +133,9 @@ def qa(slug: str) -> dict:
                 if (len(part) < 4 or part.lower() not in script.lower() or part in set_words
                         or re.fullmatch(r"[IVXL]+", part)):          # regnal numbers are spoken as "the Eighth"
                     continue
-                if not _heard(part, heard):
+                # Achird reads the script as written (the batch split already checked every line was spoken),
+                # so only a clear miss counts there; the Kokoro voice gets the strict check
+                if not _heard(part, heard, 0.55 if used == "gemini" else 0.75):
                     fails.append(f"'{part}' is in the script but not heard in the audio (TTS mispronounced?) "
                                  f"- add a respelling to audio.RESPELL")
         # contact sheet for the reviewing session to look at

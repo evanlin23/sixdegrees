@@ -98,9 +98,7 @@ def _thumb_url(ii: dict, ow: int) -> str:
     m = re.match(r"https://upload\.wikimedia\.org/wikipedia/commons/(\w/\w\w)/(.+)$", orig)
     if not m or not orig.lower().endswith((".jpg", ".jpeg", ".png")):
         return orig
-    fits = [w for w in (250,) + STD_WIDTHS if w <= ow]
-    if not fits:
-        return orig
+    fits = [w for w in (250,) + STD_WIDTHS if w <= ow] or [ow]   # small originals: a thumb at their own width
     name = m.group(2)
     return f"https://thumb.wikimedia.org/wikipedia/commons/thumb/{m.group(1)}/{name}/{fits[-1]}px-{name}"
 
