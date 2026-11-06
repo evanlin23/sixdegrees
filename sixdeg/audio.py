@@ -310,6 +310,44 @@ def _gemini_batch(spoken_lines: list[str], cfg: dict) -> list[np.ndarray]:
         wav = Path(td) / "batch.wav"
         sf.write(wav, a, SR)
         heard = transcribe(wav)
+    _save_raw(a, heard, spoken_lines, cfg)     # keep the whole recording: a better splitter is then free
+    return split_batch(a, heard, spoken_lines)
+
+
+RAW = GEMINI_CACHE / "raw"
+
+
+def _save_raw(a, heard, spoken_lines, cfg) -> None:
+    import json
+    RAW.mkdir(parents=True, exist_ok=True)
+    key = hashlib.sha1(("\n".join(spoken_lines) + json.dumps({k: cfg.get(k) for k in ("voice", "model")})).encode()).hexdigest()
+    sf.write(RAW / f"{key}.flac", a, SR)
+    (RAW / f"{key}.json").write_text(json.dumps({"lines": spoken_lines, "heard": heard,
+                                                "voice": cfg.get("voice"), "model": cfg.get("model")}))
+
+
+def resplit_all(cfg: dict | None = None, log=print) -> int:
+    """Re-cut every saved raw recording with the current splitter/trim (no Gemini requests)."""
+    import json
+    cfg = cfg or voice_config()
+    n = 0
+    for js in sorted(RAW.glob("*.json")):
+        meta = json.loads(js.read_text())
+        a, _ = sf.read(js.with_suffix(".flac"), dtype="float32")
+        try:
+            clips = split_batch(a, [tuple(h) for h in meta["heard"]], meta["lines"])
+        except RuntimeError as e:
+            log(f"resplit {js.stem[:8]}: {e}")
+            continue
+        for line, c in zip(meta["lines"], clips):
+            sf.write(GEMINI_CACHE / f"{_gemini_key(line, cfg)}.flac", c, SR)
+            n += 1
+    return n
+
+
+def split_batch(a: np.ndarray, heard, spoken_lines: list[str]) -> list[np.ndarray]:
+    """Cut one Gemini recording back into its lines (word alignment + quietest point near each boundary)."""
+    import difflib
     hw = [re.sub(r"[^a-z0-9]", "", w.lower()) for w, _, _ in heard]
     script, owner = [], []
     for li, line in enumerate(spoken_lines):
