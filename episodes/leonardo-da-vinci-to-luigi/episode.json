@@ -1,0 +1,161 @@
+{
+  "from": "Leonardo da Vinci",
+  "to": "Luigi",
+  "title": "From the Mona Lisa painter to Luigi in five links",
+  "description": "An Ingres painting, five centuries of French rulers, a royal visit to Wrexham and the cast of It's Always Sunny connect Leonardo da Vinci to Luigi.",
+  "hook": "How is Leonardo da Vinci connected to Luigi?",
+  "people": {
+    "Leonardo da Vinci": {
+      "label": "Leonardo da Vinci"
+    },
+    "Francis I of France": {
+      "label": "King Francis I"
+    },
+    "Emmanuel Macron": {
+      "label": "Emmanuel Macron"
+    },
+    "Charles III": {
+      "label": "King Charles"
+    },
+    "Rob McElhenney": {
+      "label": "Rob McElhenney"
+    },
+    "Charlie Day": {
+      "label": "Charlie Day"
+    },
+    "Luigi": {
+      "label": "Luigi"
+    }
+  },
+  "links": [
+    {
+      "a": "Leonardo da Vinci",
+      "b": "Francis I of France",
+      "image": {
+        "file": "File:Jean-Auguste-Dominique Ingres - François Ier reçoit les derniers soupirs de Léonard de Vinci - PDUT1165 - Musée des Beaux-Arts de la ville de Paris.jpg"
+      },
+      "line": "In 1818, a French artist painted Leonardo dying in the arms of his patron, King Francis the First.",
+      "a_face": [
+        440,
+        665,
+        90,
+        85
+      ],
+      "b_face": [
+        513,
+        563,
+        93,
+        117
+      ]
+    },
+    {
+      "a": "Francis I of France",
+      "b": "Emmanuel Macron",
+      "line": "The French throne passed from Francis through Louis the Fourteenth, Napoleon and de Gaulle to Emmanuel Macron.",
+      "lineage": {
+        "label": "RULERS OF FRANCE",
+        "people": [
+          {
+            "name": "Francis I of France",
+            "file": "File:François Ier Louvre.jpg",
+            "label": "1515"
+          },
+          {
+            "name": "Henry IV of France",
+            "file": "File:Frans_Pourbus_the_Younger_(Antwerp_1569_-_Paris_1622)_-_Henri_IV,_King_of_France_(1553-1610)_-_RCIN_402972_-_Royal_Collection.jpg",
+            "label": "1589"
+          },
+          {
+            "name": "Louis XIV",
+            "file": "File:Louis_XIV_of_France.jpg",
+            "label": "1643"
+          },
+          {
+            "name": "Louis XVI",
+            "file": "File:Antoine-François_Callet_-_Louis_XVI,_roi_de_France_et_de_Navarre_(1754-1793),_revêtu_du_grand_costume_royal_en_1779_-_Google_Art_Project.jpg",
+            "label": "1774"
+          },
+          {
+            "name": "Napoleon",
+            "file": "File:Jacques-Louis_David_-_The_Emperor_Napoleon_in_His_Study_at_the_Tuileries_-_Google_Art_Project.jpg",
+            "label": "1804"
+          },
+          {
+            "name": "Napoleon III",
+            "file": "File:Alexandre_Cabanel_002.jpg",
+            "label": "1848"
+          },
+          {
+            "name": "Charles de Gaulle",
+            "file": "File:De_Gaulle-OWI_(cropped)_(c)(2).jpg",
+            "label": "1959"
+          },
+          {
+            "name": "François Mitterrand",
+            "file": "File:President_François_Mitterrand_in_1983_(cropped).jpg",
+            "label": "1981"
+          },
+          {
+            "name": "Emmanuel Macron",
+            "file": "File:Emmanuel_Macron_2025_(cropped).jpg",
+            "label": "2017"
+          }
+        ]
+      }
+    },
+    {
+      "a": "Emmanuel Macron",
+      "b": "Charles III",
+      "image": {
+        "file": "File:King Charles III and Emmanuel Macron at British Embassy Paris.jpg"
+      },
+      "line": "In 2023, Macron joined King Charles the Third in Paris to plant a tree at the British embassy."
+    },
+    {
+      "a": "Charles III",
+      "b": "Rob McElhenney",
+      "image": {
+        "url": "https://www.etonline.com/sites/default/files/styles/1280x720/public/images/2022-12/ryan-reynolds-royalsGettyImages-1245475573.jpg?h=42979922&width=1024&quality=80",
+        "credit": "Oli Scarff/AFP via Getty Images",
+        "license": "Fair use (commentary)",
+        "source": "https://www.etonline.com/ryan-reynolds-meets-king-charles-iii-and-camilla-at-wrexham-soccer-club-with-rob-mcelhenney-195752"
+      },
+      "line": "In 2022, the King toured Wrexham's football ground with its co-owner, actor Rob McElhenney.",
+      "a_face": 1,
+      "b_face": 5
+    },
+    {
+      "a": "Rob McElhenney",
+      "b": "Charlie Day",
+      "image": {
+        "file": "File:Rob McElhenney, Glenn Howerton & Charlie Day (9363078009).jpg"
+      },
+      "line": "McElhenney created It's Always Sunny in Philadelphia, starring his old friend Charlie Day."
+    },
+    {
+      "a": "Charlie Day",
+      "b": "Luigi",
+      "image": {
+        "pair": [
+          {
+            "file": "File:Charlie Day by Gage Skidmore.jpg"
+          },
+          {
+            "url": "https://i0.wp.com/screen-connections.com/wp-content/uploads/2023/03/The.Super_.Mario_.Bros_.Movie-New.Character.Posters-Luigi.jpg",
+            "credit": "Nintendo / Illumination / Universal Pictures",
+            "license": "Fair use (commentary)",
+            "source": "https://screen-connections.com/2023/03/09/the-super-mario-bros-movie-final-trailer-main-poster-6-more-character-posters/"
+          }
+        ]
+      },
+      "line": "And in 2023, Charlie Day became the voice of Luigi in the Super Mario Bros Movie.",
+      "b_face": [
+        1200,
+        470,
+        215,
+        215
+      ],
+      "a_face": 0
+    }
+  ]
+}

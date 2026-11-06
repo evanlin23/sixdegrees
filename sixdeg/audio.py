@@ -48,6 +48,7 @@ RESPELL = {
 PHONEMES = {
     "Mandalorian": "mˌændəlˈɔːɹiən",
     "Grogu": "ɡɹˈoʊɡuː",
+    "Emmanuel": "ɪmˈænjuəl",  # Wikipedia's IPAc-en for Macron starts with a "us" label the parser keeps
     "Kim Jong Un": "kˌɪm dʒʌŋˈʊn",  # "Jong Un" as one word, or Kokoro pauses before "Un"
     "Kim Jong-un": "kˌɪm dʒʌŋˈʊn",
     "Khrushchev": "kɹuːʃtʃˈɔf",
