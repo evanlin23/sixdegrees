@@ -3,7 +3,7 @@
   "to": "Monkey D. Luffy",
   "requested_by": "@Sealswowzazer",
   "title": "How is Zeus connected to Luffy from One Piece?",
-  "description": "An ancient statue, a president, the MythBusters and a cast of voice actors link Zeus to Luffy.",
+  "description": "A Rubens painting, the line of French rulers, two presidents, the MythBusters and a cast of voice actors link Zeus to Luffy.",
   "hook": "How is Zeus connected to Luffy from One Piece?",
   "people": {
     "Monkey D. Luffy": {
@@ -11,22 +11,114 @@
     },
     "Zeus": {
       "label": "Zeus"
+    },
+    "Henry IV of France": {
+      "label": "Henry IV"
     }
   },
   "links": [
     {
       "a": "Zeus",
+      "b": "Henry IV of France",
+      "image": {
+        "file": "File:Peter Paul Rubens 036.jpg"
+      },
+      "line": "Around 1622, Rubens painted Jupiter, the Roman Zeus, lifting King Henry the Fourth of France into heaven.",
+      "a_face": 0,
+      "b_face": [
+        252,
+        200,
+        60,
+        55
+      ]
+    },
+    {
+      "a": "Henry IV of France",
+      "b": "Emmanuel Macron",
+      "lineage": {
+        "label": "RULERS OF FRANCE",
+        "people": [
+          {
+            "name": "Henry IV of France",
+            "file": "File:Frans_Pourbus_the_Younger_(Antwerp_1569_-_Paris_1622)_-_Henri_IV,_King_of_France_(1553-1610)_-_RCIN_402972_-_Royal_Collection.jpg",
+            "label": "1589"
+          },
+          {
+            "name": "Louis XIII",
+            "file": "File:Luis_XIII,_rey_de_Francia_(Philippe_de_Champaigne).jpg",
+            "label": "1610"
+          },
+          {
+            "name": "Louis XIV",
+            "file": "File:Louis_XIV_of_France.jpg",
+            "label": "1643"
+          },
+          {
+            "name": "Louis XV",
+            "file": "File:Louis_XV,_King_of_France_(1710-1774)_edited_2.jpg",
+            "label": "1715"
+          },
+          {
+            "name": "Louis XVI",
+            "file": "File:Antoine-François_Callet_-_Louis_XVI,_roi_de_France_et_de_Navarre_(1754-1793),_revêtu_du_grand_costume_royal_en_1779_-_Google_Art_Project.jpg",
+            "label": "1774"
+          },
+          {
+            "name": "Napoleon",
+            "file": "File:Jacques-Louis_David_-_The_Emperor_Napoleon_in_His_Study_at_the_Tuileries_-_Google_Art_Project.jpg",
+            "label": "1804"
+          },
+          {
+            "name": "Louis XVIII",
+            "file": "File:Gérard_-_Louis_XVIII_of_France_in_Coronation_Robes.jpg",
+            "label": "1814"
+          },
+          {
+            "name": "Louis Philippe I",
+            "file": "File:1841_portrait_painting_of_Louis_Philippe_I_(King_of_the_French)_by_Winterhalter.jpg",
+            "label": "1830"
+          },
+          {
+            "name": "Napoleon III",
+            "file": "File:Alexandre_Cabanel_002.jpg",
+            "label": "1848"
+          },
+          {
+            "name": "Adolphe Thiers",
+            "file": "File:Adolphe_Thiers_Nadar_2.JPG",
+            "label": "1871"
+          },
+          {
+            "name": "Raymond Poincaré",
+            "file": "File:Raymond_Poincaré_officiel_(cropped).jpg",
+            "label": "1913"
+          },
+          {
+            "name": "Charles de Gaulle",
+            "file": "File:De_Gaulle-OWI_(cropped)_(c)(2).jpg",
+            "label": "1959"
+          },
+          {
+            "name": "François Mitterrand",
+            "file": "File:President_François_Mitterrand_in_1983_(cropped).jpg",
+            "label": "1981"
+          },
+          {
+            "name": "Emmanuel Macron",
+            "file": "File:Emmanuel_Macron_2025_(cropped).jpg",
+            "label": "2017"
+          }
+        ]
+      },
+      "line": "From Henry the Fourth, the line of French rulers runs through kings, emperors and presidents to Emmanuel Macron."
+    },
+    {
+      "a": "Emmanuel Macron",
       "b": "Vladimir Putin",
       "image": {
-        "url": "http://static.kremlin.ru/media/events/photos/big2x/LZmmVYNNYfLv32NczdFLAD2w034FCNwU.jpg",
-        "credit": "Kremlin.ru (photo: Alexei Danichev, RIA Novosti)",
-        "license": "CC BY 4.0",
-        "source": "http://kremlin.ru/events/president/news/75938/photos",
-        "free": true
+        "file": "File:Vladimir Putin and Emmanuel Macron (2018-05-24) 07.jpg"
       },
-      "line": "In 2024, Vladimir Putin toured the Hermitage under a giant ancient statue of Jupiter, the Roman Zeus.",
-      "a_face": 4,
-      "b_face": 2
+      "line": "In 2018, Macron shook hands with Vladimir Putin in Saint Petersburg."
     },
     {
       "a": "Vladimir Putin",
@@ -34,7 +126,7 @@
       "image": {
         "file": "File:Vladimir Putin and Barack Obama (2015-09-29) 01.jpg"
       },
-      "line": "In 2015, Putin shook hands with Barack Obama at the United Nations in New York."
+      "line": "Back in 2015, Putin met Barack Obama at the United Nations in New York."
     },
     {
       "a": "Barack Obama",
