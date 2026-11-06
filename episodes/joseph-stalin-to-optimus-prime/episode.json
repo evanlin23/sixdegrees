@@ -1,0 +1,113 @@
+{
+  "from": "Joseph Stalin",
+  "to": "Optimus Prime",
+  "requested_by": "@Thegreatskibidisigmalord",
+  "title": "How is Stalin connected to Optimus Prime?",
+  "description": "Seven links connect Joseph Stalin to Optimus Prime, through Mao, two presidents, two movie stars and the voice of the Autobots.",
+  "hook": "How is Joseph Stalin connected to Optimus Prime?",
+  "people": {
+    "Joseph Stalin": {
+      "label": "Joseph Stalin"
+    },
+    "Mao Zedong": {
+      "label": "Mao Zedong"
+    },
+    "Gerald Ford": {
+      "label": "Gerald Ford"
+    },
+    "George H. W. Bush": {
+      "label": "George H. W. Bush"
+    },
+    "Robert Redford": {
+      "label": "Robert Redford"
+    },
+    "Shia LaBeouf": {
+      "label": "Shia LaBeouf"
+    },
+    "Peter Cullen": {
+      "label": "Peter Cullen"
+    },
+    "Optimus Prime": {
+      "label": "Optimus Prime"
+    }
+  },
+  "links": [
+    {
+      "a": "Joseph Stalin",
+      "b": "Mao Zedong",
+      "image": {
+        "file": "File:Mao, Bulganin, Stalin, Ulbricht Tsedenbal.jpeg"
+      },
+      "line": "In December 1949, Mao Zedong came to Moscow for Stalin's seventieth birthday."
+    },
+    {
+      "a": "Mao Zedong",
+      "b": "Gerald Ford",
+      "image": {
+        "file": "File:President Gerald Ford and Daughter Susan Watch as Secretary of State Henry Kissinger Shakes Hands with Mao Tse-Tung.jpg"
+      },
+      "line": "In 1975, President Gerald Ford flew to Beijing and met Mao, a year before Mao died.",
+      "a_face": 0
+    },
+    {
+      "a": "Gerald Ford",
+      "b": "George H. W. Bush",
+      "image": {
+        "file": "File:Gerald Ford with George H. W. Bush.jpg"
+      },
+      "line": "Ford and George H. W. Bush were old friends, and in 1976 Ford made Bush director of the CIA."
+    },
+    {
+      "a": "George H. W. Bush",
+      "b": "Robert Redford",
+      "image": {
+        "file": "File:President George H. W. Bush and Robert Redford.jpg"
+      },
+      "line": "In 1989, President Bush welcomed movie star Robert Redford to the Oval Office.",
+      "a_face": 1,
+      "b_face": 0
+    },
+    {
+      "a": "Robert Redford",
+      "b": "Shia LaBeouf",
+      "image": {
+        "file": "File:Redford e LaBeouf - 69th Venice International Film Festival.jpg"
+      },
+      "line": "In 2012, Redford premiered his film The Company You Keep in Venice with co-star Shia LaBeouf.",
+      "b_face": 5
+    },
+    {
+      "a": "Shia LaBeouf",
+      "b": "Peter Cullen",
+      "image": {
+        "url": "https://pbs.twimg.com/media/G7mK1-nW4AA69cC.jpg?name=orig",
+        "credit": "Shia LaBeouf (@thecampaignbook) on X",
+        "license": "Fair use (commentary)",
+        "source": "https://x.com/thecampaignbook/status/1997780636082266217"
+      },
+      "line": "In 2025, Shia LaBeouf, star of Transformers, reunited with Peter Cullen at Steel City Con.",
+      "a_face": 3
+    },
+    {
+      "a": "Peter Cullen",
+      "b": "Optimus Prime",
+      "image": {
+        "pair": [
+          {
+            "file": "File:Peter Cullen Sept 2014.jpg"
+          },
+          {
+            "file": "File:Transformers - The Ride at Universal Studios Singapore, 20240206 1247 6415.jpg"
+          }
+        ]
+      },
+      "line": "And Optimus Prime is voiced by Peter Cullen, who played him for over forty years.",
+      "b_face": [
+        2256,
+        69,
+        158,
+        158
+      ]
+    }
+  ]
+}
