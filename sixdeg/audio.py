@@ -292,7 +292,7 @@ def _gemini_key(spoken: str, cfg: dict) -> str:
     import json
     from .tts_gemini import NOTES
     sig = {k: cfg.get(k) for k in ("voice", "model")}
-    return hashlib.sha1(f"{json.dumps(sig, sort_keys=True)}|{NOTES}|{spoken}".encode()).hexdigest()
+    return hashlib.sha1(f"{json.dumps(sig, sort_keys=True)}|{NOTES}|split2|{spoken}".encode()).hexdigest()
 
 
 def _norm_words(text: str) -> list[str]:
@@ -332,10 +332,16 @@ def _gemini_batch(spoken_lines: list[str], cfg: dict) -> list[np.ndarray]:
         got = sum(1 for si, o in enumerate(owner) if o == li and si in match)
         if first[li] is None or got < 0.6 * words:
             raise RuntimeError(f"Gemini skipped or garbled line {li + 1}: {spoken_lines[li][:60]}")
+    # Whisper's word edges are approximate (it often ends a word early), so cut at the quietest 20 ms in a
+    # window around the boundary, never inside a word: the lines are read with a short beat between them.
+    hop = int(0.01 * SR)
+    lvl = np.array([np.sqrt(np.mean(a[i * hop:(i + 2) * hop] ** 2)) for i in range(len(a) // hop)])
     cuts = [0.0]
     for li in range(n - 1):
         e, s2 = heard[last[li]][2], heard[first[li + 1]][1]
-        cuts.append((e + s2) / 2 if s2 > e else s2)
+        lo, hi = min(e, s2) - 0.05, max(e, s2) + 0.25
+        i0, i1 = max(int(lo / 0.01), int(cuts[-1] / 0.01) + 1), min(int(hi / 0.01), len(lvl) - 1)
+        cuts.append((i0 + int(np.argmin(lvl[i0:i1 + 1]))) * 0.01 + 0.01 if i1 > i0 else (e + s2) / 2)
     cuts.append(len(a) / SR)
     return [_trim(a[int(cuts[i] * SR):int(cuts[i + 1] * SR)]) for i in range(n)]
 
@@ -452,7 +458,7 @@ def say(text: str, voice: dict | None = None) -> tuple[np.ndarray, list[tuple[st
     src = cfg
     if cfg.get("engine") == "gemini" and not (GEMINI_CACHE / f"{_gemini_key(speakable(text), cfg)}.flac").exists():
         src = {"engine": "silent-preview"}                   # local preview without a key: never cached as real
-    key = hashlib.sha1(f"{json.dumps(src, sort_keys=True)}|{json.dumps(PHONEMES, sort_keys=True)}|trim2|{speakable(text)}".encode()).hexdigest()  # respellings change the audio
+    key = hashlib.sha1(f"{json.dumps(src, sort_keys=True)}|{json.dumps(PHONEMES, sort_keys=True)}|trim3|{speakable(text)}".encode()).hexdigest()  # respellings change the audio
     p = CACHE / "tts" / f"{key}.wav"
     if p.exists():
         a, _ = sf.read(p, dtype="float32")
@@ -525,7 +531,8 @@ def _trim(a: np.ndarray, thr: float = 0.01) -> np.ndarray:
     if len(on) == 0:
         return a
     s = max(0, (on[0] - 2) * hop)                                     # 20 ms before the onset
-    e = min(len(a), (on[-1] + 6 + 8) * hop)                           # 80 ms after the last sustained sound
+    tail = np.where(db > -48)[0]                                     # quiet word endings ("him") still count
+    e = min(len(a), (max(on[-1] + 6, tail[-1] + 1) + 6) * hop)        # 60 ms after the last audible sound
     out = a[s:e].copy()
     f = min(len(out), int(0.005 * SR))
     out[:f] *= np.linspace(0, 1, f)                                   # no click at the cut
