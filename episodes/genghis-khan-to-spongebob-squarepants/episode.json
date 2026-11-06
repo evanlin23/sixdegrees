@@ -1,0 +1,150 @@
+{
+  "from": "Genghis Khan",
+  "to": "SpongeBob SquarePants",
+  "title": "Genghis Khan to SpongeBob in six links",
+  "description": "Five Great Khans, two pages of a medieval Marco Polo manuscript, 82 popes, the Obamas and a London soccer drill connect Genghis Khan to SpongeBob SquarePants.",
+  "hook": "How is Genghis Khan connected to SpongeBob SquarePants?",
+  "people": {
+    "Niccolò Polo": {
+      "wiki": "Niccolò and Maffeo Polo",
+      "label": "Niccolò Polo"
+    },
+    "SpongeBob SquarePants": {
+      "wiki": "SpongeBob SquarePants (character)",
+      "label": "SpongeBob"
+    }
+  },
+  "links": [
+    {
+      "a": "Genghis Khan",
+      "b": "Kublai Khan",
+      "lineage": {
+        "label": "MONGOL GREAT KHANS",
+        "people": [
+          {
+            "name": "Genghis Khan",
+            "file": "File:YuanEmperorAlbumGenghisPortrait.jpg",
+            "label": "1st Great Khan"
+          },
+          {
+            "name": "Ögedei Khan",
+            "file": "File:YuanEmperorAlbumOgedeiPortrait.jpg",
+            "label": "2nd"
+          },
+          {
+            "name": "Güyük Khan",
+            "file": "File:Güyük Khan enthroned (Bibliothèque nationale de France, Supplément Persan 206 f.136).jpg",
+            "label": "3rd"
+          },
+          {
+            "name": "Möngke Khan",
+            "file": "File:Möngke enthroned. Tarikh-i Jahangushay-i Juvaini, 1438, Shiraz.jpg",
+            "label": "4th"
+          },
+          {
+            "name": "Kublai Khan",
+            "file": "File:YuanEmperorAlbumKhubilaiPortrait.jpg",
+            "label": "5th Great Khan"
+          }
+        ]
+      },
+      "line": "Genghis Khan founded the Mongol Empire, and his grandson Kublai became its fifth Great Khan."
+    },
+    {
+      "a": "Kublai Khan",
+      "b": "Niccolò Polo",
+      "image": {
+        "file": "File:PoloBrotherAndKubilai.JPG"
+      },
+      "line": "A 15th-century French manuscript painted Kublai Khan receiving the Venetian merchant brothers Niccolò and Maffeo Polo.",
+      "a_face": 3,
+      "b_face": 0
+    },
+    {
+      "a": "Niccolò Polo",
+      "b": "Pope Gregory X",
+      "image": {
+        "file": "File:NoccoloAndMaffeoPoloWithGregoryX.JPG"
+      },
+      "line": "The same book paints the Polos with Pope Gregory X, who sent them back to Kublai in 1271.",
+      "a_face": 3,
+      "b_face": 1
+    },
+    {
+      "a": "Pope Gregory X",
+      "b": "Pope Francis",
+      "lineage": {
+        "label": "LINE OF POPES",
+        "people": [
+          {
+            "name": "Pope Gregory X",
+            "file": "File:Gregory X, Buffalmacco, Arezzo Cathedral.jpg",
+            "label": "184th pope"
+          },
+          {
+            "name": "Pope Boniface VIII",
+            "file": "File:Giotto - Bonifatius VIII (cropped).jpg",
+            "label": "193rd"
+          },
+          {
+            "name": "Pope Sixtus IV",
+            "file": "File:Pedro Berruguete - Portrait of Pope Sixtus IV della Rovere - 1916.815 - Cleveland Museum of ArtFXD.jpg",
+            "label": "212th"
+          },
+          {
+            "name": "Pope Pius IX",
+            "file": "File:Pius IX, by Adolphe Braun, 1875.jpg",
+            "label": "255th"
+          },
+          {
+            "name": "Pope Pius XII",
+            "file": "File:Pius XII with tabard, by Michael Pitcairn, 1951 (retouched).jpg",
+            "label": "260th"
+          },
+          {
+            "name": "Pope John Paul II",
+            "file": "File:ADAMELLO - PAPA - Giovanni Paolo II - panoramio (cropped).jpg",
+            "label": "264th"
+          },
+          {
+            "name": "Pope Benedict XVI",
+            "file": "File:Benedykt XVI (2010-10-17) 2.jpg",
+            "label": "265th"
+          },
+          {
+            "name": "Pope Francis",
+            "file": "File:Pope Francis Korea Haemi Castle 19 (4x5 cropped).jpg",
+            "label": "266th pope"
+          }
+        ]
+      },
+      "line": "From Gregory X, the 184th pope, the line runs unbroken to the 266th, Pope Francis."
+    },
+    {
+      "a": "Pope Francis",
+      "b": "Michelle Obama",
+      "image": {
+        "file": "File:Pope Francis and the Obamas at the White House.jpg"
+      },
+      "line": "In 2015, Barack and Michelle Obama welcomed Pope Francis to the White House."
+    },
+    {
+      "a": "Michelle Obama",
+      "b": "SpongeBob SquarePants",
+      "image": {
+        "url": "https://assets2.cbsnewsstatic.com/hub/i/r/2012/07/27/9864d4b6-c3cb-11e2-a43e-02911869d855/thumbnail/620x442/9e5be6f2d6e0885c7e8b4f4ccd96d635/15-Michelle-Obama-Olympic.jpg",
+        "credit": "Tim Whitby/Getty Images for Nickelodeon",
+        "license": "Fair use (commentary)",
+        "source": "https://www.cbsnews.com/pictures/michelle-obama-at-the-olympics"
+      },
+      "line": "And in 2012 in London, Michelle Obama kicked a goal past SpongeBob, with David Beckham cheering.",
+      "b_face": [
+        185,
+        60,
+        190,
+        185
+      ],
+      "a_face": 8
+    }
+  ]
+}
