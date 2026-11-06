@@ -6,3 +6,4 @@ onnxruntime
 kokoro-onnx
 soundfile
 faster-whisper
+cmudict

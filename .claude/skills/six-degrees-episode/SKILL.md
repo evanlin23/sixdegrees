@@ -37,6 +37,29 @@ episode.json: the hook shows the viewer's request bubble and the first comment c
   ```
   The first and last names must equal `a` and `b`. Use 6-15 portraits, choosing well-known holders to skip
   through a long line. It counts as one link.
+- **Same picture, same medium.** Both people in a link must be depicted *in the same picture*. Real people link
+  through a photo of them together. People from the past link through an artwork that depicts **both** of them:
+  the same painting, the same mosaic, or two figures in the same sculpture group. A real person photographed
+  standing in front of a painting or next to a statue is **not** a link, and viewers call it a cheat. The way
+  across from art to the modern world is an artwork that also depicts a real, photographed-era person (a donor or
+  patron portrait, the artist's self-portrait in the work, a pope in a fresco), a lineage link, or an actor link
+  (below). Examples:
+  - Michelangelo's *Last Judgment* depicts Adam and Michelangelo himself (his self-portrait).
+  - Raphael's *School of Athens* depicts Michelangelo and Raphael.
+  - From there, link to a pope the artist painted, and continue down the line of popes.
+- **Who may use actors: only fictional characters.** Three kinds of endpoint:
+  - **Real people, historical ones included (Caesar, Napoleon, Qin Shi Huang, Jesus):** photos together,
+    artworks depicting both, and lineage links only. An actor who *played* a real person is **not** a link. Jesus
+    goes through an artwork showing him with someone (e.g. Perugino's *Christ Handing the Keys to St Peter*), then
+    the line of popes.
+  - **Mythological and religious figures (Zeus, Adam, Athena):** go through mythology in art. Use an artwork showing the
+    god with another figure, then an artwork where that figure appears with a real person. Examples:
+    - an Athenian vase of Zeus with Athena, then Athena (Minerva) in Brumidi's *Apotheosis of Washington* with
+      George Washington, then the line of presidents;
+    - Rubens' Marie de' Medici cycle, which paints Jupiter beside Henry IV and Marie de' Medici;
+    - Michelangelo's *Last Judgment*, which depicts Adam together with Michelangelo's self-portrait.
+  - **Fictional characters (cartoons, games, anime, film characters):** their voice actor, actor, creator or
+    puppeteer, as below.
 - **Fictional characters** connect through a real photo of their voice actor, creator or puppeteer, and the
   line says so ("Grug is voiced by Nicolas Cage"). The character itself appears only in its own artwork
   (official art or a film still, fair use), as the endpoint link: `{"a": "Grug", "b": "Nicolas Cage", "image": <a
@@ -48,7 +71,38 @@ episode.json: the hook shows the viewer's request bubble and the first comment c
   match. A character's name only ever labels the character's own artwork, never the actor in a real photo.
 - **No limit on the number of links.** A Short can be up to 3 minutes, and QA fails only past 3:00 (it warns past
   60 s). Shorter is better for retention, so prefer the most surprising chain with tight lines.
-- Never invent a meeting, a photo or a caption. If no honest chain exists, mark the pair `"skipped"` with a reason.
+- Never invent a meeting, a photo or a caption.
+
+## 2b. Finding pictures: try hard, skipping is the last resort
+Viewers asked for these pairs, so a skip is a failure. "Commons has nothing" is not enough. Before giving up on a
+link, work through **every** step below and keep a note of what you tried.
+1. **Wikipedia and Commons, deeply.** Look through all images in both people's articles, every "Category:<Name>"
+   subcategory on Commons (events, years, "with <X>"), and the `depicts` (P180) search
+   (`haswbstatement:P180=<Qid>`). Check the event categories too, such as premieres, award shows, Met Gala, Comic-Con,
+   WWE events, state visits, sports finals and summits.
+2. **Public-domain archives.** White House and other government Flickr accounts, NARA, the Library of Congress,
+   DVIDS (military), NASA, and Kremlin.ru (CC BY 4.0). Presidents, generals and visiting celebrities show up here.
+3. **Free photo hosts.** Flickr CC-licensed photos (search the two names together), fan convention photos and
+   press-agency CC releases.
+4. **Fair use (commentary) press photos.** These are allowed: Getty, AP, Reuters, AFP, WireImage, news articles, and a
+   verified Instagram or X post by either person. Also allowed: a talk-show, podcast, interview or game-broadcast
+   frame showing both people, such as a YouTube thumbnail or still from the official channel. Use
+   `{"url", "credit", "license": "Fair use (commentary)", "source"}`, with `source` set to the page the image came from.
+5. **Change the route.** If one link is stuck, connect through someone else. Good hubs:
+   - US presidents and first ladies
+   - popes and Queen Elizabeth II
+   - talk-show hosts (Fallon, Kimmel, Oprah, Letterman)
+   - Snoop Dogg, Kim Kardashian, MrBeast, Elon Musk
+   - footballers at the Ballon d'Or, WWE stars
+   - for long time gaps, lineage links (popes, emperors, kings)
+
+   Run `python -m sixdeg search` again with different endpoints, and web search "<A> and <B> photo",
+   "<A> meets", "<A> with" and "<A> backstage".
+6. **Fictional characters.** Use a real photo of the voice actor, creator or puppeteer with anyone notable, such as
+   a convention panel, premiere or award show. Their co-stars and directors count too.
+
+Only after all six steps may a pair be `"skipped"`. Its `reason` must list what you searched at each step, so the
+operator can see the effort.
 - Keep it family-safe: no gore, nudity or slurs on screen. Historical figures are presented as history.
 
 ## 3. episode.json
@@ -61,7 +115,12 @@ episode.json: the hook shows the viewer's request bubble and the first comment c
 - `hook` is always the question "How is <A> connected to <B>?"
 - Each `line` is one sentence of about 18 words or fewer, starting with a year or a hook word, with a concrete fact.
 - Don't type years as words. The voice reads "1973" as "nineteen seventy-three" automatically.
-- A name the voice mispronounces: add it to `RESPELL` in `sixdeg/audio.py`, or phrase around it (QA tells you).
+- **Pronunciation.** Names are read from the CMU pronouncing dictionary. Every capitalized word it doesn't know
+  (Neymar, Bolsonaro, Tereshkova) must get exact IPA in `PHONEMES` in `sixdeg/audio.py`, or QA fails with
+  "no pronunciation for X". Take the IPA from the person's Wikipedia lead (/.../). Write it in Kokoro's style:
+  stress mark directly before the vowel, e.g. Putin = pˈuːtɪn, Bolsonaro = bˌoʊlsənˈɑːɹoʊ. Check every line
+  with `python -c "from sixdeg.audio import phonemes; print(phonemes('<line>'))"`. If a dictionary name still
+  reads wrong, add it to `PHONEMES` too, since that table wins.
 
 ## 4. Verify faces by eye
 ```bash
