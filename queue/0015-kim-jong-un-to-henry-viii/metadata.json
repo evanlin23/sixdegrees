@@ -1,5 +1,5 @@
 {
- "title": "Kim Jong Un and Henry VIII are only three links apart",
+ "title": "How is Kim Jong Un connected to King Henry VIII?",
  "description": "A border handshake, a D-Day ceremony and four centuries of English monarchs link Kim Jong Un to Henry VIII.\n\nKim Jong Un → Donald Trump → Elizabeth II → Henry VIII\n\nGive me two names in the comments and I'll find the photos that connect them.\n\nPhoto credits:\nPhoto 1 by The White House from Washington, DC, Public domain: https://commons.wikimedia.org/wiki/File:President_Trump_Meets_with_Chairman_Kim_Jong_Un_(48162628746).jpg\nPhoto 2 by Office of U.S. Ambassador to U.K., Public domain: https://commons.wikimedia.org/wiki/File:Trump_with_national_leaders_at_75th_D-Day.jpg\nPhoto 3, Public domain: https://commons.wikimedia.org/wiki/File:Queen_Elizabeth_II_official_portrait_for_1959_tour_(retouched)_(cropped)_(3-to-4_aspect_ratio).jpg + https://commons.wikimedia.org/wiki/File:King_George_1923_LCCN2014715558_(cropped).jpg + https://commons.wikimedia.org/wiki/File:Queen_Victoria_by_Bassano.jpg + https://commons.wikimedia.org/wiki/File:Allan_Ramsay_-_King_George_III_in_coronation_robes_-_Google_Art_Project.jpg + https://commons.wikimedia.org/wiki/File:Dahl,_Michael_-_Queen_Anne_-_NPG_6187.jpg + https://commons.wikimedia.org/wiki/File:King_Charles_I_after_original_by_van_Dyck.jpg + https://commons.wikimedia.org/wiki/File:JamesIEngland_(cropped_2).jpg + https://commons.wikimedia.org/wiki/File:Darnley_stage_3.jpg + https://commons.wikimedia.org/wiki/File:After_Hans_Holbein_the_Younger_-_Portrait_of_Henry_VIII_-_Google_Art_Project.jpg\n\n#kimjongun #henryviii #sixdegrees #history #didyouknow #shorts",
  "tags": [
   "Kim Jong Un",
@@ -17,5 +17,8 @@
  "madeForKids": false,
  "containsSyntheticMedia": false,
  "file": "kim-jong-un-to-henry-viii.mp4",
+ "kind": "request",
+ "voice": "gemini",
+ "outro": true,
  "slug": "kim-jong-un-to-henry-viii"
 }
