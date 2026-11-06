@@ -21,5 +21,8 @@
  "madeForKids": false,
  "containsSyntheticMedia": false,
  "file": "nelson-mandela-to-napoleon.mp4",
+ "kind": "request",
+ "voice": "gemini",
+ "outro": false,
  "slug": "nelson-mandela-to-napoleon"
 }
