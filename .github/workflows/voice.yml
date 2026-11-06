@@ -34,6 +34,6 @@ jobs:
           python -m sixdeg voice $S
           git config user.name "github-actions[bot]"; git config user.email "41898729+github-actions[bot]@users.noreply.github.com"
           git worktree add -q /tmp/tc origin/tts-cache 2>/dev/null || { git worktree add -q --detach /tmp/tc && git -C /tmp/tc checkout -q --orphan tts-cache && git -C /tmp/tc rm -rqf . ; }
-          cp -n .cache/gemini/*.flac /tmp/tc/ 2>/dev/null || true
+          cp -rn .cache/gemini/. /tmp/tc/ 2>/dev/null || true
           cd /tmp/tc && git add -A && (git diff --cached --quiet || git commit -qm "voice lines") && git push -q origin HEAD:tts-cache
           ls | wc -l

@@ -77,6 +77,9 @@ def main(argv):
         from .research import channel_report
         for h in args:
             channel_report(h)
+    elif cmd == "resplit":  # re-cut saved raw Gemini recordings with the current splitter (free)
+        from . import audio
+        print("resplit lines:", audio.resplit_all())
     elif cmd == "voice":  # Gemini: voice several episodes, a few per request (free tier ~15 requests/day, 3/min)
         import time
         from . import audio
