@@ -79,6 +79,7 @@ PHONEMES = {
     "Dmitry": "dəmˈiːtɹi",
     "Sadat": "sɑːdˈɑːt",
     "FUBAR": "fˈuːbɑːɹ",
+    "Filippino": "fˌɪlɪpˈiːnoʊ",
     # regnal numbers and Renaissance names (Adam/Zeus to The Rock)
     "Sixtus IV": "sˈɪkstəs ðə fˈɔːɹθ",
     "John Paul II": "dʒˈɑːn pˈɔːl ðə sˈɛkənd",

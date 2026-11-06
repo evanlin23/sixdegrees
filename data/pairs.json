@@ -214,11 +214,12 @@
  {
   "from": "Donald Trump",
   "to": "Julius Caesar",
-  "status": "todo",
+  "status": "done",
   "requested_by": "@TheEditer-c7f",
   "comment": "Dobold Trump to Julius Caesar",
   "likes": 0,
-  "source": "comment on 'leonardo da vinci to naruto' (old channel)"
+  "source": "comment on 'leonardo da vinci to naruto' (old channel)",
+  "slug": "donald-trump-to-julius-caesar"
  },
  {
   "from": "Zeus",
