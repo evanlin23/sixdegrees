@@ -20,5 +20,6 @@
  "kind": "request",
  "voice": "gemini",
  "outro": false,
+ "voice_rev": 2,
  "slug": "diddy-to-george-washington"
 }
