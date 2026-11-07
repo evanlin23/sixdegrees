@@ -20,5 +20,6 @@
  "kind": "request",
  "voice": "gemini",
  "outro": true,
+ "voice_rev": 2,
  "slug": "neymar-to-queen-elizabeth-ii"
 }
