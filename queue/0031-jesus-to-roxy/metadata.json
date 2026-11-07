@@ -27,5 +27,6 @@
  "kind": "request",
  "voice": "gemini",
  "outro": false,
+ "voice_rev": 2,
  "slug": "jesus-to-roxy"
 }
