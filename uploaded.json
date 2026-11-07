@@ -38,5 +38,19 @@
   "kind": "request",
   "outro": false,
   "n": 3
+ },
+ {
+  "slug": "adolf-hitler-to-kermit-the-frog",
+  "title": "How is Adolf Hitler connected to Kermit?",
+  "publish_at": "2026-11-08T00:33:00Z",
+  "video_id": "G_5XDL8yhj8",
+  "privacy": "public",
+  "url": "https://youtube.com/shorts/G_5XDL8yhj8",
+  "thumbnail": "not set: <HttpError 403 when requesting https://youtube.googleapis.com/upload/youtube/v3/thumbnails/set?videoId=G_5XDL8yhj8&alt=json&uploadType=media returned \"The authe",
+  "comment": "posted UgyIxKEjDP2_2Sq_0kB4AaABAg",
+  "first_comment": "Who should I connect next? Two names, the weirder the better.",
+  "kind": "formula",
+  "outro": true,
+  "n": 28
  }
 ]
