@@ -20,5 +20,6 @@
  "kind": "formula",
  "voice": "gemini",
  "outro": false,
+ "voice_rev": 2,
  "slug": "kim-jong-un-to-mickey-mouse"
 }
