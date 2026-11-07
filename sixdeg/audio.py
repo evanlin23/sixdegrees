@@ -61,6 +61,7 @@ PHONEMES = {
     "Neymar": "neɪmˈɑːɹ",
     "Bolsonaro": "bˌoʊlsənˈɑːɹoʊ",
     "Jair": "ʒɑːˈiːɹ",
+    "Yvette": "iˈvɛt",          # Whisper base.en hears "of Vek"; Achird says it right (checked with small.en)
     "Tereshkova": "tˌɛɹɛʃkˈoʊvə",
     "Valentina": "vˌæləntˈiːnə",
     "Grug": "ɡɹˈʌɡ",
