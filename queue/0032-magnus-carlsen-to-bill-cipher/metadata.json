@@ -23,5 +23,6 @@
  "kind": "request",
  "voice": "gemini",
  "outro": true,
+ "voice_rev": 2,
  "slug": "magnus-carlsen-to-bill-cipher"
 }
