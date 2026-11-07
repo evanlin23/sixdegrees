@@ -23,5 +23,6 @@
  "kind": "formula",
  "voice": "gemini",
  "outro": true,
+ "voice_rev": 2,
  "slug": "leonardo-da-vinci-to-luigi"
 }
