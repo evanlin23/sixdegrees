@@ -3,15 +3,12 @@
   "to": "Winnie the Pooh (Disney character)",
   "hook": "How is Pablo Escobar connected to Winnie the Pooh?",
   "title": "How is Pablo Escobar connected to Winnie the Pooh?",
-  "description": "A TV star, two presidents, Frank Sinatra and Hollywood's honorary mayor connect Pablo Escobar to Winnie the Pooh in six real photos.",
+  "description": "A TV star, two presidents, a first lady and NBC's Willard Scott connect Pablo Escobar to Winnie the Pooh in six real photos.",
   "people": {
     "Winnie the Pooh (Disney character)": {
       "label": "Winnie the Pooh",
       "short": "Pooh",
       "hook_photo": "File:Winnie the pooh in a restaurant.jpg"
-    },
-    "Johnny Grant (radio personality)": {
-      "label": "Johnny Grant"
     },
     "Belisario Betancur": {
       "short": "Betancur"
@@ -69,41 +66,38 @@
     },
     {
       "a": "Ronald Reagan",
-      "b": "Frank Sinatra",
+      "b": "Nancy Reagan",
       "image": {
         "file": "File:President Ronald Reagan and Nancy Reagan with Frank Sinatra (cropped).jpg"
       },
-      "line": "Reagan's old Hollywood friend Frank Sinatra was a regular at his White House.",
+      "line": "In 1981, Reagan and First Lady Nancy Reagan shared a laugh with Frank Sinatra in the Oval Office.",
       "a_face": 1,
-      "b_face": 0
+      "b_face": 2
     },
     {
-      "a": "Frank Sinatra",
-      "b": "Johnny Grant (radio personality)",
+      "a": "Nancy Reagan",
+      "b": "Willard Scott",
       "image": {
-        "file": "File:Mrs. Reagan Singing with Frank Sinatra Johnny Grant and Nika Costa at The \"To Love a Child\" Luncheon on The White House South Lawn - DPLA - e6d78a4758d3df2626f087c0ed01da42.jpg"
+        "file": "File:Nancy Reagan Attending The Great American Family Awards Presentation with Willard Scott in The State Dining Room - DPLA - 201e390316bae8d32c9e78c13ae7aff0.jpg"
       },
-      "line": "In 1982, Sinatra sang on the White House lawn with Johnny Grant, Hollywood's honorary mayor.",
-      "a_face": 13,
-      "b_face": 12
+      "line": "In 1986, NBC weatherman Willard Scott gave Nancy Reagan a bear hug at the White House.",
+      "a_face": 3,
+      "b_face": 5
     },
     {
-      "a": "Johnny Grant (radio personality)",
+      "a": "Willard Scott",
       "b": "Winnie the Pooh (Disney character)",
       "image": {
-        "url": "https://static8.imagecollect.com/preview/137/de35608299a8cbd",
-        "credit": "ImageCollect",
-        "license": "Fair use (commentary)",
-        "source": "https://imagecollect.com/events/winnie-the-pooh-walk-of-fame-ceremony-photos-4153/page-2"
+        "file": "File:Group Shot of Cartoon-Comic Book Characters with Willard Scott During The Easter Egg Roll on The South Lawn - DPLA - a4a78b89f6ad3de82e82823717f31fb2.jpg"
       },
-      "line": "And in 2006, Grant handed Winnie the Pooh his own star on the Hollywood Walk of Fame.",
-      "a_face": 0,
+      "line": "And at the 1983 White House Easter Egg Roll, Scott posed with Winnie the Pooh himself.",
       "b_face": [
-        64,
-        124,
-        127,
-        133
-      ]
+        1460,
+        470,
+        265,
+        255
+      ],
+      "a_face": 6
     }
   ]
 }
