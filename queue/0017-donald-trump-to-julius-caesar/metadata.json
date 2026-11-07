@@ -21,5 +21,6 @@
  "kind": "request",
  "voice": "gemini",
  "outro": true,
+ "voice_rev": 2,
  "slug": "donald-trump-to-julius-caesar"
 }
