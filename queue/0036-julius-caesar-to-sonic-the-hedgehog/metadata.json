@@ -23,5 +23,6 @@
  "kind": "formula",
  "voice": "gemini",
  "outro": false,
+ "voice_rev": 2,
  "slug": "julius-caesar-to-sonic-the-hedgehog"
 }
