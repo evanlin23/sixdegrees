@@ -1,0 +1,109 @@
+{
+  "from": "Pablo Escobar",
+  "to": "Winnie the Pooh (Disney character)",
+  "hook": "How is Pablo Escobar connected to Winnie the Pooh?",
+  "title": "How is Pablo Escobar connected to Winnie the Pooh?",
+  "description": "A TV star, two presidents, Frank Sinatra and Hollywood's honorary mayor connect Pablo Escobar to Winnie the Pooh in six real photos.",
+  "people": {
+    "Winnie the Pooh (Disney character)": {
+      "label": "Winnie the Pooh",
+      "short": "Pooh",
+      "hook_photo": "File:Winnie the pooh in a restaurant.jpg"
+    },
+    "Johnny Grant (radio personality)": {
+      "label": "Johnny Grant"
+    },
+    "Belisario Betancur": {
+      "short": "Betancur"
+    },
+    "Virginia Vallejo": {
+      "short": "Vallejo"
+    }
+  },
+  "links": [
+    {
+      "a": "Pablo Escobar",
+      "b": "Virginia Vallejo",
+      "image": {
+        "url": "https://imagenes2.eltiempo.com/files/image_600_455/files/fp/uploads/2021/08/03/6109b24d2162f.r_d.152-128.jpeg",
+        "credit": "La Vanguardia, via El Tiempo",
+        "license": "Fair use (commentary)",
+        "source": "https://www.eltiempo.com/cultura/gente/fotos-de-famosos-colombianos-junto-a-narcotraficantes-608064"
+      },
+      "line": "In 1983, Colombia's biggest TV star, Virginia Vallejo, interviewed Pablo Escobar, and became his lover.",
+      "a_face": 0,
+      "b_face": [
+        55,
+        105,
+        145,
+        145
+      ]
+    },
+    {
+      "a": "Virginia Vallejo",
+      "b": "Belisario Betancur",
+      "image": {
+        "url": "https://virginiavallejo.com/wp-content/uploads/2018/03/vv_sociales_05-en.jpg",
+        "credit": "Virginia Vallejo archive",
+        "license": "Fair use (commentary)",
+        "source": "https://virginiavallejo.com/sociales/"
+      },
+      "line": "In 1984, Vallejo was photographed with Colombia's president, Belisario Betancur.",
+      "a_face": 1,
+      "b_face": [
+        0,
+        140,
+        360,
+        500
+      ]
+    },
+    {
+      "a": "Belisario Betancur",
+      "b": "Ronald Reagan",
+      "image": {
+        "file": "File:1985 Betancur-Reagan Washington.jpg"
+      },
+      "line": "In 1985, Betancur visited Ronald Reagan at the White House.",
+      "a_face": 0,
+      "b_face": 2
+    },
+    {
+      "a": "Ronald Reagan",
+      "b": "Frank Sinatra",
+      "image": {
+        "file": "File:President Ronald Reagan and Nancy Reagan with Frank Sinatra (cropped).jpg"
+      },
+      "line": "Reagan's old Hollywood friend Frank Sinatra was a regular at his White House.",
+      "a_face": 1,
+      "b_face": 0
+    },
+    {
+      "a": "Frank Sinatra",
+      "b": "Johnny Grant (radio personality)",
+      "image": {
+        "file": "File:Mrs. Reagan Singing with Frank Sinatra Johnny Grant and Nika Costa at The \"To Love a Child\" Luncheon on The White House South Lawn - DPLA - e6d78a4758d3df2626f087c0ed01da42.jpg"
+      },
+      "line": "In 1982, Sinatra sang on the White House lawn with Johnny Grant, Hollywood's honorary mayor.",
+      "a_face": 13,
+      "b_face": 12
+    },
+    {
+      "a": "Johnny Grant (radio personality)",
+      "b": "Winnie the Pooh (Disney character)",
+      "image": {
+        "url": "https://static8.imagecollect.com/preview/137/de35608299a8cbd",
+        "credit": "ImageCollect",
+        "license": "Fair use (commentary)",
+        "source": "https://imagecollect.com/events/winnie-the-pooh-walk-of-fame-ceremony-photos-4153/page-2"
+      },
+      "line": "And in 2006, Grant handed Winnie the Pooh his own star on the Hollywood Walk of Fame.",
+      "a_face": 0,
+      "b_face": [
+        64,
+        124,
+        127,
+        133
+      ]
+    }
+  ]
+}
