@@ -25,5 +25,6 @@
  "kind": "request",
  "voice": "gemini",
  "outro": false,
+ "voice_rev": 2,
  "slug": "tesla-to-the-rock"
 }
