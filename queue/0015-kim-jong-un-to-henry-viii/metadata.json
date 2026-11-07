@@ -20,5 +20,6 @@
  "kind": "request",
  "voice": "gemini",
  "outro": true,
+ "voice_rev": 2,
  "slug": "kim-jong-un-to-henry-viii"
 }
