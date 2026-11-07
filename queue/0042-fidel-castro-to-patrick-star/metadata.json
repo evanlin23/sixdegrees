@@ -22,5 +22,6 @@
  "kind": "formula",
  "voice": "gemini",
  "outro": false,
+ "voice_rev": 2,
  "slug": "fidel-castro-to-patrick-star"
 }
