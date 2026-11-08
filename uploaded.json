@@ -52,5 +52,19 @@
   "kind": "formula",
   "outro": true,
   "n": 28
+ },
+ {
+  "slug": "hitler-to-grug",
+  "title": "How is Adolf Hitler connected to Grug?",
+  "publish_at": "2026-11-08T17:46:00Z",
+  "video_id": "s6EHNVTshRQ",
+  "privacy": "public",
+  "url": "https://youtube.com/shorts/s6EHNVTshRQ",
+  "thumbnail": "not set: <HttpError 403 when requesting https://youtube.googleapis.com/upload/youtube/v3/thumbnails/set?videoId=s6EHNVTshRQ&alt=json&uploadType=media returned \"The authe",
+  "comment": "posted UgwRW7YxSxrzmCFhsql4AaABAg",
+  "first_comment": "@Twelfz-z3u asked for this one. Who should I connect next? Two names, the weirder the better.",
+  "kind": "request",
+  "outro": true,
+  "n": 7
  }
 ]
