@@ -66,5 +66,19 @@
   "kind": "request",
   "outro": true,
   "n": 7
+ },
+ {
+  "slug": "joseph-stalin-to-elmo",
+  "title": "How is Joseph Stalin connected to Elmo?",
+  "publish_at": "2026-11-09T00:32:00Z",
+  "video_id": "vE0Eo3aoeJA",
+  "privacy": "public",
+  "url": "https://youtube.com/shorts/vE0Eo3aoeJA",
+  "thumbnail": "not set: <HttpError 403 when requesting https://youtube.googleapis.com/upload/youtube/v3/thumbnails/set?videoId=vE0Eo3aoeJA&alt=json&uploadType=media returned \"The authe",
+  "comment": "posted UgyUDoebB4Idq1mr4m94AaABAg",
+  "first_comment": "Who should I connect next? Two names, the weirder the better.",
+  "kind": "formula",
+  "outro": true,
+  "n": 35
  }
 ]
