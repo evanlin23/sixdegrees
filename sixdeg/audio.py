@@ -358,7 +358,13 @@ def resplit_all(cfg: dict | None = None, log=print) -> int:
 def split_batch(a: np.ndarray, heard, spoken_lines: list[str]) -> list[np.ndarray]:
     """Cut one Gemini recording back into its lines (word alignment + quietest point near each boundary)."""
     import difflib
-    hw = [re.sub(r"[^a-z0-9]", "", w.lower()) for w, _, _ in heard]
+    # Whisper writes "1984" where the script says "nineteen eighty-four": spell heard years out the same way,
+    # keeping a map from each spelled-out word back to the heard word (and its timing)
+    hw, hidx = [], []
+    for i, (w, _, _) in enumerate(heard):
+        for t in _norm_words(speakable(w)):
+            hw.append(t)
+            hidx.append(i)
     script, owner = [], []
     for li, line in enumerate(spoken_lines):
         for w in _norm_words(line):
@@ -367,7 +373,7 @@ def split_batch(a: np.ndarray, heard, spoken_lines: list[str]) -> list[np.ndarra
     match = {}
     for blk in difflib.SequenceMatcher(None, script, hw, autojunk=False).get_matching_blocks():
         for k in range(blk.size):
-            match[blk.a + k] = blk.b + k
+            match[blk.a + k] = hidx[blk.b + k]
     n = len(spoken_lines)
     first, last = [None] * n, [None] * n
     for si, li in enumerate(owner):
