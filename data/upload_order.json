@@ -1,16 +1,37 @@
 {
  "_about": "Queued videos to post first, in this order (sixdeg/queue.pick). Strongest 'dark/serious x innocent/kid-coded' gaps first; viewer requests and formula pairs still alternate. Slugs not listed follow, oldest first.",
  "formula": [
-  "adolf-hitler-to-kermit-the-frog", "joseph-stalin-to-elmo", "kim-jong-un-to-mickey-mouse", "joseph-stalin-to-steve",
-  "saddam-hussein-to-cookie-monster", "benito-mussolini-to-mario", "napoleon-to-pikachu",
-  "genghis-khan-to-spongebob-squarepants", "mao-zedong-to-shrek", "vladimir-lenin-to-minions",
-  "cleopatra-to-hello-kitty", "julius-caesar-to-sonic-the-hedgehog", "fidel-castro-to-patrick-star",
-  "attila-to-squidward", "queen-victoria-to-big-bird", "leonardo-da-vinci-to-luigi"
+  "adolf-hitler-to-kermit-the-frog",
+  "joseph-stalin-to-elmo",
+  "kim-jong-un-to-mickey-mouse",
+  "joseph-stalin-to-steve",
+  "muammar-gaddafi-to-clifford-the-big-red-dog",
+  "saddam-hussein-to-cookie-monster",
+  "benito-mussolini-to-mario",
+  "napoleon-to-pikachu",
+  "genghis-khan-to-spongebob-squarepants",
+  "mao-zedong-to-shrek",
+  "vladimir-lenin-to-minions",
+  "cleopatra-to-hello-kitty",
+  "julius-caesar-to-sonic-the-hedgehog",
+  "fidel-castro-to-patrick-star",
+  "attila-to-squidward",
+  "queen-victoria-to-big-bird",
+  "leonardo-da-vinci-to-luigi"
  ],
  "request": [
-  "hitler-to-grug", "jesus-to-mia-khalifa", "chris-pratt-to-joseph-stalin", "joseph-stalin-to-optimus-prime",
-  "adam-to-the-rock", "elizabeth-ii-to-freddy-fazbear", "qin-shi-huang-to-kevin-hart",
-  "christopher-columbus-to-baby-yoda", "zeus-to-the-rock", "diddy-to-george-washington", "magnus-carlsen-to-bill-cipher",
-  "kim-jong-un-to-henry-viii", "king-von-to-mao-zedong"
+  "hitler-to-grug",
+  "jesus-to-mia-khalifa",
+  "chris-pratt-to-joseph-stalin",
+  "joseph-stalin-to-optimus-prime",
+  "adam-to-the-rock",
+  "elizabeth-ii-to-freddy-fazbear",
+  "qin-shi-huang-to-kevin-hart",
+  "christopher-columbus-to-baby-yoda",
+  "zeus-to-the-rock",
+  "diddy-to-george-washington",
+  "magnus-carlsen-to-bill-cipher",
+  "kim-jong-un-to-henry-viii",
+  "king-von-to-mao-zedong"
  ]
 }
