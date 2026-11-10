@@ -21,5 +21,6 @@
  "kind": "formula",
  "voice": "gemini",
  "outro": true,
+ "voice_rev": 2,
  "slug": "saddam-hussein-to-cookie-monster"
 }
