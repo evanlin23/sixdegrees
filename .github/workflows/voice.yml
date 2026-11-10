@@ -33,7 +33,13 @@ jobs:
           if [ -z "$S" ]; then git fetch -q origin queue && S=$(git ls-tree --name-only origin/queue:queue | grep -v '^\.' | sed 's/^[0-9]*-//' | tr '\n' ' '); fi
           python -m sixdeg voice $S
           git config user.name "github-actions[bot]"; git config user.email "41898729+github-actions[bot]@users.noreply.github.com"
-          git worktree add -q /tmp/tc origin/tts-cache 2>/dev/null || { git worktree add -q --detach /tmp/tc && git -C /tmp/tc checkout -q --orphan tts-cache && git -C /tmp/tc rm -rqf . ; }
-          cp -rn .cache/gemini/. /tmp/tc/ 2>/dev/null || true
-          cd /tmp/tc && git add -A && (git diff --cached --quiet || git commit -qm "voice lines") && git push -q origin HEAD:tts-cache
-          ls | wc -l
+          # save with retries: PR renders also push to tts-cache, and a rejected push would lose today's quota
+          for i in 1 2 3 4 5 6; do
+            rm -rf /tmp/tc; git worktree prune
+            if git fetch -q origin tts-cache 2>/dev/null; then git worktree add -q /tmp/tc origin/tts-cache; else git worktree add -q --detach /tmp/tc && git -C /tmp/tc checkout -q --orphan tts-cache && git -C /tmp/tc rm -rqf . || true; fi
+            cp -rn .cache/gemini/. /tmp/tc/ 2>/dev/null || true
+            (cd /tmp/tc && git add -A && { git diff --cached --quiet || git commit -qm "voice lines"; } && git push -q origin HEAD:tts-cache) && saved=1 && break
+            sleep $((i*4))
+          done
+          [ -n "$saved" ] || { echo "::error::could not save voice lines to tts-cache"; exit 1; }
+          ls /tmp/tc | wc -l
