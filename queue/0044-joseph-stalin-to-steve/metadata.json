@@ -22,5 +22,6 @@
  "kind": "formula",
  "voice": "gemini",
  "outro": true,
+ "voice_rev": 2,
  "slug": "joseph-stalin-to-steve"
 }
