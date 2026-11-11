@@ -46,7 +46,7 @@ jobs:
         run: |
           if [ -n "${{ inputs.slug }}" ]; then echo "slugs=${{ inputs.slug }}" >> "$GITHUB_OUTPUT"; exit 0; fi
           if [ "${{ github.event_name }}" = "pull_request" ]; then base="origin/${{ github.base_ref }}"; else base="${{ github.event.before }}"; fi
-          s=$(git diff --name-only "$base" "${{ github.sha }}" -- 'episodes/*/episode.json' | cut -d/ -f2 | sort -u | tr '\n' ' ')
+          s=$(git diff --name-only --diff-filter=AMR "$base" "${{ github.sha }}" -- 'episodes/*/episode.json' | cut -d/ -f2 | sort -u | tr '\n' ' ')
           echo "slugs=$s" >> "$GITHUB_OUTPUT"
       - name: render, check, queue
         env:
