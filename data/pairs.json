@@ -781,8 +781,9 @@
  {
   "from": "Adolf Hitler",
   "to": "Mickey Mouse",
-  "status": "todo",
+  "status": "done",
   "source": "viral formula",
-  "hint": "costume character; reuses the Reagan at Epcot end from Kim Jong Un to Mickey Mouse"
+  "hint": "costume character; reuses the Reagan at Epcot end from Kim Jong Un to Mickey Mouse; middle via Franco and Ford",
+  "slug": "adolf-hitler-to-mickey-mouse"
  }
 ]
