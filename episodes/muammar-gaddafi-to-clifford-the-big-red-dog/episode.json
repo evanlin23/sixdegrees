@@ -1,0 +1,60 @@
+{
+  "from": "Muammar Gaddafi",
+  "to": "Clifford the Big Red Dog",
+  "title": "Muammar Gaddafi to Clifford the Big Red Dog in three real photos",
+  "description": "A 2009 summit photo, a White House welcome and an Easter Egg Roll connect Libya's Muammar Gaddafi to Clifford the Big Red Dog.",
+  "hook": "How is Muammar Gaddafi connected to Clifford the Big Red Dog?",
+  "people": {
+    "Muammar Gaddafi": {
+      "label": "Gaddafi",
+      "hook_photo": "File:Muammar al-Gaddafi at the AU summit.jpg"
+    },
+    "Barack Obama": {
+      "label": "Barack Obama"
+    },
+    "Laura Bush": {
+      "label": "Laura Bush"
+    },
+    "Clifford the Big Red Dog": {
+      "label": "Clifford",
+      "short": "Clifford"
+    }
+  },
+  "links": [
+    {
+      "a": "Muammar Gaddafi",
+      "b": "Barack Obama",
+      "image": {
+        "file": "File:G8 summit in L'Aquila, family photo.jpg"
+      },
+      "line": "In 2009, Gaddafi posed beside Barack Obama at the G8 summit in Italy, where the two shook hands.",
+      "a_face": 21,
+      "b_face": 7
+    },
+    {
+      "a": "Barack Obama",
+      "b": "Laura Bush",
+      "image": {
+        "file": "File:Obamas escort Bushes to helicopter.jpg"
+      },
+      "line": "In 2009, on Inauguration Day, Barack Obama walked Laura Bush and her husband to their farewell helicopter.",
+      "a_face": 7,
+      "b_face": 13
+    },
+    {
+      "a": "Laura Bush",
+      "b": "Clifford the Big Red Dog",
+      "image": {
+        "file": "File:Clifford the Big Red Dog at the WhiteHouse Easter Egg Roll, 2007Apr09.jpg"
+      },
+      "line": "And in 2007, Laura Bush posed with Clifford the Big Red Dog at the White House Easter Egg Roll.",
+      "a_face": 4,
+      "b_face": [
+        140,
+        2,
+        155,
+        125
+      ]
+    }
+  ]
+}

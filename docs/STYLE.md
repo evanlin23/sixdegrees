@@ -33,6 +33,18 @@ people, two niche things, or a pair that only makes a political point.
   Reynolds).
 - **Game heroes and virtual idols** through their creators at events (Notch, Shigeru Miyamoto, Crypton).
 
+## What the numbers say so far (update after each review)
+
+- The gate is **viewed vs swiped away**. On HelloBuh (a sister Shorts channel, 84 Shorts), 74–81 % viewed got
+  9k–26k views and 56–61 % stalled at 1–3k. The same format scored 74 % once and 58 % the next, so execution
+  beats format.
+- Retention drops hardest at **1.3–1.5 s**. Both faces and the question must be on screen and readable before
+  then; this is why the big-face opening exists.
+- 92–98 % of views come from the Shorts feed, and 98 % of viewers are new. Like rate (1–2 %) doesn't predict
+  views.
+- Ours: the small-card opening (Kim, Monroe) kept 22–25 % of viewers. Big-face results go here once the Studio
+  snapshots come in.
+
 ## Monetization rules (must stay YPP-eligible)
 
 YouTube's "inauthentic content" policy (renamed July 2025) demonetizes
@@ -68,5 +80,5 @@ mass-produced, template-only videos. It is judged per channel. So:
 
 ## Upload
 
-`upload.yml` (started by two cron-job.org jobs at 11:22 AM and 6:22 PM Central) uploads one ready video each time,
+`upload.yml` (started by three cron-job.org jobs at 11:22 AM, 6:22 PM and 9:22 PM Central) uploads one ready video each time,
 publicly, through the official YouTube Data API (no audit needed). See `docs/RUNBOOK.md`.
