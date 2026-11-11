@@ -4,17 +4,25 @@
  "requested_by": "a viewer",
  "hook": "How is LeBron James connected to Kim Jong Un?",
  "title": "How is LeBron James connected to Kim Jong Un?",
- "description": "Three real photos connect LeBron James to North Korea's Kim Jong Un, through two American presidents.",
+ "description": "Five real photos connect LeBron James to North Korea's Kim Jong Un, through Kobe Bryant, two American presidents and South Korea's president.",
  "links": [
   {
    "a": "LeBron James",
+   "b": "Kobe Bryant",
+   "image": {
+    "file": "File:LeBron James vs. Kobe Bryant - 24336452934.jpg"
+   },
+   "line": "In 2016, LeBron James faced Kobe Bryant during Kobe's final season.",
+   "a_face": 25,
+   "b_face": 17
+  },
+  {
+   "a": "Kobe Bryant",
    "b": "Barack Obama",
    "image": {
-    "file": "File:Barack Obama shaking hands with LeBron James, July 2012.jpg"
+    "file": "File:Kobe Bryant and Barack Obama Dec 2015.jpg"
    },
-   "line": "In 2012, LeBron James shook hands with President Obama.",
-   "a_face": 5,
-   "b_face": 4
+   "line": "A few months earlier, Kobe dropped by the Oval Office to see President Obama."
   },
   {
    "a": "Barack Obama",
@@ -26,13 +34,23 @@
   },
   {
    "a": "Donald Trump",
+   "b": "Moon Jae-in",
+   "image": {
+    "file": "File:President Donald J. Trump welcomes President Moon Jae-in of the Republic of Korea to the White House (35520219101).jpg"
+   },
+   "line": "That summer, Trump hosted South Korea's president at the White House.",
+   "a_face": 1,
+   "b_face": 0
+  },
+  {
+   "a": "Moon Jae-in",
    "b": "Kim Jong Un",
    "image": {
-    "file": "File:President Trump Meets with Chairman Kim Jong Un (48162628746).jpg"
+    "file": "File:2018 inter-Korean summit 01.jpg"
    },
-   "line": "And in 2019, Trump shook hands with Kim Jong Un at the Korean border.",
-   "a_face": 4,
-   "b_face": 2
+   "line": "And in 2018, he met Kim Jong Un at the border between the two Koreas.",
+   "b_face": 0,
+   "a_face": 1
   }
  ]
 }
