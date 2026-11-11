@@ -1,0 +1,159 @@
+{
+  "from": "Al Capone",
+  "to": "Scooby-Doo",
+  "title": "How is Al Capone connected to Scooby-Doo?",
+  "description": "Nine real pictures connect gangster Al Capone to Scooby-Doo, through baseball legends, Marilyn Monroe, the Kennedys and Robin Williams.",
+  "hook": "How is Al Capone connected to Scooby-Doo?",
+  "people": {
+    "Al Capone": {
+      "label": "Al Capone"
+    },
+    "Gabby Hartnett": {
+      "label": "Gabby Hartnett"
+    },
+    "Rogers Hornsby": {
+      "label": "Rogers Hornsby"
+    },
+    "Joe DiMaggio": {
+      "label": "Joe DiMaggio"
+    },
+    "Marilyn Monroe": {
+      "label": "Marilyn Monroe"
+    },
+    "John F. Kennedy": {
+      "label": "JFK"
+    },
+    "Ted Kennedy": {
+      "label": "Ted Kennedy"
+    },
+    "Robin Williams": {
+      "label": "Robin Williams"
+    },
+    "Sarah Michelle Gellar": {
+      "label": "Sarah Michelle Gellar",
+      "short": "Gellar"
+    },
+    "Scooby-Doo": {
+      "label": "Scooby-Doo"
+    }
+  },
+  "links": [
+    {
+      "a": "Al Capone",
+      "b": "Gabby Hartnett",
+      "image": {
+        "url": "https://tile.loc.gov/storage-services/service/pnp/cph/3c20000/3c24000/3c24500/3c24508v.jpg",
+        "credit": "ACME Newspictures, New York World-Telegram & Sun Collection, Library of Congress",
+        "license": "Fair use (commentary)",
+        "source": "https://www.loc.gov/item/99472813/"
+      },
+      "line": "In 1931, Cubs catcher Gabby Hartnett signed a ball for Al Capone's son, right beside Capone.",
+      "a_face": 6,
+      "b_face": 0
+    },
+    {
+      "a": "Gabby Hartnett",
+      "b": "Rogers Hornsby",
+      "image": {
+        "file": "File:1929 Chicago Cubs team photograph by Kaufman & Fabry.jpg"
+      },
+      "line": "In 1929, Hartnett posed in the Cubs team photo with superstar Rogers Hornsby.",
+      "a_face": 0,
+      "b_face": 21
+    },
+    {
+      "a": "Rogers Hornsby",
+      "b": "Joe DiMaggio",
+      "image": {
+        "file": "File:Joe DiMaggio and Rogers Hornsby 1950.jpg"
+      },
+      "line": "In 1950, Hornsby posed with Yankees star Joe DiMaggio.",
+      "a_face": [
+        886,
+        218,
+        295,
+        398
+      ],
+      "b_face": [
+        257,
+        244,
+        282,
+        308
+      ]
+    },
+    {
+      "a": "Joe DiMaggio",
+      "b": "Marilyn Monroe",
+      "image": {
+        "file": "File:Joe DiMaggio and Marilyn Monroe 1954.jpg"
+      },
+      "line": "In 1954, DiMaggio married Marilyn Monroe.",
+      "a_face": [
+        358,
+        187,
+        607,
+        763
+      ],
+      "b_face": [
+        981,
+        358,
+        514,
+        638
+      ]
+    },
+    {
+      "a": "Marilyn Monroe",
+      "b": "John F. Kennedy",
+      "image": {
+        "file": "File:JFK and Marilyn Monroe 1962 larger.jpg"
+      },
+      "line": "In 1962, Marilyn sang Happy Birthday to President Kennedy.",
+      "a_face": 0,
+      "b_face": [
+        1104,
+        679,
+        219,
+        226
+      ]
+    },
+    {
+      "a": "John F. Kennedy",
+      "b": "Ted Kennedy",
+      "image": {
+        "file": "File:President Kennedy and his brothers. Attorney General Robert F. Kennedy, Senator Edward Moore Kennedy, President John... - NARA - 194238 - Restoration.jpg"
+      },
+      "line": "Kennedy's youngest brother was Senator Ted Kennedy."
+    },
+    {
+      "a": "Ted Kennedy",
+      "b": "Robin Williams",
+      "image": {
+        "file": "File:Ted Kennedy, Joseph Kennedy II with Comic Relief USA comedians.jpg"
+      },
+      "line": "In 1990, Ted Kennedy welcomed Robin Williams to the Capitol for Comic Relief."
+    },
+    {
+      "a": "Robin Williams",
+      "b": "Sarah Michelle Gellar",
+      "image": {
+        "file": "File:The Crazy Ones CBS 2013.jpg"
+      },
+      "line": "In 2013, Robin Williams starred in The Crazy Ones with Sarah Michelle Gellar.",
+      "a_face": 3,
+      "b_face": 2
+    },
+    {
+      "a": "Sarah Michelle Gellar",
+      "b": "Scooby-Doo",
+      "image": {
+        "url": "https://tco-london.transforms.svdcdn.com/production/tco/images/2022_06_Scooby-Doo-1.jpg?w=1024&h=768&q=75&fm=webp&fit=min&dm=1758041789&s=d0dda704b7adeb6619d363de8860f460",
+        "credit": "Warner Bros. (Scooby-Doo, 2002), via Little White Lies",
+        "license": "Fair use (commentary)",
+        "source": "https://lwlies.com/articles/20-years-on-scooby-doo-is-still-a-thrillingly-silly-throwback-teen-comedy/"
+      },
+      "line": "And in 2002, Gellar played Daphne beside Scooby-Doo himself.",
+      "b_face": 4,
+      "a_face": 0
+    }
+  ]
+}
