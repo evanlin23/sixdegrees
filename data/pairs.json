@@ -753,5 +753,13 @@
   "status": "todo",
   "requested_by": "a viewer",
   "source": "YouTube comment (comment under Stalin to Elmo: 'the Kevin the bird from Up costume'), Studio snapshot 2026-11-10"
+ },
+ {
+  "from": "Adolf Hitler",
+  "to": "Steve",
+  "status": "done",
+  "source": "viral formula",
+  "hint": "reference channel's 17.3M-view pair; Steve via Jack Black (A Minecraft Movie)",
+  "slug": "adolf-hitler-to-steve"
  }
 ]
