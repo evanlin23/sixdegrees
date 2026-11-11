@@ -163,5 +163,18 @@
   "kind": "formula",
   "outro": false,
   "n": 48
+ },
+ {
+  "slug": "lebron-james-to-kim-jong-un",
+  "title": "How is LeBron James connected to Kim Jong Un?",
+  "publish_at": "2026-11-12T00:41:00Z",
+  "video_id": "cGTWmYEnGoU",
+  "privacy": "scheduled",
+  "url": "https://youtube.com/shorts/cGTWmYEnGoU",
+  "thumbnail": "not set: <HttpError 403 when requesting https://youtube.googleapis.com/upload/youtube/v3/thumbnails/set?videoId=cGTWmYEnGoU&alt=json&uploadType=media returned \"The authe",
+  "first_comment": "a viewer asked for this one. Who should I connect next? Two names, the weirder the better.",
+  "kind": "request",
+  "outro": true,
+  "n": 54
  }
 ]
