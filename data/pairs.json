@@ -639,7 +639,8 @@
  {
   "from": "LeBron James",
   "to": "Kim Jong Un",
-  "status": "todo",
+  "status": "done",
+  "slug": "lebron-james-to-kim-jong-un",
   "requested_by": "a viewer",
   "source": "YouTube comment (comment under Hitler to Grug), Studio snapshot 2026-11-10"
  },
