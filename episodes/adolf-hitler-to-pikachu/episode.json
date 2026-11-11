@@ -2,7 +2,7 @@
   "from": "Adolf Hitler",
   "to": "Pikachu",
   "title": "How is Hitler connected to Pikachu?",
-  "description": "A former king, Churchill, the Queen and King Charles connect Adolf Hitler to Pikachu.",
+  "description": "A former king, a president and King Charles connect Adolf Hitler to Pikachu.",
   "hook": "How is Adolf Hitler connected to Pikachu?",
   "people": {
     "Adolf Hitler": {
@@ -12,11 +12,8 @@
       "label": "King Edward VIII",
       "short": "Edward VIII"
     },
-    "Winston Churchill": {
-      "label": "Winston Churchill"
-    },
-    "Elizabeth II": {
-      "label": "Queen Elizabeth II"
+    "Richard Nixon": {
+      "label": "Richard Nixon"
     },
     "Charles III": {
       "label": "King Charles"
@@ -41,33 +38,23 @@
     },
     {
       "a": "Edward VIII",
-      "b": "Winston Churchill",
+      "b": "Richard Nixon",
       "image": {
-        "file": "File:Churchill with Duke of Windsor in 1948.jpg"
+        "file": "File:Nixon and the Windsors.jpg"
       },
-      "line": "In 1948, the former king strolled the French Riviera with his old friend Winston Churchill.",
-      "a_face": 4,
-      "b_face": 1
+      "line": "In 1970, President Nixon threw a White House dinner for the former king.",
+      "a_face": 3,
+      "b_face": 2
     },
     {
-      "a": "Winston Churchill",
-      "b": "Elizabeth II",
-      "image": {
-        "file": "File:Special Film Project 186 - Buckingham Palace 2.jpg"
-      },
-      "line": "On Victory in Europe Day, 1945, Churchill stood on the palace balcony beside young Princess Elizabeth.",
-      "a_face": 2,
-      "b_face": 0
-    },
-    {
-      "a": "Elizabeth II",
+      "a": "Richard Nixon",
       "b": "Charles III",
       "image": {
-        "file": "File:Royal Family Platinum Jubilee Balcony Appearance 2022.jpg"
+        "file": "File:President Richard Nixon and Prince Charles in the Oval Office - DPLA - 4bd6d4f1cdde42a32a1eae2f16b60106.jpg"
       },
-      "line": "In 2022, the Queen stood on that same balcony beside her son Charles.",
-      "a_face": 2,
-      "b_face": 1
+      "line": "That same year, Nixon welcomed a young Prince Charles to the Oval Office.",
+      "a_face": 1,
+      "b_face": 0
     },
     {
       "a": "Charles III",
@@ -78,7 +65,7 @@
         "license": "Fair use (commentary)",
         "source": "https://www.etonline.com/ryan-reynolds-meets-king-charles-iii-and-camilla-at-wrexham-soccer-club-with-rob-mcelhenney-195752"
       },
-      "line": "Months later, Ryan Reynolds showed King Charles around his Welsh football club.",
+      "line": "In 2022, Ryan Reynolds showed King Charles around his Welsh football club.",
       "a_face": 1,
       "b_face": 0
     },
@@ -98,7 +85,7 @@
           }
         ]
       },
-      "line": "And Reynolds was the voice of Pikachu in the movie Detective Pikachu.",
+      "line": "And Reynolds voiced Pikachu in a 2019 movie.",
       "b_face": 2,
       "a_face": 0
     }
