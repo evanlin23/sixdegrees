@@ -1,0 +1,44 @@
+{
+  "from": "Adolf Hitler",
+  "to": "Mickey Mouse",
+  "title": "How is Adolf Hitler connected to Mickey Mouse?",
+  "description": "Four real photos connect Adolf Hitler to Mickey Mouse, through Spain's dictator and two American presidents.",
+  "hook": "How is Adolf Hitler connected to Mickey Mouse?",
+  "people": {
+    "Adolf Hitler": {"label": "Adolf Hitler"},
+    "Francisco Franco": {"label": "Francisco Franco"},
+    "Richard Nixon": {"label": "Richard Nixon"},
+    "Ronald Reagan": {"label": "Ronald Reagan"},
+    "Mickey Mouse": {"label": "Mickey Mouse"}
+  },
+  "links": [
+    {
+      "a": "Adolf Hitler",
+      "b": "Francisco Franco",
+      "image": {"file": "File:Hitler and Franco at Hendaye (en.wiki).jpg"},
+      "line": "In 1940, Hitler met Spain's dictator, Franco, at the French border.",
+      "a_face": [355, 533, 345, 455],
+      "b_face": 1
+    },
+    {
+      "a": "Francisco Franco",
+      "b": "Richard Nixon",
+      "image": {"file": "File:President Richard Nixon and General Francisco Franco Ride in a Motorcade through Madrid, Spain - DPLA - edc7fe9f6f0251dd5b6f69d4013c65e6.gif"},
+      "line": "In 1970, Franco rode through Madrid beside President Richard Nixon."
+    },
+    {
+      "a": "Richard Nixon",
+      "b": "Ronald Reagan",
+      "image": {"file": "File:Ronald Reagan, Nancy Reagan, Pat Nixon, and Richard Nixon in 1970.jpg"},
+      "line": "That year, Nixon hosted California's governor, Ronald Reagan."
+    },
+    {
+      "a": "Ronald Reagan",
+      "b": "Mickey Mouse",
+      "image": {"file": "File:President Ronald Reagan and Nancy Reagan during a trip to Orlando, Florida and a visit to Epcot Center at Disney World and a group photograph with Mickey Mouse and Minnie Mouse - DPLA - 5810c0c969617ab7f42e1b068ba08dca.jpg"},
+      "line": "And in 1985, cold weather moved Reagan's inaugural parade to Epcot, with Mickey himself.",
+      "a_face": 2,
+      "b_face": [1360, 330, 350, 350]
+    }
+  ]
+}

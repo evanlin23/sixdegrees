@@ -777,5 +777,12 @@
   "status": "done",
   "source": "viral formula",
   "slug": "adolf-hitler-to-pikachu"
+ },
+ {
+  "from": "Adolf Hitler",
+  "to": "Mickey Mouse",
+  "status": "todo",
+  "source": "viral formula",
+  "hint": "costume character; reuses the Reagan at Epcot end from Kim Jong Un to Mickey Mouse"
  }
 ]
