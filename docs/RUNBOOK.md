@@ -2,7 +2,7 @@
 
 Buh Connects (@buhconnects, channel `UCE3KAucU-r7Jp3BRGbreQoQ`): YouTube Shorts that connect two famous people
 through real pictures. Producer/consumer: Claude sessions make episodes, GitHub renders and queues them, a cron
-job uploads two a day.
+job uploads three a day.
 
 The episode procedure is the skill **`.claude/skills/six-degrees-episode/SKILL.md`**, the single source of truth
 for producer sessions. What goes viral and the pair formula are in **`docs/STYLE.md`**.
@@ -11,12 +11,12 @@ for producer sessions. What goes viral and the pair formula are in **`docs/STYLE
 
 | When | Who | What |
 |---|---|---|
-| 3:07 AM daily | "Six Degrees daily producer" scheduled task → operator session | 1–2 new episodes (1 if 14+ videos are waiting), each in a **fresh** worker session, alternating a viewer request and a viral-formula pair; the operator invents new formula pairs when the list runs out |
+| 3:07 AM daily | "Six Degrees daily producer" scheduled task → operator session | 1–3 new episodes (3 if fewer than 15 videos are waiting, 2 if 15–29, 1 if 30+), each in a **fresh** worker session, alternating a viewer request and a viral-formula pair; the operator invents new formula pairs when the list runs out |
 | when merging episode PRs | operator session | strong pairs go near the top of `data/upload_order.json` in the same merge |
 | on each episode PR | `render.yml` | voices (Gemini Achird), renders and runs QA as a check; nothing is queued |
 | operator check-ins | operator session | merges PRs whose check passed; archives finished workers |
 | on merge to main | `render.yml` | renders again and appends the video to the `queue` branch |
-| 11:22 AM and 6:22 PM | cron-job.org (two jobs) → `upload.yml` with `{"max":"1","privacy":"public"}` | uploads the next ready video publicly, posts the first comment (and the thumbnail once the channel is phone-verified) |
+| 11:22 AM, 6:22 PM and 9:22 PM | cron-job.org (three jobs) → `upload.yml` with `{"max":"1","privacy":"public"}` | uploads the next ready video publicly, posts the first comment (and the thumbnail once the channel is phone-verified) |
 | Fri 9:37 PM weekly | "Six Degrees: weekly performance review" scheduled task → operator session | stats, compares opening/kind/outro groups, proposes up to 3 changes, waits for the creator's go-ahead; re-schedules itself for next Friday |
 | on demand | `stats.yml` | views/likes/comments + retention (yt-analytics scope) into `stats.json` on `queue` |
 | on demand | `voice.yml` | voices several episodes per Gemini request into the `tts-cache` branch |
