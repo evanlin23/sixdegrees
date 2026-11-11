@@ -46,6 +46,8 @@ people, two niche things, or a pair that only makes a political point.
   - Viewed vs swiped: the small-card opening scored 28 % and 42 %. The big-face opening's median is 63 %.
   - Hitler pairs top it: Hitler → Grug 72.5 % (22k views, 16 subs) and Hitler → Kermit 71.9 %. Every other pair
     is at 55–63 %, so the pair decides the gate once the opening is fixed.
+  - So **Hitler pairs, and pairs with an equally instant villain, post first**: the operator puts them at the
+    front of `data/upload_order.json` as soon as they're merged.
   - Stalin is wearing out: four Stalin Shorts in three days went 63 → 59 → 56 → 55 %. Don't post the same person
     in back-to-back uploads.
   - Request vs formula, and "And that's how." vs none: no difference yet (medians within 1 point).
