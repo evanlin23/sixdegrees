@@ -1,0 +1,62 @@
+{
+  "from": "Adolf Hitler",
+  "to": "SpongeBob SquarePants",
+  "title": "How is Adolf Hitler connected to SpongeBob SquarePants?",
+  "description": "A 1938 pact, two prime ministers, a queen and a London soccer clinic connect Adolf Hitler to SpongeBob SquarePants.",
+  "hook": "How is Adolf Hitler connected to SpongeBob SquarePants?",
+  "people": {
+    "Adolf Hitler": {"label": "Adolf Hitler"},
+    "Neville Chamberlain": {"label": "Neville Chamberlain"},
+    "Winston Churchill": {"label": "Winston Churchill"},
+    "Elizabeth II": {"label": "Queen Elizabeth II"},
+    "Michelle Obama": {"label": "Michelle Obama"},
+    "SpongeBob SquarePants": {"wiki": "SpongeBob SquarePants (character)", "label": "SpongeBob"}
+  },
+  "links": [
+    {
+      "a": "Adolf Hitler",
+      "b": "Neville Chamberlain",
+      "image": {"file": "File:Munich Agreement Bundesarchiv Bild 183-R69173.jpg"},
+      "line": "In 1938, Britain's Neville Chamberlain signed the Munich Agreement with Hitler.",
+      "a_face": 4,
+      "b_face": 1
+    },
+    {
+      "a": "Neville Chamberlain",
+      "b": "Winston Churchill",
+      "image": {"file": "File:Churchill and Chamberlain.jpg"},
+      "line": "In 1940, Winston Churchill replaced him as prime minister.",
+      "a_face": 2,
+      "b_face": 1
+    },
+    {
+      "a": "Winston Churchill",
+      "b": "Elizabeth II",
+      "image": {"file": "File:Special Film Project 186 - Buckingham Palace 2.jpg"},
+      "line": "On Victory in Europe Day, 1945, Churchill stood beside young Princess Elizabeth.",
+      "a_face": 2,
+      "b_face": 0
+    },
+    {
+      "a": "Elizabeth II",
+      "b": "Michelle Obama",
+      "image": {"file": "File:Barack Obama Michelle Obama Queen Elizabeth II Buckingham Palace London.jpg"},
+      "line": "In 2009, the Queen welcomed Michelle Obama to Buckingham Palace.",
+      "a_face": 3,
+      "b_face": 1
+    },
+    {
+      "a": "Michelle Obama",
+      "b": "SpongeBob SquarePants",
+      "image": {
+        "url": "https://assets2.cbsnewsstatic.com/hub/i/r/2012/07/27/9864d4b6-c3cb-11e2-a43e-02911869d855/thumbnail/620x442/9e5be6f2d6e0885c7e8b4f4ccd96d635/15-Michelle-Obama-Olympic.jpg",
+        "credit": "Tim Whitby/Getty Images for Nickelodeon",
+        "license": "Fair use (commentary)",
+        "source": "https://www.cbsnews.com/pictures/michelle-obama-at-the-olympics"
+      },
+      "line": "And in 2012, Michelle Obama played soccer with SpongeBob himself in London.",
+      "a_face": 8,
+      "b_face": [185, 60, 190, 185]
+    }
+  ]
+}
