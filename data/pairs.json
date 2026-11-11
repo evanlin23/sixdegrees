@@ -611,8 +611,8 @@
   "source": "viral formula",
   "hint": "Virginia Vallejo, Betancur, Reagan, Nancy Reagan, Willard Scott (1983 White House Easter Egg Roll with Pooh)",
   "slug": "pablo-escobar-to-winnie-the-pooh"
-  },
-  {
+ },
+ {
   "from": "Al Capone",
   "to": "Scooby-Doo",
   "status": "skipped",
@@ -627,5 +627,110 @@
   "source": "viral formula",
   "hint": "Gaddafi with Obama at the 2009 G8; Clifford costume at the White House Easter Egg Roll",
   "slug": "muammar-gaddafi-to-clifford-the-big-red-dog"
+ },
+ {
+  "from": "Adolf Hitler",
+  "to": "Hatsune Miku",
+  "status": "todo",
+  "requested_by": "a viewer",
+  "source": "YouTube comment (the reference channel's 15.5M-view pair; asked again under Stalin to Elmo), Studio snapshot 2026-11-10"
+ },
+ {
+  "from": "LeBron James",
+  "to": "Kim Jong Un",
+  "status": "todo",
+  "requested_by": "a viewer",
+  "source": "YouTube comment (comment under Hitler to Grug), Studio snapshot 2026-11-10"
+ },
+ {
+  "from": "Cristiano Ronaldo",
+  "to": "Kim Jong Un",
+  "status": "todo",
+  "requested_by": "a viewer",
+  "source": "YouTube comment (comment under Rivaldo to Lil Wayne), Studio snapshot 2026-11-10"
+ },
+ {
+  "from": "P. Diddy",
+  "to": "IShowSpeed",
+  "status": "todo",
+  "requested_by": "a viewer",
+  "source": "YouTube comment (comment under Hitler to Kermit), Studio snapshot 2026-11-10"
+ },
+ {
+  "from": "Julius Caesar",
+  "to": "P. Diddy",
+  "status": "todo",
+  "requested_by": "a viewer",
+  "source": "YouTube comment (comment under Hitler to Grug), Studio snapshot 2026-11-10"
+ },
+ {
+  "from": "Napoleon",
+  "to": "Curious George",
+  "status": "todo",
+  "requested_by": "a viewer",
+  "source": "YouTube comment (comment under Hitler to Kermit), Studio snapshot 2026-11-10"
+ },
+ {
+  "from": "P. Diddy",
+  "to": "Kylian Mbappé",
+  "status": "todo",
+  "requested_by": "a viewer",
+  "source": "YouTube comment (comment under Kim Jong Un to Mickey Mouse), Studio snapshot 2026-11-10"
+ },
+ {
+  "from": "Kim Jong Un",
+  "to": "Leafy (BFDI)",
+  "status": "todo",
+  "requested_by": "a viewer",
+  "source": "YouTube comment (comment under Stalin to Steve), Studio snapshot 2026-11-10"
+ },
+ {
+  "from": "Noah",
+  "to": "KreekCraft",
+  "status": "todo",
+  "requested_by": "a viewer",
+  "source": "YouTube comment (comment under Stalin to Steve), Studio snapshot 2026-11-10"
+ },
+ {
+  "from": "Mahatma Gandhi",
+  "to": "Napoleon",
+  "status": "todo",
+  "requested_by": "a viewer",
+  "source": "YouTube comment (comment under Hitler to Kermit), Studio snapshot 2026-11-10"
+ },
+ {
+  "from": "Tom Cruise",
+  "to": "Marie Curie",
+  "status": "todo",
+  "requested_by": "a viewer",
+  "source": "YouTube comment (comment under Stalin to Elmo), Studio snapshot 2026-11-10"
+ },
+ {
+  "from": "George Lucas",
+  "to": "Wyatt Earp",
+  "status": "todo",
+  "requested_by": "a viewer",
+  "source": "YouTube comment (comment under Stalin to Optimus Prime), Studio snapshot 2026-11-10"
+ },
+ {
+  "from": "Jesse James",
+  "to": "Johnny Cash",
+  "status": "todo",
+  "requested_by": "a viewer",
+  "source": "YouTube comment (comment under Chris Pratt to Stalin), Studio snapshot 2026-11-10"
+ },
+ {
+  "from": "Elvis Presley",
+  "to": "Hannibal",
+  "status": "todo",
+  "requested_by": "a viewer",
+  "source": "YouTube comment (comment under Stalin to Steve), Studio snapshot 2026-11-10"
+ },
+ {
+  "from": "Chino Moreno",
+  "to": "Frank Sinatra",
+  "status": "todo",
+  "requested_by": "a viewer",
+  "source": "YouTube comment (comment under Stalin to Elmo), Studio snapshot 2026-11-10"
  }
 ]

@@ -44,7 +44,8 @@ def merge(snapshot: dict) -> dict:
 
 
 def _when(u: dict, v: dict) -> str:
-    return (u.get("uploaded_at") or u.get("publish_at") or v.get("published") or "")[:16]
+    # Studio's own publish time is the real one; the upload log's publish_at is the planned slot
+    return (v.get("published") or u.get("uploaded_at") or u.get("publish_at") or "")[:16]
 
 
 def report(cur: dict) -> str:

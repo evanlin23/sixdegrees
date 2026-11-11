@@ -42,8 +42,17 @@ people, two niche things, or a pair that only makes a political point.
   then; this is why the big-face opening exists.
 - 92–98 % of views come from the Shorts feed, and 98 % of viewers are new. Like rate (1–2 %) doesn't predict
   views.
-- Ours: the small-card opening (Kim, Monroe) kept 22–25 % of viewers. Big-face results go here once the Studio
-  snapshots come in.
+- **Ours, Studio snapshot 2026-11-10 (12 Shorts, data/studio.json):**
+  - Viewed vs swiped: the small-card opening scored 28 % and 42 %. The big-face opening's median is 63 %.
+  - Hitler pairs top it: Hitler → Grug 72.5 % (22k views, 16 subs) and Hitler → Kermit 71.9 %. Every other pair
+    is at 55–63 %, so the pair decides the gate once the opening is fixed.
+  - Stalin is wearing out: four Stalin Shorts in three days went 63 → 59 → 56 → 55 %. Don't post the same person
+    in back-to-back uploads.
+  - Request vs formula, and "And that's how." vs none: no difference yet (medians within 1 point).
+  - Retention: 1 s is about 135–145 % (replays). Every Short drops most at 5–7 s, 2–4 s into the first link, and
+    ends at 50–70 %. Average view is 20–29 s.
+  - The audience is 13–17, mostly US, 99 % new viewers, and 95 % come from the Shorts feed.
+  - Comments are pair requests: harvest them every review. One said "please quit yapping": keep lines short.
 
 ## Monetization rules (must stay YPP-eligible)
 
