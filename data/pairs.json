@@ -777,5 +777,13 @@
   "status": "done",
   "source": "viral formula",
   "slug": "adolf-hitler-to-pikachu"
+ },
+ {
+  "from": "Adolf Hitler",
+  "to": "Elmo",
+  "status": "done",
+  "source": "viral formula",
+  "hint": "via Franco and King Juan Carlos; reuses the Laura Bush end from Stalin to Elmo",
+  "slug": "adolf-hitler-to-elmo"
  }
 ]

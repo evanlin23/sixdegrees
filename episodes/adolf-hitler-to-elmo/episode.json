@@ -5,38 +5,69 @@
   "description": "Four real photos connect Adolf Hitler to Elmo from Sesame Street, through Franco, the King of Spain and a first lady.",
   "hook": "How is Adolf Hitler connected to Elmo?",
   "people": {
-    "Adolf Hitler": {"label": "Adolf Hitler"},
-    "Francisco Franco": {"label": "Francisco Franco", "short": "Franco"},
-    "Juan Carlos I": {"label": "King Juan Carlos", "short": "Juan Carlos"},
-    "Laura Bush": {"label": "Laura Bush"},
-    "Elmo": {"label": "Elmo"}
+    "Adolf Hitler": {
+      "label": "Adolf Hitler"
+    },
+    "Francisco Franco": {
+      "label": "Francisco Franco",
+      "short": "Franco"
+    },
+    "Juan Carlos I": {
+      "label": "King Juan Carlos",
+      "short": "Juan Carlos"
+    },
+    "Laura Bush": {
+      "label": "Laura Bush"
+    },
+    "Elmo": {
+      "label": "Elmo"
+    }
   },
   "links": [
     {
       "a": "Adolf Hitler",
       "b": "Francisco Franco",
-      "image": {"file": "File:Meeting at Hendaye (en.wiki).jpg"},
-      "line": "In 1940, Hitler met Spain's dictator Franco at a train station on the French border."
+      "image": {
+        "file": "File:Meeting at Hendaye (en.wiki).jpg"
+      },
+      "line": "In 1940, Hitler met Spain's dictator Franco at a train station on the French border.",
+      "a_face": 0,
+      "b_face": 4
     },
     {
       "a": "Francisco Franco",
       "b": "Juan Carlos I",
-      "image": {"file": "File:In Madrid is herdacht dat Franco 30 jaar geleden de burgeroorlog ( 1936 1939 ) w, Bestanddeelnr 922-4913 (cropped).jpg"},
-      "line": "In 1969, Franco stood beside young Prince Juan Carlos, the man he chose to rule after him."
+      "image": {
+        "file": "File:In Madrid is herdacht dat Franco 30 jaar geleden de burgeroorlog ( 1936 1939 ) w, Bestanddeelnr 922-4913 (cropped).jpg"
+      },
+      "line": "In 1969, Franco stood beside young Prince Juan Carlos, the man he chose to rule after him.",
+      "a_face": 2,
+      "b_face": 1
     },
     {
       "a": "Juan Carlos I",
       "b": "Laura Bush",
-      "image": {"file": "File:Sofia, Laura Bush, George W. Bush and Juan Carlos.jpg"},
-      "line": "In 2001, King Juan Carlos welcomed George and Laura Bush to his palace in Madrid."
+      "image": {
+        "file": "File:Sofia, Laura Bush, George W. Bush and Juan Carlos.jpg"
+      },
+      "line": "In 2001, King Juan Carlos welcomed George and Laura Bush to his palace in Madrid.",
+      "a_face": 3,
+      "b_face": 1
     },
     {
       "a": "Laura Bush",
       "b": "Elmo",
-      "image": {"file": "File:Mrs. Laura Bush and daughters pose for a photo with Sesame Street character Elmo.jpg"},
+      "image": {
+        "file": "File:Mrs. Laura Bush and daughters pose for a photo with Sesame Street character Elmo.jpg"
+      },
       "line": "And in 2007, Laura Bush posed with Elmo at a Sesame Street benefit dinner.",
       "a_face": 1,
-      "b_face": [258, 208, 70, 68]
+      "b_face": [
+        258,
+        208,
+        70,
+        68
+      ]
     }
   ]
 }
