@@ -1,0 +1,97 @@
+{
+  "from": "Adolf Hitler",
+  "to": "Hatsune Miku",
+  "requested_by": "a viewer",
+  "title": "How is Hitler connected to Hatsune Miku?",
+  "description": "Six real pictures connect Adolf Hitler to Hatsune Miku, through a former king, Churchill, the Queen, a president and a late-night host.",
+  "hook": "How is Adolf Hitler connected to Hatsune Miku?",
+  "people": {
+    "Adolf Hitler": {
+      "label": "Adolf Hitler"
+    },
+    "Edward VIII": {
+      "label": "King Edward VIII"
+    },
+    "Winston Churchill": {
+      "label": "Winston Churchill"
+    },
+    "Elizabeth II": {
+      "label": "Queen Elizabeth II"
+    },
+    "Barack Obama": {
+      "label": "Barack Obama"
+    },
+    "David Letterman": {
+      "label": "David Letterman"
+    },
+    "Hatsune Miku": {
+      "label": "Hatsune Miku"
+    }
+  },
+  "links": [
+    {
+      "a": "Adolf Hitler",
+      "b": "Edward VIII",
+      "image": {
+        "file": "File:Duc et duchesse de Windsor avec Hitler (1937).jpg"
+      },
+      "line": "In 1937, Hitler welcomed Britain's former king, Edward VIII."
+    },
+    {
+      "a": "Edward VIII",
+      "b": "Winston Churchill",
+      "image": {
+        "file": "File:Churchill with Duke of Windsor in 1948.jpg"
+      },
+      "line": "In 1948, Edward holidayed on the French Riviera with Winston Churchill.",
+      "a_face": 4,
+      "b_face": 1
+    },
+    {
+      "a": "Winston Churchill",
+      "b": "Elizabeth II",
+      "image": {
+        "file": "File:Special Film Project 186 - Buckingham Palace 2.jpg"
+      },
+      "line": "On Victory in Europe Day, 1945, Churchill stood beside young Princess Elizabeth.",
+      "a_face": 2,
+      "b_face": 0
+    },
+    {
+      "a": "Elizabeth II",
+      "b": "Barack Obama",
+      "image": {
+        "file": "File:Barack Obama Michelle Obama Queen Elizabeth II Buckingham Palace London.jpg"
+      },
+      "line": "In 2009, the Queen welcomed Barack Obama to Buckingham Palace.",
+      "a_face": 3,
+      "b_face": 0
+    },
+    {
+      "a": "Barack Obama",
+      "b": "David Letterman",
+      "image": {
+        "file": "File:2012 President Barack Obama with David Letterman.jpg"
+      },
+      "line": "In 2012, Obama sat down with David Letterman on the Late Show."
+    },
+    {
+      "a": "David Letterman",
+      "b": "Hatsune Miku",
+      "image": {
+        "url": "https://grantland.com/wp-content/uploads/2014/10/hp_cbs_hatsune_miku_david_letterman_800.jpg",
+        "credit": "CBS / Late Show with David Letterman (via Grantland)",
+        "license": "Fair use (commentary)",
+        "source": "https://grantland.com/hollywood-prospectus/hatsune-miku-david-letterman-the-late-show/"
+      },
+      "line": "And in 2014, Letterman shared his stage with the hologram pop star Hatsune Miku.",
+      "b_face": [
+        240,
+        52,
+        76,
+        80
+      ],
+      "a_face": 1
+    }
+  ]
+}
