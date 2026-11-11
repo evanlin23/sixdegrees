@@ -756,6 +756,13 @@
  },
  {
   "from": "Adolf Hitler",
+  "to": "Steve",
+  "status": "done",
+  "source": "viral formula",
+  "hint": "reference channel's 17.3M-view pair; Steve via Jack Black (A Minecraft Movie)",
+  "slug": "adolf-hitler-to-steve"
+  },
+  {
   "to": "SpongeBob SquarePants",
   "status": "done",
   "source": "viral formula",

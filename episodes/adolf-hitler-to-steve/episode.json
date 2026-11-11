@@ -1,0 +1,117 @@
+{
+  "from": "Adolf Hitler",
+  "to": "Steve",
+  "title": "How is Adolf Hitler connected to Steve from Minecraft?",
+  "description": "Six real pictures connect Adolf Hitler to Minecraft's Steve, through Chamberlain, Churchill, the Queen, Angelina Jolie and Jack Black.",
+  "hook": "How is Adolf Hitler connected to Steve from Minecraft?",
+  "people": {
+    "Adolf Hitler": {
+      "label": "Adolf Hitler"
+    },
+    "Neville Chamberlain": {
+      "label": "Neville Chamberlain",
+      "short": "Chamberlain"
+    },
+    "Winston Churchill": {
+      "label": "Winston Churchill"
+    },
+    "Elizabeth II": {
+      "label": "Queen Elizabeth II"
+    },
+    "Angelina Jolie": {
+      "label": "Angelina Jolie"
+    },
+    "Jack Black": {
+      "label": "Jack Black"
+    },
+    "Steve": {
+      "label": "Steve"
+    }
+  },
+  "links": [
+    {
+      "a": "Adolf Hitler",
+      "b": "Neville Chamberlain",
+      "image": {
+        "file": "File:Munich Agreement Bundesarchiv Bild 183-R69173.jpg"
+      },
+      "line": "In 1938, Hitler signed the Munich deal with Britain's Neville Chamberlain.",
+      "a_face": 4,
+      "b_face": 1
+    },
+    {
+      "a": "Neville Chamberlain",
+      "b": "Winston Churchill",
+      "image": {
+        "file": "File:Churchill and Chamberlain.jpg"
+      },
+      "line": "In 1940, Winston Churchill replaced Chamberlain as prime minister.",
+      "a_face": 2,
+      "b_face": 1
+    },
+    {
+      "a": "Winston Churchill",
+      "b": "Elizabeth II",
+      "image": {
+        "file": "File:Churchill queen Elizabeth 1953.jpg"
+      },
+      "line": "In 1953, Churchill greeted the new Queen and her children.",
+      "a_face": 3,
+      "b_face": 2
+    },
+    {
+      "a": "Elizabeth II",
+      "b": "Angelina Jolie",
+      "image": {
+        "url": "https://cdn.abcotvs.com/dip/images/345818_101014-ap-queen-angelina-jolie-06-img.jpg",
+        "credit": "AP Photo/Anthony Devlin, pool",
+        "license": "Fair use (commentary)",
+        "source": "https://abc7.com/post/photos-queen-elizabeth-honors-angelina-jolie/345841/"
+      },
+      "line": "In 2014, the Queen made Angelina Jolie an honorary dame.",
+      "a_face": 0,
+      "b_face": 1
+    },
+    {
+      "a": "Angelina Jolie",
+      "b": "Jack Black",
+      "image": {
+        "url": "https://img.festival-cannes.com/eyJidWNrZXQiOiJtZWRpYSIsImtleSI6InVwbG9hZHNcLzIwMTdcLzAzXC9pbWFnZS05MTk3LmpwZyIsImVkaXRzIjp7InJlc2l6ZSI6eyJ3aWR0aCI6MTYwMCwiZml0IjoiY292ZXIifX19",
+        "credit": "AFP / Festival de Cannes",
+        "license": "Fair use (commentary)",
+        "source": "https://www.festival-cannes.com/en/medialibrary/jack-black-angelina-jolie-and-dustin-hoffman-photocall-of-the-film-film-kung-fu-panda/"
+      },
+      "line": "In 2008, Jolie and Jack Black brought Kung Fu Panda to Cannes.",
+      "a_face": 9,
+      "b_face": 4
+    },
+    {
+      "a": "Jack Black",
+      "b": "Steve",
+      "image": {
+        "pair": [
+          {
+            "url": "https://minecraft.wiki/images/AMCM_Steve_glare.jpeg",
+            "credit": "Warner Bros. Pictures / Legendary (A Minecraft Movie, via Minecraft Wiki)",
+            "license": "Fair use (commentary)",
+            "source": "https://minecraft.wiki/w/File:AMCM_Steve_glare.jpeg"
+          },
+          {
+            "url": "https://minecraft.wiki/images/Steve_%28classic%29_JE6.png",
+            "credit": "Mojang Studios (via Minecraft Wiki)",
+            "license": "Fair use (commentary)",
+            "source": "https://minecraft.wiki/w/File:Steve_(classic)_JE6.png"
+          }
+        ]
+      },
+      "line": "And in 2025, Jack Black became Steve in A Minecraft Movie.",
+      "a_face": 0,
+      "b_face": [
+        2010,
+        60,
+        340,
+        330
+      ]
+    }
+  ]
+}
