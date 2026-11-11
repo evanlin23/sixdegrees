@@ -150,5 +150,18 @@
   "kind": "request",
   "outro": true,
   "n": 20
+ },
+ {
+  "slug": "adolf-hitler-to-steve",
+  "title": "How is Adolf Hitler connected to Steve?",
+  "publish_at": "2026-11-11T17:34:00Z",
+  "video_id": "M8zmfw_MerY",
+  "privacy": "scheduled",
+  "url": "https://youtube.com/shorts/M8zmfw_MerY",
+  "thumbnail": "not set: <HttpError 403 when requesting https://youtube.googleapis.com/upload/youtube/v3/thumbnails/set?videoId=M8zmfw_MerY&alt=json&uploadType=media returned \"The authe",
+  "first_comment": "Who should I connect next? Two names, the weirder the better.",
+  "kind": "formula",
+  "outro": false,
+  "n": 48
  }
 ]
