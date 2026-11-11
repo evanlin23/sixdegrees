@@ -1,7 +1,7 @@
 """Upload a finished Short to YouTube as PRIVATE with a scheduled publish time.
 
 YouTube is the backlog: each video goes up scheduled into the next free slot
-(two a day), so nothing has to survive between cloud containers. Slots already
+(three a day), so nothing has to survive between cloud containers. Slots already
 taken are read from data/uploads.json (committed after every upload).
 
 Credentials come from environment variables (set them in the Claude cloud

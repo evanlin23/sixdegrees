@@ -68,5 +68,5 @@ mass-produced, template-only videos. It is judged per channel. So:
 
 ## Upload
 
-`upload.yml` (started by two cron-job.org jobs at 11:22 AM and 6:22 PM Central) uploads one ready video each time,
+`upload.yml` (started by three cron-job.org jobs at 11:22 AM, 6:22 PM and 9:22 PM Central) uploads one ready video each time,
 publicly, through the official YouTube Data API (no audit needed). See `docs/RUNBOOK.md`.
