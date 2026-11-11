@@ -1,0 +1,38 @@
+{
+ "from": "LeBron James",
+ "to": "Kim Jong Un",
+ "requested_by": "a viewer",
+ "hook": "How is LeBron James connected to Kim Jong Un?",
+ "title": "How is LeBron James connected to Kim Jong Un?",
+ "description": "Three real photos connect LeBron James to North Korea's Kim Jong Un, through two American presidents.",
+ "links": [
+  {
+   "a": "LeBron James",
+   "b": "Barack Obama",
+   "image": {
+    "file": "File:Barack Obama shaking hands with LeBron James, July 2012.jpg"
+   },
+   "line": "In 2012, LeBron James shook hands with President Obama.",
+   "a_face": 5,
+   "b_face": 4
+  },
+  {
+   "a": "Barack Obama",
+   "b": "Donald Trump",
+   "image": {
+    "file": "File:Obama hands over presidency to Trump at 58th Presidential Inauguration 170120-D-NA975-0947.jpg"
+   },
+   "line": "In 2017, Obama handed the presidency to Donald Trump."
+  },
+  {
+   "a": "Donald Trump",
+   "b": "Kim Jong Un",
+   "image": {
+    "file": "File:President Trump Meets with Chairman Kim Jong Un (48162628746).jpg"
+   },
+   "line": "And in 2019, Trump shook hands with Kim Jong Un at the Korean border.",
+   "a_face": 4,
+   "b_face": 2
+  }
+ ]
+}
