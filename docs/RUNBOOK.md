@@ -45,10 +45,11 @@ for producer sessions. What goes viral and the pair formula are in **`docs/STYLE
 
 ## Uploads
 
-- `queue.consume` (via `upload.yml`): picks only Achird videos of the current voice revision, alternating viewer
-  requests and viral-formula pairs; records `kind` and `outro` in `uploaded.json`. Within each kind,
-  `data/upload_order.json` lists the slugs to post first (strongest viral gaps), then the rest go oldest first.
-  Edit that list to change what posts next; re-render priority slugs first so they're ready.
+- `queue.consume` (via `upload.yml`): picks only Achird videos of the current voice revision, in the priority order
+  of `data/upload_order.json`. Its `formula` and `request` lists are interleaved into one list (formula[0],
+  request[0], formula[1], …), and unlisted videos go oldest first. It never posts someone from the previous
+  upload's pair. Records `kind` and `outro` in `uploaded.json`. A viewer request with Hitler (e.g. Miku) goes in
+  the `request` list. Edit the lists to change what posts next.
 - Title is always "How is A connected to B?" with the names people know; description = chain, call to action,
   photo credits, hashtags; first comment credits the requester.
 - A/B test: half the episodes (hash of the slug) end with Achird saying "And that's how." Compare completion and
