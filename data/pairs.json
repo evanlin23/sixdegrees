@@ -785,5 +785,13 @@
   "source": "viral formula",
   "hint": "costume character; reuses the Reagan at Epcot end from Kim Jong Un to Mickey Mouse; middle via Franco and Ford",
   "slug": "adolf-hitler-to-mickey-mouse"
+ },
+ {
+  "from": "Adolf Hitler",
+  "to": "Elmo",
+  "status": "done",
+  "source": "viral formula",
+  "hint": "via Franco and King Juan Carlos; reuses the Laura Bush end from Stalin to Elmo",
+  "slug": "adolf-hitler-to-elmo"
  }
 ]
