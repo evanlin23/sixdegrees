@@ -1,0 +1,93 @@
+{
+  "from": "Adolf Hitler",
+  "to": "Pikachu",
+  "title": "How is Hitler connected to Pikachu?",
+  "description": "A former king, a president and King Charles connect Adolf Hitler to Pikachu.",
+  "hook": "How is Adolf Hitler connected to Pikachu?",
+  "people": {
+    "Adolf Hitler": {
+      "label": "Adolf Hitler"
+    },
+    "Edward VIII": {
+      "label": "King Edward VIII",
+      "short": "Edward VIII"
+    },
+    "Richard Nixon": {
+      "label": "Richard Nixon"
+    },
+    "Charles III": {
+      "label": "King Charles"
+    },
+    "Ryan Reynolds": {
+      "label": "Ryan Reynolds"
+    },
+    "Pikachu": {
+      "label": "Pikachu"
+    }
+  },
+  "links": [
+    {
+      "a": "Adolf Hitler",
+      "b": "Edward VIII",
+      "image": {
+        "file": "File:Duc et duchesse de Windsor avec Hitler (1937).jpg"
+      },
+      "line": "In 1937, a year after giving up the British throne, Edward the Eighth visited Hitler.",
+      "a_face": 6,
+      "b_face": 5
+    },
+    {
+      "a": "Edward VIII",
+      "b": "Richard Nixon",
+      "image": {
+        "file": "File:Nixon and the Windsors.jpg"
+      },
+      "line": "In 1970, President Nixon threw a White House dinner for the former king.",
+      "a_face": 3,
+      "b_face": 2
+    },
+    {
+      "a": "Richard Nixon",
+      "b": "Charles III",
+      "image": {
+        "file": "File:President Richard Nixon and Prince Charles in the Oval Office - DPLA - 4bd6d4f1cdde42a32a1eae2f16b60106.jpg"
+      },
+      "line": "That same year, Nixon welcomed a young Prince Charles to the Oval Office.",
+      "a_face": 1,
+      "b_face": 0
+    },
+    {
+      "a": "Charles III",
+      "b": "Ryan Reynolds",
+      "image": {
+        "url": "https://www.etonline.com/sites/default/files/styles/1280x720/public/images/2022-12/ryan-reynolds-royalsGettyImages-1245475573.jpg?h=42979922&width=1024&quality=80",
+        "credit": "Oli Scarff/AFP via Getty Images",
+        "license": "Fair use (commentary)",
+        "source": "https://www.etonline.com/ryan-reynolds-meets-king-charles-iii-and-camilla-at-wrexham-soccer-club-with-rob-mcelhenney-195752"
+      },
+      "line": "In 2022, Ryan Reynolds showed King Charles around his Welsh football club.",
+      "a_face": 1,
+      "b_face": 0
+    },
+    {
+      "a": "Ryan Reynolds",
+      "b": "Pikachu",
+      "image": {
+        "pair": [
+          {
+            "file": "File:Ryan Reynolds by Gage Skidmore 3.jpg"
+          },
+          {
+            "url": "http://www.impawards.com/2019/posters/pokemon_detective_pikachu_ver4_xlg.jpg",
+            "credit": "Legendary Pictures / Warner Bros. (via IMP Awards)",
+            "license": "Fair use (commentary)",
+            "source": "http://www.impawards.com/2019/pokemon_detective_pikachu_ver4.html"
+          }
+        ]
+      },
+      "line": "And Reynolds voiced Pikachu in a 2019 movie.",
+      "b_face": 2,
+      "a_face": 0
+    }
+  ]
+}
