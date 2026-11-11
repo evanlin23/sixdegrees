@@ -61,6 +61,20 @@ A on top and B below as big full-width photos from frame 0, the spoken question 
 `people.<Name>.hook_photo` in episode.json to choose a better one. The small-card opening it replaced kept
 22–25% of viewers. The thumbnail is the same frame with a "?" on the seam.
 
+## Metrics review (what works, what doesn't)
+
+- Every 2–3 days the owner pastes `docs/studio-metrics-prompt.md` into Claude in Chrome, signed in to YouTube
+  Studio. It reads each Short's live Studio numbers: viewed vs swiped away, retention at 1 s/3 s/mid/end, average
+  % viewed, traffic, top comments and audience. It answers with one JSON block. Give that to the operator session,
+  or run `python -m sixdeg studio <file>`. That stores it in `data/studio.json`, joins it with the upload log and
+  compares groups: opening (cards vs big-face), kind (request vs formula) and outro (yes/no).
+- `stats.yml` (API views/likes/comments) is the fallback. It lags 1–3 days and has no swipe-away or retention
+  curve.
+- The weekly review (Fri 9:37 PM) uses the latest Studio snapshot plus stats.json. It proposes up to 3 changes
+  and waits for the owner's go-ahead.
+- House rule (from HelloBuh): when a Short flops, check its execution first: a slow first 1.5 s, an unreadable
+  face, a bad name. Fix the same fault in queued siblings before blaming the pair type.
+
 ## Re-rendering
 
 - One or more queued episodes: dispatch `render.yml` with `slug` = space-separated slugs and `enqueue` true. A

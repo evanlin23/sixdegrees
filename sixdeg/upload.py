@@ -22,7 +22,7 @@ from zoneinfo import ZoneInfo
 from .common import DATA
 
 TZ = ZoneInfo("America/Chicago")
-SLOTS = [(11, 30), (18, 30)]          # Central time; each gets 0-20 min jitter so it never looks like clockwork
+SLOTS = [(11, 30), (18, 30), (21, 30)]  # Central time, three a day; each gets 0-20 min jitter so it never looks like clockwork
 UPLOADS = DATA / "uploads.json"
 
 
