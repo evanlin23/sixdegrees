@@ -32,8 +32,8 @@ describe, stop and tell me instead of guessing.
 4. While you're in GitHub: Actions tab → "stats" workflow → Run workflow (branch main). Wait for it to finish and
    tell me whether it's green.
 
-5. cron-job.org: tell me the schedule, URL and request body of every "sixdegrees" job (I expect two upload jobs at
-   11:22 and 18:22 America/Chicago with body {"ref":"main","inputs":{"max":"1","privacy":"public"}}). Don't change
+5. cron-job.org: tell me the schedule, URL and request body of every "sixdegrees" job (I expect one upload job at
+   08:07 America/Chicago with body {"ref":"main","inputs":{"max":"3","privacy":"scheduled"}}). Don't change
    them. Don't reveal the Authorization header.
 
 6. Finish by telling me which steps you completed, the channel id you confirmed in 2e, the result of 2f, and the
