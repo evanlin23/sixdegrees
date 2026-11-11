@@ -77,6 +77,9 @@ def main(argv):
         from .research import channel_report
         for h in args:
             channel_report(h)
+    elif cmd == "studio":  # import a YouTube Studio metrics snapshot (docs/studio-metrics-prompt.md) and compare groups
+        from .studio import run
+        print(run(args[0]))
     elif cmd == "resplit":  # re-cut saved raw Gemini recordings with the current splitter (free)
         from . import audio
         print("resplit lines:", audio.resplit_all())
