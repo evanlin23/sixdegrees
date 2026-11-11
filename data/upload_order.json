@@ -1,7 +1,6 @@
 {
  "_about": "Queued videos to post first, in this order (sixdeg/queue.pick). Strongest 'dark/serious x innocent/kid-coded' gaps first; viewer requests and formula pairs still alternate. Slugs not listed follow, oldest first. Hitler pairs (and equally instant villains) go to the very front of their list as soon as they're merged: Hitler Shorts hit 72 % viewed vs 55-63 % for the rest (Studio, 2026-11-10). Weak-gap requests (no instant 'how?!': two athletes, two obscure names) go last; they still post, later.",
  "formula": [
-  "adolf-hitler-to-hatsune-miku",
   "adolf-hitler-to-steve",
   "adolf-hitler-to-pikachu",
   "adolf-hitler-to-spongebob-squarepants",
@@ -27,6 +26,7 @@
   "leonardo-da-vinci-to-luigi"
  ],
  "request": [
+  "adolf-hitler-to-hatsune-miku",
   "hitler-to-grug",
   "jesus-to-mia-khalifa",
   "chris-pratt-to-joseph-stalin",

@@ -126,9 +126,9 @@ def _kind(meta: dict) -> str:
 
 
 def pick(wt: Path, log: list[dict], n: int) -> list[Path]:
-    """Next videos to upload: only ones narrated by the Gemini voice (the channel's voice), alternating viewer
-    requests and viral-formula pairs. Within each kind, slugs listed in data/upload_order.json go first in that
-    order, then the rest oldest first."""
+    """Next videos to upload: only ones narrated by the Gemini voice (the channel's voice), in the priority order of
+    data/upload_order.json (its formula and request lists interleaved), then the rest oldest first, never posting
+    someone from the previous upload's pair."""
     vf = ROOT / "data" / "voice.json"         # read directly: the upload job doesn't install the audio stack
     want_gemini = vf.exists() and json.loads(vf.read_text()).get("engine") == "gemini"
     ready = []
@@ -138,20 +138,22 @@ def pick(wt: Path, log: list[dict], n: int) -> list[Path]:
             continue                       # old voice, or voiced before the clipping fix: wait for a re-render
         ready.append((it, _kind(meta), meta.get("title", "")))
     of = ROOT / "data" / "upload_order.json"
-    first = [s for k, v in json.loads(of.read_text()).items() if not k.startswith("_") for s in v] if of.exists() else []
+    order = json.loads(of.read_text()) if of.exists() else {}
+    lists = [v for k, v in order.items() if not k.startswith("_")]
+    first = []                                   # one priority list: formula[0], request[0], formula[1], ...
+    for i in range(max([len(v) for v in lists] + [0])):
+        first += [v[i] for v in lists if i < len(v) and v[i] not in first]
     rank = {s: i for i, s in enumerate(first)}
     ready.sort(key=lambda x: rank.get(x[0].name.split("-", 1)[1], len(rank)))   # stable: oldest first otherwise
-    last = log[-1].get("kind") if log else None
     prev = _people(log[-1].get("title", "")) if log else set()
     out = []
     while ready and len(out) < n:
-        # alternate kinds, and never the same person as the previous upload (4 Stalins in a row went 63 -> 55 % viewed)
-        nxt = (next((x for x in ready if x[1] != last and not (_people(x[2]) & prev)), None)
-               or next((x for x in ready if not (_people(x[2]) & prev)), None)
-               or next((x for x in ready if x[1] != last), ready[0]))
+        # highest priority first, but never the same person as the previous upload (4 Stalins in a row went
+        # 63 -> 55 % viewed). Requests vs formula showed no difference, so kinds just interleave via the list.
+        nxt = next((x for x in ready if not (_people(x[2]) & prev)), ready[0])
         out.append(nxt[0])
         ready.remove(nxt)
-        last, prev = nxt[1], _people(nxt[2])
+        prev = _people(nxt[2])
     return out
 
 
