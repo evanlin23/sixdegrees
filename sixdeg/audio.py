@@ -28,7 +28,6 @@ RESPELL = {
     "Wernher": "Vairner",
     "Göring": "Gerring",
     "Goebbels": "Gerbels",
-    "Hatsune Miku": "Hot-sue-neh Mee-koo",
     "IShowSpeed": "I Show Speed",
     "MrBeast": "Mister Beast",
     "Jae-in": "Jay In",
