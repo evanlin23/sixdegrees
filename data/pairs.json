@@ -753,5 +753,12 @@
   "status": "todo",
   "requested_by": "a viewer",
   "source": "YouTube comment (comment under Stalin to Elmo: 'the Kevin the bird from Up costume'), Studio snapshot 2026-11-10"
+ },
+ {
+  "from": "Adolf Hitler",
+  "to": "Pikachu",
+  "status": "done",
+  "source": "viral formula",
+  "slug": "adolf-hitler-to-pikachu"
  }
 ]
