@@ -16,7 +16,7 @@ Stop and ask me if anything needs a password or a code. Make sure the channel sw
    - Prefer the live sources: each Short's own Analytics page (Overview, Engagement, Reach, Audience) and its
      "Realtime" card, and the Content list's view/comment/like columns. YouTube's Advanced mode table lags 1-2 days:
      use it only for a number the live pages don't show, and say so in couldnt_read.
-   - Period "Lifetime" for each Short, with the end date set to today (not "since published" up to yesterday).
+   - Period: whichever of "Lifetime" and "Since published" runs through today (Lifetime often stops yesterday).
    - When two places show different values for the same number, take the newer one (usually the larger).
    - For each Short, record "data_through": the last date the Studio page's numbers cover (Studio says e.g.
      "Nov 10 - Nov 11, 2026" or "Updated ... ago"); for realtime figures, the time you read them.
@@ -34,8 +34,9 @@ Stop and ask me if anything needs a password or a code. Make sure the channel sw
      - The audience-retention graph: hover it and read the % still watching at 0:01, 0:03, the middle and the last
        second. Also note any big dip or spike and at what second.
      - Likes, dislikes if shown, comments, shares, subscribers lost.
-     - Comments: open the Short's comments (Studio → Comments, filter by this video) and copy the text of up to 10
-       top comments, word for word.
+     - Comments: open the Short's comments (Studio → Comments, filter by this video; remove the default "Unresponded"
+       view filter so answered comments show too) and copy up to 10 top comments as "@handle: text", word for word,
+       leaving out the channel's own. The handle matters: requested pairs credit the viewer who asked.
    - Reach tab: "Traffic source types" with the % of views from each (Shorts feed, YouTube search, Channel pages,
      Browse features, External, Other), and "Shown in feed" if Studio shows it.
    - Audience tab: % new vs returning viewers, % subscribed vs not, top 3 countries with %, top age group.

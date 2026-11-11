@@ -11,6 +11,7 @@ The branch only ever holds what is waiting, so it stays small; it is an orphan b
 from __future__ import annotations
 
 import json
+import re
 import os
 import shutil
 import subprocess
@@ -135,19 +136,29 @@ def pick(wt: Path, log: list[dict], n: int) -> list[Path]:
         meta = json.loads((it / "metadata.json").read_text())
         if want_gemini and (meta.get("voice") != "gemini" or meta.get("voice_rev", 1) < VOICE_REV):
             continue                       # old voice, or voiced before the clipping fix: wait for a re-render
-        ready.append((it, _kind(meta)))
+        ready.append((it, _kind(meta), meta.get("title", "")))
     of = ROOT / "data" / "upload_order.json"
     first = [s for k, v in json.loads(of.read_text()).items() if not k.startswith("_") for s in v] if of.exists() else []
     rank = {s: i for i, s in enumerate(first)}
     ready.sort(key=lambda x: rank.get(x[0].name.split("-", 1)[1], len(rank)))   # stable: oldest first otherwise
     last = log[-1].get("kind") if log else None
+    prev = _people(log[-1].get("title", "")) if log else set()
     out = []
     while ready and len(out) < n:
-        nxt = next((x for x in ready if x[1] != last), ready[0])
+        # alternate kinds, and never the same person as the previous upload (4 Stalins in a row went 63 -> 55 % viewed)
+        nxt = (next((x for x in ready if x[1] != last and not (_people(x[2]) & prev)), None)
+               or next((x for x in ready if not (_people(x[2]) & prev)), None)
+               or next((x for x in ready if x[1] != last), ready[0]))
         out.append(nxt[0])
         ready.remove(nxt)
-        last = nxt[1]
+        last, prev = nxt[1], _people(nxt[2])
     return out
+
+
+def _people(title: str) -> set[str]:
+    """{'joseph stalin', 'elmo'} from 'How is Joseph Stalin connected to Elmo?'."""
+    m = re.match(r"How is (.+?) connected to (.+?)\?$", title or "")
+    return {m.group(1).lower(), m.group(2).lower()} if m else set()
 
 
 def consume(max_items: int = 2, dry_run: bool = False) -> list[dict]:
