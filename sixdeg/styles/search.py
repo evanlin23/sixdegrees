@@ -52,6 +52,19 @@ def make(ctx):
         cy = min(max(cy, h / 2 / s), ih - h / 2 / s)
         return cx, cy, s
 
+    def crop_cam(i, kind, w, h):
+        """A w x h crop of photo i that stays inside the photo and never upscales past ~1.3x:
+        None/"wide2" = the whole scene, "a2"/"b2" = a looser crop around one face."""
+        ih, iw = ctx.C.imgs[i].shape[:2]
+        cover = max(w / iw, h / ih) * 1.002
+        if kind in ("a2", "b2"):
+            fb = ctx.fbox(i, kind[0])
+            cx, cy = ctx.ctr(fb)
+            s = max(cover, min(1.3, h * 0.3 / max(1, fb[3])))
+        else:
+            cx, cy, s = iw / 2, ih / 2, cover * (1.15 if kind == "wide2" else 1.0)
+        return min(max(cx, w / 2 / s), iw - w / 2 / s), min(max(cy, h / 2 / s), ih - h / 2 / s), s
+
     def wrap(text, font, maxw, max_lines=2):
         lines, cur = [], ""
         for w in text.split():
@@ -139,10 +152,22 @@ def make(ctx):
             if kind == "wide":
                 th = ctx.view(i, *cover_cam(i, TW, TH, 0.95), TW, TH)
             else:
-                th = ctx.view(i, *ctx.face_cam(ctx.fbox(i, kind), TH, 0.5), TW, TH)
+                fb = ctx.fbox(i, kind)
+                th = ctx.view(i, *crop_cam(i, kind + "2", TW, TH)[:2],
+                              max(max(TW / ctx.C.imgs[i].shape[1], TH / ctx.C.imgs[i].shape[0]) * 1.002,
+                                  min(1.3, TH * 0.5 / max(1, fb[3]))), TW, TH)
             thumbs.append(rounded(th, 16))
         mask = rounded(Image.new("RGBA", (iw, ih)), 24).split()[-1]
-        _cache[("res", i)] = (big, mask, thumbs, bface)
+        # a second row: other crops of the chain's photos so far (this one and the ones before; never later ones)
+        more = []
+        for j in (i - 1, i - 2, i - 3):
+            if j >= 0 and not ctx.C.fj["links"][j].get("lineage"):
+                more.append(rounded(ctx.view(j, *crop_cam(j, None, TW, TH), TW, TH), 16))
+        for kind in ("wide2", "a2", "b2"):
+            if len(more) >= 3:
+                break
+            more.append(rounded(ctx.view(i, *crop_cam(i, kind, TW, TH), TW, TH), 16))
+        _cache[("res", i)] = (big, mask, thumbs, bface, more)
         return _cache[("res", i)]
 
     _cur = {}
@@ -160,13 +185,8 @@ def make(ctx):
             _cur[k] = im
         return _cur[k]
 
-    def skeleton(d, t, boxes):
-        for k, (x0, y0, x1, y1) in enumerate(boxes):
-            v = int(236 + 10 * math.sin(t * 7 - k * 0.9))
-            d.rounded_rectangle([x0, y0, x1, y1], 16, fill=(v, v + 1, v + 4))
-
     def zoomed(i, z):
-        big, mask, _, bface = results(i)
+        big, mask, _, bface, _ = results(i)
         iw, ih = IMG[2] - IMG[0], IMG[3] - IMG[1]
         cw, ch = int(iw * z), int(ih * z)
         ox, oy = (big.width - cw) // 2, (big.height - ch) // 2
@@ -189,6 +209,8 @@ def make(ctx):
         ctx.paste(base, tb, TX0 + tb.width / 2 + dx, IMG[3] + 14 + tb.height / 2, alpha=alpha)
         for k, th in enumerate(results(i)[2]):
             ctx.paste(base, th, X0 + k * (TW + TGAP) + TW / 2 + dx, THUMB_Y + TH / 2, alpha=alpha)
+        for k, th in enumerate(results(i)[4]):
+            ctx.paste(base, th, X0 + k * (TW + TGAP) + TW / 2 + dx, THUMB_Y + TH + TGAP + TH / 2, alpha=alpha)
         return (icx + (face[0] - (IMG[0] + IMG[2]) / 2) * sc, icy + (face[1] - icy) * sc)
 
     def frame(seg, tt):
@@ -222,9 +244,21 @@ def make(ctx):
             d.rectangle([cx, cy - 22, cx + 3, cy + 22], fill=BLUE)
         n = 10000 * int(170 + 230 * ((i * 7919 + len(an)) % 97) / 97)
         d.text((TX0, 464), f"Showing {n:,} pictures", font=F(22, "Medium"), fill=(112, 117, 122), anchor="lm")
-        # more results below the fold (under the Shorts UI) so the page doesn't end
-        skeleton(d, local, [(X0 + k * (TW + TGAP), THUMB_Y + TH + TGAP, X0 + k * (TW + TGAP) + TW,
-                             THUMB_Y + 2 * TH + TGAP) for k in range(3)])
+        # Buh peeks over the top-right corner of the result (behind it), and reacts at the reveal
+        sens = ctx.sensitive(an) or ctx.sensitive(bn)
+        revealed_ = local >= trev
+        if sens:                                   # neutral on a sensitive link: no grin, no celebration hop
+            expr = "shock"
+        else:
+            expr = ("shock" if local < trev + 0.45 else "happy") if revealed_ else "smug"
+        hop = 0.0
+        if revealed_ and local < trev + 0.4 and not sens:
+            hop = 30 * math.sin(math.pi * (local - trev) / 0.4)
+        rise = ctx.ease((local - 0.3) / 0.35) if i == 0 else 1.0     # rises once the first result is opaque
+        bx_ = 850 + 4 * math.sin(local * 1.3)
+        by_ = IMG[1] + 50 + 80 * (1 - rise) - hop + 3 * math.sin(local * 2.1)
+        if i > 0 or local >= 0.26:
+            ctx.paste_pin(base, ctx.pin_sprite(expr, 6 * math.sin(local * 1.5), 0, -1, scale=3), bx_, by_)
         # the previous result slides out to the left while this one slides in from the right
         e = ctx.ease(min(1.0, local / SLIDE))
         has_prev = i > 0 and not ctx.C.fj["links"][i - 1].get("lineage")
@@ -246,6 +280,7 @@ def make(ctx):
         fy_ = min(max(fy_, IMG[1] + 40), IMG[3] - 40)
         fx_ = min(max(fx_, IMG[0] + 40), 900)
         g = ctx.ease((local - (t_click - 0.4)) / 0.4)
+        g *= 1 - ctx.ease((local - t_click - 0.45) / 0.4)          # after the click it glides back off the faces
         mx, my = rx + (fx_ - rx) * g, ry + (fy_ - ry) * g
         press = max(0.0, 1 - abs(local - t_click) / 0.1)
         if sel and local - t_click < 0.45:
@@ -277,6 +312,10 @@ def make(ctx):
                 d.text((BOX[0] + 84, ry_), pre, font=sf, fill=INKT, anchor="lm")
                 d.text((BOX[0] + 84 + sf.getlength(pre), ry_), full[max(cut, min(dark, len(full))):], font=sf,
                        fill=(130, 134, 140), anchor="lm")
+        if i == 0 and local < 0.3:                      # fade in from the dim hook (no hard cut to white)
+            a = int(200 * (1 - ctx.ease(local / 0.3)))
+            if a > 0:
+                base.alpha_composite(Image.new("RGBA", (ctx.W, ctx.H), (16, 10, 24, a)))
         ctx.header(base, i)
         ctx.connected(base, seg, tt, y=IMG[3] - 70)
         seg["cap"].draw(base, tt, y=CAP_Y)
