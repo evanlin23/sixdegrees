@@ -32,6 +32,17 @@ def _uploaded() -> dict[str, dict]:
     return out
 
 
+def _chain(u: dict) -> str:
+    """Chain-length test bucket: short (<=6 links) vs parade (8+)."""
+    n = u.get("links")
+    if n is None and u.get("slug"):
+        ep = ROOT / "episodes" / u["slug"] / "episode.json"
+        n = len(json.loads(ep.read_text())["links"]) if ep.exists() else None
+    if n is None:
+        return "?"
+    return "short<=6" if n <= 6 else ("mid7" if n == 7 else "parade8+")
+
+
 def merge(snapshot: dict) -> dict:
     cur = json.loads(STUDIO.read_text()) if STUDIO.exists() else {"channel": {}, "videos": {}}
     cur["channel"] = snapshot.get("channel") or cur.get("channel", {})
@@ -58,6 +69,8 @@ def report(cur: dict) -> str:
             "slug": u.get("slug") or v.get("title", vid)[:40], "when": when,
             "opening": ("cards" if u.get("slug") in OLD_OPENING else "big-face") if u else "2025/other",
             "kind": u.get("kind") or "?", "outro": {True: "outro", False: "no-outro"}.get(u.get("outro"), "?"),
+            "chain": _chain(u), "voice": "music-only" if u.get("narration") is False else ("narrated" if u else "?"),
+            "avg_s": v.get("avg_view_s"),
             "views": v.get("views"), "viewed": v.get("viewed_pct"), "avg_pct": v.get("avg_pct_viewed"),
             "r3": (v.get("retention_pct") or {}).get("3s"), "end": (v.get("retention_pct") or {}).get("end"),
             "subs": v.get("subs_gained"), "likes": v.get("likes"),
@@ -69,7 +82,7 @@ def report(cur: dict) -> str:
         lines.append(f"{r['slug'][:40]:40} {r['when']:16} {f(r['views']):>7} {f(r['viewed']):>7} {f(r['avg_pct']):>5} "
                      f"{f(r['r3']):>4} {f(r['end']):>4} {f(r['subs']):>4}")
     lines.append("")
-    for key in ("opening", "kind", "outro"):
+    for key in ("opening", "kind", "outro", "chain", "voice"):
         groups = {}
         for r in rows:
             groups.setdefault(r[key], []).append(r)
@@ -80,6 +93,9 @@ def report(cur: dict) -> str:
             parts.append(f"{g}: n={len(rs)}, median viewed {statistics.median(vp):.0f}%" if vp else f"{g}: n={len(rs)}")
             if vw:
                 parts[-1] += f", median views {statistics.median(vw):.0f}"
+            av = [r["avg_s"] for r in rs if r["avg_s"] is not None]
+            if av:
+                parts[-1] += f", median {statistics.median(av):.0f}s watched"
         lines.append(f"{key:8} " + " | ".join(parts))
     ch = cur.get("channel") or {}
     if ch.get("busiest_times"):

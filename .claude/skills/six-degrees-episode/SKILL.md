@@ -74,8 +74,9 @@ episode.json: the hook shows the viewer's request bubble and the first comment c
   match. The header ("A > B") shows labels up to 15 letters in full; for a longer one set a short form, e.g.
   `"SpongeBob SquarePants": {"short": "SpongeBob"}`. A character's name only ever labels the character's own artwork, never the actor in a real photo.
 - **The chain is a comedic parade (what made our 40k-view Da Vinci → Naruto work).** Don't take the shortest route.
-  Take the funniest: a long line of instantly famous faces (8–12 links is good) that makes viewers think "how many
-  people do we have to go through?!". Rules:
+  Take the funniest: a line of instantly famous faces that makes viewers think "how many people do we have to go
+  through?!". **Chain length is an A/B test:** the operator's prompt says "parade" (8–12 links) or "compact" (5–6
+  links). Use that; if it says neither, go parade. Rules for both:
   - **No obvious shortcuts.** No person may be famously connected to anyone two or more steps later in the chain.
     "Obama → Trump → Michelle Obama" is banned, because viewers say "just go Obama → Michelle". Check every pair
     (i, j) with j ≥ i + 2: if they're spouses, a well-known duo, or were photographed together famously, re-route.
@@ -109,7 +110,10 @@ link, work through **every** step below and keep a note of what you tried.
    verified Instagram or X post by either person. Also allowed: a talk-show, podcast, interview or game-broadcast
    frame showing both people, such as a YouTube thumbnail or still from the official channel. Use
    `{"url", "credit", "license": "Fair use (commentary)", "source"}`, with `source` set to the page the image came from.
-5. **Change the route.** If one link is stuck, connect through someone else. Good hubs:
+5. **Network of Time** (networkoftime.substack.com): a hand-verified graph of 11,000+ photos of 15,000+ people,
+   built to find exactly these chains. Use it to discover routes, then source each photo yourself (Commons or a
+   press photo) and credit it.
+6. **Change the route.** If one link is stuck, connect through someone else. Good hubs:
    - US presidents and first ladies
    - popes and Queen Elizabeth II
    - talk-show hosts (Fallon, Kimmel, Oprah, Letterman)
@@ -119,10 +123,10 @@ link, work through **every** step below and keep a note of what you tried.
 
    Run `python -m sixdeg search` again with different endpoints, and web search "<A> and <B> photo",
    "<A> meets", "<A> with" and "<A> backstage".
-6. **Fictional characters.** Use a real photo of the voice actor, creator or puppeteer with anyone notable, such as
+7. **Fictional characters.** Use a real photo of the voice actor, creator or puppeteer with anyone notable, such as
    a convention panel, premiere or award show. Their co-stars and directors count too.
 
-Only after all six steps may a pair be `"skipped"`. Its `reason` must list what you searched at each step, so the
+Only after all seven steps may a pair be `"skipped"`. Its `reason` must list what you searched at each step, so the
 operator can see the effort.
 - Keep it family-safe: no gore, nudity or slurs on screen. Historical figures are presented as history.
 

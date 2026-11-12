@@ -67,6 +67,9 @@ def kit(slug: str) -> str:
         meta["voice"] = vinfo.get("engine")
         meta["outro"] = bool(vinfo.get("outro"))       # A/B test: spoken "And that's how." at the end
         meta["voice_rev"] = vinfo.get("rev", 1)
+        meta["narration"] = vinfo.get("narration", True)   # A/B test: False = music-only
+        meta["links"] = vinfo.get("links", len(spec["links"]))
+        meta["lineage"] = vinfo.get("lineage", 0)          # portraits in lineage scrolls (0 = none)
     out = d / "out"
     out.mkdir(exist_ok=True)
     mp4 = out / f"{slug}.mp4"
