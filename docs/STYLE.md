@@ -46,7 +46,9 @@ Analysed from the video itself (52 s, about 13 people):
 - **No narration:** a trending song plus big yellow name text over full-screen photos, with a continuous
   zoom/pan and no hard cuts.
 
-Applied: the episode skill's "comedic parade" rules (no obvious shortcuts, hide the destination, short final
+**Superseded 2026-11-12 (creator's call): our viewers like short paths, so episodes take the first honest route we
+find and never pad it with extra links.** Still applied from the hit: hide the destination, short final line, full lineages when a
+lineage is on the route. Earlier: the episode skill's "comedic parade" rules (no obvious shortcuts, hide the destination, short final
 lines, full lineages). The renderer reveals B at the very end of the last line, and the chain bar and counter no
 longer show how many links are left.
 

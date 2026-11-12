@@ -10,3 +10,4 @@ assets/music/*
 !assets/music/README.txt
 ready/
 music-private/
+.claude/worktrees/

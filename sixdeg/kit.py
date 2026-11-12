@@ -60,10 +60,11 @@ def kit(slug: str) -> str:
     tags = list(dict.fromkeys([_short(p) for p in ppl] + ["six degrees of separation", "six degrees", "history",
                                                           "connections", "small world"]))
     fun = f"Fun fact from the research: {spec['fun_fact']}\n\n" if spec.get("fun_fact") else ""
+    ask = ("Who should Hitler connect to next? Name anyone (a character works too) and I'll find the photos."
+           if "hitler" in slug.lower() else "Who should I connect next? Two names, the weirder the better.")
     first = spec.get("first_comment") or spec.get("pinned_comment") or fun + (
-        f"{spec['requested_by'] if spec['requested_by'].startswith('@') else 'A viewer'} asked for this one. "
-        "Who should I connect next? Two names, the weirder the better."
-        if spec.get("requested_by") else "Who should I connect next? Two names, the weirder the better.")
+        f"{spec['requested_by'] if spec['requested_by'].startswith('@') else 'A viewer'} asked for this one. " + ask
+        if spec.get("requested_by") else ask)
     meta = {"title": title, "description": desc, "tags": tags[:30], "categoryId": "27",  # Education
             "first_comment": first,
             "madeForKids": False,
@@ -81,6 +82,7 @@ def kit(slug: str) -> str:
         meta["links"] = vinfo.get("links", len(spec["links"]))
         meta["lineage"] = vinfo.get("lineage", 0)          # portraits in lineage scrolls (0 = none)
         meta["music"] = vinfo.get("music")
+        meta["style"] = vinfo.get("style", "cards")        # presentation-style pilot
         meta["trending"] = vinfo.get("trending", False)    # a claimed song: must stay under 60 s
     out = d / "out"
     out.mkdir(exist_ok=True)

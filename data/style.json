@@ -1,4 +1,16 @@
 {
  "style": "pixel",
- "mascot": "pixel Pin with detective hat"
+ "mascot": "pixel Pin with detective hat",
+ "rotation": [
+  "cards",
+  "search",
+  "newspaper",
+  "chat",
+  "subway",
+  "tcg",
+  "wiki",
+  "museum",
+  "zoom"
+ ],
+ "_rotation": "Presentation styles new episodes rotate through (by slug hash). Turned on 2026-11-12 for monetization (YouTube's inauthentic-content policy: no single template) with the styles that passed the final audit; game, domino, web and globe stay off until their last fixes. An episode's \"style\" wins."
 }
