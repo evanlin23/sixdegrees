@@ -33,6 +33,23 @@ people, two niche things, or a pair that only makes a political point.
   Reynolds).
 - **Game heroes and virtual idols** through their creators at events (Notch, Shigeru Miyamoto, Crypton).
 
+## What our 2025 hit did (Leonardo da Vinci → Naruto, 39.8k views)
+
+Analysed from the video itself (52 s, about 13 people):
+- **The hook was the request:** the viewer's comment ("@skibidirizzler: da vinci to naruto") on screen, with both
+  faces and a red arrow.
+- **A long, funny parade, not the shortest path.** Renaissance art (Francis I, Cellini circled in a fresco,
+  Vasari, Pius IV), then a lightning-fast "Unbroken Line of Popes", then a run of instantly famous modern faces
+  (Dalai Lama, Shinzo Abe, Bill Gates, Mark Rober, MrBeast).
+- **Slow middle (3–4 s a person), sprint at the end.** Naruto's voice actor, then his creator, then Naruto, each
+  about 2 s. Nothing Naruto-related appeared until the last 8 s, and the video ended the instant Naruto appeared.
+- **No narration:** a trending song plus big yellow name text over full-screen photos, with a continuous
+  zoom/pan and no hard cuts.
+
+Applied: the episode skill's "comedic parade" rules (no obvious shortcuts, hide the destination, short final
+lines, full lineages). The renderer reveals B at the very end of the last line, and the chain bar and counter no
+longer show how many links are left.
+
 ## What the numbers say so far (update after each review)
 
 - The gate is **viewed vs swiped away**. On HelloBuh (a sister Shorts channel, 84 Shorts), 74–81 % viewed got
