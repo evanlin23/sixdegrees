@@ -39,7 +39,12 @@
       "fact": "Obersalzberg, 1936",
       "line": "In 1936, Britain's old wartime prime minister, David Lloyd George, visited Hitler at his mountain home.",
       "a_face": 4,
-      "b_face": 2
+      "b_face": 2,
+      "where": {
+        "place": "Obersalzberg, Bavaria",
+        "lat": 47.631,
+        "lon": 13.041
+      }
     },
     {
       "a": "David Lloyd George",
@@ -48,9 +53,14 @@
         "file": "File:ChurchillGeorge0001.jpg"
       },
       "fact": "The Terrible Twins, 1907",
-      "line": "Back in 1907, he and a young Winston Churchill were such close allies they were nicknamed the Terrible Twins.",
+      "line": "By 1907, he and a young Winston Churchill were nicknamed the Terrible Twins.",
       "a_face": 0,
-      "b_face": 2
+      "b_face": 2,
+      "where": {
+        "place": "London",
+        "lat": 51.503,
+        "lon": -0.128
+      }
     },
     {
       "a": "Winston Churchill",
@@ -61,7 +71,12 @@
       "fact": "Hollywood, 1929",
       "line": "In 1929, Churchill dropped by Hollywood to watch Charlie Chaplin film City Lights.",
       "a_face": 0,
-      "b_face": 1
+      "b_face": 1,
+      "where": {
+        "place": "Hollywood",
+        "lat": 34.098,
+        "lon": -118.339
+      }
     },
     {
       "a": "Charlie Chaplin",
@@ -70,7 +85,12 @@
         "file": "File:Albert Einstein and Charlie Chaplin City Lights premiere 1931.jpg"
       },
       "fact": "City Lights premiere, 1931",
-      "line": "And Einstein came to the premiere."
+      "line": "In 1931, Einstein joined him on its opening night.",
+      "where": {
+        "place": "Los Angeles Theatre",
+        "lat": 34.045,
+        "lon": -118.251
+      }
     }
   ]
 }
