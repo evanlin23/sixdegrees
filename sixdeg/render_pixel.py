@@ -709,6 +709,23 @@ def render(slug: str, log=print) -> Path:
         out = out * mask + _vbg[(i, ow, oh)] * (1 - mask)
         return Image.fromarray(out.astype(np.uint8)).convert("RGBA")
 
+    def framed(ph, tilt=0.0, border=16, tape=True):
+        """A photo as a physical print: white border, thin dark keyline, tape on top, soft shadow, slight tilt."""
+        w, h = ph.width + 2 * border, ph.height + 2 * border + 10
+        card = Image.new("RGBA", (w + 40, h + 50), (0, 0, 0, 0))
+        sh = Image.new("RGBA", card.size, (0, 0, 0, 0))
+        ImageDraw.Draw(sh).rectangle([26, 34, 26 + w, 34 + h], fill=(0, 0, 0, 120))
+        card.alpha_composite(sh.filter(ImageFilter.GaussianBlur(10)))
+        d = ImageDraw.Draw(card)
+        d.rectangle([14, 20, 14 + w, 20 + h], fill=(248, 246, 238, 255))
+        card.alpha_composite(ph, (14 + border, 20 + border))
+        d.rectangle([14 + border - 2, 20 + border - 2, 14 + border + ph.width + 1, 20 + border + ph.height + 1], outline=(40, 34, 30), width=2)
+        if tape:
+            tp = Image.new("RGBA", (150, 44), (236, 222, 170, 190))
+            tp = tp.rotate(-6, expand=True, resample=Image.BICUBIC)
+            card.alpha_composite(tp, (int(14 + w / 2 - tp.width / 2), 0))
+        return card.rotate(tilt, expand=True, resample=Image.BICUBIC) if tilt else card
+
     def fbox(i, role):
         return cams[i]["ba" if role == "a" else "bb"]
 
@@ -773,9 +790,7 @@ def render(slug: str, log=print) -> Path:
             prev = view(i - 1, *face_cam(fbox(i - 1, "b"), H), W, H)
             base = Image.blend(prev, base, incut / 0.16)
         an, bn = link_names(i)
-        for role, nm, appear, col in (("a", an, 0.0, CYAN), ("b", bn, R + THROW / sp, YELLOW)):
-            if k < appear:
-                continue
+        for role, nm, col in (("a", an, CYAN), ("b", bn, YELLOW)):   # both names on screen the whole time
             fx, fy = ctr(fbox(i, role))
             x, y = (fx - cam[0]) * cam[2] + W / 2, (fy - cam[1]) * cam[2] + H / 2 + fbox(i, role)[3] * cam[2] * 0.62
             if 0 < x < W and 0 < y < H:
@@ -792,9 +807,17 @@ def render(slug: str, log=print) -> Path:
     BH = int(bpos[-1][1] + 760) if n_links else 1920
     _board = {}
 
-    def polaroid(i):
+    def polaroid(i, circled=True):
         card = Image.new("RGBA", (PW, PH), (250, 248, 240, 255))
-        card.alpha_composite(view(i, *both_cam(i, PW - 40, PH - 150, 0.8), PW - 40, PH - 150), (20, 20))
+        cam_ = both_cam(i, PW - 40, PH - 150, 0.8)
+        card.alpha_composite(view(i, *cam_, PW - 40, PH - 150), (20, 20))
+        if circled:                                      # red marker ring around the new person
+            bx_, by_ = ctr(fbox(i, "b"))
+            sx_, sy_ = (bx_ - cam_[0]) * cam_[2] + (PW - 40) / 2 + 20, (by_ - cam_[1]) * cam_[2] + (PH - 150) / 2 + 20
+            rr = max(40, fbox(i, "b")[3] * cam_[2] * 0.75)
+            dmk = ImageDraw.Draw(card)
+            for o in range(3):
+                dmk.ellipse([sx_ - rr * 1.1 - o, sy_ - rr - o, sx_ + rr * 1.1 + o, sy_ + rr + o], outline=(210, 20, 30, 255), width=5)
         dr = ImageDraw.Draw(card)
         an, bn = link_names(i)
         f = ImageFont.truetype(str(FONTS / "Inter-ExtraBold.otf"), 34)
@@ -815,12 +838,39 @@ def render(slug: str, log=print) -> Path:
                 cork = np.zeros((BH, BW, 3), np.float32) + np.array([168, 120, 74], np.float32)
                 cork += rng.normal(0, 14, (BH, BW, 1)).astype(np.float32)
                 cork = cv2.GaussianBlur(cork, (0, 0), 1.2)
-                _board[0] = Image.fromarray(np.clip(cork, 0, 255).astype(np.uint8)).convert("RGBA")
+                im0 = Image.fromarray(np.clip(cork, 0, 255).astype(np.uint8)).convert("RGBA")
+                dr0 = ImageDraw.Draw(im0)
+                for _ in range(int(BH / 260)):                  # old clippings and scraps behind everything
+                    cw, ch = int(rng.integers(160, 320)), int(rng.integers(120, 240))
+                    clip = Image.new("RGBA", (cw, ch), (226, 220, 204, 255))
+                    cd = ImageDraw.Draw(clip)
+                    cd.rectangle([10, 10, cw - 10, 30], fill=(60, 56, 52))
+                    for ly in range(44, ch - 10, 14):
+                        cd.rectangle([10, ly, int(10 + (cw - 20) * rng.uniform(0.5, 1.0)), ly + 5], fill=(150, 144, 136))
+                    clip = clip.rotate(float(rng.uniform(-12, 12)), expand=True, resample=Image.BICUBIC)
+                    im0.alpha_composite(clip, (int(rng.integers(0, BW - 200)), int(rng.integers(0, BH - 200))))
+                for _ in range(int(BH / 900) + 1):              # coffee rings
+                    x, y, r = int(rng.integers(100, BW - 100)), int(rng.integers(100, BH - 100)), int(rng.integers(50, 80))
+                    dr0.ellipse([x - r, y - r, x + r, y + r], outline=(110, 70, 36, 255), width=7)
+                case = Image.new("RGBA", (760, 170), (250, 250, 244, 255))   # the case-file card at the top
+                cd = ImageDraw.Draw(case)
+                cd.rectangle([0, 0, 760, 30], fill=(200, 40, 40))
+                fc = ImageFont.truetype(str(FONTS / "Inter-ExtraBold.otf"), 40)
+                cd.text((380, 98), f"CASE: {C.labels[spec['from']].upper()} → {C.labels[spec['to']].upper()}"[:38], font=fc, fill=(30, 30, 30), anchor="mm")
+                im0.alpha_composite(case.rotate(-2, expand=True, resample=Image.BICUBIC), (int(BW / 2 - 390), 40))
+                yy, xx = np.mgrid[0:BH, 0:BW].astype(np.float32)   # warm edge lighting
+                vig = 1 - 0.35 * (((xx - BW / 2) / (BW / 2)) ** 2)
+                arr = np.array(im0).astype(np.float32)
+                arr[..., :3] *= vig[..., None]
+                _board[0] = Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8))
             else:
                 im = board_layer(k - 1).copy()
                 pc = polaroid(k - 1)
                 x, y = bpos[k - 1]
                 im.alpha_composite(pc, (int(x - pc.width / 2), int(y - pc.height / 2)))
+                note = sticky(k - 1)                     # the sticky note with the year and fact
+                nx = x + (PW / 2 + 40 if (k - 1) % 2 == 0 else -PW / 2 - 40)
+                im.alpha_composite(note, (int(nx - note.width / 2), int(y + 40 - note.height / 2)))
                 dr = ImageDraw.Draw(im)
                 if k >= 2:
                     (x0, y0), (x1, y1) = bpos[k - 2], bpos[k - 1]
@@ -830,6 +880,27 @@ def render(slug: str, log=print) -> Path:
                     dr.ellipse([px - 16, py - PH / 2 + 4, px + 16, py - PH / 2 + 36], fill=(220, 30, 40), outline=INK, width=4)
                 _board[k] = im
         return _board[k]
+
+    def sticky(i):
+        sz = 300
+        n = Image.new("RGBA", (sz, sz), (255, 226, 92, 255))
+        d = ImageDraw.Draw(n)
+        d.rectangle([0, 0, sz, 26], fill=(240, 206, 70, 255))
+        fy = ImageFont.truetype(str(FONTS / "Inter-ExtraBold.otf"), 46)
+        ft = ImageFont.truetype(str(FONTS / "Inter-Bold.otf"), 28)
+        yr = year_of(i)
+        d.text((sz / 2, 80), str(yr) if yr else "?", font=fy, fill=(40, 30, 20), anchor="mm")
+        words, lines, cur_ = fact_of(spec["links"][i]).split(": ", 1)[-1].split(), [], ""
+        for w in words:
+            if ft.getlength(cur_ + " " + w) > sz - 40 and cur_:
+                lines.append(cur_)
+                cur_ = w
+            else:
+                cur_ = (cur_ + " " + w).strip()
+        lines.append(cur_)
+        for li, ln in enumerate(lines[:4]):
+            d.text((sz / 2, 140 + li * 36), ln, font=ft, fill=(60, 50, 30), anchor="mm")
+        return n.rotate(6 if i % 2 else -6, expand=True, resample=Image.BICUBIC)
 
     def board_view(layer, cx, cy, v):
         rw, rh = W / v, H / v
@@ -862,11 +933,14 @@ def render(slug: str, log=print) -> Path:
             v = math.exp(math.log(1.25) + (math.log(vfit) - math.log(1.25)) * z)
             cx, cy = cx + (BW / 2 - cx) * z, cy + (BH / 2 - cy) * z
         layer = board_layer(i + 1 if (last and land > 0.25) else i)
+        cx += 28 * math.sin(tt * 0.9)                    # the camera never sits still
+        cy += 18 * math.cos(tt * 0.7)
         base = board_view(layer, cx, cy, v)
         to_s = lambda bx, by: ((bx - cx) * v + W / 2, (by - cy) * v + H / 2)
         if not (last and land > 0.25):
             drop = ease_out_back(min(1.0, local / 0.3))
-            pc = polaroid_cache.setdefault(i, polaroid(i))
+            circled = local > R * sp + THROW
+            pc = polaroid_cache.setdefault((i, circled), polaroid(i, circled))
             sx, sy = to_s(*cur)
             paste(base, pc, sx, sy - 80 * (1 - drop), scale=v * (1.25 - 0.25 * drop), nearest=False)
             if i > 0:                                  # the red string runs out from the last photo
@@ -907,11 +981,14 @@ def render(slug: str, log=print) -> Path:
         if C.fj["links"][i].get("lineage"):
             return frame_lineage(seg, tt)
         local = tt - seg["t0"]
-        base = checker(tt * 2, ((28, 24, 52), (22, 18, 44)))
-        ph = view(i, *both_cam(i, 900, 760, 0.8), 900, 760)
-        dr = ImageDraw.Draw(base)
-        dr.rectangle([CX - 466, 286, CX + 466, 1066], fill=WHITE, outline=INK, width=6)
-        base.alpha_composite(ph, (int(CX - 450), 296))
+        base = checker(tt * 6, ((28, 24, 52), (22, 18, 44)))
+        bc_ = both_cam(i, 860, 720, 0.8)
+        ph = view(i, bc_[0], bc_[1], bc_[2] * (1 + 0.06 * min(1.0, local / 3)), 860, 720)   # slow push-in
+        card = framed(ph, tilt=1.5 * math.sin(local * 1.5) + (-1.5 if i % 2 else 1.5))
+        slide_in = 1 - ease(min(1.0, local / 0.35))      # slides in from the right...
+        left = seg["t1"] - tt
+        slide_out = 1 - ease(min(1.0, left / 0.25)) if i < n_links - 1 else 0.0   # ...and out to the left
+        paste(base, card, CX + W * 0.9 * slide_in - W * 0.9 * slide_out, 690 + 12 * math.sin(local * 2.3), nearest=False)
         an, bn = link_names(i)
         sp, R = seg["speech"], seg.get("rv", REVEAL)
         paste(base, pixel_tag(C.labels[an].upper(), CYAN, 28), CX - 220, 1030)
@@ -921,7 +998,11 @@ def render(slug: str, log=print) -> Path:
         y_prev = (years[i - 1] or y_now) if i else y_now
         u = ease(min(1.0, local / 0.6))
         yv = y_prev + (y_now - y_prev) * u
-        paste(base, pixel_text(str(int(round(yv))), 110, fill=YELLOW), CX, 1240)
+        rolling = u < 1 and y_prev != y_now
+        jx, jy = (shake(local, 10, 0.6) if rolling else (0, 0))
+        landed = local - 0.6
+        punch = 1.0 + (0.35 * math.exp(-landed * 9) if landed > 0 and y_prev != y_now else 0.0)
+        paste(base, pixel_text(str(int(round(yv))), 110, fill=YELLOW), CX + jx, 1240 + jy, scale=punch)
         dr = ImageDraw.Draw(base)
         dr.rectangle([RX0, RY - 5, RX1, RY + 5], fill=WHITE)
         step = 10 if ymax - ymin <= 120 else (50 if ymax - ymin <= 600 else 250)
@@ -929,19 +1010,22 @@ def render(slug: str, log=print) -> Path:
             x = rx(yy)
             if RX0 <= x <= RX1:
                 dr.rectangle([x - 2, RY - 16, x + 2, RY + 16], fill=WHITE)
-        for j in range(i + 1):                        # faces collected on the ruler
+        mx = rx(yv)                                     # the marker slides along the ruler
+        dr.polygon([(mx - 18, RY + 30), (mx + 18, RY + 30), (mx, RY + 8)], fill=YELLOW, outline=INK)
+        for j in range(i + 1):                        # faces collected on the ruler, bobbing
             if years[j] is None:
                 continue
-            xj = rx(years[j]) if j < i else rx(yv)
+            xj = rx(years[j]) if j < i else mx
             th = sharp[C.people[j + 1]] if j + 1 < len(C.people) else None
             if th is not None:
-                paste(base, th.resize((64, 64), Image.BICUBIC), xj, RY - 52 - (j % 2) * 30, nearest=False)
+                bob = 6 * math.sin(tt * 4 + j)
+                paste(base, th.resize((64, 64), Image.BICUBIC), xj, RY - 52 - (j % 2) * 30 + bob, nearest=False)
         header(base, i)
         connected(base, seg, tt)
         seg["cap"].draw(base, tt, y=1150)
         return base
 
-    # --- map: Buh flies to where each photo was taken (links need "where": {"lat", "lon", "place"})
+    # --- shared Earth imagery (NASA "Whole world - land and oceans", public domain)
     _map = {}
 
     def earth_tex():
@@ -950,84 +1034,12 @@ def render(slug: str, log=print) -> Path:
             _map["tex"] = np.array(Image.open(FONTS.parent / "earth_texture.jpg").convert("RGB"))
         return _map["tex"]
 
-    def world_map():
-        if "img" not in _map:
-            m = np.array(Image.open(FONTS.parent / "world_equirect.png").convert("LA"))
-            opaque = m[..., 1] > 128
-            ys, xs = np.where(opaque)                       # the drawn map inside the file's transparent border
-            y0, y1, x0, x1 = ys.min(), ys.max() + 1, xs.min(), xs.max() + 1
-            land = opaque[y0:y1, x0:x1] & (m[y0:y1, x0:x1, 0] < 230)   # land is grey, ocean is white
-            _map["land"] = land
-            a = np.array(Image.fromarray(land.astype(np.uint8) * 255).resize((3840, 1950), Image.NEAREST)) > 128
-            tex = Image.fromarray(earth_tex()).resize((1280, 650), Image.BILINEAR)   # chunky pixels, real detail
-            _map["img"] = tex.resize((3840, 1950), Image.NEAREST).convert("RGBA")
-        return _map["img"]
-
-    def geo(i):
-        w = spec["links"][i].get("where") or {}
-        if "lat" not in w:
-            return None
-        return (w["lon"] + 180) / 360 * 3840, (90 - w["lat"]) / 180 * 1950
-
-    def frame_map(seg, tt):
-        i = seg["i"]
-        if C.fj["links"][i].get("lineage") or geo(i) is None:
-            return frame_timeline(seg, tt)
-        local = tt - seg["t0"]
-        cur = geo(i)
-        prev = next((geo(j) for j in range(i - 1, -1, -1) if geo(j)), None) or cur
-        fly = ease(min(1.0, local / 0.9))
-        dist = math.hypot(cur[0] - prev[0], cur[1] - prev[1])
-        VL = 0.55                                       # landed: about a third of the world across the screen
-        vmid = min(VL, max(0.28, W * 0.75 / max(dist, 1)))     # zoomed out mid-flight to fit both places
-        v = VL + (vmid - VL) * math.sin(math.pi * fly) if dist > 50 else VL
-        cx, cy = prev[0] + (cur[0] - prev[0]) * fly, prev[1] + (cur[1] - prev[1]) * fly
-        mp = world_map()
-        rw, rh = W / v, H / v
-        base = Image.new("RGBA", (W, H), (24, 44, 86, 255))          # ocean beyond the map's edges
-        base.alpha_composite(mp.crop((int(cx - rw / 2), int(cy - rh / 2 - 200 / v), int(cx + rw / 2),
-                                      int(cy + rh / 2 - 200 / v))).resize((W, H), Image.NEAREST))
-        to_s = lambda px, py: ((px - cx) * v + W / 2, (py - cy) * v + H / 2 + 200)
-        dr = ImageDraw.Draw(base)
-        for j in range(i + 1):                          # visited places and the route
-            g = geo(j)
-            if not g:
-                continue
-            gx, gy = to_s(*g)
-            dr.ellipse([gx - 12, gy - 12, gx + 12, gy + 12], fill=RED, outline=INK, width=4)
-        ax, ay = to_s(*prev)
-        bx, by = to_s(cx, cy)
-        n_d = int(math.hypot(bx - ax, by - ay) / 24)
-        for d in range(n_d):
-            px, py = ax + (bx - ax) * d / max(n_d, 1), ay + (by - ay) * d / max(n_d, 1)
-            dr.rectangle([px - 4, py - 4, px + 4, py + 4], fill=WHITE)
-        hop = abs(math.sin(local * 9)) * 16
-        paste_pin(base, pin_sprite("shock" if fly < 1 else "happy", 0, 0, 1 if cur[0] >= prev[0] else -1), bx, by - hop)
-        place = (spec["links"][i].get("where") or {}).get("place", "")
-        if fly >= 1 and place:
-            paste(base, pixel_tag(place.upper(), WHITE, 26), bx, by + 60)
-        if local > 0.75:                                # the photo pops up over the landing spot
-            pop = ease_out_back(min(1.0, (local - 0.75) / 0.25))
-            card = Image.new("RGBA", (720, 620), WHITE + (255,))
-            card.alpha_composite(view(i, *both_cam(i, 700, 600, 0.8), 700, 600), (10, 10))
-            paste(base, card, CX, 640, scale=0.5 + 0.5 * pop, nearest=False)
-            an, bn = link_names(i)
-            sp, R = seg["speech"], seg.get("rv", REVEAL)
-            paste(base, pixel_tag(C.labels[an].upper(), CYAN, 28), CX - 200, 990)
-            if local > R * sp + THROW:
-                paste(base, pixel_tag(C.labels[bn].upper(), YELLOW, 28), CX + 200, 990)
-        header(base, i)
-        connected(base, seg, tt)
-        seg["cap"].draw(base, tt)
-        return base
-
-
     # --- globe: a pixel-art Earth turns to face each place; Buh hops along the great circle; the photo pops above
     GR, GPX = 225, 2                                    # globe radius in "pixels" and the pixel size on screen
     GCX, GCY = CX, 1440                                 # globe centre on screen (its lower part runs off the bottom)
-    _gyy, _gxx = np.mgrid[-GR:GR, -GR:GR].astype(np.float32) + 0.5
+    GY0, GY1 = -340, 240                               # the globe window, in globe pixels around (GCX, GCY)
+    _gyy, _gxx = np.mgrid[GY0:GY1, -W // (2 * GPX):W // (2 * GPX)].astype(np.float32) + 0.5
     _grho = np.sqrt(_gxx ** 2 + _gyy ** 2)
-    _gin = _grho < GR
 
     def ll(i):
         w = spec["links"][i].get("where") or {}
@@ -1043,11 +1055,12 @@ def render(slug: str, log=print) -> Path:
         q = (math.sin((1 - u) * om) * p1 + math.sin(u * om) * p2) / math.sin(om)
         return math.degrees(math.asin(q[2])), math.degrees(math.atan2(q[1], q[0]))
 
-    def globe_img(lat0, lon0):
+    def globe_img(lat0, lon0, R=GR):
         tex = earth_tex()
         lh, lw = tex.shape[:2]
         la0, lo0 = math.radians(lat0), math.radians(lon0)
-        c = np.arcsin(np.clip(_grho / GR, 0, 1))
+        _gin = _grho < R
+        c = np.arcsin(np.clip(_grho / R, 0, 1))
         sc, cc = np.sin(c), np.cos(c)
         y = -_gyy
         rho = np.maximum(_grho, 1e-6)
@@ -1057,24 +1070,42 @@ def render(slug: str, log=print) -> Path:
         py = ((90 - np.degrees(lat)) / 180 * lh).astype(int).clip(0, lh - 1)
         shade = (0.45 + 0.55 * cc)[..., None]                    # darker towards the rim
         col = tex[py, px].astype(np.float32) * shade
-        img = np.zeros((2 * GR, 2 * GR, 4), np.uint8)
+        img = np.zeros(_grho.shape + (4,), np.uint8)
         img[..., :3] = col.astype(np.uint8)
         img[..., 3] = np.where(_gin, 255, 0)
-        rim = _gin & (_grho > GR - 2.2)
+        rim = _gin & (_grho > R - 2.2)
         img[rim, :3] = (16, 12, 30)
-        return Image.fromarray(img).resize((2 * GR * GPX, 2 * GR * GPX), Image.NEAREST)
+        return Image.fromarray(img).resize((img.shape[1] * GPX, img.shape[0] * GPX), Image.NEAREST)
 
-    def globe_xy(lat, lon, lat0, lon0):
+    def globe_xy(lat, lon, lat0, lon0, R=GR):
         """Screen position of (lat, lon) on the globe facing (lat0, lon0), or None when it's on the far side."""
         la, lo, la0, lo0 = map(math.radians, (lat, lon, lat0, lon0))
         cosc = math.sin(la0) * math.sin(la) + math.cos(la0) * math.cos(la) * math.cos(lo - lo0)
         if cosc < 0:
             return None
-        x = GR * math.cos(la) * math.sin(lo - lo0)
-        y = GR * (math.cos(la0) * math.sin(la) - math.sin(la0) * math.cos(la) * math.cos(lo - lo0))
+        x = R * math.cos(la) * math.sin(lo - lo0)
+        y = R * (math.cos(la0) * math.sin(la) - math.sin(la0) * math.cos(la) * math.cos(lo - lo0))
         return GCX + x * GPX, GCY - y * GPX
 
     _stars = None
+
+    def ang_deg(a, b):
+        la1, lo1, la2, lo2 = map(math.radians, (a[0], a[1], b[0], b[1]))
+        return math.degrees(math.acos(max(-1.0, min(1.0, math.sin(la1) * math.sin(la2)
+                                                         + math.cos(la1) * math.cos(la2) * math.cos(lo2 - lo1)))))
+
+    def prev_ll(i):
+        return next((ll(j) for j in range(i - 1, -1, -1) if ll(j)), None)
+
+    def zoom_for(i):
+        """How far the globe is zoomed in on arriving at link i: close hops zoom right in, long flights stay out."""
+        if i < 0 or ll(i) is None:
+            return 2.2
+        p = prev_ll(i)
+        if p is None:
+            return 2.2
+        a = ang_deg(p, ll(i))
+        return 2.2 if a < 0.05 else max(1.0, min(7.0, 45.0 / a))
 
     def frame_globe(seg, tt):
         nonlocal _stars
@@ -1084,9 +1115,10 @@ def render(slug: str, log=print) -> Path:
         local = tt - seg["t0"]
         cur = ll(i)
         prev = next((ll(j) for j in range(i - 1, -1, -1) if ll(j)), None) or cur
-        fly = ease(min(1.0, local / 0.9))
+        fly = ease(min(1.0, local / 1.4))               # Buh's flight over the surface, smooth in and out
         travel = slerp_ll(prev, cur, fly)               # where Buh is
-        face = (travel[0], travel[1] + 6.0 * local - 6.0)   # the view: follows Buh and keeps slowly spinning
+        vc = slerp_ll(prev, cur, ease(min(1.0, local / 1.9)))   # the view lags behind, so you see him travel
+        face = (vc[0], vc[1] + 4.0 * local - 4.0)       # ...and the globe keeps slowly spinning
         if _stars is None:
             rng = np.random.default_rng(3)
             st = np.zeros((H, W, 3), np.uint8)
@@ -1096,29 +1128,40 @@ def render(slug: str, log=print) -> Path:
                 st[y:y + 3, x:x + 3] = (200, 200, 230) if rng.random() < 0.8 else (255, 214, 10)
             _stars = Image.fromarray(st).convert("RGBA")
         base = _stars.copy()
-        g = globe_img(face[0] - 12, face[1])           # tilt a little so the place sits above centre
-        base.alpha_composite(g, (int(GCX - g.width / 2), int(GCY - g.height / 2)))
+        zp, zn = zoom_for(i - 1) if i else zoom_for(i), zoom_for(i)
+        z = math.exp(math.log(zp) + (math.log(zn) - math.log(zp)) * fly)
+        if ang_deg(prev, cur) > 1:                      # pull out mid-flight on a real trip
+            z *= 1 - 0.35 * math.sin(math.pi * fly)
+        RZ = GR * max(0.7, z)
+        g = globe_img(face[0] - 12 / max(1.0, z), face[1], RZ)   # tilt a little so the place sits above centre
+        base.alpha_composite(g, (0, int(GCY + GY0 * GPX)))
         dr = ImageDraw.Draw(base)
         for j in range(i + 1):                          # visited places
             if ll(j):
-                q = globe_xy(*ll(j), face[0] - 12, face[1])
+                q = globe_xy(*ll(j), face[0] - 12 / max(1.0, z), face[1], RZ)
                 if q:
                     dr.rectangle([q[0] - 9, q[1] - 9, q[0] + 9, q[1] + 9], fill=RED, outline=INK, width=3)
-        for k_ in range(0, 21):                         # the route so far, along the great circle
-            q = globe_xy(*slerp_ll(prev, cur, fly * k_ / 20), face[0] - 12, face[1])
-            if q:
-                dr.rectangle([q[0] - 4, q[1] - 4, q[0] + 4, q[1] + 4], fill=WHITE)
-        q = globe_xy(*travel, face[0] - 12, face[1]) or (GCX, GCY - 100)
-        hop = abs(math.sin(local * 9)) * 18
+        pts = [ll(j) for j in range(i + 1) if ll(j)]    # the whole route so far stays dotted on the globe
+        for j in range(1, len(pts)):
+            a_, b_ = pts[j - 1], pts[j]
+            upto = fly if j == len(pts) - 1 and pts[-1] == cur else 1.0
+            ang = math.degrees(math.acos(max(-1.0, min(1.0, math.sin(math.radians(a_[0])) * math.sin(math.radians(b_[0]))
+                  + math.cos(math.radians(a_[0])) * math.cos(math.radians(b_[0])) * math.cos(math.radians(b_[1] - a_[1]))))))
+            nd = max(2, int(ang / 1.6))
+            for d_ in range(int(nd * upto) + 1):
+                q = globe_xy(*slerp_ll(a_, b_, d_ / nd), face[0] - 12 / max(1.0, z), face[1], RZ)
+                if q:
+                    dr.rectangle([q[0] - 4, q[1] - 4, q[0] + 4, q[1] + 4], fill=WHITE, outline=INK, width=1)
+        q = globe_xy(*travel, face[0] - 12 / max(1.0, z), face[1], RZ) or (GCX, GCY - 100)
+        hop = math.sin(math.pi * fly) * 70 if fly < 1 else 6 * math.sin(local * 4)   # an arc in flight, a bob after
         paste_pin(base, pin_sprite("shock" if fly < 1 else "happy", 0, 0, 1 if cur[1] >= prev[1] else -1), q[0], q[1] - hop)
         place = (spec["links"][i].get("where") or {}).get("place", "")
         if fly >= 1 and place:
             paste(base, pixel_tag(place.upper(), WHITE, 26), q[0], q[1] + 50)
         if local > 0.75:
             pop = ease_out_back(min(1.0, (local - 0.75) / 0.25))
-            card = Image.new("RGBA", (720, 600), WHITE + (255,))
-            card.alpha_composite(view(i, *both_cam(i, 700, 580, 0.8), 700, 580), (10, 10))
-            paste(base, card, CX, 560, scale=0.5 + 0.5 * pop, nearest=False)
+            card = framed(view(i, *both_cam(i, 680, 540, 0.8), 680, 540), tilt=2.5 * math.sin(local * 1.7) + (-2 if i % 2 else 2))
+            paste(base, card, CX, 560 + 10 * math.sin(local * 2.1), scale=0.5 + 0.5 * pop, nearest=False)
             an, bn = link_names(i)
             sp, R = seg["speech"], seg.get("rv", REVEAL)
             paste(base, pixel_tag(C.labels[an].upper(), CYAN, 28), CX - 200, 900)
@@ -1130,7 +1173,7 @@ def render(slug: str, log=print) -> Path:
         return base
 
     style_frames = {"globe": frame_globe, "cards": frame_link, "zoom": frame_zoom, "board": frame_board, "timeline": frame_timeline,
-                    "map": frame_map}
+}
     draw = {"hook": frame_hook, "link": style_frames.get(STYLE, frame_link)}
 
     def frame_at(tt):
