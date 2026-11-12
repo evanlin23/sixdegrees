@@ -822,6 +822,14 @@
  },
  {
   "from": "Adolf Hitler",
+  "to": "MrBeast",
+  "status": "done",
+  "source": "operator request",
+  "hint": "Mussolini, then Turkey's Inonu (Rome 1932, Cairo 1943), Churchill, the Queen, Trump, Ronaldo",
+  "slug": "adolf-hitler-to-mrbeast"
+ },
+ {
+  "from": "Adolf Hitler",
   "to": "Sonic the Hedgehog",
   "status": "done",
   "source": "viral formula",
