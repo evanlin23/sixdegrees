@@ -40,6 +40,17 @@ CX = (SAFE[0] + SAFE[2]) / 2          # content centre (left of the button colum
 CARD = (50, 430, 930, 1380)           # photo window: x0, y0, x1, y1
 BAND = 270                            # top title band height
 BAR_Y = 352                           # chain bar (faces) centre line
+# people for whom nothing celebratory may appear (hearts, likes, matches, coins, scores, trophies, rarity, gold
+# frames, first-person posts): styles check sensitive(name) per link
+SENSITIVE = re.compile(r"(?i)hitler|stalin|mussolini|mao zedong|pol pot|saddam|gaddafi|idi amin|bin laden|"
+                       r"kim jong|himmler|goebbels|goering|göring|eichmann|mengele|lenin|franco|pinochet|escobar|"
+                       r"capone|manson|bundy|dahmer|epstein|genghis|attila")
+
+
+def sensitive(name) -> bool:
+    return bool(SENSITIVE.search(name or ""))
+
+
 CAP_Y = 1300                          # captions
 HERO_A = (0, 790, 470)                # hook: face A photo spans y0..y1 (full bleed), face centred at y=fy within it
 HERO_B = (900, H, 340)                # face B photo; the 790..900 seam between them carries the spoken question
@@ -206,15 +217,31 @@ def render(slug: str, log=print) -> Path:
                 paste(base, pixel_text(ln, size, fill=YELLOW if k == 0 else WHITE), CX,
                       y - 26 * (len(self.lines) - 1) + k * 54, scale=0.85 + 0.15 * pop)
 
-    def fact_of(link):
-        """The link's short on-screen fact: its "fact" field, else the year plus the first words of the line."""
+    def before_b(text, link):
+        """text cut just before B's name first appears (nothing on screen may name B before the reveal)."""
+        a, b = link["a"], link["b"]
+        a_words = set(re.findall(r"[A-Z][\w'-]{2,}", f"{a} {C.labels.get(a, '')}"))
+        names = [w for w in set(re.findall(r"[A-Z][\w'-]{2,}", f"{b} {C.labels.get(b, '')}")) if w not in a_words]
+        m = re.search(r"\b(" + "|".join(map(re.escape, names)) + r")\b", text) if names else None
+        if not m:
+            return text
+        return text[:m.start()].rstrip(" ,;:-'’") + "…"
+
+    def fact_of(link, full=False):
+        """The link's short on-screen fact: its "fact" field, else the year plus the first words of the line.
+        Cut before B's name unless full=True (use full=True only after the reveal)."""
         if link.get("fact"):
-            return link["fact"]
+            return link["fact"] if full else before_b(link["fact"], link)
         line = link["line"].rstrip(".")
         m = re.match(r"(?i)(?:And |Then |So )?(?:(?:In|By|Around|On|Back in)\s+)?(\d{4}s?),\s*(.*)", line)
         year, rest = (m.group(1), m.group(2)) if m else ("", re.sub(r"^(And |Then |So )", "", line))
+        if not full:
+            rest = before_b(rest, link)
         words = rest.split()
         short = " ".join(words[:6]) + ("…" if len(words) > 6 else "")
+        short = short.replace("……", "…")
+        if short in ("…", ""):
+            return year
         return f"{year}: {short}" if year else short
 
     t = 0.0
@@ -457,7 +484,7 @@ def render(slug: str, log=print) -> Path:
         paste(base, pixel_text(f"{lab}  {min(n, int(p) + 1)}/{n}", 22, fill=YELLOW, shadow=False), CX, 232)
         if last and land > 0.35:
             st = min(1.0, (land - 0.35) / 0.12)
-            paste(base, pixel_text("CONNECTED!", 72, fill=RED), CX, 1020, scale=2.0 - ease(st))
+            paste(base, pixel_text("CONNECTED!", 72, fill=RED), CX, y, scale=2.0 - ease(st))
         upto = i + (1 if land >= 0 else 0)
         blocks(base, upto, {upto} if land >= 0 else {i}, tt, sharpen=min(1.0, land / 0.35) if land >= 0 else 1.0)
         seg["cap"].draw(base, tt)
@@ -555,7 +582,7 @@ def render(slug: str, log=print) -> Path:
         # CONNECTED!
         if last and land > 0.35:
             st = min(1.0, (land - 0.35) / 0.12)
-            paste(base, pixel_text("CONNECTED!", 72, fill=RED), CX, 1020, scale=2.0 - ease(st))
+            paste(base, pixel_text("CONNECTED!", 72, fill=RED), CX, y, scale=2.0 - ease(st))
         band(base, i)
         upto = i + (1 if land >= 0 else 0)
         blocks(base, upto, {upto} if land >= 0 else {i}, tt, sharpen=min(1.0, land / 0.35) if land >= 0 else 1.0)
@@ -595,9 +622,11 @@ def render(slug: str, log=print) -> Path:
             if box is None:
                 box = (iw * 0.3, ih * 0.15, iw * 0.4, iw * 0.4)
             x, y, bw, bh = box
-            s_ = 340 / max(bh, bw * 1.1)
+            s_ = max(340 / max(bh, bw * 1.1), W / iw, h / ih)       # cover: the photo always fills the band
             fx, fyy = x + bw / 2, y + bh * 0.45
-            M = np.float32([[s_, 0, CX - fx * s_], [0, s_, fy - fyy * s_]])
+            tx = min(0.0, max(W - iw * s_, CX - fx * s_))             # no gaps at the edges
+            ty = min(0.0, max(h - ih * s_, fy - fyy * s_))
+            M = np.float32([[s_, 0, tx], [0, s_, ty]])
             crop = cv2.warpAffine(img, M, (W, h), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_CONSTANT)
             mask = cv2.warpAffine(np.full((ih, iw), 255, np.uint8), M, (W, h), flags=cv2.INTER_LINEAR)
             cover = max(W / iw, h / ih)                                   # blurred cover fill behind the photo
@@ -763,14 +792,14 @@ def render(slug: str, log=print) -> Path:
         paste(base, title_im, CX, 165)
         paste(base, pixel_text(f"LINK {i + 1}", 22, fill=YELLOW, shadow=False), CX, 202)
 
-    def connected(base, seg, tt):
+    def connected(base, seg, tt, y=1020):
         i = seg["i"]
         if i != n_links - 1:
             return
         land = tt - seg["t0"] - seg.get("rv", REVEAL) * seg["speech"] - THROW
         if land > 0.05:
             st = min(1.0, (land - 0.05) / 0.12)
-            paste(base, pixel_text("CONNECTED!", 72, fill=RED), CX, 1020, scale=2.0 - ease(st))
+            paste(base, pixel_text("CONNECTED!", 72, fill=RED), CX, y, scale=2.0 - ease(st))
 
     def year_of(i):
         l = spec["links"][i]

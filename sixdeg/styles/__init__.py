@@ -14,12 +14,15 @@ What ``ctx`` gives you (see ``CTX_KEYS``; all are the renderer's own objects):
 - photo helpers: ``view(i, cx, cy, scale, w, h)`` -> RGBA crop of photo i centred on image point (cx, cy);
   ``both_cam(i, w, h, fill)`` -> (cx, cy, scale) framing both faces; ``face_cam(box, h)``; ``fbox(i, "a"|"b")`` ->
   face box (x, y, w, h) in image px; ``ctr(box)``; ``framed(img, tilt)`` -> a taped, bordered print
-- text: ``link_names(i)`` -> (a, b); ``year_of(i)``; ``fact_of(link)``; ``pixel_text(text, size, fill)``;
+- text: ``link_names(i)`` -> (a, b); ``year_of(i)``; ``fact_of(link, full=False)`` (cut before B's name unless
+  full=True: never show B's name before the reveal); ``before_b(text, link)`` (same cut for any text); ``pixel_text(text, size, fill)``;
   ``pixel_tag(text, bg, size)``; ``pf(size)`` (pixel font); ``FONTS`` (Inter-*.otf for a "real UI" look)
 - drawing: ``paste(base, im, cx, cy, scale=1, alpha=1, nearest=True)``; ``checker(t, (c1, c2))``;
   ``paste_pin(base, pin_sprite(expr, angle, squash, look), x, tip_y)`` (Buh; expr in shock/smug/happy/angry);
-  ``header(base, i)`` (title band + LINK n); ``connected(base, seg, tt)`` (CONNECTED! on the last link);
+  ``header(base, i)`` (title band + LINK n); ``connected(base, seg, tt, y=1020)`` (CONNECTED! on the last link);
   ``frame_lineage(seg, tt)`` (fall back to it when ``C.fj["links"][i].get("lineage")``)
+- ``sensitive(name)`` -> True for dictators/killers: no hearts, likes, coins, scores, rarity, gold frames,
+  verified badges or first-person posts on a link with such a person
 - timing/motion: ``ease``, ``ease_out_back``, ``shake(t, amp, dur)``, ``REVEAL``, ``THROW``
 - layout: ``W, H, CX, SAFE`` (x0, y0, x1, y1: keep text inside), ``BAND``, ``CAP_Y``; colours ``INK, WHITE,
   YELLOW, CYAN, RED``
@@ -31,9 +34,9 @@ import pkgutil
 from types import SimpleNamespace
 
 CTX_KEYS = ["spec", "C", "n_links", "segs", "sharp", "view", "both_cam", "face_cam", "fbox", "ctr", "framed",
-            "link_names", "year_of", "fact_of", "header", "connected", "frame_lineage"]
+            "link_names", "year_of", "fact_of", "before_b", "header", "connected", "frame_lineage"]
 GLOBAL_KEYS = ["pixel_text", "pixel_tag", "pf", "FONTS", "paste", "checker", "paste_pin", "pin_sprite", "ease",
-               "ease_out_back", "shake", "REVEAL", "THROW", "W", "H", "CX", "SAFE", "BAND", "CAP_Y", "INK",
+               "ease_out_back", "shake", "sensitive", "REVEAL", "THROW", "W", "H", "CX", "SAFE", "BAND", "CAP_Y", "INK",
                "WHITE", "YELLOW", "CYAN", "RED"]
 
 
