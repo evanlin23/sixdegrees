@@ -23,5 +23,8 @@
  "voice": "gemini",
  "outro": false,
  "voice_rev": 2,
+ "narration": true,
+ "links": 5,
+ "lineage": 0,
  "slug": "fidel-castro-to-patrick-star"
 }
