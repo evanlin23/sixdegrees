@@ -73,11 +73,9 @@ episode.json: the hook shows the viewer's request bubble and the first comment c
   with `"people": {"Dwayne Johnson": {"label": "The Rock"}}`; the key stays the Wikipedia name so faces still
   match. The header ("A > B") shows labels up to 15 letters in full; for a longer one set a short form, e.g.
   `"SpongeBob SquarePants": {"short": "SpongeBob"}`. A character's name only ever labels the character's own artwork, never the actor in a real photo.
-- **The chain is the SHORTEST honest path you can find (creator's call, 2026-11-12: viewers like short paths).**
-  Search for the fewest links first: try 2, then 3, then 4 links before settling on more. Before you write the
-  episode, spend real effort looking for a shorter route (shared events, the same stage, a mutual famous person,
-  voice actors, White House/state visits, award shows). If you find a shorter honest route at any point, use it.
-  Note in `research_note` the shortest route you found and any shorter one you tried that didn't have a photo.
+- **Take the first honest path you find; never pad it (creator's call, 2026-11-12).** Viewers like short paths.
+  Don't detour or add famous faces just to make the chain longer, and don't spend ages hunting for an even shorter
+  one either: the first route where every link has a real photo is fine.
   - **Every link still needs a real photo of both people together** (or a lineage scroll). Never invent one.
   - **Hide the destination where the route allows.** Nothing from B's world before the last 1–2 links.
   - **Pacing:** with few links, give each line a fun fact (up to ~18 words) so the video is long enough to follow

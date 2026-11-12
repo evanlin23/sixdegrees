@@ -72,7 +72,7 @@ for producer sessions. What goes viral and the pair formula are in **`docs/STYLE
   - `narration`: a third of the episodes are **music-only**: no voice, names on screen, the opening question as
     text (like the 2025 Da Vinci → Naruto). Episode override: `"narration": false/true`.
   - `links`: chain length, grouped short (≤6), mid (7) and parade (8+). Since 2026-11-12 every episode takes the
-    shortest honest path the worker can find (viewers like short paths), so this is now a record, not a test.
+    first honest path the worker finds, never padded (viewers like short paths), so this is now a record, not a test.
 
 ## Opening (what keeps viewers past second 1)
 
