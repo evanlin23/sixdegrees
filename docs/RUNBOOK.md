@@ -95,6 +95,17 @@ A on top and B below as big full-width photos from frame 0, the spoken question 
 - House rule (from HelloBuh): when a Short flops, check its execution first: a slow first 1.5 s, an unreadable
   face, a bad name. Fix the same fault in queued siblings before blaming the pair type.
 
+## Presentation styles
+
+- The same chain can be shown many ways, so the channel doesn't look templated. Built in (`render_pixel`):
+  `cards` (the original), `zoom` (continuous full-screen zoom), `board` (Buh's detective corkboard), `timeline`
+  (year counter and ruler), `globe` (pixel Earth, needs `where` on every link). Plug-ins: any
+  `sixdeg/styles/<name>.py` with `make(ctx)` (the API is in `sixdeg/styles/__init__.py`).
+- Which style a video gets: the episode's `"style"`, else the `rotation` list in `data/style.json` by slug hash.
+  Only add a style to the rotation after the creator has seen a preview. The style is recorded per upload, and
+  `python -m sixdeg studio` compares styles.
+- Test one: `SIXDEG_STYLE=<name> python -m sixdeg render <slug>` (doesn't touch the episode file).
+
 ## Re-rendering
 
 - One or more queued episodes: dispatch `render.yml` with `slug` = space-separated slugs and `enqueue` true. A

@@ -1,4 +1,12 @@
 {
  "style": "pixel",
- "mascot": "pixel Pin with detective hat"
+ "mascot": "pixel Pin with detective hat",
+ "rotation": [
+  "cards",
+  "zoom",
+  "board",
+  "timeline",
+  "globe"
+ ],
+ "_rotation": "Presentation styles new episodes rotate through (by slug hash). Plug-ins in sixdeg/styles/ join when added here. globe is skipped unless every link has where.lat/lon. An episode's \"style\" wins."
 }

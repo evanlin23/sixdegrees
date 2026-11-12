@@ -18,7 +18,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 from . import assets, audio, pixelpin
-from .common import FONTS
+from .common import DATA, FONTS
 from .render import (END_HOLD, PAD, REVEAL, THROW, Ctx, both_camera, camera_for, ease, ease_out_back, face_crop,
                      grade, lerp_cam, seg_reveal, shake, short_name, to_screen, warp_photo)
 
@@ -232,7 +232,13 @@ def render(slug: str, log=print) -> Path:
         use_outro = False
     # presentation style pilot: episode "style" wins; otherwise "cards" until the rotation is switched on
     import os as _os
-    STYLE = _os.environ.get("SIXDEG_STYLE") or spec.get("style") or "cards"   # env: test a style without editing
+    STYLE = _os.environ.get("SIXDEG_STYLE") or spec.get("style")   # env: test a style without editing the episode
+    if not STYLE:          # rotation from data/style.json "rotation", by slug hash; globe only with a place per link
+        _sj = DATA / "style.json"
+        _rot = (json.loads(_sj.read_text()).get("rotation") if _sj.exists() else None) or ["cards"]
+        _placed = all(l.get("lineage") or (l.get("where") or {}).get("lat") is not None for l in spec["links"])
+        _rot = [x for x in _rot if x != "globe" or _placed] or ["cards"]
+        STYLE = _rot[int(hashlib.sha1((slug + ":style").encode()).hexdigest(), 16) % len(_rot)]
     script = [hook] + [l["line"] for l in spec["links"]] + ([OUTRO] if use_outro else [])
     audio.prefetch(script, voice, log)                                       # Gemini: one request per episode
     vinfo = {"engine": audio.narrator(script, voice), "outro": use_outro, "rev": audio.VOICE_REV,

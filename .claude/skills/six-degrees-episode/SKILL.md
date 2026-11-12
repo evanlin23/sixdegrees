@@ -148,6 +148,11 @@ operator can see the effort.
     ("Every Scooby costume photo was watermarked, so Scooby comes in through the 2002 film's cast."). It goes in
     the description.
   - The description lists every link's line and photo source automatically.
+- **Where each photo was taken (for the globe style):** give every link
+  `"where": {"place": "White House", "lat": 38.897, "lon": -77.036}`, the place the photo was taken (a city or
+  venue is enough). Videos rotate through presentation styles (`data/style.json`), and the globe style is only used
+  when every link has `where`. You can force a style with top-level `"style"`, e.g. `"style": "board"`. Test a
+  style locally without editing the episode: `SIXDEG_STYLE=board python -m sixdeg render <slug>`.
 - Each `line` is one sentence of about 18 words or fewer, starting with a year or a hook word, with a concrete fact.
 - Don't type years as words. The voice reads "1973" as "nineteen seventy-three" automatically.
 - **Pronunciation.** The narrator is Gemini's Achird voice, which reads names from context. If a name comes out
