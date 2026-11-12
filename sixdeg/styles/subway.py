@@ -16,6 +16,22 @@ LINE = (226, 46, 58)                     # the Buh line
 PALE = tuple(int(c * 0.35 + p * 0.65) for c, p in zip(LINE, PAPER))
 # station layout (world px): a snake of straight runs and 45-degree bends that fits a portrait screen
 PATTERN = [(0, 0), (520, 0), (1000, 330), (520, 700), (0, 700), (250, 1150), (900, 1150)]
+MAP_Y0, MAP_Y1, MAP_AY = 230, 600, 415   # the map strip under the title band; the card sits below it
+CAP_Y = 1386
+
+
+def photo_fit(ctx, i, w, h, fill=0.8, maxup=1.3):
+    """Link photo i framed on both faces in a w x h window, cover-cropped where the source allows, never upscaled
+    beyond maxup (a small source comes back smaller than w x h: the caller mattes it, no blurred bars)."""
+    ih, iw = ctx.C.imgs[i].shape[:2]
+    cx, cy, s = ctx.both_cam(i, w, h, fill)
+    ba, bb = ctx.fbox(i, "a"), ctx.fbox(i, "b")
+    spread = max(ba[0] + ba[2], bb[0] + bb[2]) - min(ba[0], bb[0])
+    s = min(maxup, max(s, max(w / iw, h / ih)), 0.95 * w / max(1, spread))
+    ow, oh = min(w, int(iw * s)), min(h, int(ih * s))
+    hw, hh = ow / 2 / s, oh / 2 / s
+    cx, cy = min(max(cx, hw), iw - hw), min(max(cy, hh), ih - hh)
+    return ctx.view(i, cx, cy, s, ow, oh)
 
 
 def _route(p, q):
@@ -211,45 +227,59 @@ def make(ctx):
     TRAIN = train_sprite()
     TRAIN_L = TRAIN.transpose(Image.FLIP_LEFT_RIGHT)
 
+
+    # ---------- the next-stop card: one fixed place under the map strip, photo as big as the screen allows
+    PW, PH, HEAD, FOOT = 840, 520, 74, 100
+    CARD_TOP = MAP_Y1 + 12
+    CARD_H = HEAD + 6 + PH + FOOT
+    CARD_CY = CARD_TOP + CARD_H / 2
+    FOOT_CY = CARD_TOP + HEAD + 6 + PH + FOOT / 2         # CONNECTED! lands here on the last link
     _panels = {}
 
-    def panel(i, revealed):
-        key = (i, revealed)
-        if key in _panels:
-            return _panels[key]
-        PW, PH = 820, 400
-        an, bn = ctx.link_names(i)
-        im = Image.new("RGBA", (PW + 40, PH + 190), (0, 0, 0, 0))
-        d = ImageDraw.Draw(im)
-        d.rounded_rectangle([12, 16, PW + 32, PH + 186], 18, fill=(0, 0, 0, 110))
-        d.rounded_rectangle([0, 0, PW + 20, PH + 170], 18, fill=(252, 250, 244), outline=ctx.INK, width=6)
-        d.rounded_rectangle([0, 0, PW + 20, 74], 18, fill=LINE, outline=ctx.INK, width=6)
-        d.rectangle([6, 40, PW + 14, 74], fill=LINE)
-        d.line([(0, 74), (PW + 20, 74)], fill=ctx.INK, width=6)
-        tag = ctx.pixel_text("NEXT STOP" if not revealed else "NOW ARRIVING", 24, fill=ctx.WHITE)
-        im.alpha_composite(tag, (24, int(38 - tag.height / 2)))
-        nm = ctx.C.labels[bn].upper() if revealed else "? ? ?"
-        size = 28
-        while size > 16 and ctx.pf(size).getlength(nm) > PW - tag.width - 90:
-            size -= 2
-        b = ctx.pixel_tag(nm, ctx.YELLOW if revealed else (210, 206, 198), size)
-        im.alpha_composite(b, (int(PW + 8 - b.width), int(38 - b.height / 2)))
-        ph = ctx.view(i, *ctx.both_cam(i, PW, PH, 0.8), PW, PH)
-        im.alpha_composite(ph, (10, 80))
-        d.rectangle([10, 80, 10 + PW, 80 + PH], outline=ctx.INK, width=3)
-        fact = ctx.fact_of(ctx.spec["links"][i])
-        words, lines, cur = fact.upper().split(), [], ""
+    def wrap(text, n):
+        words, lines, cur = text.split(), [], ""
         for w in words:
-            if cur and len(cur) + len(w) + 1 > 38:
+            if cur and len(cur) + len(w) + 1 > n:
                 lines.append(cur)
                 cur = w
             else:
                 cur = f"{cur} {w}".strip()
         lines.append(cur)
-        lines = lines[:2]
-        f = ctx.pf(19)
-        for k, ln in enumerate(lines):
-            d.text((24, PH + 98 + k * 30), ln, font=f, fill=ctx.INK)
+        if len(lines) > 2:
+            lines = [lines[0], lines[1].rstrip(",;:…") + "…"]
+        return lines
+
+    def panel(i, revealed, fact=True):
+        key = (i, revealed, fact)
+        if key in _panels:
+            return _panels[key]
+        an, bn = ctx.link_names(i)
+        im = Image.new("RGBA", (PW + 40, CARD_H + 20), (0, 0, 0, 0))
+        d = ImageDraw.Draw(im)
+        d.rounded_rectangle([12, 16, PW + 32, CARD_H + 16], 18, fill=(0, 0, 0, 110))
+        d.rounded_rectangle([0, 0, PW + 20, CARD_H], 18, fill=(252, 250, 244), outline=ctx.INK, width=6)
+        d.rounded_rectangle([0, 0, PW + 20, HEAD], 18, fill=LINE, outline=ctx.INK, width=6)
+        d.rectangle([6, 40, PW + 14, HEAD], fill=LINE)
+        d.line([(0, HEAD), (PW + 20, HEAD)], fill=ctx.INK, width=6)
+        tag = ctx.pixel_text("NEXT STOP" if not revealed else "NOW ARRIVING", 24, fill=ctx.WHITE)
+        im.alpha_composite(tag, (24, int(HEAD / 2 + 1 - tag.height / 2)))
+        nm = ctx.C.labels[bn].upper() if revealed else "? ? ?"
+        size = 28
+        while size > 16 and ctx.pf(size).getlength(nm) > PW - tag.width - 90:
+            size -= 2
+        b = ctx.pixel_tag(nm, ctx.YELLOW if revealed else (210, 206, 198), size)
+        im.alpha_composite(b, (int(PW + 8 - b.width), int(HEAD / 2 + 1 - b.height / 2)))
+        d.rectangle([10, HEAD + 6, 10 + PW, HEAD + 6 + PH], fill=(40, 38, 44))   # matte for small photos
+        ph = photo_fit(ctx, i, PW, PH)
+        px, py = 10 + (PW - ph.width) // 2, HEAD + 6 + (PH - ph.height) // 2
+        im.alpha_composite(ph, (px, py))
+        d.rectangle([px, py, px + ph.width, py + ph.height], outline=ctx.INK, width=3)
+        if fact:
+            lines = wrap(ctx.fact_of(ctx.spec["links"][i], full=revealed).upper(), 32)
+            f = ctx.pf(24)
+            y0 = HEAD + 6 + PH + FOOT / 2 - (len(lines) * 38 - 8) / 2
+            for k, ln in enumerate(lines):
+                d.text((26, y0 + k * 38), ln, font=f, fill=ctx.INK)
         _panels[key] = im
         return im
 
@@ -272,35 +302,33 @@ def make(ctx):
                 return da + (db - da) * ctx.ease(max(0.0, min(1.0, u)))
         return 0.0
 
-    def dest_d(T):
+    def seg_at(T):
         for s in segs:
             if T < s["t1"] or s is segs[-1]:
-                return D[idx.get(ctx.link_names(s["i"])[1], 0)]
-        return D[-1]
+                return s
+        return segs[-1]
 
-    def follow(T):
-        tx, ty = at(train_d(T))
-        dx, dy = at(dest_d(T))
-        return tx + (dx - tx) * 0.38, ty + (dy - ty) * 0.38
+    def target(T):
+        """Camera (x, y, zoom, screen y) framing A and B of the link in the map strip; on the last link it closes
+        in on the destination once the train arrives."""
+        s = seg_at(T)
+        a, b = ST[idx.get(ctx.link_names(s["i"])[0], 0)], ST[idx.get(ctx.link_names(s["i"])[1], 0)]
+        if s["i"] == ctx.n_links - 1 and T - s["t0"] > arrive(s) - 0.15:
+            return b[0], b[1], 1.0, MAP_AY - 25
+        dx, dy = abs(b[0] - a[0]) + 1, abs(b[1] - a[1]) + 1
+        z = max(0.5, min(0.85, 620 / dx, 190 / dy))
+        return (a[0] + b[0]) / 2, (a[1] + b[1]) / 2, z, MAP_AY
 
-    def cam_follow(T):
-        """Smoothed: the average of the follow target over the last 0.7 s."""
+    def cam(T):
         n = 8
-        xs_, ys_ = 0.0, 0.0
+        acc = [0.0, 0.0, 0.0, 0.0]
         for k in range(n):
-            x, y = follow(T - 0.7 * k / (n - 1))
-            xs_ += x
-            ys_ += y
-        return xs_ / n, ys_ / n
-
-    FIT_Z = min((ctx.SAFE[2] - ctx.SAFE[0] - 300) / max(1, BB[2] - BB[0]),
-                (1240 - 300 - 220) / max(1, BB[3] - BB[1]), 0.9)
-    # finale framing: the gap between the last two rows of stations sits behind the CONNECTED! stamp (y 1020)
-    gap_y = (BB[3] + max([y for y in ys if y < BB[3] - 1] or [BB[1]])) / 2
-    FIT_AY = 1020.0
-    FIT_C = ((BB[0] + BB[2]) / 2, gap_y + 45)
-    if FIT_AY - (gap_y - BB[1]) * FIT_Z < 330 or FIT_AY + (BB[3] - gap_y) * FIT_Z > 1220:
-        FIT_AY, FIT_C = 760.0, ((BB[0] + BB[2]) / 2, (BB[1] + BB[3]) / 2)
+            x, y, z, ay = target(T - 0.6 * k / (n - 1))
+            acc[0] += x
+            acc[1] += y
+            acc[2] += math.log(z)
+            acc[3] += ay
+        return acc[0] / n, acc[1] / n, math.exp(acc[2] / n), acc[3] / n
 
     def frame(seg, tt):
         i = seg["i"]
@@ -313,17 +341,11 @@ def make(ctx):
         last = i == ctx.n_links - 1
         an, bn = ctx.link_names(i)
         ia, ib = idx.get(an, 0), idx.get(bn, 0)
-        dur = seg["t1"] - seg["t0"]
 
-        # finale: on the last link the camera pulls back to the whole line during the final approach
-        fin = ctx.ease(max(0.0, min(1.0, (local - 0.45 * arr) / (0.5 * arr)))) if last else 0.0
-        fx, fy = cam_follow(tt)
-        drift = 18 * math.sin(tt * 0.9), 14 * math.cos(tt * 0.7)
-        z_f = 0.92 + 0.03 * math.sin(tt * 1.3)
-        z = math.exp(math.log(z_f) + (math.log(FIT_Z) - math.log(z_f)) * fin)
-        cx = fx + drift[0] + (FIT_C[0] - fx - drift[0]) * fin
-        cy = fy + drift[1] + (FIT_C[1] - fy - drift[1]) * fin
-        ax, ay = ctx.CX, 470 + (FIT_AY - 470) * fin
+        cx, cy, z, ay = cam(tt)
+        cx += 10 * math.sin(tt * 0.9)
+        cy += 6 * math.cos(tt * 0.7)
+        ax = ctx.CX
 
         def scr(p):
             return (p[0] - cx) * z + ax, (p[1] - cy) * z + ay
@@ -344,8 +366,7 @@ def make(ctx):
             for p in pts:
                 d.ellipse([p[0] - lw / 2, p[1] - lw / 2, p[0] + lw / 2, p[1] + lw / 2], fill=LINE)
             dash = 60
-            off = (tt * 140) % dash
-            k = off
+            k = (tt * 140) % dash
             while k < ld:
                 p = scr(at(k))
                 r = max(2, lw * 0.16)
@@ -358,40 +379,58 @@ def make(ctx):
         moving = 0.12 < local < arr
         tx, ty = scr(at(td))
         bob = 2 * math.sin(tt * 18) if moving else 1.5 * math.sin(tt * 4)
-        ts = max(0.6, min(1.0, z * 1.05))
+        ts = max(0.55, min(1.0, z * 1.05))
         if abs(hx) < 1e-3 and abs(hy) < 1e-3:
             hx = 1.0
         left = hx < -1e-3
         ang = math.degrees(math.atan2(hy, -hx)) if left else -math.degrees(math.atan2(hy, hx))
         spr = (TRAIN_L if left else TRAIN).rotate(ang, expand=True, resample=Image.BICUBIC)
         ctx.paste(base, spr, tx, ty + bob, scale=ts, nearest=False)
+
         # stations
-        rs = max(0.55, min(1.0, z * 1.05))
+        rs = max(0.5, min(1.05, z * 1.05))
+        boxes, shown = [], []
         for k, nm in enumerate(people):
-            known = k <= ia or (k == ib and revealed) or (k < ib and k > ia)
+            known = k <= ia or (k == ib and revealed) or (ia < k < ib)
             sx, sy = scr(ST[k])
-            if not (-200 < sx < ctx.W + 200 and -200 < sy < ctx.H + 200):
+            if not (-200 < sx < ctx.W + 200 and -200 < sy < CARD_TOP + 200):
                 continue
             s = rs
             if k == ib and revealed:                             # B's roundel pops when the train pulls in
                 pop = (local - R * sp - ctx.THROW) / 0.3
                 s *= 1 + 0.35 * math.sin(math.pi * max(0.0, min(1.0, pop)))
+                if last:
+                    s *= 1 + 0.3 * ctx.ease(min(1.0, pop))       # and stays big at the finale
             elif k == ib:
                 s *= 1 + 0.05 * math.sin(tt * 7)                # the next stop pulses
             ctx.paste(base, ROUND[(nm, known)], sx, sy, scale=s, nearest=False)
-        for k, nm in enumerate(people):                          # labels on top of every roundel
-            known = k <= ia or (k == ib and revealed) or (k < ib and k > ia)
-            if not known:
-                continue
-            sx, sy = scr(ST[k])
-            if not ctx.SAFE[0] - 60 < sx < ctx.SAFE[2] + 60:
-                continue                                         # off to the side: no label squeezed in
+            r = RR * s
+            boxes.append((sx - r, sy - r, sx + r, sy + r))
+            if known:
+                shown.append((k, nm, sx, sy, r))
+        # labels: B first, then A, then the rest; each goes under (or else over) its roundel where it is free
+        tb = ts * 1.0
+        boxes.append((tx - 100 * tb, ty - 60 * tb, tx + 100 * tb, ty + 40 * tb))
+        boxes.append((tx - 70 * tb, ty - 200 * tb, tx + 70 * tb, ty))          # Buh on the roof
+        order = sorted(shown, key=lambda q: (q[0] != ib, q[0] != ia, -q[0]))
+        for k, nm, sx, sy, r in order:
+            if not ctx.SAFE[0] - 30 < sx < ctx.SAFE[2] + 30:
+                continue                                         # off to the side: no label away from its face
             lab = LABEL[nm]
-            ls = 0.72 + 0.28 * (1 - fin)
-            lx = max(ctx.SAFE[0] + lab.width * ls / 2, min(ctx.SAFE[2] - lab.width * ls / 2, sx))
-            ly = sy + RR * rs + lab.height * ls / 2 + 2
-            if ly - lab.height * ls / 2 > ctx.BAND - 30 and ly < ctx.SAFE[3] - 40:
+            ls = 1.0 if (last and k == ib and revealed) else 0.78
+            w2, h2 = lab.width * ls / 2, lab.height * ls / 2
+            lx = max(ctx.SAFE[0] + w2, min(ctx.SAFE[2] - w2, sx))
+            for ly in (sy + r + h2 + 2, sy - r - h2 - 4):
+                rect = (lx - w2, ly - h2, lx + w2, ly + h2)
+                if rect[1] < MAP_Y0 + 4 or rect[3] > CARD_TOP - 4:
+                    continue
+                own = (sx - r, sy - r, sx + r, sy + r)
+                if any(rect[0] < b[2] and b[0] < rect[2] and rect[1] < b[3] and b[1] < rect[3]
+                       for b in boxes if b != own):
+                    continue
                 ctx.paste(base, lab, lx, ly, scale=ls)
+                boxes.append(rect)
+                break
 
         expr = "happy"
         squash = 0.0
@@ -402,30 +441,24 @@ def make(ctx):
         sway = (10 * math.sin(tt * 9)) if moving else 4 * math.sin(tt * 3)
         ctx.paste_pin(base, ctx.pin_sprite(expr, sway, squash, -1 if left else 1, scale=4), tx, ty + bob - 22 * ts)
 
-        # next-stop panel: pops up at the start of the link, flips to the arrival name, drops away at the end
-        pin = ctx.ease_out_back(max(0.0, min(1.0, (local - 0.08) / 0.3)))
-        pout = 1.0
-        if last:
-            pout = 1 - ctx.ease(max(0.0, min(1.0, (local - 0.45 * arr) / 0.3)))
+        # the card never moves: it cross-fades from the last stop to this one, flips its name at the arrival
+        fin = last and revealed
+        pan = panel(i, revealed, fact=not fin)
+        ps = 1.0
+        if revealed and local - arr < 0.25:
+            ps = 1 + 0.03 * math.sin(math.pi * (local - arr) / 0.25)
+        k_in = ctx.ease(max(0.0, min(1.0, local / 0.3)))
+        if i > 0 and k_in < 1 and not ctx.C.fj["links"][i - 1].get("lineage"):
+            ctx.paste(base, panel(i - 1, True), ctx.CX, CARD_CY + 10, nearest=False)
+            ctx.paste(base, pan, ctx.CX, CARD_CY + 10, alpha=k_in, nearest=False)
+        elif i == 0 and k_in < 1:
+            ctx.paste(base, pan, ctx.CX, CARD_CY + 10 + 60 * (1 - k_in), scale=0.94 + 0.06 * k_in, alpha=k_in,
+                      nearest=False)
         else:
-            pout = 1 - ctx.ease(max(0.0, min(1.0, (local - (dur - 0.25)) / 0.22)))
-        vis = min(pin, 1.0) * pout
-        if vis > 0.01:
-            pan = panel(i, revealed)
-            py = 1015 + (1 - vis) * 700 + 7 * math.sin(tt * 2.4)
-            ps = 0.9 + 0.1 * vis
-            if revealed and local - arr < 0.25:
-                ps *= 1 + 0.05 * math.sin(math.pi * (local - arr) / 0.25)
-            ctx.paste(base, pan, ctx.CX, py, scale=ps, nearest=False)
-            # a stem from the panel up to the train, like a speech bubble pointing at the stop
-            if vis > 0.6 and fin < 0.05:
-                top = py - pan.height * ps / 2
-                if ty + 40 < top:
-                    d.polygon([(ctx.CX - 30, top + 4), (ctx.CX + 30, top + 4), (tx, max(ty + 40, top - 60))],
-                              fill=ctx.INK)
+            ctx.paste(base, pan, ctx.CX, CARD_CY + 10, scale=ps, nearest=False)
         ctx.header(base, i)
-        ctx.connected(base, seg, tt)
-        seg["cap"].draw(base, tt, y=1368)
+        ctx.connected(base, seg, tt, y=FOOT_CY)
+        seg["cap"].draw(base, tt, y=CAP_Y)
         return base
 
     return frame
