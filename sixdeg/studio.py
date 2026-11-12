@@ -32,6 +32,16 @@ def _uploaded() -> dict[str, dict]:
     return out
 
 
+VILLAINS = ("stalin", "mussolini", "saddam", "gaddafi", "kim-jong", "mao-zedong", "lenin", "escobar", "capone",
+            "castro", "attila", "genghis", "pol-pot", "idi-amin")
+
+
+def _pair(slug: str) -> str:
+    """Pair test bucket: Hitler, another instantly recognisable villain, or the rest."""
+    s = slug.lower().replace(" ", "-")
+    return "hitler" if "hitler" in s else ("other-villain" if any(v in s for v in VILLAINS) else "rest")
+
+
 def _chain(u: dict) -> str:
     """Chain-length test bucket: short (<=6 links) vs parade (8+)."""
     n = u.get("links")
@@ -69,7 +79,7 @@ def report(cur: dict) -> str:
             "slug": u.get("slug") or v.get("title", vid)[:40], "when": when,
             "opening": ("cards" if u.get("slug") in OLD_OPENING else "big-face") if u else "2025/other",
             "kind": u.get("kind") or "?", "outro": {True: "outro", False: "no-outro"}.get(u.get("outro"), "?"),
-            "chain": _chain(u), "voice": "music-only" if u.get("narration") is False else ("narrated" if u else "?"),
+            "chain": _chain(u), "pair": _pair(u.get("slug") or v.get("title", "")), "voice": "music-only" if u.get("narration") is False else ("narrated" if u else "?"),
             "avg_s": v.get("avg_view_s"),
             "views": v.get("views"), "viewed": v.get("viewed_pct"), "avg_pct": v.get("avg_pct_viewed"),
             "r3": (v.get("retention_pct") or {}).get("3s"), "end": (v.get("retention_pct") or {}).get("end"),
@@ -82,7 +92,7 @@ def report(cur: dict) -> str:
         lines.append(f"{r['slug'][:40]:40} {r['when']:16} {f(r['views']):>7} {f(r['viewed']):>7} {f(r['avg_pct']):>5} "
                      f"{f(r['r3']):>4} {f(r['end']):>4} {f(r['subs']):>4}")
     lines.append("")
-    for key in ("opening", "kind", "outro", "chain", "voice"):
+    for key in ("opening", "pair", "kind", "outro", "chain", "voice"):
         groups = {}
         for r in rows:
             groups.setdefault(r[key], []).append(r)
