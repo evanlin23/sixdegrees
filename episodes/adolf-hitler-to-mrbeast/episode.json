@@ -45,7 +45,12 @@
       "line": "In 1940, Hitler rode through Munich with his ally Mussolini, the dictator of Italy.",
       "fact": "Munich, June 1940",
       "a_face": 15,
-      "b_face": 2
+      "b_face": 2,
+      "where": {
+        "place": "Munich",
+        "lat": 48.137,
+        "lon": 11.575
+      }
     },
     {
       "a": "Benito Mussolini",
@@ -53,10 +58,15 @@
       "image": {
         "file": "File:Ismet pacha, ministre des affaires étrangères de Turquie, Mussolini, Ruscdy Bey - btv1b9051855q.jpg"
       },
-      "line": "In 1932, Mussolini welcomed Turkey's prime minister to Rome.",
+      "line": "In 1932, Turkey's prime minister came to Rome for talks with Mussolini.",
       "fact": "Rome, 1932",
       "a_face": 7,
-      "b_face": 5
+      "b_face": 5,
+      "where": {
+        "place": "Rome",
+        "lat": 41.893,
+        "lon": 12.483
+      }
     },
     {
       "a": "İsmet İnönü",
@@ -64,10 +74,15 @@
       "image": {
         "file": "File:Roosevelt Inönü and Churchill in Cairo cph.3b15312.jpg"
       },
-      "line": "By 1943 he led Turkey, and Winston Churchill sat beside him in Cairo, begging Turkey to join the war.",
+      "line": "In 1943, Churchill met him in Cairo, begging Turkey to join the war.",
       "fact": "Cairo conference, 1943",
       "a_face": 5,
-      "b_face": 10
+      "b_face": 10,
+      "where": {
+        "place": "Cairo",
+        "lat": 30.044,
+        "lon": 31.236
+      }
     },
     {
       "a": "Winston Churchill",
@@ -76,9 +91,14 @@
         "file": "File:Churchill queen Elizabeth 1953.jpg"
       },
       "line": "In 1953, Churchill was prime minister to the young Queen Elizabeth.",
-      "fact": "Buckingham Palace, 1953",
+      "fact": "London, 1953",
       "a_face": 3,
-      "b_face": 2
+      "b_face": 2,
+      "where": {
+        "place": "London",
+        "lat": 51.507,
+        "lon": -0.128
+      }
     },
     {
       "a": "Elizabeth II",
@@ -89,7 +109,12 @@
       "line": "In 2018, the Queen welcomed Donald Trump to Windsor Castle.",
       "fact": "Windsor Castle, 2018",
       "a_face": 1,
-      "b_face": 2
+      "b_face": 2,
+      "where": {
+        "place": "Windsor Castle",
+        "lat": 51.484,
+        "lon": -0.604
+      }
     },
     {
       "a": "Donald Trump",
@@ -97,10 +122,15 @@
       "image": {
         "file": "File:President Donald Trump meets with Cristiano Ronaldo in the Oval Office (54934459299).jpg"
       },
-      "line": "In 2025, Trump had Cristiano Ronaldo in the Oval Office.",
+      "line": "In 2025, Trump welcomed Cristiano Ronaldo to the Oval Office.",
       "fact": "Oval Office, 2025",
       "a_face": 2,
-      "b_face": 1
+      "b_face": 1,
+      "where": {
+        "place": "White House",
+        "lat": 38.897,
+        "lon": -77.037
+      }
     },
     {
       "a": "Cristiano Ronaldo",
@@ -111,10 +141,15 @@
         "license": "Fair use (commentary)",
         "source": "https://jang.com.pk/en/26212-mrbeast-and-cristiano-ronaldo-spark-excitement-with-big-announcement-news"
       },
-      "line": "Who filmed a video with MrBeast.",
-      "fact": "Al-Nassr stadium, 2024",
+      "line": "In 2024, MrBeast came to Ronaldo's stadium to film a video.",
+      "fact": "Riyadh, 2024",
       "a_face": 2,
-      "b_face": 0
+      "b_face": 0,
+      "where": {
+        "place": "Riyadh",
+        "lat": 24.713,
+        "lon": 46.675
+      }
     }
   ]
 }
