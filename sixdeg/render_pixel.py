@@ -299,6 +299,13 @@ def render(slug: str, log=print) -> Path:
         # the final destination stays hidden (camera tight on A) until the END of the last line, then lands and we
         # cut almost at once: "ends super fast after the last link is shown" (what the 40k-view 2025 hit did)
         rv = max(REVEAL, (speech - THROW - 0.3) / speech) if last and not link.get("lineage") else REVEAL
+        if last and narration and not link.get("lineage"):
+            # narrated: B lands as the voice says B's name (a late reveal after the name is spoken just lags)
+            bt = {w.lower() for w in re.findall(r"[A-Za-z][\w'-]{2,}", f"{link['b']} {C.labels.get(link['b'], '')}")}
+            at = {w.lower() for w in re.findall(r"[A-Za-z][\w'-]{2,}", f"{link['a']} {C.labels.get(link['a'], '')}")}
+            hit = [a0 for w, a0, b0 in words if re.sub(r"[^\w'-]", "", w).lower() in (bt - at)]
+            if hit:
+                rv = max(REVEAL, min(rv, (hit[0] + 0.08 - THROW + 0.15) / speech))
         d = max(speech + 0.05, rv * speech + THROW + 0.3) if last else speech + PAD
         if last and STYLE == "board":
             d += 1.1                                     # time to zoom out to the whole evidence board
