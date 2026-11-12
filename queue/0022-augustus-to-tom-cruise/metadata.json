@@ -21,7 +21,10 @@
  "file": "augustus-to-tom-cruise.mp4",
  "kind": "request",
  "voice": "gemini",
- "outro": true,
+ "outro": false,
  "voice_rev": 2,
+ "narration": false,
+ "links": 5,
+ "lineage": 14,
  "slug": "augustus-to-tom-cruise"
 }
