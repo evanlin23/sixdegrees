@@ -1,6 +1,6 @@
 {
  "title": "How is Nikola Tesla connected to The Rock?",
- "description": "Mark Twain, Helen Keller, two first ladies and Mr. T in a Santa suit connect Nikola Tesla to Dwayne Johnson.\n\nNikola Tesla → Mark Twain → Helen Keller → John F. Kennedy → Jacqueline Kennedy Onassis → Nancy Reagan → Mr. T → Hulk Hogan → The Rock\n\nGive me two names in the comments and I'll find the photos that connect them.\n\nPhoto credits:\nPhoto 1, Public domain: https://commons.wikimedia.org/wiki/File:Twain_in_Tesla%27s_Lab.jpg\nPhoto 2 by not stated, Public domain: https://commons.wikimedia.org/wiki/File:Laurence_Hutton,_Mark_Twain_and_Helen_Keller.jpg\nPhoto 3 by Abbie Rowe, Public domain: https://commons.wikimedia.org/wiki/File:President_John_F._Kennedy_Meets_with_Helen_Keller.jpg\nPhoto 4 by Robert LeRoy Knudsen, Public domain: https://commons.wikimedia.org/wiki/File:JBKJFKMalraux.jpg\nPhoto 5 by White House Photographer, Public domain: https://commons.wikimedia.org/wiki/File:Reagans_with_Jackie_Kennedy.jpg\nPhoto 6, Public domain: https://commons.wikimedia.org/wiki/File:Nancy_Reagan_Sitting_on_Santa_Claus_(Mr._T)_Lap_After_Reviewing_White_House_Chrismas_Decorations_with_The_Press_in_Cross_Hall_-_DPLA_-_a5009f101af564ab6fd26763dddbbc79.jpg\nPhoto 7, Public domain: https://commons.wikimedia.org/wiki/File:Mr_T_at_WrestleMania,_1985.jpg\nPhoto 8 by Miguel Discart from Bruxelles, Belgique, CC BY-SA 2.0: https://commons.wikimedia.org/wiki/File:WWE_2014-04-06_18-22-41_NEX-6_9458_DxO_(13918972796).jpg\n\n#nikolatesla #therock #sixdegrees #history #didyouknow #shorts",
+ "description": "Mark Twain, Helen Keller, two first ladies and Mr. T in a Santa suit connect Nikola Tesla to Dwayne Johnson.\n\nNikola Tesla → Mark Twain → Helen Keller → John F. Kennedy → Jacqueline Kennedy Onassis → Nancy Reagan → Mr. T → Hulk Hogan → The Rock\n\nHow they're connected (every photo is real and sourced):\n1. Nikola Tesla → Mark Twain: In 1894, Mark Twain visited Tesla's New York lab and held a lamp lit by wireless power.\n   Photo, Public domain: https://commons.wikimedia.org/wiki/File:Twain_in_Tesla%27s_Lab.jpg\n2. Mark Twain → Helen Keller: Twain befriended a young Helen Keller, and they posed together at writer Laurence Hutton's home.\n   Photo by not stated, Public domain: https://commons.wikimedia.org/wiki/File:Laurence_Hutton,_Mark_Twain_and_Helen_Keller.jpg\n3. Helen Keller → John F. Kennedy: In 1961, Keller visited the White House to meet President John F. Kennedy.\n   Photo by Abbie Rowe, Public domain: https://commons.wikimedia.org/wiki/File:President_John_F._Kennedy_Meets_with_Helen_Keller.jpg\n4. John F. Kennedy → Jackie Kennedy: A year later, Kennedy and his wife Jackie hosted a White House dinner for France's culture minister.\n   Photo by Robert LeRoy Knudsen, Public domain: https://commons.wikimedia.org/wiki/File:JBKJFKMalraux.jpg\n5. Jackie Kennedy → Nancy Reagan: In 1985, Jackie joined Ronald and Nancy Reagan at a fundraiser for the Kennedy Library.\n   Photo by White House Photographer, Public domain: https://commons.wikimedia.org/wiki/File:Reagans_with_Jackie_Kennedy.jpg\n6. Nancy Reagan → Mr. T: Two years earlier, Nancy sat on Santa's lap at the White House, and Santa was Mr. T.\n   Photo, Public domain: https://commons.wikimedia.org/wiki/File:Nancy_Reagan_Sitting_on_Santa_Claus_(Mr._T)_Lap_After_Reviewing_White_House_Chrismas_Decorations_with_The_Press_in_Cross_Hall_-_DPLA_-_a5009f101af564ab6fd26763dddbbc79.jpg\n7. Mr. T → Hulk Hogan: In 1985, Mr. T teamed up with Hulk Hogan in the main event of the first WrestleMania.\n   Photo, Public domain: https://commons.wikimedia.org/wiki/File:Mr_T_at_WrestleMania,_1985.jpg\n8. Hulk Hogan → The Rock: And at WrestleMania 30 in 2014, Hogan went face to face with The Rock.\n   Photo by Miguel Discart from Bruxelles, Belgique, CC BY-SA 2.0: https://commons.wikimedia.org/wiki/File:WWE_2014-04-06_18-22-41_NEX-6_9458_DxO_(13918972796).jpg\n\nGive me two names in the comments and I'll find the photos that connect them.\n\n#nikolatesla #therock #sixdegrees #history #didyouknow #shorts",
  "tags": [
   "Nikola Tesla",
   "Mark Twain",
@@ -26,10 +26,11 @@
  "voice": "gemini",
  "outro": false,
  "voice_rev": 2,
- "narration": false,
+ "narration": true,
  "links": 8,
  "lineage": 0,
- "music": "Mitski - Washing Machine Heart",
- "trending": true,
+ "music": "Game Boy",
+ "style": "cards",
+ "trending": false,
  "slug": "tesla-to-the-rock"
 }
