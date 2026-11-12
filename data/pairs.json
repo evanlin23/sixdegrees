@@ -811,5 +811,13 @@
   "source": "viral formula",
   "hint": "parade: Hindenburg, the Kaiser, Teddy Roosevelt, presidents to Reagan, Arnold, Obama, King Charles, Mark Carney, Mike Myers",
   "slug": "adolf-hitler-to-shrek"
+ },
+ {
+  "from": "Adolf Hitler",
+  "to": "Jensen Huang",
+  "status": "done",
+  "source": "operator (topical)",
+  "hint": "chancellors lineage Hitler to Merkel, Merkel with Trump, Trump with Huang",
+  "slug": "adolf-hitler-to-jensen-huang"
  }
 ]
