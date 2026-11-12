@@ -254,7 +254,7 @@ def render(slug: str, log=print) -> Path:
     use_outro = spec["outro"] if "outro" in spec else int(hashlib.sha1(slug.encode()).hexdigest(), 16) % 2 == 0
     # A/B test 2: a third of the episodes are music-only (no narration, just names on screen and the opening question
     # as text), like our 40k-view 2025 Da Vinci -> Naruto. The voice still sets the timing, it just isn't mixed in.
-    narration = spec["narration"] if "narration" in spec else int(hashlib.sha1((slug + ":narration").encode()).hexdigest(), 16) % 3 != 0
+    narration = spec.get("narration", True)   # creator's call 2026-11-12: the voice is our signature; music-only test ended
     if not narration:
         use_outro = False
     # presentation style pilot: episode "style" wins; otherwise "cards" until the rotation is switched on
@@ -331,7 +331,7 @@ def render(slug: str, log=print) -> Path:
     total = t
     # music-only uses a trending song (an episode's "music" pick only applies to narrated renders); opt out with
     # "trending": false
-    track = (assets.pick_trending(slug) if not narration and spec.get("trending", True) else None) \
+    track = (assets.pick_trending(slug) if not narration and spec.get("trending") is True else None) \
         or assets.pick_track(slug, spec.get("music"))
     vinfo.update(music=f'{track.get("artist", "")} - {track["title"]}'.strip(" -"), trending=bool(track.get("trending")))
     (out_dir / "voice.json").write_text(json.dumps(vinfo))

@@ -43,7 +43,11 @@ for producer sessions. What goes viral and the pair formula are in **`docs/STYLE
 - Guards: QA fails a line that ends mid-sound; the uploader only posts `voice == "gemini"` and
   `voice_rev >= VOICE_REV`. Backlog voicing: `voice.yml` with `batch` 5 and the slugs in queue order.
 
-## Trending songs (music-only episodes)
+## Trending songs (music-only episodes; OFF since 2026-11-12)
+
+Creator's call 2026-11-12: every episode is narrated (the voice is our signature) and no trending song. The
+notes below only apply to an episode that explicitly sets `"narration": false` and `"trending": true`.
+
 
 - Music-only episodes use a trending song from the **private** repo `evanlin23/sixdegrees-music` (never commit
   songs to this public repo; `music-private/` is git-ignored). `render.yml` clones it when the Actions secret
@@ -69,8 +73,8 @@ for producer sessions. What goes viral and the pair formula are in **`docs/STYLE
 - A/B tests, all deterministic per slug and recorded in `metadata.json`/`uploaded.json`, compared by
   `python -m sixdeg studio` and the weekly review:
   - `outro`: half the episodes end with Achird saying "And that's how." (episode override `"outro"`).
-  - `narration`: a third of the episodes are **music-only**: no voice, names on screen, the opening question as
-    text (like the 2025 Da Vinci → Naruto). Episode override: `"narration": false/true`.
+  - `narration`: ENDED 2026-11-12. Every episode is narrated now (creator's call: the voice is our signature).
+    Earlier uploads have a `narration` field in the log for the comparison.
   - `links`: chain length, grouped short (≤6), mid (7) and parade (8+). Since 2026-11-12 every episode takes the
     first honest path the worker finds, never padded (viewers like short paths), so this is now a record, not a test.
 
