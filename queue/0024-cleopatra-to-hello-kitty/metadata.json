@@ -25,5 +25,8 @@
  "voice": "gemini",
  "outro": false,
  "voice_rev": 2,
+ "narration": false,
+ "links": 7,
+ "lineage": 15,
  "slug": "cleopatra-to-hello-kitty"
 }
