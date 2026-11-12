@@ -25,5 +25,8 @@
  "voice": "gemini",
  "outro": false,
  "voice_rev": 2,
+ "narration": true,
+ "links": 7,
+ "lineage": 0,
  "slug": "nelson-mandela-to-napoleon"
 }
