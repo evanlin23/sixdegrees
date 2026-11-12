@@ -48,6 +48,33 @@ def sfx(name: str, gain: float = 1.0, max_len: float = 1.5) -> np.ndarray:
 LOCAL_MUSIC = DATA.parent / "assets" / "music"   # creator-supplied tracks (e.g. a trending song), used first
 
 
+# Trending songs for the music-only A/B arm. They live in the PRIVATE repo evanlin23/sixdegrees-music (never in this
+# public repo); render.yml checks it out to ./music-private when the MUSIC_REPO_TOKEN secret exists. Optional
+# tracks.json there: [{"file": "washing-machine-heart.mp3", "title": "...", "artist": "...", "start": 42.0}], where
+# "start" is the second the recognisable part begins. Shorts with a claimed song must stay under 60 s.
+TRENDING = Path(__import__("os").environ.get("MUSIC_DIR", str(DATA.parent / "music-private")))
+
+
+def trending_tracks() -> list[dict]:
+    if not TRENDING.is_dir():
+        return []
+    meta = {}
+    if (TRENDING / "tracks.json").exists():
+        meta = {t["file"]: t for t in json.loads((TRENDING / "tracks.json").read_text())}
+    out = []
+    for p in sorted(TRENDING.rglob("*")):
+        if p.suffix.lower() in (".mp3", ".m4a", ".wav", ".ogg", ".flac"):
+            m = meta.get(p.name, {})
+            out.append({"id": "trending", "title": m.get("title", p.stem), "artist": m.get("artist", ""),
+                        "path": str(p), "start": m.get("start"), "trending": True})
+    return out
+
+
+def pick_trending(slug: str) -> dict | None:
+    ts = trending_tracks()
+    return ts[int(hashlib.sha1((slug + ":song").encode()).hexdigest(), 16) % len(ts)] if ts else None
+
+
 def pick_track(slug: str, override: str | None = None) -> dict:
     local = sorted(p for p in LOCAL_MUSIC.glob("*") if p.suffix.lower() in (".mp3", ".m4a", ".wav", ".ogg"))
     if local and not override:
@@ -67,6 +94,15 @@ def music(track: dict, seconds: float) -> np.ndarray:
         ensure()
     a = _decode(p)
     n = int(seconds * SR)
+    if track.get("start") is not None:          # a trending song: start where the recognisable part begins
+        s0 = int(float(track["start"]) * SR)
+        seg = a[s0:s0 + n].copy()
+        if len(seg) < n:
+            seg = np.pad(seg, (0, n - len(seg)))
+        fi, fo = int(0.05 * SR), int(0.8 * SR)
+        seg[:fi] *= np.linspace(0, 1, fi)
+        seg[-fo:] *= np.linspace(1, 0, fo)
+        return seg
     if len(a) <= n:
         a = np.tile(a, int(np.ceil(n / len(a))) + 1)
     hop = SR // 2

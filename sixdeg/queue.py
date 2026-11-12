@@ -186,6 +186,8 @@ def consume(max_items: int = 2, dry_run: bool = False) -> list[dict]:
         rec["outro"] = bool(meta.get("outro"))     # A/B test flag, compared in the stats review
         rec["narration"] = meta.get("narration", True)   # A/B test: music-only vs narrated
         rec["links"] = meta.get("links")                  # chain length test: short (<=6) vs parade (8+)
+        rec["music"] = meta.get("music")
+        rec["trending"] = meta.get("trending", False)
         rec["n"] = int(it.name.split("-", 1)[0])
         done.append(rec)
         if dry_run:

@@ -236,14 +236,17 @@ def render(slug: str, log=print) -> Path:
                     (reveal + THROW + 0.35, assets.sfx("px_pop", 0.4))]
         t += d
     total = t
-    track = assets.pick_track(slug, spec.get("music"))
+    track = (assets.pick_trending(slug) if not narration and not spec.get("music") else None) \
+        or assets.pick_track(slug, spec.get("music"))
+    vinfo.update(music=f'{track.get("artist", "")} - {track["title"]}'.strip(" -"), trending=bool(track.get("trending")))
+    (out_dir / "voice.json").write_text(json.dumps(vinfo))
     if not narration:          # music-only: keep the hook's caption (the question as text), drop the spoken lines
         voice_clips = []
         for sg in segs:
             if sg["kind"] != "hook":
                 sg["cap"] = _NoCapEarly()
     wav = audio.mix(total, voice_clips, sfx, seed=0, out=out_dir / "mix.wav", music=assets.music(track, total))
-    log(f"music: {track['title']} (Mixkit); timeline {total:.1f}s")
+    log(f"music: {track['title']} ({'trending' if track.get('trending') else 'Mixkit'}); timeline {total:.1f}s")
 
     # ---------- cameras (photo window is the card, 1000x1300)
     cams = []

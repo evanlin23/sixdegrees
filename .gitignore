@@ -9,3 +9,4 @@ episodes/*/work/
 assets/music/*
 !assets/music/README.txt
 ready/
+music-private/
