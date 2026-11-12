@@ -26,5 +26,8 @@
  "voice": "gemini",
  "outro": true,
  "voice_rev": 2,
+ "narration": true,
+ "links": 8,
+ "lineage": 0,
  "slug": "matpat-to-napoleon"
 }
