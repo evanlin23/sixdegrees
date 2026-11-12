@@ -25,7 +25,7 @@ def make(ctx):
     FLOOR = 1392                            # wall meets floor (world y)
     DADO = PLQ_Y + PLQ_H // 2 + 22          # dado rail (world y)
     EYE = 760                               # camera pivot / horizon (screen y)
-    DOLLY = 0.95                            # walk time between frames, s
+    DOLLY = 0.6                             # walk time between frames, s (captions wait until it settles)
     CAP_Y = 1346
     WALL = np.array([96, 22, 32], np.float32)
     n = ctx.n_links
@@ -356,9 +356,46 @@ def make(ctx):
             layer.putalpha(gl)
             if 0 <= gx < ctx.W - 160:
                 out.alpha_composite(layer, (gx, int(py0 + bob)))
+        # Buh, a small visitor on the floor: walks to each frame, stands left of it looking up, reacts at the reveal
+        sens = sensitive_link(i)
+        BUH_DX = -250                                    # where he stands, relative to the frame's centre (world x)
+        if i == 0:
+            wx0 = fx(0) - 760
+            uw = ctx.ease(local / 0.9)
+            walking = local < 0.9
+        else:
+            wx0 = fx(i - 1) + BUH_DX
+            uw = ctx.ease(local / DOLLY)                  # keeps pace with the camera (stays on screen)
+            walking = local < DOLLY + 0.1
+        wxb = wx0 + (fx(i) + BUH_DX - wx0) * uw
+        bsx = ctx.CX + (wxb - x) * z
+        btip = 1650 + bob
+        if sens:
+            expr, hop, ang = "shock", 0.0, 0.0                # neutral on a sensitive link: no grin, no jump
+        elif local >= R:
+            expr = "shock" if since < 0.45 else "happy"
+            hop = 60 * math.sin(math.pi * since / 0.4) if since < 0.4 else (
+                abs(math.sin(local * 7)) * 22 if i == n - 1 else 0.0)
+            ang = 0.0
+        else:
+            expr, hop, ang = "smug", 0.0, 0.0
+        if walking:
+            hop += abs(math.sin(local * 14)) * 12
+            ang = 8 * math.sin(local * 14)
+        sh = Image.new("RGBA", (150, 36), (0, 0, 0, 0))
+        ImageDraw.Draw(sh).ellipse([0, 0, 149, 35], fill=(0, 0, 0, 90))
+        out.alpha_composite(sh.filter(ImageFilter.GaussianBlur(4)), (int(bsx - 75), int(btip - 14)))
+        ctx.paste_pin(out, ctx.pin_sprite(expr, ang, 0, 1, scale=5), bsx, btip - hop)
         ctx.header(out, i)
-        ctx.connected(out, seg, tt, y=930)                 # over the photo, below the faces
-        seg["cap"].draw(out, tt, y=CAP_Y)
+        # CONNECTED! inside the picture, clear of the frame's mat (below the faces)
+        ctx.connected(out, seg, tt, y=int(scr(0, FY + PH / 2)[1] + bob - 78))
+        hold = (0.0 if i == 0 else DOLLY)                                   # no caption until the move has settled...
+        if local >= hold:
+            g = getattr(seg["cap"], "groups", None)
+            ct = tt
+            if g and local < hold + 0.45 and tt >= g[0][0][1]:   # ...then the first words still get ~0.45 s
+                ct = g[0][0][1]
+            seg["cap"].draw(out, ct, y=CAP_Y)
         return out
 
     return frame

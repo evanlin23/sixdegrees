@@ -70,9 +70,35 @@ def make(ctx):
                 return m.span()
         return None
 
+    _box = {}
+
     def cam(i):
+        """(cx, cy, s, w, h): the infobox photo, cover-cropped (never view()'s blurred fill) and never upscaled
+        past ~1.3x; a photo too small to cover PW x PH at 1.3x gets a smaller box instead of a blurred band."""
+        if i in _box:
+            return _box[i]
         cx, cy, sc = ctx.both_cam(i, PW, PH, 0.84)
-        return cx, cy, min(sc, 1.3)                   # never upscale a photo past ~1.3x
+        ih, iw = ctx.C.imgs[i].shape[:2]
+        s = min(1.3, max(sc, PW / iw, PH / ih))
+        w, h = int(min(PW, iw * s)), int(min(PH, ih * s))
+        cx = min(max(cx, w / 2 / s), iw - w / 2 / s)
+        cy = min(max(cy, h / 2 / s), ih - h / 2 / s)
+        _box[i] = (cx, cy, s, w, h)
+        return _box[i]
+
+    def face_crop(i, role, sz):
+        """A square crop around one face of photo i (inside the photo, <= 1.3x)."""
+        fb = ctx.fbox(i, role)
+        ih, iw = ctx.C.imgs[i].shape[:2]
+        s = min(1.3, max(sz * 0.5 / max(1, fb[3]), sz / min(iw, ih)))
+        fx_, fy_ = ctx.ctr(fb)
+        fx_ = min(max(fx_, sz / 2 / s), iw - sz / 2 / s)
+        fy_ = min(max(fy_ + fb[3] * 0.15, sz / 2 / s), ih - sz / 2 / s)
+        im = ctx.view(i, fx_, fy_, s, sz, sz)
+        m = Image.new("L", (sz, sz), 0)
+        ImageDraw.Draw(m).rounded_rectangle([0, 0, sz - 1, sz - 1], 14, fill=255)
+        im.putalpha(m)
+        return im
 
     def para(d, text, x, y, font, fill, maxw, lh, max_lines=3):
         for ln in wrap(text, font, maxw, max_lines):
@@ -80,7 +106,7 @@ def make(ctx):
             y += lh
         return y
 
-    _intro_top = {}
+    _intro_top, _bslot = {}, {}
 
     def page(i):
         """Static article image for link i (without the narrated sentence), the sentence's word layout
@@ -89,7 +115,7 @@ def make(ctx):
             return _pages[i]
         an, bn = ctx.link_names(i)
         link = ctx.spec["links"][i]
-        im = Image.new("RGBA", (ctx.W, 1900), (255, 255, 255, 255))
+        im = Image.new("RGBA", (ctx.W, 2200), (255, 255, 255, 255))
         d = ImageDraw.Draw(im)
         tf = fit(label(an), 66, X1 - X0, "ExtraBold")
         d.text((X0, 22), label(an), font=tf, fill=INKT)
@@ -100,10 +126,11 @@ def make(ctx):
         d.rectangle([bx0, 168, bx1, 168 + 48], fill=(234, 236, 240))
         yr = ctx.year_of(i)
         d.text(((bx0 + bx1) / 2, 192), label(an) + (f"  \u00b7  {yr}" if yr else ""), font=F(30), fill=INKT, anchor="mm")
-        ph = ctx.view(i, *cam(i), PW, PH)
-        px = int((bx0 + bx1 - PW) / 2)
+        ccx, ccy, cs, bw, bh = cam(i)
+        ph = ctx.view(i, ccx, ccy, cs, bw, bh)
+        px = int((bx0 + bx1 - bw) / 2)
         im.alpha_composite(ph, (px, 220))
-        cy = 220 + PH + 2
+        cy = 220 + bh + 2
         d.rectangle([bx0, 168, bx1, cy], outline=(162, 169, 177), width=2)
         # a short real paragraph before the sentence: how we got to this page (never names B)
         if i > 0:
@@ -139,7 +166,56 @@ def make(ctx):
             trail = "\u2026 \u203a " + trail
         d.text((X0, y + 26), "Trail", font=F(30, "ExtraBold"), fill=INKT)
         d.line([X0, y + 70, X1, y + 70], fill=(200, 204, 209), width=2)
-        para(d, trail + " \u203a ?", X0, y + 84, F(26, "Regular"), BLUE, X1 - X0, 36, 3)
+        y = para(d, trail + " \u203a ?", X0, y + 84, F(26, "Regular"), BLUE, X1 - X0, 36, 3)
+        # "In this photo": both faces from this link's photo (B's name is drawn per frame: ??? until the reveal)
+        y += 34
+        d.text((X0, y), "In this photo", font=F(30, "ExtraBold"), fill=INKT)
+        d.line([X0, y + 44, X1, y + 44], fill=(200, 204, 209), width=2)
+        y += 64
+        cw, fs = (X1 - X0 - 24) // 2, 176
+        bslot = None
+        for k, role in enumerate(("a", "b")):
+            x = X0 + k * (cw + 24)
+            d.rounded_rectangle([x, y, x + cw, y + fs + 24], 16, fill=(248, 249, 250), outline=(200, 204, 209),
+                                width=2)
+            im.alpha_composite(face_crop(i, role, fs), (x + 12, y + 12))
+            tx = x + fs + 28
+            if role == "a":
+                for k2, ln in enumerate(wrap(label(an), F(30), cw - fs - 40, 2)):
+                    d.text((tx, y + 30 + k2 * 38), ln, font=F(30), fill=INKT)
+                d.text((tx, y + fs - 20), "This page", font=F(22, "Medium"), fill=GREY)
+            else:
+                bslot = (tx, y + 30, cw - fs - 40)
+                d.text((tx, y + fs - 20), "Linked page", font=F(22, "Medium"), fill=GREY)
+        y += fs + 24 + 40
+        # "See also": everyone earlier in the trail (real names, all before B)
+        prev = [ctx.link_names(j)[0] for j in range(i)]
+        if prev:
+            d.text((X0, y), "See also", font=F(30, "ExtraBold"), fill=INKT)
+            d.line([X0, y + 44, X1, y + 44], fill=(200, 204, 209), width=2)
+            y += 64
+            n_ = len(prev)
+            cell = (X1 - X0) / max(5, n_)
+            for k, nm in enumerate(prev[-5:]):
+                x = X0 + k * cell + cell / 2
+                th = ctx.sharp[nm].convert("RGBA").resize((128, 128), Image.BICUBIC)
+                m = Image.new("L", th.size, 0)
+                ImageDraw.Draw(m).ellipse([0, 0, 127, 127], fill=255)
+                im.paste(th, (int(x - 64), int(y)), m)
+                d.ellipse([x - 65, y - 1, x + 65, y + 129], outline=(200, 204, 209), width=2)
+                for k2, ln in enumerate(wrap(label(nm), F(22), cell - 12, 2)):
+                    d.text((x, y + 146 + k2 * 28), ln, font=F(22), fill=BLUE, anchor="ma")
+            y += 220
+        # categories footer
+        yr = ctx.year_of(i)
+        cats = [f"{yr} photographs" if yr else "Photographs", "Rabbit holes", f"Link {i + 1} of {ctx.n_links}"]
+        x = X0
+        for c in cats:
+            wd = F(22, "Medium").getlength(c) + 32
+            d.rounded_rectangle([x, y, x + wd, y + 42], 21, fill=(241, 243, 244))
+            d.text((x + wd / 2, y + 21), c, font=F(22, "Medium"), fill=GREY, anchor="mm")
+            x += wd + 12
+        _bslot[i] = bslot
         _pages[i] = (im, lay, sent_top)
         return _pages[i]
 
@@ -254,11 +330,19 @@ def make(ctx):
         top = int(scroll)
         crop = im.crop((0, top, ctx.W, top + ctx.H - PAGE_Y0)).copy()
         draw_sentence(crop, lay, k, top, show_link, hover, clicked)
+        bx_, by_, bw_ = _bslot[i]
+        _, bn = ctx.link_names(i)
+        if show_link:
+            dd = ImageDraw.Draw(crop)
+            for k2, ln in enumerate(wrap(label(bn), F(30), bw_, 2)):
+                dd.text((bx_, by_ - top + k2 * 38), ln, font=F(30), fill=BLUE)
+        else:
+            ImageDraw.Draw(crop).text((bx_, by_ - top), "???", font=F(30), fill=GREY)
         base.alpha_composite(crop, (int(dx), PAGE_Y0))
 
     def scroll_at(local, trev, last=False):
         u = ctx.ease((local - 0.5) / max(0.6, trev - 1.3))
-        return (SCROLL - 110 if last else SCROLL) * u + 14 * max(0.0, local - 0.5)          # eased scroll, then a slow reading drift
+        return SCROLL * u + 14 * max(0.0, local - 0.5)          # eased scroll (the heading fully out), then a slow drift
 
     def frame(seg, tt):
         i = seg["i"]
@@ -314,7 +398,7 @@ def make(ctx):
             hop = abs(math.sin(local * 8)) * 34
         peek = ctx.ease(local / 0.4) if i == 0 else 1.0
         bxp = X1 + 78 + 60 * (1 - peek) + ctx.W * (1 - slide)
-        byp = 220 + PH * 0.62 - scroll + PAGE_Y0 + 6 * math.sin(local * 2.2) - hop
+        byp = 220 + cam(i)[4] * 0.62 - scroll + PAGE_Y0 + 6 * math.sin(local * 2.2) - hop
         ctx.paste_pin(base, ctx.pin_sprite(expr, 8 + 4 * math.sin(local * 1.6), 0, 0, scale=3), bxp, byp)
         base.alpha_composite(chrome(i), (0, 230))
         # loading bar under the address field once the link is clicked (and while this page arrives)
@@ -355,14 +439,18 @@ def make(ctx):
                 ctx.paste(base, ring, mx, my)
         if slide >= 1 or i == 0:
             base.alpha_composite(cursor(press), (int(mx - 3), int(my - 3)))
+        if i == 0 and local < 0.3:                      # fade in from the dim hook (no hard cut to white)
+            a = int(200 * (1 - ctx.ease(local / 0.3)))
+            if a > 0:
+                base.alpha_composite(Image.new("RGBA", (ctx.W, ctx.H), (16, 10, 24, a)))
         ctx.header(base, i)
         if last:                                         # CONNECTED! across the photo, below both faces
             fy = []
-            cx_, cy_, sc_ = cam(i)
+            cx_, cy_, sc_, _, ph_h = cam(i)
             for role in ("a", "b"):
                 b_ = ctx.fbox(i, role)
-                fy.append(220 + PH / 2 + (b_[1] + b_[3] - cy_) * sc_)
-            y = min(max(max(fy) + 90, 300), 220 + PH - 60) - scroll + PAGE_Y0
+                fy.append(220 + ph_h / 2 + (b_[1] + b_[3] - cy_) * sc_)
+            y = min(max(max(fy) + 90, 300), 220 + ph_h - 60) - scroll + PAGE_Y0
             ctx.connected(base, seg, tt, y=int(y))
         return base
 

@@ -19,15 +19,15 @@ SIDEBARS = [("BUH SAYS", "IT'S ALL CONNECTED"), ("WEATHER", "CLOUDY, CHANCE OF L
 
 
 def make(ctx):
-    PW, PH = 860, 1070                      # the front page
+    PW, PH = 880, 1320                      # the front page (big: it fills the frame down into the Shorts UI zone)
     PAD = 46                                # room for the drop shadow around it
-    PY = 780                                # where a landed page sits (centre): y 245-1315
+    PY = 1004                               # where a landed page sits (centre): y 344-1664
     SPIN = 0.36                             # swing-in time, s
+    CAP_HOLD = SPIN + 0.06                  # captions wait until the new page has landed
     M = 30                                  # page margin
     PX = PW - 2 * M                         # front-page photo (full width)
     HB = 214                                # headline box height (same before/after the reveal)
-    TAG_Y = 1352
-    CAP_Y = 1430
+    CAP_Y = 276                             # caption band: between the title band and the page
     REPRINT = 0.3                           # crossfade to the revealed page, s
     INKC = (24, 20, 16)
     GREY = (112, 104, 94)
@@ -148,7 +148,7 @@ def make(ctx):
         s = max(s, w / iw, h / ih) * 1.002
         return min(max(cx, w / 2 / s), iw - w / 2 / s), min(max(cy, h / 2 / s), ih - h / 2 / s), s
 
-    _pages, _geo = {}, {}
+    _pages, _geo, _conn = {}, {}, {}
 
     def shadow_layer():
         if "sh" not in _pages:
@@ -209,7 +209,7 @@ def make(ctx):
         y += HB
         d.rectangle([M, y, PW - M, y + 2], fill=INKC)
         y += 14
-        ph_h = 500
+        ph_h = 600
         if i not in _geo:
             cam = cover_cam(i, PX, ph_h, 0.82)
             sep, col = halftone(ctx.view(i, *cam, PX, ph_h))
@@ -218,6 +218,7 @@ def make(ctx):
                 bx, by = ctx.ctr(ctx.fbox(i, role))
                 faces[role] = (M + (bx - cam[0]) * cam[2] + PX / 2, y + (by - cam[1]) * cam[2] + ph_h / 2,
                                max(36, ctx.fbox(i, role)[3] * cam[2] * 0.72))
+            faces["photo_bottom"] = y + ph_h
             _geo[i] = (sep, col, faces)
         sep, col, _ = _geo[i]
         pim.alpha_composite(col if revealed else sep, (M, int(y)))
@@ -235,10 +236,13 @@ def make(ctx):
         lead = link["line"] if revealed else masked(link["line"], link)
         for k in range(3):
             x = M + k * (cw + 18)
-            head = ["NATION", "WORLD", SIDEBARS[i % len(SIDEBARS)][0]][k]
+            side = SIDEBARS[i % len(SIDEBARS)]
+            if ctx.sensitive(an) or ctx.sensitive(bn):         # no jokey voice next to a sensitive story
+                side = ("ARCHIVE", "FROM THE PICTURE DESK")
+            head = ["NATION", "WORLD", side[0]][k]
             d.text((x, y), head, font=font("Black", 18), fill=INKC)
             if k == 2:
-                d.text((x, y + 24), SIDEBARS[i % len(SIDEBARS)][1], font=font("Bold", 12), fill=(70, 62, 54))
+                d.text((x, y + 24), side[1], font=font("Bold", 12), fill=(70, 62, 54))
             column_text(d, x, y + (44 if k == 2 else 26), PH - 20, cw, i * 31 + k, lead if k == 0 else "")
             if k:
                 d.rectangle([x - 10, y, x - 9, PH - 22], fill=(150, 140, 126))
@@ -339,36 +343,62 @@ def make(ctx):
         cx, cy, ang, sc = pose(i, local, seg)
         blit(base, page_at(i, tt, seg), cx, cy, ang, sc)
         out = Image.fromarray(base).convert("RGBA")
-        # name tags under the page, each under its own face's x
+        # name tags on the page, under their own faces (face positions mapped through the page's pose)
         an, bn = ctx.link_names(i)
         R = seg.get("rv", ctx.REVEAL) * seg["speech"] + ctx.THROW
         page(i, False)
         faces = _geo[i][2]
-        x_left = ctx.CX - PW / 2
+        sw, sh_ = PW + 2 * PAD, PH + 2 * PAD
+        Mx = cv2.getRotationMatrix2D((sw / 2, sh_ / 2), ang, sc)
+        Mx[0, 2] += cx - sw / 2
+        Mx[1, 2] += cy - sh_ / 2
+
+        def on_screen(px, py):
+            return tuple(Mx @ np.array([px + PAD, py + PAD, 1.0], np.float32))
+
         for ts in (30, 28, 26, 24, 22):
             ta = ctx.pixel_tag(ctx.C.labels[an].upper(), ctx.CYAN, ts)
             tb = ctx.pixel_tag(ctx.C.labels[bn].upper(), ctx.YELLOW, ts)
-            if ta.width + tb.width + 30 <= ctx.W - 80:
+            if max(ta.width, tb.width) <= 820:
                 break
-        xa, xb = x_left + faces["a"][0], x_left + faces["b"][0]
-        flip = xa > xb
-        l_w, r_w = (tb.width, ta.width) if flip else (ta.width, tb.width)
-        xl, xr = min(xa, xb), max(xa, xb)
-        gap = (xr - r_w / 2) - (xl + l_w / 2) - 24
-        if gap < 0:
-            xl, xr = xl + gap / 2, xr - gap / 2
-        xl = max(40 + l_w / 2, xl)
-        xr = min(ctx.W - 40 - r_w / 2, max(xr, xl + l_w / 2 + 24 + r_w / 2))
-        xl = min(xl, xr - r_w / 2 - 24 - l_w / 2)
-        xa, xb = (xr, xl) if flip else (xl, xr)
+        pos = {}
+        for role, tg in (("a", ta), ("b", tb)):
+            fx_, fy_, rr = faces[role]
+            sx, sy = on_screen(fx_, fy_ + rr * 1.05)
+            pos[role] = [sx, sy + tg.height / 2 + 6, tg.width, tg.height]
+        (xa, ya, wa, ha), (xb, yb, wb, hb) = pos["a"], pos["b"]
+        if abs(ya - yb) < (ha + hb) / 2 + 6 and abs(xa - xb) < (wa + wb) / 2 + 16:    # would touch: spread apart
+            need = (wa + wb) / 2 + 16 - abs(xa - xb)
+            sgn = 1 if xb >= xa else -1
+            xa, xb = xa - sgn * need / 2, xb + sgn * need / 2
+        xa = min(max(xa, ctx.SAFE[0] + wa / 2), ctx.SAFE[2] - wa / 2)
+        xb = min(max(xb, ctx.SAFE[0] + wb / 2), ctx.SAFE[2] - wb / 2)
+        if abs(ya - yb) < (ha + hb) / 2 + 6 and abs(xa - xb) < (wa + wb) / 2 + 12:   # still touching: B drops a row
+            yb = max(ya, yb) + (ha + hb) / 2 + 8
         bob = 3 * math.sin(tt * 3)
         if local > SPIN:
-            ctx.paste(out, ta, xa, TAG_Y + bob, scale=ctx.ease_out_back(min(1.0, (local - SPIN) / 0.2)))
+            ctx.paste(out, ta, xa, ya + bob, scale=ctx.ease_out_back(min(1.0, (local - SPIN) / 0.2)))
         if local > R:
-            ctx.paste(out, tb, xb, TAG_Y - bob, scale=ctx.ease_out_back(min(1.0, (local - R) / 0.2)))
+            ctx.paste(out, tb, xb, yb - bob, scale=ctx.ease_out_back(min(1.0, (local - R) / 0.2)))
+        # CONNECTED! below both tags on the photo if there's room, else on the filler columns under it; the choice is
+        # made once per link (no flip-flopping with the sway), the position then rides with the page
+        tag_bot = max(ya + ha / 2, yb + hb / 2)
+        pb_y = on_screen(PW / 2, faces["photo_bottom"])[1]
+        if i not in _conn and local > R:
+            _conn[i] = tag_bot + 56 > pb_y - 46
+        if _conn.get(i):
+            conn_y = int(on_screen(PW / 2, faces["photo_bottom"] + 130)[1])
+        else:
+            conn_y = int(tag_bot + 56)
         ctx.header(out, i)
-        ctx.connected(out, seg, tt, y=PY + 340)
-        seg["cap"].draw(out, tt, y=CAP_Y)
+        ctx.connected(out, seg, tt, y=conn_y)
+        hold = CAP_HOLD                                   # no caption until the move has settled...
+        if local >= hold:
+            g = getattr(seg["cap"], "groups", None)
+            ct = tt
+            if g and local < hold + 0.45 and tt >= g[0][0][1]:   # ...then the first words still get ~0.45 s
+                ct = g[0][0][1]
+            seg["cap"].draw(out, ct, y=CAP_Y)
         return out
 
     return frame
