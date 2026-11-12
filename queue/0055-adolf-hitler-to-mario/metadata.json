@@ -1,6 +1,6 @@
 {
  "title": "How is Adolf Hitler connected to Mario?",
- "description": "Three boxing champions, the Terminator and Star-Lord connect Adolf Hitler to Mario.\n\nAdolf Hitler → Max Schmeling → Joe Louis → Muhammad Ali → Arnold Schwarzenegger → Chris Pratt → Mario\n\nGive me two names in the comments and I'll find the photos that connect them.\n\nPhoto credits:\nPhoto 1 by International News Photos, Public domain: https://commons.wikimedia.org/wiki/File:Anny_Ondra,_Max_Schmeling_and_Hitler_after_the_1st_fight_against_Joe_Louis.jpg\nPhoto 2 by Associated Press, Public domain: https://commons.wikimedia.org/wiki/File:Joe_Louis_and_Max_Schmeling_1971_Press_Photo.jpg\nPhoto 3 by UPI, Public domain: https://commons.wikimedia.org/wiki/File:4_Champions_ALI_LOUIS_WALCOTT_BRADDOCK_1965_UPI_photo.jpg\nPhoto 4 by Jeff Topping/Getty Images, Fair use (commentary): https://biznakenya.com/boxing-legend-muhammad-ali-dies-aged-74/\nPhoto 5 by Charley Gallay/Getty Images, Fair use (commentary): https://www.goodmorningamerica.com/culture/story/arnold-schwarzeneggers-family-supports-fubar-premiere-122790066\nPhoto 6 by Gage Skidmore, Nintendo / Illumination / Universal Pictures, CC BY-SA 3.0 / Fair use (commentary): https://commons.wikimedia.org/wiki/File:Chris_Pratt_by_Gage_Skidmore.jpg + https://screen-connections.com/2023/03/09/the-super-mario-bros-movie-final-trailer-main-poster-6-more-character-posters/\n\n#adolfhitler #mario #sixdegrees #history #didyouknow #shorts",
+ "description": "Three boxing champions, the Terminator and Star-Lord connect Adolf Hitler to Mario.\n\nAdolf Hitler → Max Schmeling → Joe Louis → Muhammad Ali → Arnold Schwarzenegger → Chris Pratt → Mario\n\nHow they're connected (every photo is real and sourced):\n1. Adolf Hitler → Max Schmeling: In 1936, Hitler welcomed home German boxer Max Schmeling after his shock win in New York.\n   Photo by International News Photos, Public domain: https://commons.wikimedia.org/wiki/File:Anny_Ondra,_Max_Schmeling_and_Hitler_after_the_1st_fight_against_Joe_Louis.jpg\n2. Max Schmeling → Joe Louis: The man he beat, Joe Louis, knocked him out in their rematch, and later they became friends.\n   Photo by Associated Press, Public domain: https://commons.wikimedia.org/wiki/File:Joe_Louis_and_Max_Schmeling_1971_Press_Photo.jpg\n3. Joe Louis → Muhammad Ali: In 1965, Joe Louis dropped by the training camp of the young champ, Muhammad Ali.\n   Photo by UPI, Public domain: https://commons.wikimedia.org/wiki/File:4_Champions_ALI_LOUIS_WALCOTT_BRADDOCK_1965_UPI_photo.jpg\n4. Muhammad Ali → Arnold Schwarzenegger: In 2002, Arnold raised Ali's hand at a charity fight night.\n   Photo by Jeff Topping/Getty Images, Fair use (commentary): https://biznakenya.com/boxing-legend-muhammad-ali-dies-aged-74/\n5. Arnold Schwarzenegger → Chris Pratt: His son-in-law is Chris Pratt.\n   Photo by Charley Gallay/Getty Images, Fair use (commentary): https://www.goodmorningamerica.com/culture/story/arnold-schwarzeneggers-family-supports-fubar-premiere-122790066\n6. Chris Pratt → Mario: Who voices Mario.\n   Photo by Gage Skidmore, Nintendo / Illumination / Universal Pictures, CC BY-SA 3.0 / Fair use (commentary): https://commons.wikimedia.org/wiki/File:Chris_Pratt_by_Gage_Skidmore.jpg + https://screen-connections.com/2023/03/09/the-super-mario-bros-movie-final-trailer-main-poster-6-more-character-posters/\n\nGive me two names in the comments and I'll find the photos that connect them.\n\n#adolfhitler #mario #sixdegrees #history #didyouknow #shorts",
  "tags": [
   "Adolf Hitler",
   "Max Schmeling",
@@ -24,10 +24,11 @@
  "voice": "gemini",
  "outro": false,
  "voice_rev": 2,
- "narration": false,
+ "narration": true,
  "links": 6,
  "lineage": 0,
- "music": "Mitski - Washing Machine Heart",
- "trending": true,
+ "music": "Lil Sky Beats",
+ "style": "cards",
+ "trending": false,
  "slug": "adolf-hitler-to-mario"
 }
