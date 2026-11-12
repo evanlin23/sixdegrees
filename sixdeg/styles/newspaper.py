@@ -88,19 +88,17 @@ def make(ctx):
         f = font("Black", 34)
         return f, wrap(text, f, width)[:4]
 
-    SENTENCES = [
-        "Photographers from several papers were on hand to record the meeting.",
-        "Officials declined to say how long the two men had spoken in private.",
-        "Witnesses described the mood in the room as formal but cordial.",
-        "The visit was announced only a few days in advance.",
-        "Our correspondent filed this report late last night.",
-        "The photograph above was taken shortly after their arrival.",
-        "Crowds gathered outside long before the doors opened.",
-        "Further details are expected in tomorrow's edition.",
-        "Readers have written in with questions about the encounter.",
-        "Neither side released a statement after the meeting.",
-        "The guest list was kept short and the press were held at the door.",
-        "Historians still argue about what was said that day.",
+    SENTENCES = [   # filler about our own method only: never invented claims about the real events pictured
+        "Every photo in this chain is real and its source is listed below the video.",
+        "Each link was checked against the original photo credit.",
+        "The pictures are shown as they were taken, without edits.",
+        "Viewers suggest the two names in the comments.",
+        "Our pin detective follows one photograph to the next.",
+        "Dates come from the photo archives that hold each picture.",
+        "Some links took hours of searching through old archives.",
+        "Six photographs, one chain, no shortcuts.",
+        "The full research notes are in the description.",
+        "Tomorrow's edition: another two names, another chain.",
     ]
 
     def column_text(d, x, y0, y1, width, seed, lead=""):
