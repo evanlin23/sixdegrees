@@ -5,7 +5,7 @@
   "description": "The Beetle's designer, the Mercedes racing team, two racing legends, a seven-time champion, a talk-show host and Jim Carrey connect Adolf Hitler to Sonic the Hedgehog.",
   "hook": "How is Adolf Hitler connected to Sonic the Hedgehog?",
   "fun_fact": "Alfred Neubauer, who appears with Porsche in 1924, is credited with inventing the pit board: he was the first team boss to signal his drivers with flags and boards from the pit wall.",
-  "research_note": "The chain follows motor racing from the Beetle's designer to Lewis Hamilton; Ben Schwartz never sat in one frame with a racing link, so Sonic comes in through a real 2020 premiere photo of the costumed Sonic with Jim Carrey.",
+  "research_note": "Commons only had a tiny copy of the famous Beetle-model photo, so a larger scan of the same Hoffmann photo came from Santa Clara University's exhibit; from there, motor racing leads to Lewis Hamilton, and Sonic comes in through a real 2020 premiere photo of the costumed Sonic with Jim Carrey.",
   "people": {
     "Adolf Hitler": {
       "label": "Adolf Hitler",
@@ -44,10 +44,15 @@
       "a": "Adolf Hitler",
       "b": "Ferdinand Porsche",
       "image": {
-        "file": "File:Bundesarchiv Bild 183-H06734, Grundsteinlegung für Werk des KdF-Wagens.jpg"
+        "url": "https://dh.scu.edu/exhibits/files/original/201/5919/Hitler_with_Beetle.png",
+        "credit": "Heinrich Hoffmann",
+        "license": "Public domain (PD-anon-70-EU)",
+        "source": "https://commons.wikimedia.org/wiki/File:Hitler_with_Beetle.webp"
       },
-      "line": "In 1938, Hitler laid the first stone of the Volkswagen factory, beside the Beetle's designer, Ferdinand Porsche.",
-      "fact": "VW factory, May 1938"
+      "line": "Ferdinand Porsche showed Hitler a model of his new people's car, the Volkswagen Beetle.",
+      "fact": "Beetle model, 1930s",
+      "a_face": 3,
+      "b_face": 0
     },
     {
       "a": "Ferdinand Porsche",
@@ -65,7 +70,9 @@
         "file": "File:Training voor Grote Prijs van Nederland op Zandvoort, leider van de Mercedesploe, Bestanddeelnr 907-1856.jpg"
       },
       "line": "By 1955, Neubauer ran the Mercedes team, and his star driver was five-time world champion Fangio.",
-      "fact": "Dutch Grand Prix, 1955"
+      "fact": "Dutch Grand Prix, 1955",
+      "a_face": 0,
+      "b_face": 3
     },
     {
       "a": "Juan Manuel Fangio",
@@ -74,7 +81,9 @@
         "file": "File:Grote Prijs van Nederland Zandvoort. De winnaar J. M. Fangio (links) wordt gefel, Bestanddeelnr 907-1900.jpg"
       },
       "line": "Two days later, Fangio won that race, and his teammate Stirling Moss came to congratulate him.",
-      "fact": "Zandvoort, June 1955"
+      "fact": "Zandvoort, June 1955",
+      "a_face": 2,
+      "b_face": 4
     },
     {
       "a": "Stirling Moss",
