@@ -79,7 +79,9 @@
         "place": "Windsor Castle",
         "lat": 51.484,
         "lon": -0.604
-      }
+      },
+      "a_face": 5,
+      "b_face": 4
     },
     {
       "a": "George V",
@@ -93,7 +95,9 @@
         "place": "Buckingham Palace",
         "lat": 51.501,
         "lon": -0.142
-      }
+      },
+      "a_face": 5,
+      "b_face": 0
     },
     {
       "a": "Elizabeth II",
