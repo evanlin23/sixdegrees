@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import math
+import re
 import subprocess
 from pathlib import Path
 
@@ -175,6 +176,47 @@ def render(slug: str, log=print) -> Path:
         def draw(self, *a, **k):
             pass
 
+    class FactCap:
+        """Music-only: the link's fact as 1-2 lines of pixel text, popping in just after the cut."""
+        def __init__(self, text, t0):
+            self.t0 = t0
+            words, lines, cur = text.upper().split(), [], ""
+            for w in words:
+                if len(cur) + len(w) + 1 > 22 and cur:
+                    lines.append(cur)
+                    cur = w
+                else:
+                    cur = f"{cur} {w}".strip()
+            if cur:
+                lines.append(cur)
+            if len(lines) > 2:
+                lines = lines[:2]
+                lines[1] = lines[1].rstrip(",;:…") + "…"
+            self.lines = [ln.rstrip(",;:") if k == len(lines) - 1 and not ln.endswith("…") else ln
+                          for k, ln in enumerate(lines)]
+
+        def draw(self, base, t, y=CAP_Y):
+            if t < self.t0 + 0.15 or not self.lines:
+                return
+            pop = ease_out_back(min(1.0, (t - self.t0 - 0.15) / 0.12))
+            for k, ln in enumerate(self.lines):
+                size = 38
+                while size > 24 and pf(size).getlength(ln) > SAFE[2] - SAFE[0] - 30:
+                    size -= 2
+                paste(base, pixel_text(ln, size, fill=YELLOW if k == 0 else WHITE), CX,
+                      y - 26 * (len(self.lines) - 1) + k * 54, scale=0.85 + 0.15 * pop)
+
+    def fact_of(link):
+        """The link's short on-screen fact: its "fact" field, else the year plus the first words of the line."""
+        if link.get("fact"):
+            return link["fact"]
+        line = link["line"].rstrip(".")
+        m = re.match(r"(?i)(?:And |Then |So )?(?:(?:In|By|Around|On|Back in)\s+)?(\d{4}s?),\s*(.*)", line)
+        year, rest = (m.group(1), m.group(2)) if m else ("", re.sub(r"^(And |Then |So )", "", line))
+        words = rest.split()
+        short = " ".join(words[:6]) + ("…" if len(words) > 6 else "")
+        return f"{year}: {short}" if year else short
+
     t = 0.0
     n_words = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"]
     hook = spec.get("hook") or f"How is {short_name(spec['from'])} connected to {short_name(spec['to'])}?"
@@ -247,11 +289,11 @@ def render(slug: str, log=print) -> Path:
         or assets.pick_track(slug, spec.get("music"))
     vinfo.update(music=f'{track.get("artist", "")} - {track["title"]}'.strip(" -"), trending=bool(track.get("trending")))
     (out_dir / "voice.json").write_text(json.dumps(vinfo))
-    if not narration:          # music-only: keep the hook's caption (the question as text), drop the spoken lines
-        voice_clips = []
+    if not narration:          # music-only: keep the hook's caption (the question as text), drop the spoken lines,
+        voice_clips = []       # and show a short fact per link instead (the visible research)
         for sg in segs:
             if sg["kind"] != "hook":
-                sg["cap"] = _NoCapEarly()
+                sg["cap"] = FactCap(fact_of(spec["links"][sg["i"]]), sg["t0"])
     wav = audio.mix(total, voice_clips, sfx, seed=0, out=out_dir / "mix.wav", music=assets.music(track, total))
     log(f"music: {track['title']} ({'trending' if track.get('trending') else 'Mixkit'}); timeline {total:.1f}s")
 

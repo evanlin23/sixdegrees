@@ -138,6 +138,16 @@ operator can see the effort.
  "links": [{"a": "A", "b": "X", "image": {"file": "File:....jpg"}, "line": "In 1970, A met X at ..."}]}
 ```
 - `hook` is always the question "How is <A> connected to <B>?"
+- **Visible research (monetization, docs/MONETIZATION_PLAN.md):** the research is what makes each video original,
+  so put it on screen and in the description:
+  - each link may have `"fact"`: 3–7 words shown on screen in music-only videos ("Berghof, 1937", "Late Show
+    stage, 2014"). Without it the renderer uses the year plus the first words of `line`; write one when that would
+    read badly.
+  - `"fun_fact"` (top level): one surprising true detail you found while researching, which opens the first comment.
+  - `"research_note"` (top level): one sentence on how the chain was found or what dead ends you hit
+    ("Every Scooby costume photo was watermarked, so Scooby comes in through the 2002 film's cast."). It goes in
+    the description.
+  - The description lists every link's line and photo source automatically.
 - Each `line` is one sentence of about 18 words or fewer, starting with a year or a hook word, with a concrete fact.
 - Don't type years as words. The voice reads "1973" as "nineteen seventy-three" automatically.
 - **Pronunciation.** The narrator is Gemini's Achird voice, which reads names from context. If a name comes out
