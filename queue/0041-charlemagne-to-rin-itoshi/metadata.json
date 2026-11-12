@@ -24,5 +24,8 @@
  "voice": "gemini",
  "outro": false,
  "voice_rev": 2,
+ "narration": false,
+ "links": 6,
+ "lineage": 9,
  "slug": "charlemagne-to-rin-itoshi"
 }
