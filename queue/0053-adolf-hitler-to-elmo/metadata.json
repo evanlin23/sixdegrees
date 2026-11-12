@@ -22,5 +22,8 @@
  "voice": "gemini",
  "outro": false,
  "voice_rev": 2,
+ "narration": false,
+ "links": 4,
+ "lineage": 0,
  "slug": "adolf-hitler-to-elmo"
 }
