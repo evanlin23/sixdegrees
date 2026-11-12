@@ -162,7 +162,8 @@
   "first_comment": "Who should I connect next? Two names, the weirder the better.",
   "kind": "formula",
   "outro": false,
-  "n": 48
+  "n": 48,
+  "comment": "posted Ugx67sHujw7QN4oBT5d4AaABAg"
  },
  {
   "slug": "lebron-james-to-kim-jong-un",
@@ -175,7 +176,8 @@
   "first_comment": "a viewer asked for this one. Who should I connect next? Two names, the weirder the better.",
   "kind": "request",
   "outro": true,
-  "n": 54
+  "n": 54,
+  "comment": "posted UgwQJ-mIwOfcAdI_a2N4AaABAg"
  },
  {
   "slug": "adolf-hitler-to-hatsune-miku",
@@ -188,6 +190,24 @@
   "first_comment": "a viewer asked for this one. Who should I connect next? Two names, the weirder the better.",
   "kind": "request",
   "outro": true,
-  "n": 51
+  "n": 51,
+  "comment": "posted UgzCVrunCXzuOFIfq_14AaABAg"
+ },
+ {
+  "slug": "diddy-to-ishowspeed",
+  "title": "How is Diddy connected to IShowSpeed?",
+  "publish_at": "2026-11-12T17:37:00Z",
+  "video_id": "mPE2kBXd9j8",
+  "privacy": "scheduled",
+  "url": "https://youtube.com/shorts/mPE2kBXd9j8",
+  "thumbnail": "not set: <HttpError 403 when requesting https://youtube.googleapis.com/upload/youtube/v3/thumbnails/set?videoId=mPE2kBXd9j8&alt=json&uploadType=media returned \"The authe",
+  "first_comment": "a viewer asked for this one. Who should I connect next? Two names, the weirder the better.",
+  "kind": "request",
+  "outro": true,
+  "narration": true,
+  "links": 8,
+  "music": "Like a Loop Machine",
+  "trending": false,
+  "n": 56
  }
 ]
