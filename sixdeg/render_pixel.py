@@ -739,7 +739,11 @@ def render(slug: str, log=print) -> Path:
             m = (mask.astype(np.float32) / 255)[..., None]
             out = (crop * m + bg * (1 - m)).astype(np.uint8)
             _hero[key] = Image.fromarray(cv2.cvtColor(out, cv2.COLOR_BGR2RGB)).convert("RGBA")
+            # where the head really is on screen (the cover/no-gap clamps can push the face off (CX, fy))
+            _hero_head[key] = (fx * s_ + tx, y * s_ + ty - 0.12 * bh * s_)
         return _hero[key]
+
+    _hero_head = {}
 
     def make_comment_card():
         """A YouTube-style comment card: avatar, @handle, the request in the viewer's words."""
@@ -813,14 +817,27 @@ def render(slug: str, log=print) -> Path:
                 ty = y1 - tag.height // 2 - 24 if sgn < 0 else min(SAFE[3] + 60, y0 + fy + 210)
                 paste(base, tag, CX + int(sx), ty + int(sy))
                 # hero() puts the face box (brows..chin, ~340 px) centred at fy: its top is ~fy-150, the hair ~fy-300
-                if sgn < 0:   # Buh starts on top of A's head (pin tip in the hair, his body above it, off the face)
-                    a_spot = (CX + 120 + slide + int(sx), max(150, y0 + fy - 290) + int(sy))
-                else:         # ...and jumps from head to head (owner): lands in B's hair
-                    b_spot = (CX + 120 + slide + int(sx), y0 + fy - 150 + int(sy))
+                # Buh's pin tip goes into the hair at the top of the real face box (after the push-in zoom)
+                hx, hy = _hero_head[(nm, y1 - y0, fy)]
+                hx, hy = hx * z - CX * (z - 1), hy * z - fy * (z - 1)
+                spot = (int(hx) + slide + int(sx), int(max(y0 + (150 if sgn < 0 else 240), y0 + hy)) + int(sy))
+                if sgn < 0:   # Buh starts on top of A's head...
+                    a_spot = spot
+                else:         # ...and jumps from head to head (owner)
+                    b_spot = spot
             dr = ImageDraw.Draw(base)
             dr.rectangle([0, HERO_A[1], W, HERO_B[0]], fill=INK)               # the seam carries the question
             dr.rectangle([0, HERO_A[1] - 6, W, HERO_A[1]], fill=CYAN)
             dr.rectangle([0, HERO_B[0], W, HERO_B[0] + 6], fill=YELLOW)
+            if spec.get("requested_by"):   # the viewer's comment IS the hook (every reference hit opens on one)
+                pop = ease_out_back(min(1.0, kk / 0.25))
+                paste(base, comment_im, CX, (HERO_A[1] + HERO_B[0]) // 2 + 10, scale=0.6 + 0.4 * pop, nearest=False)
+                dr = ImageDraw.Draw(base)
+                ax = CX + comment_im.width // 2 - 70
+                ay = (HERO_A[1] + HERO_B[0]) // 2 + comment_im.height // 2 + 10
+                dr.line([(ax, ay), (ax + 30, ay + 70), (ax + 10, ay + 150)], fill=RED, width=14, joint="curve")
+                dr.polygon([(ax - 18, ay + 132), (ax + 38, ay + 140), (ax + 6, ay + 190)], fill=RED)
+                dr = ImageDraw.Draw(base)
             # owner: ~70 % stayed to watch, the opening sat still for 2.4 s. Now Buh jumps from A to B in the first
             # second and drags the red string across: the "how?" in motion, and the show's mechanic up front.
             J0, J1 = 0.55, 0.55 + THROW * 1.6
@@ -841,15 +858,8 @@ def render(slug: str, log=print) -> Path:
                     sq = 0.8 * math.exp(-land * 10) * math.cos(land * 30)
                     hop = abs(math.sin(land * 7)) * 18
                     paste_pin(base, pin_sprite("smug" if int(land * 2) % 2 else "happy", 0, sq), b_spot[0], b_spot[1] - hop)
-            if spec.get("requested_by"):   # the viewer's comment IS the hook (every reference hit opens on one)
-                pop = ease_out_back(min(1.0, kk / 0.25))
-                paste(base, comment_im, CX, (HERO_A[1] + HERO_B[0]) // 2 + 10, scale=0.6 + 0.4 * pop, nearest=False)
-                ax = CX + comment_im.width // 2 - 70
-                ay = (HERO_A[1] + HERO_B[0]) // 2 + comment_im.height // 2 + 10
-                dr = ImageDraw.Draw(base)
-                dr.line([(ax, ay), (ax + 30, ay + 70), (ax + 10, ay + 150)], fill=RED, width=14, joint="curve")
-                dr.polygon([(ax - 18, ay + 132), (ax + 38, ay + 140), (ax + 6, ay + 190)], fill=RED)
-                return base
+            if spec.get("requested_by"):
+                return base               # Buh jumps OVER the comment card; the card is the question
         seg["cap"].draw(base, tt, y=(HERO_A[1] + HERO_B[0]) // 2)
         return base
 
