@@ -558,10 +558,12 @@ def render(slug: str, log=print) -> Path:
             base.alpha_composite(Image.new("RGBA", (W, H), (255, 255, 255, int(220 * (1 - incut / 0.10)))))
         return base
 
-    def frame_link(seg, tt):
+    def link_core(seg, tt):
+        """THE SHOW'S CORE, shared by every presentation style (owner, 2026-11-12: Buh jumping with his pin and red
+        string, name tags under the chins, and the zoom-out / move / zoom-in camera are crucial in every format).
+        Returns the photo window (CARD-sized RGBA: photo + string + pin marker + tags, all riding the photo and
+        clipped to its edge) and the pin's pose in card-local px. Styles place it with draw_core()."""
         i = seg["i"]
-        if C.fj["links"][i].get("lineage"):
-            return frame_lineage(seg, tt)
         img, cm = C.imgs[i], cams[i]
         last = i == n_links - 1
         k = min(1.0, (tt - seg["t0"]) / seg["speech"])
@@ -582,83 +584,71 @@ def render(slug: str, log=print) -> Path:
         punch = 0.10 * math.exp(-land * 8) if land >= 0 else 0.0
         cam = (cam[0], cam[1], cam[2] * (1 + 0.02 * math.sin(tt * 1.3) + punch + 0.15 * math.exp(-incut * 10)))
         sx, sy = shake(land, 26 if last else 12, 0.45 if last else 0.3)
-        base = checker(tt, TONES[i % len(TONES)])
-        # photo card
         ph, M = warp_photo(img, cam, center_y=(CARD[1] + CARD[3]) / 2)
         cw, ch = CARD[2] - CARD[0], CARD[3] - CARD[1]
         crop = ph.crop((CARD[0], CARD[1], CARD[2], CARD[3]))
         blk = int(46 * (1 - incut / 0.2)) if incut < 0.2 else 0
         if blk > 1:
             crop = mosaic(crop, blk)
-        x0, y0 = int(CARD[0] + sx), int(CARD[1] + sy)
-        dr = ImageDraw.Draw(base)
-        dr.rectangle([x0 - 14 + 16, y0 - 14 + 16, x0 + cw + 14 + 16, y0 + ch + 14 + 16], fill=INK)
-        dr.rectangle([x0 - 14, y0 - 14, x0 + cw + 14, y0 + ch + 14], fill=WHITE)
         flat = card_bg[i].copy()          # blurred photo fills the card when zoomed out
         flat.alpha_composite(crop)
-        base.alpha_composite(flat, (x0, y0))
-        M = M.copy(); M[0, 2] += sx; M[1, 2] += sy
-
-        def scr(x, y):
-            # owner: the pinned spot moves WITH the picture (no clamping to the card edge, which left it stuck)
-            return to_screen(M, x, y)
-        pa = scr(cm["ba"][0] + cm["ba"][2] / 2, cm["ba"][1] - cm["ba"][3] * 0.08)
-        pb = scr(cm["bb"][0] + cm["bb"][2] / 2, cm["bb"][1] - cm["bb"][3] * 0.08)
-        # string; Buh stands right on A's pinned spot (he used to sit 60 px to the right of it)
-        start = pa
+        M = M.copy(); M[0, 2] -= CARD[0]; M[1, 2] -= CARD[1]     # card-local coordinates
+        pa = to_screen(M, cm["ba"][0] + cm["ba"][2] / 2, cm["ba"][1] - cm["ba"][3] * 0.08)
+        pb = to_screen(M, cm["bb"][0] + cm["bb"][2] / 2, cm["bb"][1] - cm["bb"][3] * 0.08)
+        # the red string + pinned marker live ON the photo (drawn into the card, so its edge clips them)
         if since >= 0:
             if since < THROW:
-                x, y, _ = pixelpin_path(start, pb, since / THROW)
+                x, y, _ = pixelpin_path(pa, pb, since / THROW)
                 pe = (x, y)
             else:
                 pe = pb
-            sl = Image.new("RGBA", (W, H), (0, 0, 0, 0))              # the string lives ON the photo:
-            sd = ImageDraw.Draw(sl)                                     # clipped to the card when it runs off
+            sd = ImageDraw.Draw(flat)
             sd.line([pa, pe], fill=INK, width=14)
             sd.line([pa, pe], fill=RED, width=8)
             sd.rectangle([pa[0] - 10, pa[1] - 10, pa[0] + 10, pa[1] + 10], fill=RED, outline=INK, width=4)
-            cm_ = Image.new("L", (W, H), 0)
-            ImageDraw.Draw(cm_).rectangle([x0, y0, x0 + cw, y0 + ch], fill=255)
-            sl.putalpha(Image.composite(sl.getchannel("A"), Image.new("L", (W, H), 0), cm_))
-            base.alpha_composite(sl)
-        # name tags
+        # name tags: stickers under the chins, riding the photo and sliding under its edge; never stacked
         names = (spec["links"][i]["a"], spec["links"][i]["b"])
         tags_ = []
         for role, nm, appear, col in (("ba", names[0], 0.0, CYAN), ("bb", names[1], R + THROW / seg["speech"], YELLOW)):
             bx = cm[role]
-            fx, fy = to_screen(M, bx[0] + bx[2] / 2, bx[1] + bx[3] / 2)
-            if not (-200 < fx < W + 200 and -200 < fy < H + 200):   # face far off screen (deep zoom on the other)
-                continue
             if k >= appear:
-                # owner: the tag sits under the chin but is NOT part of the photo: a sticker on top, always whole,
-                # never cut or hidden at the photo's edge (it used to vanish when the face neared the card edge)
                 pop = ease_out_back((k - appear) * seg["speech"] / 0.12)
                 tag = pixel_tag(C.labels[nm].upper(), col, 26 if len(C.labels[nm]) < 15 else 22)
                 tx, ty = to_screen(M, bx[0] + bx[2] / 2, bx[1] + bx[3])   # under the chin
-                ty = ty + 34          # owner: like the pins, the tag stays where the face is, moving with the photo
-                tags_.append([tag, tx, ty, pop])
-        if len(tags_) == 2:                       # never stack one tag on the other: push B's below A's
+                tags_.append([tag, tx, ty + 34, pop])
+        if len(tags_) == 2:
             (ta, ax, ay, _), (tb, bx_, by_, _) = tags_
             if abs(ax - bx_) < (ta.width + tb.width) / 2 + 8 and abs(ay - by_) < (ta.height + tb.height) / 2 + 6:
                 tags_[1][2] = ay + (ta.height + tb.height) / 2 + 10 if by_ >= ay else ay - (ta.height + tb.height) / 2 - 10
-        tl = Image.new("RGBA", (W, H), (0, 0, 0, 0))     # tags ride on the photo like stickers and slide
-        for tag, tx, ty, pop in tags_:                   # UNDER its edge (clipped to the card), like the pins
-            sh = Image.new("RGBA", (tag.width + 8, tag.height + 8), (0, 0, 0, 0))
-            ImageDraw.Draw(sh).rectangle([8, 8, tag.width + 7, tag.height + 7], fill=(0, 0, 0, 140))
-            paste(tl, sh, tx + 4, ty + 4, scale=pop)                        # drop shadow: reads as a printed sticker
-            paste(tl, tag, tx, ty, scale=pop)
-        if tags_:
-            km = Image.new("L", (W, H), 0)
-            ImageDraw.Draw(km).rectangle([x0, y0, x0 + cw, y0 + ch], fill=255)
-            tl.putalpha(Image.composite(tl.getchannel("A"), Image.new("L", (W, H), 0), km))
-            base.alpha_composite(tl)
-        # Pin
+        for tag, tx, ty, pop in tags_:
+            sh_ = Image.new("RGBA", (tag.width + 8, tag.height + 8), (0, 0, 0, 0))
+            ImageDraw.Draw(sh_).rectangle([8, 8, tag.width + 7, tag.height + 7], fill=(0, 0, 0, 140))
+            paste(flat, sh_, tx + 4, ty + 4, scale=pop)                     # drop shadow: a printed sticker
+            paste(flat, tag, tx, ty, scale=pop)
+        return {"img": flat, "pa": pa, "pb": pb, "since": since, "land": land, "k": k, "R": R, "last": last,
+                "shake": (sx, sy), "incut": incut, "i": i, "size": (cw, ch)}
+
+    def draw_core(base, seg, tt, x0, y0, scale=1.0, frame=None):
+        """Place the core photo window with its top-left at (x0, y0) (scaled), then Buh on top (never clipped).
+        frame: optional callable(base, x0, y0, w, h) drawing the style's border/mount behind the photo.
+        Returns the core dict plus screen-space pa/pb and the window rect."""
+        c = link_core(seg, tt)
+        sx, sy = c["shake"]
+        cw, ch = c["size"]
+        w, h = int(cw * scale), int(ch * scale)
+        X0, Y0 = int(x0 + sx), int(y0 + sy)
+        if frame:
+            frame(base, X0, Y0, w, h)
+        im = c["img"] if scale == 1.0 else c["img"].resize((w, h), Image.BILINEAR)
+        base.alpha_composite(im, (X0, Y0))
+        m = lambda p: (X0 + p[0] * scale, Y0 + p[1] * scale)   # noqa: E731
+        pa, pb = m(c["pa"]), m(c["pb"])
+        since, land, last = c["since"], c["land"], c["last"]
         if since < 0:
             bob = int(8 * abs(math.sin(tt * 7)))
-            spr = pin_sprite("happy", 0, 0, 1 if pb[0] > pa[0] else -1)
-            paste_pin(base, spr, start[0], start[1] - bob)
+            paste_pin(base, pin_sprite("happy", 0, 0, 1 if pb[0] > pa[0] else -1), pa[0], pa[1] - bob)
         elif since < THROW:
-            x, y, ang = pixelpin_path(start, pb, since / THROW)
+            x, y, ang = pixelpin_path(pa, pb, since / THROW)
             paste_pin(base, pin_sprite("shock", ang, -0.4), x, y)
         else:
             sq = 0.8 * math.exp(-land * 10) * math.cos(land * 30)
@@ -667,23 +657,45 @@ def render(slug: str, log=print) -> Path:
             if last and land > 0.6:
                 hop = int(-abs(math.sin(land * 7)) * 40)  # celebrates on the final reveal
             paste_pin(base, pin_sprite(ex, 0, sq), pb[0], pb[1] + hop)
-        # CONNECTED!
+        c.update(spa=pa, spb=pb, rect=(X0, Y0, w, h))
+        return c
+
+    def core_finish(base, seg, tt, c, connected_y=1020, sub=True, chain=True, caption=True):
+        """The shared payoff + chrome every style keeps: CONNECTED!, the Subscribe nudge, the title band and chain
+        bar, the photo credit, the caption and the cut flashes. A style can move CONNECTED! or skip a piece it
+        draws itself (chain=False if it has its own progress display)."""
+        i, land, last, incut = c["i"], c["land"], c["last"], c["incut"]
         if last and land > 0.35:
             st = min(1.0, (land - 0.35) / 0.12)
             _ci = pixel_text("CONNECTED!", 72, fill=RED)
-            paste(base, _ci, CX, 1020, scale=min(2.0 - ease(st), (SAFE[2] - SAFE[0]) / _ci.width))   # never clipped
-        if last and land > 0.45:
-            subscribe_button(base, land - 0.45)          # owner: on-screen subscribe nudge on the payoff
+            paste(base, _ci, CX, connected_y, scale=min(2.0 - ease(st), (SAFE[2] - SAFE[0]) / _ci.width))
+        if sub and last and land > 0.45:
+            subscribe_button(base, land - 0.45)
         band(base, i)
-        upto = i + (1 if land >= 0 else 0)
-        blocks(base, upto, {upto} if land >= 0 else {i}, tt, sharpen=min(1.0, land / 0.35) if land >= 0 else 1.0)
+        if chain:
+            upto = i + (1 if land >= 0 else 0)
+            blocks(base, upto, {upto} if land >= 0 else {i}, tt, sharpen=min(1.0, land / 0.35) if land >= 0 else 1.0)
         credit(base, i)
-        seg["cap"].draw(base, tt)
+        if caption:
+            seg["cap"].draw(base, tt)
         if incut < 0.10:
             base.alpha_composite(Image.new("RGBA", (W, H), (255, 255, 255, int(220 * (1 - incut / 0.10)))))
         if 0 <= land < 0.07:
             base.alpha_composite(Image.new("RGBA", (W, H), TONES[i % len(TONES)][0] + (int(120 * (1 - land / 0.07)),)))
         return base
+
+    def frame_link(seg, tt):
+        i = seg["i"]
+        if C.fj["links"][i].get("lineage"):
+            return frame_lineage(seg, tt)
+        base = checker(tt, TONES[i % len(TONES)])
+
+        def card_frame(b, X0, Y0, w, h):
+            dr = ImageDraw.Draw(b)
+            dr.rectangle([X0 - 14 + 16, Y0 - 14 + 16, X0 + w + 14 + 16, Y0 + h + 14 + 16], fill=INK)
+            dr.rectangle([X0 - 14, Y0 - 14, X0 + w + 14, Y0 + h + 14], fill=WHITE)
+        c = draw_core(base, seg, tt, CARD[0], CARD[1], 1.0, frame=card_frame)
+        return core_finish(base, seg, tt, c)
 
     class _NoCap:
         def draw(self, *a, **k):
