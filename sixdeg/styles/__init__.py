@@ -26,6 +26,17 @@ What ``ctx`` gives you (see ``CTX_KEYS``; all are the renderer's own objects):
 - timing/motion: ``ease``, ``ease_out_back``, ``shake(t, amp, dur)``, ``REVEAL``, ``THROW``
 - layout: ``W, H, CX, SAFE`` (x0, y0, x1, y1: keep text inside), ``BAND``, ``CAP_Y``; colours ``INK, WHITE,
   YELLOW, CYAN, RED``
+
+THE CORE (owner rule, 2026-11-12: every format must keep it; a style is a skin AROUND it, never a replacement):
+- ``draw_core(base, seg, tt, x0, y0, scale=1.0, frame=None)`` places the photo window (CARD-sized, 880x950 at
+  scale 1) with the zoom-out / move / zoom-in camera, the red string, the pinned marker and the name tags under the
+  chins (all riding the photo, sliding under its edge), then Buh jumping head to head on top. ``frame(base, X0, Y0,
+  w, h)`` draws your mount/border behind it. Returns a dict: ``i, k, R, since, land, last, incut, spa, spb`` (Buh's
+  screen points), ``rect`` (X0, Y0, w, h).
+- ``core_finish(base, seg, tt, c, connected_y=1020, sub=True, chain=True, caption=True)``: CONNECTED!, the
+  Subscribe nudge on the payoff, title band, chain bar, credit, captions and cut flashes. Call it last.
+- ``link_core(seg, tt)`` if you need the raw window image to transform (tilt, fold) yourself; you then draw Buh.
+- Keep the window at least ~0.7 scale, keep captions (CAP_Y) readable, never cover the faces with chrome.
 """
 from __future__ import annotations
 
@@ -34,9 +45,9 @@ import pkgutil
 from types import SimpleNamespace
 
 CTX_KEYS = ["spec", "C", "n_links", "segs", "sharp", "view", "both_cam", "face_cam", "fbox", "ctr", "framed",
-            "link_names", "year_of", "fact_of", "before_b", "header", "connected", "frame_lineage"]
+            "link_names", "year_of", "fact_of", "before_b", "header", "connected", "frame_lineage", "link_core", "draw_core", "core_finish"]
 GLOBAL_KEYS = ["pixel_text", "pixel_tag", "pf", "FONTS", "paste", "checker", "paste_pin", "pin_sprite", "ease",
-               "ease_out_back", "shake", "sensitive", "REVEAL", "THROW", "W", "H", "CX", "SAFE", "BAND", "CAP_Y", "INK",
+               "ease_out_back", "shake", "subscribe_button", "CARD", "sensitive", "REVEAL", "THROW", "W", "H", "CX", "SAFE", "BAND", "CAP_Y", "INK",
                "WHITE", "YELLOW", "CYAN", "RED"]
 
 
