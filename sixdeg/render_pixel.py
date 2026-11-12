@@ -581,8 +581,7 @@ def render(slug: str, log=print) -> Path:
                 pop = ease_out_back((k - appear) * seg["speech"] / 0.12)
                 tag = pixel_tag(C.labels[nm].upper(), col, 26 if len(C.labels[nm]) < 15 else 22)
                 tx, ty = to_screen(M, bx[0] + bx[2] / 2, bx[1] + bx[3])   # under the chin
-                tx = max(SAFE[0] + tag.width / 2, min(SAFE[2] - tag.width / 2, tx))
-                ty = max(BAND + 40 + tag.height / 2, min(CAP_Y - 90, ty + 34))   # clear of the header and captions
+                ty = ty + 34          # owner: like the pins, the tag stays where the face is, moving with the photo
                 tags_.append([tag, tx, ty, pop])
         if len(tags_) == 2:                       # never stack one tag on the other: push B's below A's
             (ta, ax, ay, _), (tb, bx_, by_, _) = tags_
