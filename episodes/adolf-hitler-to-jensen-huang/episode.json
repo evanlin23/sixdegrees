@@ -15,9 +15,6 @@
     },
     "Donald Trump": {
       "label": "Donald Trump"
-    },
-    "Jensen Huang": {
-      "label": "JENSEN HUANG"
     }
   },
   "links": [
@@ -103,7 +100,7 @@
         "file": "File:P20250430JB-0891.jpg"
       },
       "fact": "White House, 2025",
-      "line": "In 2025, Trump watched Nvidia's boss speak."
+      "line": "In 2025, Jensen Huang joined Trump at the White House."
     }
   ]
 }
