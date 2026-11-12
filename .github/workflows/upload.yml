@@ -37,6 +37,24 @@ jobs:
           args="--max ${{ inputs.max || '2' }}"
           if [ "${{ inputs.dry_run }}" = "true" ]; then args="$args --dry-run"; fi
           python -m sixdeg consume $args | tee result.json
+      - name: Hitler series playlist + viewer comments (best effort)
+        if: success() && inputs.dry_run != 'true'
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_CHANNEL_ID: ${{ vars.YT_CHANNEL_ID }}
+        run: |
+          git fetch -q origin queue
+          python -m sixdeg series | tee -a "$GITHUB_STEP_SUMMARY" || true
+          python -m sixdeg comments || true
+          if [ -f comments.json ]; then
+            mv comments.json /tmp/comments.json
+            git fetch -q origin comments 2>/dev/null || true
+            git worktree add -q /tmp/cm origin/comments 2>/dev/null || (git worktree add -q --detach /tmp/cm && git -C /tmp/cm checkout -q --orphan comments && git -C /tmp/cm rm -rqf . || true)
+            cp /tmp/comments.json /tmp/cm/comments.json
+            (cd /tmp/cm && git add -A && { git diff --cached --quiet || git commit -qm "comments $(date -u +%F)"; } && git push -q origin HEAD:comments) || true
+          fi
       - name: tell the owner
         if: success() && inputs.dry_run != 'true'
         env: {GH_TOKEN: "${{ github.token }}"}
