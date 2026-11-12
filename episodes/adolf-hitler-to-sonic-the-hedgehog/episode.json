@@ -4,7 +4,7 @@
   "title": "How is Adolf Hitler connected to Sonic the Hedgehog?",
   "description": "The Beetle's designer, the Mercedes racing team, two racing legends, a seven-time champion, a talk-show host and Jim Carrey connect Adolf Hitler to Sonic the Hedgehog.",
   "hook": "How is Adolf Hitler connected to Sonic the Hedgehog?",
-  "fun_fact": "Alfred Neubauer, who appears with Porsche in 1924, is credited with inventing the pit board: he was the first team boss to signal his drivers with flags and boards from the pit wall.",
+  "fun_fact": "Alfred Neubauer, pictured with Porsche in 1924, is credited with inventing pit signals: he was the first team boss to signal his drivers with flags and boards from the pit wall.",
   "research_note": "Commons only had a tiny copy of the famous Beetle-model photo, so a larger scan of the same Hoffmann photo came from Santa Clara University's exhibit; from there, motor racing leads to Lewis Hamilton, and Sonic comes in through a real 2020 premiere photo of the costumed Sonic with Jim Carrey.",
   "people": {
     "Adolf Hitler": {
@@ -60,7 +60,7 @@
       "image": {
         "file": "File:Auto-ontwerper Ferdinand Porsche (rechts) en Alfred Neubauer met een racewagen,race-auto op, SFA007000597.jpg"
       },
-      "line": "Back in 1924, Porsche took a race car to Sicily with Alfred Neubauer, the man who invented the pit board.",
+      "line": "Back in 1924, Porsche took a race car to Sicily with Alfred Neubauer, the man credited with inventing pit signals.",
       "fact": "Sicily, 1924"
     },
     {
@@ -69,7 +69,7 @@
       "image": {
         "file": "File:Training voor Grote Prijs van Nederland op Zandvoort, leider van de Mercedesploe, Bestanddeelnr 907-1856.jpg"
       },
-      "line": "By 1955, Neubauer ran the Mercedes team, and his star driver was five-time world champion Fangio.",
+      "line": "By 1955, Neubauer ran the Mercedes team, and his star driver was Fangio, who won five world titles.",
       "fact": "Dutch Grand Prix, 1955",
       "a_face": 0,
       "b_face": 3
