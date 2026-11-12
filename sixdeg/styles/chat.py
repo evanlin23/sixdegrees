@@ -1,0 +1,370 @@
+"""Group chat: the chain plays out as messages on a phone. A types, sends the link's fact and the photo as an
+attachment, then B (a "?" until the reveal) replies with an @-mention; earlier links keep scrolling up."""
+from __future__ import annotations
+
+import math
+
+import numpy as np
+from PIL import Image, ImageDraw, ImageFont
+
+NAME = "chat"
+
+BG = (14, 19, 27)
+DOODLE = (24, 32, 43)
+BAR = (25, 32, 44)
+BUBBLE = (35, 45, 60)
+TEXT = (238, 241, 245)
+MUTED = (140, 152, 168)
+MENTION = (92, 170, 255)
+TYPING = (98, 214, 140)
+NAME_COLS = [(255, 138, 101), (129, 212, 250), (174, 213, 129), (255, 213, 79), (206, 147, 216), (128, 203, 196),
+             (244, 143, 177), (255, 171, 64)]
+
+TOP0, TOP1 = 230, 346          # chat title bar (under the channel header)
+BOTTOM = 1196                  # newest message sits on this line; earlier ones scroll up
+CAP_Y = 1262                   # captions, between the messages and the composer
+COMP0, COMP1 = 1352, 1438      # message composer
+AV = 72                        # avatar size
+BX = 152                       # bubble left edge
+MAXW = 700                     # bubble max width
+PW, PH = 640, 470              # photo attachment
+GAP = 20
+
+
+def make(ctx):
+    F = {}
+
+    def font(name, size):
+        if (name, size) not in F:
+            F[(name, size)] = ImageFont.truetype(str(ctx.FONTS / name), size)
+        return F[(name, size)]
+
+    st = {}                        # lazily built: wallpaper, bars, avatars, the message timeline
+
+    def short(n):
+        return ctx.C.labels[n]
+
+    def col(n):
+        return NAME_COLS[ctx.C.people.index(n) % len(NAME_COLS)] if n in ctx.C.people else MUTED
+
+    def avatar(n, size=AV):
+        key = ("av", n, size)
+        if key not in st:
+            im = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+            mask = Image.new("L", (size * 4, size * 4), 0)
+            ImageDraw.Draw(mask).ellipse([0, 0, size * 4 - 1, size * 4 - 1], fill=255)
+            mask = mask.resize((size, size), Image.LANCZOS)
+            if n is None:
+                face = Image.new("RGBA", (size, size), (70, 80, 98, 255))
+                ImageDraw.Draw(face).text((size / 2, size / 2 + 2), "?", font=font("Inter-Black.otf", int(size * 0.55)),
+                                          fill=(220, 226, 236), anchor="mm")
+            else:
+                face = ctx.sharp[n].convert("RGBA").resize((size, size), Image.BICUBIC)
+            im.paste(face, (0, 0), mask)
+            st[key] = im
+        return st[key]
+
+    def wrap(text, f, width):
+        lines, cur = [], ""
+        for w in text.split():
+            t = f"{cur} {w}".strip()
+            if f.getlength(t) <= width or not cur:
+                cur = t
+            else:
+                lines.append(cur)
+                cur = w
+        if cur:
+            lines.append(cur)
+        return lines
+
+    def bubble(w, h, tail=True):
+        im = Image.new("RGBA", (w + 14, h), (0, 0, 0, 0))
+        d = ImageDraw.Draw(im)
+        d.rounded_rectangle([14, 0, w + 13, h - 1], 30, fill=BUBBLE)
+        if tail:   # little tail at the bottom-left, next to the avatar
+            d.polygon([(0, h - 2), (40, h - 34), (44, h - 2)], fill=BUBBLE)
+        return im
+
+    def with_avatar(body, n):
+        """Avatar at the bottom-left, the bubble to its right (x = BX - 14 for the tail)."""
+        im = Image.new("RGBA", (BX - 14 + body.width, max(body.height, AV)), (0, 0, 0, 0))
+        im.alpha_composite(body, (BX - 14 - ctx.SAFE[0], im.height - body.height))
+        im.alpha_composite(avatar(n), (0, im.height - AV))
+        return im
+
+    def text_msg(n, text, stamp, mention=None):
+        fn, fb, fs = font("Inter-Bold.otf", 28), font("Inter-Bold.otf", 40), font("Inter-Bold.otf", 22)
+        pre = f"@{mention} " if mention else ""
+        lines = wrap(pre + text, fb, MAXW - 64)
+        lh = 52
+        w = max(fn.getlength(short(n)), max(fb.getlength(ln) for ln in lines) + 70) + 52
+        w = int(min(MAXW, w))
+        h = 22 + 38 + lh * len(lines) + 16
+        im = bubble(w, h)
+        d = ImageDraw.Draw(im)
+        d.text((40, 20), short(n), font=fn, fill=col(n))
+        y = 64
+        for k, ln in enumerate(lines):
+            x = 40
+            if k == 0 and pre and ln.startswith(pre.strip()):
+                m = pre.strip()
+                d.rounded_rectangle([x - 6, y - 2, x + fb.getlength(m) + 6, y + 48], 10, fill=(40, 70, 112))
+                d.text((x, y), m, font=fb, fill=MENTION)
+                x += fb.getlength(m + " ")
+                ln = ln[len(m):].strip()
+            d.text((x, y), ln, font=fb, fill=TEXT)
+            y += lh
+        d.text((w, h - 14), stamp, font=fs, fill=MUTED, anchor="rs")
+        return with_avatar(im, n)
+
+    def photo_msg(n, i, who, stamp):
+        """The photo attachment; the slot for the (moving) photo is at PHOTO_OFF inside the returned image."""
+        fn, fc, fs = font("Inter-Bold.otf", 28), font("Inter-Bold.otf", 32), font("Inter-Bold.otf", 22)
+        w, h = PW + 32, 22 + 38 + PH + 70
+        im = bubble(w, h)
+        d = ImageDraw.Draw(im)
+        d.text((40, 20), short(n), font=fn, fill=col(n))
+        d.text((40, 64 + PH + 18), "with ", font=fc, fill=TEXT)
+        x = 40 + fc.getlength("with ")
+        tag = f"@{who}" if who else "@???"
+        d.rounded_rectangle([x - 4, 64 + PH + 14, x + fc.getlength(tag) + 6, 64 + PH + 56], 10, fill=(40, 70, 112))
+        d.text((x, 64 + PH + 18), tag, font=fc, fill=MENTION if who else MUTED)
+        d.text((w, h - 14), stamp, font=fs, fill=MUTED, anchor="rs")
+        return with_avatar(im, n)
+
+    PHOTO_OFF = (BX - ctx.SAFE[0] + 16, 64)
+    pmask = Image.new("L", (PW * 2, PH * 2), 0)
+    ImageDraw.Draw(pmask).rounded_rectangle([0, 0, PW * 2 - 1, PH * 2 - 1], 44, fill=255)
+    pmask = pmask.resize((PW, PH), Image.LANCZOS)
+
+    def photo(i, k):
+        if ("ph", i) not in st:
+            st[("ph", i)] = ctx.both_cam(i, PW, PH, 0.8)
+        cx, cy, s = st[("ph", i)]
+        im = ctx.view(i, cx + 30 * math.sin(k * 2.2), cy - 12 * k, s * (1.0 + 0.14 * k), PW, PH)
+        im.putalpha(pmask)
+        return im
+
+    def static_photo(i):
+        if ("sph", i) not in st:
+            st[("sph", i)] = photo(i, 1.0)
+        return st[("sph", i)]
+
+    def divider(text):
+        f = font("Inter-Bold.otf", 26)
+        w = int(f.getlength(text)) + 48
+        im = Image.new("RGBA", (ctx.SAFE[2] - ctx.SAFE[0], 52), (0, 0, 0, 0))
+        x0 = (im.width - w) // 2
+        d = ImageDraw.Draw(im)
+        d.rounded_rectangle([x0, 4, x0 + w, 48], 22, fill=(30, 40, 54))
+        d.text((im.width / 2, 27), text, font=f, fill=MUTED, anchor="mm")
+        return im
+
+    def heart(size, fill):
+        im = Image.new("RGBA", (size * 4, size * 4), (0, 0, 0, 0))
+        d = ImageDraw.Draw(im)
+        s = size * 4
+        d.ellipse([0, 0, s * 0.56, s * 0.56], fill=fill)
+        d.ellipse([s * 0.44, 0, s, s * 0.56], fill=fill)
+        d.polygon([(s * 0.04, s * 0.38), (s * 0.96, s * 0.38), (s * 0.5, s * 0.95)], fill=fill)
+        return im.resize((size, size), Image.LANCZOS)
+
+    def reaction():
+        if "react" not in st:
+            im = Image.new("RGBA", (104, 54), (0, 0, 0, 0))
+            d = ImageDraw.Draw(im)
+            d.rounded_rectangle([0, 0, 103, 53], 26, fill=(48, 60, 80), outline=BG, width=4)
+            for ex in (24, 44):            # a neutral "eyes" reaction
+                d.ellipse([ex, 12, ex + 18, 42], fill=(250, 250, 250))
+                d.ellipse([ex + 6, 24, ex + 15, 37], fill=(20, 20, 26))
+            d.text((70, 27), "1", font=font("Inter-Bold.otf", 28), fill=TEXT, anchor="mm")
+            st["react"] = im
+        return st["react"]
+
+    def build():
+        """Every message of the episode with its typing start and send time (absolute seconds)."""
+        msgs = []
+        for seg in ctx.segs:
+            if seg.get("kind") != "link" or ctx.C.fj["links"][seg["i"]].get("lineage"):
+                continue
+            i, t0 = seg["i"], seg["t0"]
+            sp, R = seg["speech"], seg.get("rv", ctx.REVEAL)
+            rvt = R * sp + ctx.THROW
+            u = min(1.0, rvt / 1.45)
+            an, bn = ctx.link_names(i)
+            stamp = f"{9 + i // 6}:{41 + i * 3:02d}"
+            yr = ctx.year_of(i)
+            if i > 0:
+                msgs.append(dict(kind="div", ts=t0, ta=t0, im=divider(f"Link {i + 1}" + (f"  ·  {yr}" if yr else ""))))
+            fact = ctx.fact_of(ctx.spec["links"][i])
+            msgs.append(dict(kind="text", who=an, ts=t0 + 0.04, ta=t0 + 0.38 * u, im=text_msg(an, fact, stamp)))
+            pre, post = photo_msg(an, i, None, stamp), photo_msg(an, i, short(bn), stamp)
+            pta = t0 + 0.72 * u
+            msgs.append(dict(kind="photo", who=an, i=i, ts=t0 + 0.50 * u, ta=pta, im=pre, post=post,
+                             tpost=t0 + rvt, seg=seg))
+            ba, bb = ctx.fbox(i, "a"), ctx.fbox(i, "b")
+            side = "left" if ctx.ctr(bb)[0] < ctx.ctr(ba)[0] else "right"
+            lines = [f"that's me on the {side}!", f"yep, I'm the one on the {side}", f"me on the {side}, hi!",
+                     f"that's us! I'm on the {side}"]
+            msgs.append(dict(kind="text", who=bn, ts=max(pta + 0.25, t0 + rvt - 1.1), ta=t0 + rvt, anon=True,
+                             im=text_msg(bn, lines[i % len(lines)], stamp, mention=short(an)),
+                             react=t0 + rvt + 0.65))
+        return msgs
+
+    TYP_H = 96
+
+    def typing_im(n, t):
+        im = Image.new("RGBA", (BX - 14 + 170, TYP_H), (0, 0, 0, 0))
+        b = bubble(150, 84)
+        d = ImageDraw.Draw(b)
+        for k in range(3):
+            ph = (t * 5.5 - k * 0.9)
+            up = max(0.0, math.sin(ph)) * 12
+            c = 150 + int(90 * max(0.0, math.sin(ph)))
+            x = 54 + k * 34
+            d.ellipse([x, 34 - up, x + 18, 52 - up], fill=(c, c + 4, c + 10))
+        im.alpha_composite(b, (BX - 14 - ctx.SAFE[0], TYP_H - 84))
+        im.alpha_composite(avatar(n), (0, TYP_H - AV))
+        return im
+
+    def wallpaper():
+        if "wall" not in st:
+            T = 240
+            tile = Image.new("RGBA", (T, T), BG + (255,))
+            d = ImageDraw.Draw(tile)
+            d.ellipse([20, 24, 60, 64], outline=DOODLE, width=5)
+            d.rounded_rectangle([140, 30, 196, 72], 10, outline=DOODLE, width=5)
+            d.polygon([(150, 72), (160, 72), (148, 86)], fill=DOODLE)
+            d.line([(30, 150), (60, 130), (90, 150), (120, 130)], fill=DOODLE, width=5)
+            tile.alpha_composite(heart(40, DOODLE + (255,)), (160, 150))
+            for (x, y) in ((100, 90), (30, 210), (210, 110)):
+                d.ellipse([x, y, x + 12, y + 12], fill=DOODLE)
+            d.line([(70, 190), (110, 230)], fill=DOODLE, width=5)
+            d.line([(110, 190), (70, 230)], fill=DOODLE, width=5)
+            big = Image.new("RGBA", (ctx.W + T, ctx.H + T))
+            for x in range(0, big.width, T):
+                for y in range(0, big.height, T):
+                    big.paste(tile, (x, y))
+            st["wall"], st["T"] = big, T
+        return st["wall"], st["T"]
+
+    def topbar(base, i, msgs, tt, typing_who):
+        if "bar" not in st:
+            bar = Image.new("RGBA", (ctx.W, TOP1 - TOP0), BAR + (255,))
+            d = ImageDraw.Draw(bar)
+            d.line([(90, 40), (70, 58), (90, 76)], fill=TEXT, width=6, joint="curve")   # back chevron
+            for k in range(3):                                                         # menu dots
+                d.ellipse([904, 30 + k * 20, 916, 42 + k * 20], fill=TEXT)
+            d.line([(0, TOP1 - TOP0 - 2), (ctx.W, TOP1 - TOP0 - 2)], fill=(40, 50, 66), width=2)
+            st["bar"] = bar
+        base.alpha_composite(st["bar"], (0, TOP0))
+        d = ImageDraw.Draw(base)
+        # group avatar: the people seen so far, overlapping
+        seen = []
+        for n in ctx.C.people:
+            if n in [m.get("who") for m in msgs if m["ta"] <= tt and not (m.get("anon") and m["ta"] > tt)]:
+                seen.append(n)
+        seen = seen[-3:]
+        x = 120
+        for k, n in enumerate(seen):
+            a = avatar(n, 64)
+            ring = Image.new("RGBA", (72, 72), (0, 0, 0, 0))
+            ImageDraw.Draw(ring).ellipse([0, 0, 71, 71], fill=BAR)
+            base.alpha_composite(ring, (x + k * 38 - 4, TOP0 + 22))
+            base.alpha_composite(a, (x + k * 38, TOP0 + 26))
+        tx = x + max(1, len(seen)) * 38 + 50
+        d.text((tx, TOP0 + 22), "Six Degrees Group", font=font("Inter-Bold.otf", 36), fill=TEXT)
+        if typing_who is not False:
+            who = "Someone" if typing_who is None else short(typing_who).split()[-1] if len(short(typing_who)) > 14 else short(typing_who)
+            dots = "." * (1 + int(tt * 4) % 3)
+            d.text((tx, TOP0 + 68), f"{who} is typing{dots}", font=font("Inter-Bold.otf", 26), fill=TYPING)
+        else:
+            d.text((tx, TOP0 + 68), f"{len(ctx.C.people)} members, {min(len(ctx.C.people), i + 2)} online",
+                   font=font("Inter-Bold.otf", 26), fill=MUTED)
+
+    def composer(base, tt):
+        if "comp" not in st:
+            im = Image.new("RGBA", (ctx.W, ctx.H - COMP0 + 20), BAR + (255,))
+            d = ImageDraw.Draw(im)
+            d.line([(0, 0), (ctx.W, 0)], fill=(40, 50, 66), width=2)
+            d.ellipse([66, 14, 126, 74], outline=MUTED, width=4)
+            d.line([(96, 30), (96, 58)], fill=MUTED, width=4)
+            d.line([(82, 44), (110, 44)], fill=MUTED, width=4)
+            d.rounded_rectangle([144, 10, 820, 78], 34, fill=(36, 46, 62))
+            d.text((180, 44), "Message", font=font("Inter-Bold.otf", 30), fill=(110, 122, 140), anchor="lm")
+            st["comp"] = im
+        base.alpha_composite(st["comp"], (0, COMP0))
+        d = ImageDraw.Draw(base)
+        p = 1 + 0.06 * math.sin(tt * 4)                 # send button breathes
+        r = 34 * p
+        d.ellipse([876 - r, COMP0 + 44 - r, 876 + r, COMP0 + 44 + r], fill=(46, 132, 255))
+        d.polygon([(862, COMP0 + 28), (896, COMP0 + 44), (862, COMP0 + 60), (868, COMP0 + 44)], fill=(255, 255, 255))
+
+    def frame(seg, tt):
+        i = seg["i"]
+        if ctx.C.fj["links"][i].get("lineage"):
+            return ctx.frame_lineage(seg, tt)
+        if "msgs" not in st:
+            st["msgs"] = build()
+        msgs = st["msgs"]
+        # slot heights: 0 -> typing bubble -> the message (eased); stacked bottom-up from BOTTOM
+        items, total = [], 0.0
+        typing_who = False
+        for m in msgs:
+            if tt < m["ts"]:
+                break
+            full = m["im"].height
+            if m["kind"] == "div" or m["ta"] - m["ts"] < 0.05:
+                h = full * ctx.ease((tt - m["ta"]) / 0.22)
+                mode = "msg"
+            elif tt < m["ta"]:
+                h = TYP_H * ctx.ease((tt - m["ts"]) / 0.18)
+                mode = "typing"
+                typing_who = None if m.get("anon") else m["who"]
+            else:
+                h = TYP_H + (full - TYP_H) * ctx.ease((tt - m["ta"]) / 0.22)
+                mode = "msg"
+            items.append((m, h, mode))
+            total += h + GAP
+        wall, T = wallpaper()
+        off = int(total * 0.6 + tt * 14) % T
+        base = wall.crop((0, T - off, ctx.W, T - off + ctx.H))
+        y = BOTTOM
+        for m, h, mode in reversed(items):
+            if y < TOP1 - 40:
+                break
+            if mode == "typing":
+                im = typing_im(None if m.get("anon") else m["who"], tt)
+                a = min(1.0, (tt - m["ts"]) / 0.12)
+                ctx.paste(base, im, ctx.SAFE[0] + im.width / 2, y - h / 2, alpha=a, nearest=False)
+            else:
+                im = m["post"] if m.get("post") is not None and tt >= m["tpost"] else m["im"]
+                k = min(1.0, (tt - m["ta"]) / 0.22)
+                sc = 0.86 + 0.14 * ctx.ease_out_back(k)
+                if m["kind"] == "photo":
+                    im = im.copy()
+                    sg = m["seg"]
+                    if sg is seg or (sg["i"] == i):
+                        pk = min(1.0, max(0.0, (tt - sg["t0"]) / max(1.0, sg["t1"] - sg["t0"])))
+                        im.alpha_composite(photo(m["i"], pk), PHOTO_OFF)
+                    else:
+                        im.alpha_composite(static_photo(m["i"]), PHOTO_OFF)
+                if m["kind"] == "div":
+                    x0 = ctx.SAFE[0]
+                    ctx.paste(base, im, x0 + im.width / 2, y - im.height / 2, alpha=k)
+                else:
+                    if sc < 0.999:
+                        im = im.resize((int(im.width * sc), int(im.height * sc)), Image.BILINEAR)
+                    base.alpha_composite(im, (ctx.SAFE[0], int(y - im.height)))
+                    if m.get("react") and tt >= m["react"]:
+                        rk = ctx.ease_out_back((tt - m["react"]) / 0.25)
+                        ctx.paste(base, reaction(), ctx.SAFE[0] + BX + 30, y + 4, scale=0.3 + 0.7 * rk, nearest=False)
+            y -= h + GAP
+        topbar(base, i, msgs, tt, typing_who)
+        composer(base, tt)
+        ctx.header(base, i)
+        ctx.connected(base, seg, tt)
+        seg["cap"].draw(base, tt, y=CAP_Y)
+        return base
+
+    return frame
