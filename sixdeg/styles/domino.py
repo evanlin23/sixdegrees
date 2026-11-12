@@ -14,19 +14,21 @@ from PIL import Image, ImageChops, ImageDraw, ImageFilter
 
 NAME = "domino"
 
-DW, DH = 900, 940          # tile size (front view: it tips over in the screen plane)
+DW, DH = 900, 880          # tile size (front view: it tips over in the screen plane)
 PAD = 30                   # transparent margin around the tile image (outline/shadow room)
 FLOOR = 1320               # table top (screen y); a standing tile's top is at FLOOR - DH
 GAP = 170                  # gap between a fallen tile's top and the next tile's foot
 SPACING = DW + DH + GAP    # a fallen tile lies flat across DH, then the gap, then the next tile
 FALL = 0.3                 # s for the last tile to tip over and slam (gravity: slow start, fast finish)
 RISE = 0.42                # s for the first tile to shoot up out of the table
-CAM = 0.62                 # s for the camera to whip-pan to the new tile
-CAP_HOLD = 0.36            # the link's first caption waits until the slam is over
+CAM = 0.52                 # s for the camera to whip-pan to the new tile
+CAP_HOLD = 0.55            # the link's first caption waits until the slam (and its dust) is over
+DUST = 0.25                # s the slam's dust puff lives
+ROW_Y, ROW_TH = 1548, 78   # the chain so far: little standing dominoes with faces, along the table front
 PH_Y, PH_H = 26, 600       # photo inside the tile (DW - 50 = 850 px wide)
 DIV_Y = 656                # divider bar, tile-local y
 TAG_Y = 724                # tag centres, tile-local y
-PIP_Y = 856                # pips, tile-local y
+PIP_Y = 806                # pips, tile-local y
 CAP_Y = 1398
 
 
@@ -38,7 +40,12 @@ def make(ctx):
 
     def cam(i):
         cx, cy, sc = ctx.both_cam(i, DW - 50, PH_H, 0.82)
-        return cx, cy, min(sc, 1.3)                   # never upscale a photo past ~1.3x
+        ih, iw = ctx.C.imgs[i].shape[:2]
+        pw = DW - 50
+        sc = max(min(sc, 1.3), pw / iw, PH_H / ih)    # never upscale past ~1.3x, but always cover the slot
+        cx = max(pw / 2 / sc, min(iw - pw / 2 / sc, cx))   # cover-crop: the view never runs off the photo
+        cy = max(PH_H / 2 / sc, min(ih - PH_H / 2 / sc, cy))
+        return cx, cy, sc
 
     # ---------------------------------------------------------------- tiles
     def tile(i, pips=True):
@@ -202,6 +209,45 @@ def make(ctx):
             _cache[key] = im.filter(ImageFilter.GaussianBlur(12))
         ctx.paste(base, _cache[key], (x0 + x1) / 2, FLOOR + 6, alpha=alpha)
 
+    def chain_row(base, i, revealed, cy):
+        """The chain so far along the table front: a little standing domino per person, face on top ("?" until
+        revealed); the ones already passed lie tipped over, the current pair is outlined."""
+        people = ctx.C.people
+        n = len(people)
+        x0, x1 = ctx.SAFE[0] + 50, ctx.SAFE[2] - 50
+        step = (x1 - x0) / max(1, n - 1)
+        known = i + (2 if revealed else 1)
+        tw, th = ROW_TH + 14, ROW_TH * 2 + 20
+        for j, nm in enumerate(people):
+            key = ("mini", nm, j < known)
+            if key not in _cache:
+                im = Image.new("RGBA", (tw + 16, th + 16), (0, 0, 0, 0))
+                d = ImageDraw.Draw(im)
+                d.rounded_rectangle([8, 10, tw + 8, th + 10], 12, fill=(0, 0, 0, 110))
+                d.rounded_rectangle([0, 0, tw, th], 12, fill=(246, 241, 228), outline=INK, width=4)
+                if j < known:
+                    im.alpha_composite(ctx.sharp[nm].resize((ROW_TH, ROW_TH), Image.BICUBIC), (7, 7))
+                else:
+                    d.rectangle([7, 7, 7 + ROW_TH, 7 + ROW_TH], fill=(40, 60, 64))
+                    q = ctx.pixel_text("?", 34, fill=ctx.WHITE, shadow=False)
+                    im.alpha_composite(q, (7 + ROW_TH // 2 - q.width // 2, 7 + ROW_TH // 2 - q.height // 2))
+                d.rectangle([12, ROW_TH + 12, tw - 12, ROW_TH + 17], fill=INK)
+                for k in range(min(j + 1, 4)):
+                    px = tw / 2 + (k - (min(j + 1, 4) - 1) / 2) * 18
+                    d.ellipse([px - 6, ROW_TH + 40, px + 6, ROW_TH + 52], fill=INK)
+                _cache[key] = im
+            im = _cache[key]
+            x = x0 + j * step
+            if j < i:                                    # already toppled: lying tipped toward the next one
+                im = im.rotate(-62, resample=Image.BICUBIC, expand=True)
+                base.alpha_composite(im, (int(x - im.width / 2 + 30), int(ROW_Y + th / 2 + cy - im.height + 20)))
+            else:
+                base.alpha_composite(im, (int(x - tw / 2), int(ROW_Y - th / 2 + cy)))
+                if j in (i, i + 1):
+                    ImageDraw.Draw(base).rounded_rectangle([x - tw / 2 - 4, ROW_Y - th / 2 + cy - 4, x + tw / 2 + 4,
+                                                            ROW_Y + th / 2 + cy + 4], 14,
+                                                           outline=ctx.CYAN if j == i else ctx.YELLOW, width=5)
+
     # ---------------------------------------------------------------- motion
     def wx(i):                                          # world x of tile i's left edge
         return i * SPACING
@@ -270,13 +316,13 @@ def make(ctx):
 
         # dust burst where the old tile slammed
         k = local - FALL
-        if not first and 0 <= k < 0.7:
+        if not first and 0 <= k < DUST:
             d = ImageDraw.Draw(base)
             cxs = sx(wx(i - 1) + DW + DH * 0.9)
-            fade = 1 - k / 0.7
+            fade = (1 - k / DUST) ** 1.5
             for r0, r1, r2 in _dust:
                 ang = math.pi * r0
-                rr = (60 + 340 * r1) * (1 - math.exp(-k * 7))
+                rr = (60 + 340 * r1) * (1 - math.exp(-k * 12))
                 px = cxs + rr * math.cos(ang) * 1.4
                 py = FLOOR + cy - 10 - rr * math.sin(ang) * 0.5 - 90 * k * r2
                 s = int((8 + 18 * r2) * (0.4 + fade))
@@ -301,7 +347,7 @@ def make(ctx):
         top = at(DW / 2, 0)
 
         # Buh rides the dominoes: on the old tile's top as it tips, a leap, then onto the new one
-        bscale = 3
+        bscale = 5
         jump0, jump1 = 0.12, FALL + 0.3
         bxy, land = top, 1.0
         if first:
@@ -331,6 +377,7 @@ def make(ctx):
             spr = ctx.pin_sprite(expr, 0, 0.3 * max(0.0, 1 - land / 0.15), 1, scale=bscale)
             ctx.paste_pin(base, spr, bxy[0], bxy[1] - hop)
 
+        chain_row(base, i, local > coin_t, cy)
         ctx.header(base, i)
         if last:                                         # CONNECTED! across the tile's (pip-less) foot, under the tags
             ctx.connected(base, seg, tt, y=TOP + PIP_Y + 4)

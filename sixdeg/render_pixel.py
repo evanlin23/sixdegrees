@@ -820,10 +820,10 @@ def render(slug: str, log=print) -> Path:
     # --- zoom: one continuous camera inside a big photo window, A's face -> both -> drift -> B's face (B is the next
     # photo's A, so links hand over on the same face). Scale is capped near the source's own pixels (never mush);
     # where a small photo can't fill the window its edges fade into a dark blurred copy instead of a hard bar.
-    ZW_Y0, ZW_Y1 = BAND - 40, 1170                   # the photo window (full width, under the header)
+    ZW_Y0, ZW_Y1 = BAND - 40, 1290                   # the photo window (full width, under the header)
     ZW_W, ZW_H = W, ZW_Y1 - ZW_Y0
     Z_FX = CX                                        # focal point x on screen (left of the feed buttons)
-    Z_CAP_Y, Z_DONE_Y, Z_ROW_Y = 1236, 1348, 1496   # caption band, CONNECTED!, the chain row (below the window)
+    Z_CAP_Y, Z_DONE_Y, Z_ROW_Y = 1362, 1450, 1566   # caption band, CONNECTED!, the chain row (below the window)
     Z_BUH_X, Z_TH = 95, 80
     _zc = {}
 
@@ -923,7 +923,7 @@ def render(slug: str, log=print) -> Path:
         out = out * mask + z_bg(i) * (1 - mask)
         return Image.fromarray(out.astype(np.uint8)).convert("RGBA")
 
-    def z_tags(base, i, cam, revealed):
+    def z_tags(base, i, cam, revealed, alpha=1.0):
         """Name tags under their own faces: inside the window, clear of the edges, never overlapping."""
         an, bn = link_names(i)
         cx, cy, s = cam
@@ -941,15 +941,17 @@ def render(slug: str, log=print) -> Path:
             items.append([tg, x, y])
         if len(items) == 2:
             (ta, xa, ya), (tb, xb, yb) = items
-            if abs(xa - xb) < (ta.width + tb.width) / 2 + 8 and abs(ya - yb) < (ta.height + tb.height) / 2 + 6:
-                step = (ta.height + tb.height) / 2 + 8
+            if abs(xa - xb) < (ta.width + tb.width) / 2 + 36 and abs(ya - yb) < (ta.height + tb.height) / 2 + 14:
+                step = (ta.height + tb.height) / 2 + 16
                 lo_y = ZW_Y1 - 40 - tb.height / 2
                 if ya + step <= lo_y:
                     items[1][2] = ya + step
                 else:
                     items[1][2], items[0][2] = lo_y, lo_y - step
+        if alpha <= 0.01:
+            return
         for tg, x, y in items:
-            paste(base, tg, x, y)
+            paste(base, tg, x, y, alpha=alpha)
 
     def z_row(base, i, revealed, local):
         """The chain so far as a row of small faces ("?" for whoever isn't revealed yet); the current pair outlined."""
@@ -986,7 +988,8 @@ def render(slug: str, log=print) -> Path:
             pd = ps["t1"] - ps["t0"]
             base = Image.blend(z_view(i - 1, z_cam(i - 1, pd, pd + local)), base, ease(local / 0.4))
         rv_t = R * sp + THROW
-        z_tags(base, i, cam, local > rv_t)
+        # tags only once the crossfade has finished (else they sit on the old photo's people), then ease in
+        z_tags(base, i, cam, local > rv_t, alpha=1.0 if i == 0 else ease(max(0.0, min(1.0, (local - 0.42) / 0.25))))
         z_row(base, i, local > rv_t, local)
         # Buh, pinned bottom-left at the start of the chain row; hops when B is revealed (a small nod on sensitive links)
         quiet = sensitive(link_names(i)[0]) or sensitive(link_names(i)[1])
@@ -1246,6 +1249,8 @@ def render(slug: str, log=print) -> Path:
     G_FLY = 1.7                                         # seconds of flight at the start of a link
     G_PW, G_PH, G_PH_TOP = 840, 620, 262                # the photo (inside its print): width, max height, top y
     G_CAP_Y, G_DONE_Y = 1062, 1428
+    # zoom cap: one texel of the 3840 px Earth texture (3840 / 2pi px per radian) stays <= ~4 screen px (= 2 map pixels)
+    G_ZMAX = 4.0 * (3840 / (2 * math.pi)) / G_R1
     _gxs = np.arange(-G_M, W + G_M, G_PX, dtype=np.float32) + G_PX / 2 - CX
     _gys = np.arange(G_Y0 - G_M, H + G_M, G_PX, dtype=np.float32) + G_PX / 2 - G_CY
     _ggx, _ggy = np.meshgrid(_gxs, _gys)
@@ -1276,8 +1281,8 @@ def render(slug: str, log=print) -> Path:
         return next((ll(j) for j in range(i - 1, -1, -1) if ll(j)), None)
 
     def g_fit(ctr_, pts):
-        """The largest zoom (<= 16) that keeps every point within G_BOX of the view centre, on the near side."""
-        z = 16.0
+        """The largest zoom (<= G_ZMAX) that keeps every point within G_BOX of the view centre, on the near side."""
+        z = G_ZMAX
         for pt in pts:
             if ang_deg(ctr_, pt) > 80:
                 return 1.0
@@ -1294,7 +1299,7 @@ def render(slug: str, log=print) -> Path:
         if p is None:
             v = (cur, 2.2)
         elif ang_deg(p, cur) < 0.05:
-            v = (cur, 12.0)                             # same place again: a city-scale push in
+            v = (cur, G_ZMAX)                           # same place again: push in as far as the texture allows
         else:
             c_ = slerp_ll(p, cur, 0.5)
             v = (c_, g_fit(c_, [p, cur]))
@@ -1372,23 +1377,24 @@ def render(slug: str, log=print) -> Path:
             items.append([tg, fx, tag_y])
         lo_x = lambda it: SAFE[0] + it[0].width / 2
         hi_x = lambda it: SAFE[2] - it[0].width / 2
-        for it in items:
+        for it in items:                                 # each tag centred on its own face (only kept off the edges)
             it[1] = max(lo_x(it), min(hi_x(it), it[1]))
         left, right = sorted(items, key=lambda it: it[1])
-        gap = (left[0].width + right[0].width) / 2 + 12
-        if right[1] - left[1] < gap:                    # push apart around their midpoint, inside the safe area
-            mid = (left[1] + right[1]) / 2
-            left[1], right[1] = mid - gap / 2, mid + gap / 2
-            if left[1] < lo_x(left):
-                left[1], right[1] = lo_x(left), lo_x(left) + gap
-            if right[1] > hi_x(right):
-                right[1], left[1] = hi_x(right), hi_x(right) - gap
-            if left[1] < lo_x(left):                    # too wide for one row: stack, each under its own face side
-                left[1] = max(lo_x(left), min(hi_x(left), left[1]))
-                right[1] = max(lo_x(right), min(hi_x(right), right[1]))
-                right[2] = tag_y + (left[0].height + right[0].height) / 2 + 4
+        if right[1] - left[1] < (left[0].width + right[0].width) / 2 + 12:
+            items[1][2] = tag_y + (left[0].height + right[0].height) / 2 + 6   # B one row lower, same face x
         for tg, x, y in items:
             paste(base, tg, x, y)
+
+    _G_SHOW = re.compile(r"(?i)\bshow\b|tonight|late night|\blive\b|\btv\b|network|records|studios?\b|\bcbs\b|\bnbc\b|\babc\b")
+    _G_ABBR = {"NYC": "New York", "NY": "New York", "DC": "Washington", "LA": "Los Angeles", "UK": "London"}
+
+    def g_place(place):
+        """A map label is a place only: drop show/brand parts ("Late Show, NYC" -> "New York"), expand city codes."""
+        parts = [q.strip() for q in (place or "").split(",") if q.strip()]
+        keep = [q for q in parts if not _G_SHOW.search(q)]
+        if len(keep) == 1:
+            keep = [_G_ABBR.get(keep[0].upper().replace(".", ""), keep[0])]
+        return ", ".join(keep)
 
     def frame_globe(seg, tt):
         i = seg["i"]
@@ -1432,7 +1438,7 @@ def render(slug: str, log=print) -> Path:
         by = max(G_Y0 + 150, min(1500, q[1] + 8 - hop)) + fy
         look = 1 if (p is None or cur[1] >= p[1]) else -1
         paste_pin(layer, pin_sprite("shock" if fly < 1 else "happy", 0, 0, look, scale=4), bx, by)
-        place = (spec["links"][i].get("where") or {}).get("place", "")
+        place = g_place((spec["links"][i].get("where") or {}).get("place", ""))
         if fly >= 1 and place:
             tg = pixel_tag(place.upper(), WHITE, 20)
             lx = dest[0] + fx + side * (24 + tg.width / 2)
@@ -1442,8 +1448,12 @@ def render(slug: str, log=print) -> Path:
         # the photo, big, in a print at the top; it pops in over the first 0.3 s of the link
         ih, iw = C.imgs[i].shape[:2]
         ph = int(max(470, min(G_PH, G_PW * ih / iw)))   # the print takes the photo's own shape (less crop)
-        cam = both_cam(i, G_PW, ph, 0.8)
-        sc_ = max(cam[2], G_PW / iw, ph / ih)           # always covered: no blurred fill inside the print
+        ba_, bb_ = fbox(i, "a"), fbox(i, "b")           # crop to the two faces (small faces in group shots get
+        fx0, fx1 = min(ba_[0], bb_[0]), max(ba_[0] + ba_[2], bb_[0] + bb_[2])   # bigger), never past ~1.25x
+        fy0, fy1 = min(ba_[1], bb_[1]), max(ba_[1] + ba_[3], bb_[1] + bb_[3])
+        sc_ = max(min(1.25, G_PW * 0.72 / max(1, fx1 - fx0), ph * 0.62 / max(1, fy1 - fy0)),
+                  G_PW / iw, ph / ih)                   # always covered: no blurred fill inside the print
+        cam = ((fx0 + fx1) / 2, (fy0 + fy1) / 2 + ph * 0.18 / sc_, sc_)   # faces in the upper part of the print
         cam = (max(G_PW / 2 / sc_, min(iw - G_PW / 2 / sc_, cam[0])), max(ph / 2 / sc_, min(ih - ph / 2 / sc_, cam[1])), sc_)
         pop = ease_out_back(min(1.0, local / 0.3))
         card = framed(view(i, *cam, G_PW, ph), tilt=0.0, tape=True)
