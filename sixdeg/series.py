@@ -68,7 +68,8 @@ def comments(limit: int = 100) -> dict:
         for it in r.get("items", []):
             s = it["snippet"]["topLevelComment"]["snippet"]
             rows.append({"author": s.get("authorDisplayName", ""), "text": s.get("textDisplay", "")[:300],
-                         "likes": s.get("likeCount", 0)})
+                         "likes": s.get("likeCount", 0), "avatar": s.get("authorProfileImageUrl", ""),
+                         "comment_id": it["id"]})
         out[u["slug"]] = {"video_id": u["video_id"], "comments": rows}
     (ROOT / "comments.json").write_text(json.dumps(out, indent=1, ensure_ascii=False))
     n = sum(len(v.get("comments", [])) for v in out.values())
