@@ -20,7 +20,10 @@
  "file": "elvis-presley-to-barack-obama.mp4",
  "kind": "formula",
  "voice": "gemini",
- "outro": true,
+ "outro": false,
  "voice_rev": 2,
+ "narration": false,
+ "links": 4,
+ "lineage": 0,
  "slug": "elvis-presley-to-barack-obama"
 }
