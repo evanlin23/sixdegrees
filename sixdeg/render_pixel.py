@@ -137,6 +137,60 @@ def pin_sprite(expr, angle=0.0, squash=0.0, look=0, scale=6):
     return pixelpin.draw(expr, scale, angle, squash, look, arms=True, hat=True)
 
 
+_SUB = {}
+
+
+def subscribe_button(base, t):
+    """A pixel SUBSCRIBE button under the photo: pops in, a pointer clicks it at 0.55 s and it turns into
+    SUBSCRIBED + a ringing bell. Lives in the gap between the photo card and the Shorts UI (y ~1470)."""
+    if "on" not in _SUB:
+        for k, (txt, bg, fg) in {"on": ("SUBSCRIBE", (204, 0, 0), WHITE), "off": ("SUBSCRIBED", (60, 60, 60), WHITE)}.items():
+            lab = pixel_text(txt, 34, fill=fg, shadow=False)
+            w, h = lab.width + 120, lab.height + 34
+            im = Image.new("RGBA", (w + 10, h + 10), (0, 0, 0, 0))
+            d = ImageDraw.Draw(im)
+            d.rounded_rectangle([10, 10, w + 9, h + 9], 18, fill=INK)                     # pixel drop shadow
+            d.rounded_rectangle([0, 0, w, h], 18, fill=bg, outline=INK, width=5)
+            bx, by = 26, h // 2                                                        # bell
+            d.ellipse([bx - 14, by - 16, bx + 14, by + 10], fill=fg)
+            d.rectangle([bx - 18, by + 4, bx + 18, by + 10], fill=fg)
+            d.ellipse([bx - 5, by + 10, bx + 5, by + 18], fill=fg)
+            im.alpha_composite(lab, (60, (h - lab.height) // 2))
+            _SUB[k] = im
+        hand = Image.new("RGBA", (44, 56), (0, 0, 0, 0))                               # pixel pointer
+        d = ImageDraw.Draw(hand)
+        d.polygon([(4, 2), (4, 44), (14, 34), (22, 52), (30, 48), (22, 30), (36, 30)], fill=WHITE, outline=INK)
+        _SUB["hand"] = hand
+    pop = ease_out_back(min(1.0, t / 0.18))
+    clicked = t > 1.0
+    btn = _SUB["off" if clicked else "on"]
+    press = 0.92 if 0.95 < t < 1.07 else 1.0
+    y = 1478
+    paste(base, btn, CX, y, scale=pop * press)
+    if t > 0.45:                                           # the pointer glides in from the lower right and taps
+        u = ease(min(1.0, (t - 0.45) / 0.5))
+        hx, hy = CX + 300 - 230 * u, y + 120 - 95 * u
+        paste(base, _SUB["hand"], hx, hy, scale=1.0)
+
+
+def _avatar(url):
+    """Download (and cache) a commenter's YouTube profile picture as a 70x70 RGB image; None if unavailable."""
+    if not url:
+        return None
+    import hashlib
+    import urllib.request
+    from .common import ROOT
+    cache = ROOT / ".cache" / "avatars"
+    cache.mkdir(parents=True, exist_ok=True)
+    f = cache / (hashlib.sha1(url.encode()).hexdigest() + ".img")
+    try:
+        if not f.exists():
+            req = urllib.request.Request(url, headers={"User-Agent": "sixdegrees-render/1.0"})
+            f.write_bytes(urllib.request.urlopen(req, timeout=20).read())
+        return Image.open(f).convert("RGB").resize((70, 70), Image.LANCZOS)
+    except Exception:  # noqa: BLE001 - fall back to the default silhouette
+        return None
+
 def paste_pin(base, spr, x, tip_y):
     # needle tip is ~41/44 down the sprite
     base.alpha_composite(spr, (int(x - spr.width / 2), int(tip_y - spr.height * 0.93)))
@@ -618,6 +672,8 @@ def render(slug: str, log=print) -> Path:
             st = min(1.0, (land - 0.35) / 0.12)
             _ci = pixel_text("CONNECTED!", 72, fill=RED)
             paste(base, _ci, CX, 1020, scale=min(2.0 - ease(st), (SAFE[2] - SAFE[0]) / _ci.width))   # never clipped
+        if last and land > 0.45:
+            subscribe_button(base, land - 0.45)          # owner: on-screen subscribe nudge on the payoff
         band(base, i)
         upto = i + (1 if land >= 0 else 0)
         blocks(base, upto, {upto} if land >= 0 else {i}, tt, sharpen=min(1.0, land / 0.35) if land >= 0 else 1.0)
@@ -688,9 +744,15 @@ def render(slug: str, log=print) -> Path:
         d = ImageDraw.Draw(im)
         d.rounded_rectangle([12, 12, w + 11, h + 11], 26, fill=(0, 0, 0, 120))           # shadow
         d.rounded_rectangle([0, 0, w, h], 26, fill=(255, 255, 255, 255), outline=INK, width=4)
-        d.ellipse([22, 30, 92, 100], fill=(120, 130, 150, 255))                             # avatar
-        d.ellipse([44, 44, 70, 70], fill=(225, 228, 235, 255))
-        d.pieslice([32, 70, 82, 120], 180, 360, fill=(225, 228, 235, 255))
+        av = _avatar(spec.get("request_avatar"))          # the viewer's real profile picture, when we have it
+        if av is not None:
+            mask = Image.new("L", (70, 70), 0)
+            ImageDraw.Draw(mask).ellipse([0, 0, 69, 69], fill=255)
+            im.paste(av, (22, 30), mask)
+        else:
+            d.ellipse([22, 30, 92, 100], fill=(120, 130, 150, 255))                         # default avatar
+            d.ellipse([44, 44, 70, 70], fill=(225, 228, 235, 255))
+            d.pieslice([32, 70, 82, 120], 180, 360, fill=(225, 228, 235, 255))
         d.text((112, 26), handle, font=fh, fill=(96, 96, 96))
         d.text((112, 64), text, font=ft, fill=(15, 15, 15))
         return im
@@ -737,13 +799,35 @@ def render(slug: str, log=print) -> Path:
                 tag = pixel_tag(C.labels[nm].upper(), col, 44)
                 ty = y1 - tag.height // 2 - 24 if sgn < 0 else y0 + tag.height // 2 + 30   # A under its face, B above
                 paste(base, tag, CX + int(sx), ty + int(sy))
+                # hero() puts the face box (brows..chin, ~340 px) centred at fy: its top is ~fy-150, the hair ~fy-300
+                if sgn < 0:   # Buh starts on top of A's head (pin tip in the hair, his body above it, off the face)
+                    a_spot = (CX + 120 + slide + int(sx), max(150, y0 + fy - 290) + int(sy))
+                else:         # ...and jumps down onto the left side of B's head, clear of B's tag and the comment
+                    b_spot = (CX - 250 + slide + int(sx), y0 + fy + 10 + int(sy))
             dr = ImageDraw.Draw(base)
             dr.rectangle([0, HERO_A[1], W, HERO_B[0]], fill=INK)               # the seam carries the question
             dr.rectangle([0, HERO_A[1] - 6, W, HERO_A[1]], fill=CYAN)
             dr.rectangle([0, HERO_B[0], W, HERO_B[0] + 6], fill=YELLOW)
-            hop = abs(math.sin(kk * 8)) * 26
-            paste_pin(base, pin_sprite("shock" if kk < 0.8 else ("smug" if int(kk * 2) % 2 else "angry"), 0, 0, -1),
-                      SAFE[2] - 170, HERO_A[1] - 6 - hop)                # Buh stands on the seam (clear of the Shorts buttons)
+            # owner: ~70 % stayed to watch, the opening sat still for 2.4 s. Now Buh jumps from A to B in the first
+            # second and drags the red string across: the "how?" in motion, and the show's mechanic up front.
+            J0, J1 = 0.55, 0.55 + THROW * 1.6
+            if kk < J0:
+                hop = abs(math.sin(kk * 9)) * 22
+                paste_pin(base, pin_sprite("shock", 0, 0, 1), a_spot[0], a_spot[1] - hop)
+            else:
+                u = min(1.0, (kk - J0) / (J1 - J0))
+                x, y, ang = pixelpin_path(a_spot, b_spot, u)
+                pe = (x, y) if u < 1 else b_spot
+                dr.line([a_spot, pe], fill=INK, width=14)
+                dr.line([a_spot, pe], fill=RED, width=8)
+                dr.rectangle([a_spot[0] - 10, a_spot[1] - 10, a_spot[0] + 10, a_spot[1] + 10], fill=RED, outline=INK, width=4)
+                if u < 1:
+                    paste_pin(base, pin_sprite("shock", ang, -0.4), x, y)
+                else:
+                    land = kk - J1
+                    sq = 0.8 * math.exp(-land * 10) * math.cos(land * 30)
+                    hop = abs(math.sin(land * 7)) * 18
+                    paste_pin(base, pin_sprite("smug" if int(land * 2) % 2 else "happy", 0, sq), b_spot[0], b_spot[1] - hop)
             if spec.get("requested_by"):   # the viewer's comment IS the hook (every reference hit opens on one)
                 pop = ease_out_back(min(1.0, kk / 0.25))
                 paste(base, comment_im, CX, (HERO_A[1] + HERO_B[0]) // 2 + 10, scale=0.6 + 0.4 * pop, nearest=False)
