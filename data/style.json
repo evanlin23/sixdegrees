@@ -2,7 +2,15 @@
  "style": "pixel",
  "mascot": "pixel Pin with detective hat",
  "rotation": [
-  "cards"
+  "cards",
+  "search",
+  "newspaper",
+  "chat",
+  "subway",
+  "tcg",
+  "wiki",
+  "museum",
+  "zoom"
  ],
- "_rotation": "Presentation styles new episodes rotate through (by slug hash). Only 'cards' until the creator picks from the audited pilots (zoom, globe, game, domino, wiki, search, newspaper, museum, subway, web, chat, tcg). globe is skipped unless every link has where.lat/lon. An episode's \"style\" wins."
+ "_rotation": "Presentation styles new episodes rotate through (by slug hash). Turned on 2026-11-12 for monetization (YouTube's inauthentic-content policy: no single template) with the styles that passed the final audit; game, domino, web and globe stay off until their last fixes. An episode's \"style\" wins."
 }
