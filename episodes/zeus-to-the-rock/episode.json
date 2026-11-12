@@ -3,7 +3,7 @@
   "to": "The Rock",
   "requested_by": "@matyldabankers1693",
   "title": "How is Zeus connected to The Rock?",
-  "description": "A painting from the Aeneid, Caesar's own coins, Rome's emperors and 266 popes connect the king of the Greek gods to The Rock.",
+  "description": "A painting from the Aeneid, Caesar's own coins, Rome's emperors and the line of popes connect the king of the Greek gods to The Rock.",
   "hook": "How is Zeus connected to The Rock?",
   "people": {
     "Zeus": {
@@ -16,11 +16,12 @@
     "Julius Caesar": {
       "label": "Julius Caesar"
     },
-    "Nero": {
-      "label": "Nero"
+    "Constantine the Great": {
+      "label": "Constantine",
+      "short": "Constantine"
     },
-    "Saint Peter": {
-      "label": "Saint Peter"
+    "Pope Sylvester I": {
+      "label": "Pope Sylvester"
     },
     "Pope Francis": {
       "label": "Pope Francis"
@@ -64,9 +65,9 @@
     },
     {
       "a": "Julius Caesar",
-      "b": "Nero",
+      "b": "Constantine the Great",
       "lineage": {
-        "label": "CAESAR'S DYNASTY",
+        "label": "LINE OF EMPERORS",
         "people": [
           {
             "name": "Julius Caesar",
@@ -75,33 +76,318 @@
           },
           {
             "name": "Augustus",
-            "file": "File:Augustus of Prima Porta.jpg",
+            "file": "File:Augustus of Prima Porta %28inv. 2290%29.jpg",
             "label": "1st emperor"
           },
           {
             "name": "Tiberius",
-            "file": "File:8095 - Roma - Ara Pacis - Tiberio - Foto Giovanni Dall'Orto - 28-Mar-2008.jpg",
+            "file": "File:%28Venice%29 Tiberius Portrait of the %27Imperium Maius%27 type in Museo Archeologico Nazionale.jpg",
             "label": "2nd"
           },
           {
             "name": "Caligula",
-            "file": "File:Caligula.Carlsberg Glyptotek.(cropped).jpg",
+            "file": "File:Portrait Head of Caligula - Getty Museum %2872.AA.155%29.jpg",
             "label": "3rd"
           },
           {
             "name": "Claudius",
-            "file": "File:Claudius crop.jpg",
+            "file": "File:Ch%C3%A2teau de Versailles%2C salon de la paix%2C buste d%27empereur romain %28Claude%29.jpg",
             "label": "4th"
           },
           {
             "name": "Nero",
-            "file": "File:Nero Glyptothek Munich 321.jpg",
-            "label": "5th emperor"
+            "file": "File:Nero Palatino Inv618.jpg",
+            "label": "5th"
+          },
+          {
+            "name": "Galba",
+            "file": "File:Stockholm - Antikengalerie 4 - B%C3%BCste Kaiser Galba.jpg",
+            "label": "6th"
+          },
+          {
+            "name": "Otho",
+            "file": "File:Oth001.jpg",
+            "label": "7th"
+          },
+          {
+            "name": "Vitellius",
+            "file": "File:Aulus Vitellius %28MRABASF Matritum%29 01.jpg",
+            "label": "8th"
+          },
+          {
+            "name": "Vespasian",
+            "file": "File:Head of Vespasianus in Palazzo Massimo %28Rome%29.jpg",
+            "label": "9th"
+          },
+          {
+            "name": "Titus",
+            "file": "File:Head Titus Glyptothek Munich 338.jpg",
+            "label": "10th"
+          },
+          {
+            "name": "Domitian",
+            "file": "File:Busto di Domiziano - Napoli museo Archeologico.jpg",
+            "label": "11th"
+          },
+          {
+            "name": "Nerva",
+            "file": "File:Head of Marcus Cocceius Nerva in Museo Nazionale Romano.jpg",
+            "label": "12th"
+          },
+          {
+            "name": "Trajan",
+            "file": "File:Traianus Glyptothek Munich 336.jpg",
+            "label": "13th"
+          },
+          {
+            "name": "Hadrian",
+            "file": "File:Bust Hadrian Musei Capitolini MC817.jpg",
+            "label": "14th"
+          },
+          {
+            "name": "Antoninus Pius",
+            "file": "File:Antoninus Pius Glyptothek Munich 337 cropped.jpg",
+            "label": "15th"
+          },
+          {
+            "name": "Marcus Aurelius",
+            "file": "File:Marcus Aurelius Louvre MR561 n02.jpg",
+            "label": "16th"
+          },
+          {
+            "name": "Lucius Verus",
+            "file": "File:Lucius Verus - MET - L.2007.26.jpg",
+            "label": "17th"
+          },
+          {
+            "name": "Commodus",
+            "file": "File:Commodus Musei Capitolini MC1120.jpg",
+            "label": "18th"
+          },
+          {
+            "name": "Pertinax",
+            "file": "File:Alba Iulia National Museum of the Union 2011 - Possible Statue of Roman Emperor Pertinax Close Up%2C Apulum.JPG",
+            "label": "19th"
+          },
+          {
+            "name": "Didius Julianus",
+            "file": "File:DidiusJulianusSest.jpg",
+            "label": "20th"
+          },
+          {
+            "name": "Septimius Severus",
+            "file": "File:SeptimeS%C3%A9v%C3%A8re.jpg",
+            "label": "21st"
+          },
+          {
+            "name": "Caracalla",
+            "file": "File:Caracalla MAN Napoli Inv6033 n01.jpg",
+            "label": "22nd"
+          },
+          {
+            "name": "Geta",
+            "file": "File:Geta.jpg",
+            "label": "23rd"
+          },
+          {
+            "name": "Macrinus",
+            "file": "File:Bust of Macrinus - Palazzo Nuovo - Musei Capitolini - Rome 2016.jpg",
+            "label": "24th"
+          },
+          {
+            "name": "Diadumenian",
+            "file": "File:Aureus Diadumenianus %28obverse%29.jpg",
+            "label": "25th"
+          },
+          {
+            "name": "Elagabalus",
+            "file": "File:Bust of Elagabalus - Palazzo Nuovo - Musei Capitolini - Rome 2016 %282%29.jpg",
+            "label": "26th"
+          },
+          {
+            "name": "Severus Alexander",
+            "file": "File:0 Alexandre S%C3%A9v%C3%A8re - MR 408 - Louvre %281b%29.JPG",
+            "label": "27th"
+          },
+          {
+            "name": "Maximinus Thrax",
+            "file": "File:Maximinus Thrax.jpg",
+            "label": "28th"
+          },
+          {
+            "name": "Gordian I",
+            "file": "File:Gordian I Musei Capitolini MC475.jpg",
+            "label": "29th"
+          },
+          {
+            "name": "Gordian II",
+            "file": "File:GordianusIIsest.jpg",
+            "label": "30th"
+          },
+          {
+            "name": "Pupienus",
+            "file": "File:Pupienus Musei Capitolini MC477.jpg",
+            "label": "31st"
+          },
+          {
+            "name": "Balbinus",
+            "file": "File:Balbinus Hermitage.jpg",
+            "label": "32nd"
+          },
+          {
+            "name": "Gordian III",
+            "file": "File:Bust Gordianus III Louvre Ma1063.jpg",
+            "label": "33rd"
+          },
+          {
+            "name": "Philip the Arab",
+            "file": "File:Philippus Arabicus.jpg",
+            "label": "34th"
+          },
+          {
+            "name": "Pacatian",
+            "file": "File:Antoninianus-Pacatianus-1001-RIC 0006cf.jpg",
+            "label": "35th"
+          },
+          {
+            "name": "Silbannacus",
+            "file": "File:Silbannacus-1 obvers.jpg",
+            "label": "36th"
+          },
+          {
+            "name": "Decius",
+            "file": "File:Bust of Decius - Palazzo Nuovo - Musei Capitolini - Rome 2016 %282%29.jpg",
+            "label": "37th"
+          },
+          {
+            "name": "Volusian",
+            "file": "File:Aureus Volusianus %28obverse%29.jpg",
+            "label": "38th"
+          },
+          {
+            "name": "Herennius Etruscus",
+            "file": "File:Sestertius Herennius Etruscus-s2749.jpg",
+            "label": "39th"
+          },
+          {
+            "name": "Hostilian",
+            "file": "File:Aureus Hostilian RIC 0183a.JPG",
+            "label": "40th"
+          },
+          {
+            "name": "Trebonianus Gallus",
+            "file": "File:Archeologico di Firenze%2C ritratto di treboniano gallo 01.JPG",
+            "label": "41st"
+          },
+          {
+            "name": "Aemilian",
+            "file": "File:Aemilian.jpg",
+            "label": "42nd"
+          },
+          {
+            "name": "Valerian",
+            "file": "File:Aureus Valerian-RIC 0034-transparent.png",
+            "label": "43rd"
+          },
+          {
+            "name": "Gallienus",
+            "file": "File:Ritratto di gallieno dalla casa delle vestali.jpg",
+            "label": "44th"
+          },
+          {
+            "name": "Ingenuus",
+            "file": "File:Ingenuus.jpg",
+            "label": "45th"
+          },
+          {
+            "name": "Saloninus",
+            "file": "File:Aureus Saloninus Caesar %28obverse%29.jpg",
+            "label": "46th"
+          },
+          {
+            "name": "Macrianus Major",
+            "file": "File:Macrianus Major.jpg",
+            "label": "47th"
+          },
+          {
+            "name": "Claudius Gothicus",
+            "file": "File:ClaudiusGothicusSC265569.jpg",
+            "label": "48th"
+          },
+          {
+            "name": "Quintillus",
+            "file": "File:Antoninianus Quintillus-s3243.jpg",
+            "label": "49th"
+          },
+          {
+            "name": "Aurelian",
+            "file": "File:Busto di Claudio II il Gotico%2C Brescia%2C Santa Giulia.jpg",
+            "label": "50th"
+          },
+          {
+            "name": "Tacitus",
+            "file": "File:EmpereurTacite.jpg",
+            "label": "51st"
+          },
+          {
+            "name": "Florian",
+            "file": "File:Antoninianus Florianus-unpub ant hercules.jpg",
+            "label": "52nd"
+          },
+          {
+            "name": "Probus",
+            "file": "File:Probus Musei Capitolini MC493.jpg",
+            "label": "53rd"
+          },
+          {
+            "name": "Carus",
+            "file": "File:Caro - dritto aureo.jpg",
+            "label": "54th"
+          },
+          {
+            "name": "Numerian",
+            "file": "File:AV Antoninianus Numerianus.JPG",
+            "label": "55th"
+          },
+          {
+            "name": "Carinus",
+            "file": "File:Montemartini - Carino 1030439.JPG",
+            "label": "56th"
+          },
+          {
+            "name": "Diocletian",
+            "file": "File:Istanbul - Museo archeol. - Diocleziano %28284-305 d.C.%29 - Foto G. Dall%27Orto 28-5-2006.jpg",
+            "label": "57th"
+          },
+          {
+            "name": "Maximian",
+            "file": "File:MSR - T%C3%AAte de l%27empreur Maximien Hercule - Inv 34 b %28cropped%29.jpg",
+            "label": "58th"
+          },
+          {
+            "name": "Constantius Chlorus",
+            "file": "File:Const.chlorus01 pushkin.jpg",
+            "label": "59th"
+          },
+          {
+            "name": "Galerius",
+            "file": "File:Romuliana Galerius head.jpg",
+            "label": "60th"
+          },
+          {
+            "name": "Severus",
+            "file": "File:Follis-Flavius Valerius Severus-trier RIC 650a.jpg",
+            "label": "61st"
+          },
+          {
+            "name": "Constantine the Great",
+            "file": "File:Byzantinischer Mosaizist um 1000 002.jpg",
+            "label": "62nd"
           }
         ]
       },
-      "line": "Caesar's heir Augustus became Rome's first emperor, and the dynasty ran four more emperors to Nero.",
-      "fact": "Rome, 44 BC to AD 68",
+      "line": "Caesar's heir Augustus became Rome's first emperor, and the line of emperors ran to Constantine the Great.",
+      "fact": "Rome, 27 BC to AD 337",
       "where": {
         "place": "Rome",
         "lat": 41.893,
@@ -109,191 +395,29 @@
       }
     },
     {
-      "a": "Nero",
-      "b": "Saint Peter",
+      "a": "Constantine the Great",
+      "b": "Pope Sylvester I",
       "image": {
-        "file": "File:Cappella brancacci, Disputa di Simon Mago (restaurato), Filippino Lippi.jpg"
+        "file": "File:Raphael Rooms The Baptism of Constantine.jpg"
       },
-      "line": "Around 1482, Filippino Lippi painted Nero putting the apostle Peter, the first pope, on trial.",
-      "a_face": 6,
-      "b_face": 2,
-      "fact": "Brancacci Chapel, Florence",
+      "line": "In the Vatican's Hall of Constantine, Raphael's pupils painted Pope Sylvester baptizing Constantine.",
+      "fact": "Hall of Constantine, Vatican",
       "where": {
-        "place": "Brancacci Chapel, Florence",
-        "lat": 43.7677,
-        "lon": 11.244
+        "place": "Raphael Rooms, Vatican City",
+        "lat": 41.9067,
+        "lon": 12.4547
       }
     },
     {
-      "a": "Saint Peter",
+      "a": "Pope Sylvester I",
       "b": "Pope Francis",
       "lineage": {
         "label": "LINE OF POPES",
         "people": [
           {
-            "name": "Saint Peter",
-            "file": "File:Pope-peter pprubens.jpg",
-            "label": "1st pope"
-          },
-          {
-            "name": "Linus",
-            "file": "File:2-St.Linus.jpg",
-            "label": "2nd"
-          },
-          {
-            "name": "Anacletus",
-            "file": "File:Pope Anacletus.jpg",
-            "label": "3rd"
-          },
-          {
-            "name": "Clement",
-            "file": "File:Clemens Romanus.jpg",
-            "label": "4th"
-          },
-          {
-            "name": "Evaristus",
-            "file": "File:Evaristus at St Paul.gif",
-            "label": "5th"
-          },
-          {
-            "name": "Alexander I",
-            "file": "File:Sanctus Alexander Papa Sancta Maria Antiqua%28cropped%29.jpg",
-            "label": "6th"
-          },
-          {
-            "name": "Sixtus I",
-            "file": "File:Pope Sixtus I.jpg",
-            "label": "7th"
-          },
-          {
-            "name": "Telesphorus",
-            "file": "File:Pope Telesphorus.jpg",
-            "label": "8th"
-          },
-          {
-            "name": "Hyginus",
-            "file": "File:Pope Hyginus in St Paul.gif",
-            "label": "9th"
-          },
-          {
-            "name": "Pius I",
-            "file": "File:Pope Pius I.jpg",
-            "label": "10th"
-          },
-          {
-            "name": "Anicetus",
-            "file": "File:Pope Anicetus.jpg",
-            "label": "11th"
-          },
-          {
-            "name": "Soter",
-            "file": "File:Pope Soterius.gif",
-            "label": "12th"
-          },
-          {
-            "name": "Eleuterus",
-            "file": "File:Eleutherius.jpg",
-            "label": "13th"
-          },
-          {
-            "name": "Victor I",
-            "file": "File:Pope Victor I.jpg",
-            "label": "14th"
-          },
-          {
-            "name": "Zephyrinus",
-            "file": "File:Fresco of Pope Zephyrinus - Basilica of Saint Paul Outside the Walls %28Before 1823%29.png",
-            "label": "15th"
-          },
-          {
-            "name": "Callixtus I",
-            "file": "File:Fresco of Pope Callixtus I - Basilica of Saint Paul Outside the Walls %28Before 1823%29.jpg",
-            "label": "16th"
-          },
-          {
-            "name": "Urban I",
-            "file": "File:Pope Urban I.jpg",
-            "label": "17th"
-          },
-          {
-            "name": "Pontian",
-            "file": "File:18-St.Pontian.jpg",
-            "label": "18th"
-          },
-          {
-            "name": "Anterus",
-            "file": "File:Pietro Perugino %E2%80%93 Anterus.jpg",
-            "label": "19th"
-          },
-          {
-            "name": "Fabian",
-            "file": "File:Saint Fabian1.jpg",
-            "label": "20th"
-          },
-          {
-            "name": "Cornelius",
-            "file": "File:Heiliger Cornelius.jpg",
-            "label": "21st"
-          },
-          {
-            "name": "Lucius I",
-            "file": "File:Fresco of Pope Lucius I - Basilica of Saint Paul Outside the Walls %28Before 1823%29.jpg",
-            "label": "22nd"
-          },
-          {
-            "name": "Stephen I",
-            "file": "File:Pope Stephen I.jpg",
-            "label": "23rd"
-          },
-          {
-            "name": "Sixtus II",
-            "file": "File:Sandro Botticelli %E2%80%93 Sixtus II.jpg",
-            "label": "24th"
-          },
-          {
-            "name": "Dionysius",
-            "file": "File:Pope Dionysius.jpg",
-            "label": "25th"
-          },
-          {
-            "name": "Felix I",
-            "file": "File:Pope Felix I.jpg",
-            "label": "26th"
-          },
-          {
-            "name": "Eutychian",
-            "file": "File:27-St.Eutychian.jpg",
-            "label": "27th"
-          },
-          {
-            "name": "Caius",
-            "file": "File:PCaius.jpg",
-            "label": "28th"
-          },
-          {
-            "name": "Marcellinus",
-            "file": "File:Marcellinus.jpg",
-            "label": "29th"
-          },
-          {
-            "name": "Marcellus I",
-            "file": "File:Pope Marcellus I.jpg",
-            "label": "30th"
-          },
-          {
-            "name": "Eusebius",
-            "file": "File:Eusebius.jpg",
-            "label": "31st"
-          },
-          {
-            "name": "Miltiades",
-            "file": "File:Pope miltiades.jpg",
-            "label": "32nd"
-          },
-          {
-            "name": "Sylvester I",
+            "name": "Pope Sylvester I",
             "file": "File:Sylvester I.jpg",
-            "label": "33rd"
+            "label": "33rd pope"
           },
           {
             "name": "Mark",
@@ -1457,7 +1581,7 @@
           }
         ]
       },
-      "line": "From Peter, the line of popes runs unbroken to the 266th, Pope Francis.",
+      "line": "From Sylvester, the 33rd pope, the line runs unbroken to the 266th, Pope Francis.",
       "fact": "Line of popes",
       "where": {
         "place": "Vatican City",
