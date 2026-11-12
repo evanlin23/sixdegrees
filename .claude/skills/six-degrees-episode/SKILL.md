@@ -38,8 +38,8 @@ episode.json: the hook shows the viewer's request bubble and the first comment c
      {"name": "Pope Gregory I", "file": "File:...jpg", "label": "64th"},
      {"name": "Pope Francis", "file": "File:...jpg", "label": "266th"}]}}
   ```
-  The first and last names must equal `a` and `b`. Use 6-15 portraits, choosing well-known holders to skip
-  through a long line. It counts as one link.
+  The first and last names must equal `a` and `b`. Include **every** holder in between (generate the list with
+  `python -m sixdeg lineage`, see "comedic parade" below); it scrolls past in a few seconds. It counts as one link.
 - **Same picture, same medium.** Both people in a link must be depicted *in the same picture*. Real people link
   through a photo of them together. People from the past link through an artwork that depicts **both** of them:
   the same painting, the same mosaic, or two figures in the same sculpture group. A real person photographed
@@ -73,6 +73,23 @@ episode.json: the hook shows the viewer's request bubble and the first comment c
   with `"people": {"Dwayne Johnson": {"label": "The Rock"}}`; the key stays the Wikipedia name so faces still
   match. The header ("A > B") shows labels up to 15 letters in full; for a longer one set a short form, e.g.
   `"SpongeBob SquarePants": {"short": "SpongeBob"}`. A character's name only ever labels the character's own artwork, never the actor in a real photo.
+- **The chain is a comedic parade (what made our 40k-view Da Vinci → Naruto work).** Don't take the shortest route.
+  Take the funniest: a long line of instantly famous faces (8–12 links is good) that makes viewers think "how many
+  people do we have to go through?!". Rules:
+  - **No obvious shortcuts.** No person may be famously connected to anyone two or more steps later in the chain.
+    "Obama → Trump → Michelle Obama" is banned, because viewers say "just go Obama → Michelle". Check every pair
+    (i, j) with j ≥ i + 2: if they're spouses, a well-known duo, or were photographed together famously, re-route.
+  - **Hide the destination.** Nothing from B's world (B's franchise, voice actor, creator, country or era) may
+    appear until the second-to-last link. Naruto's voice actor showed up only 8 s before the end.
+  - **Pacing: slow, funny middle; sprint at the end.** Middle lines can be full sentences with a fun fact (up to
+    ~18 words). The last 2–3 lines must be very short (3–7 words: "She works with his creator." "Who drew
+    Naruto."). The video ends the instant B appears. The renderer reveals B at the end of the last line and cuts.
+  - **Lineage links show EVERYONE.** A line of popes, presidents or emperors scrolls past super fast with every
+    holder, not a hand-picked few. Generate the list with
+    `python -m sixdeg lineage popes --from "Saint Peter" --to "Pope Francis"` (also `us-presidents`,
+    `roman-emperors`, `uk-monarchs`, `english-monarchs`, `french-monarchs`, or a Wikidata QID) and paste its
+    `{"label", "people"}` into the link's `"lineage"`. Rename the first/last `name` to match the link's `a`/`b` if
+    they're spelled differently. Check the presidents list by eye: Wikidata has some noise there.
 - **No limit on the number of links.** A Short can be up to 3 minutes, and QA fails only past 3:00 (it warns past
   60 s). Shorter is better for retention, so prefer the most surprising chain with tight lines.
 - Never invent a meeting, a photo or a caption.

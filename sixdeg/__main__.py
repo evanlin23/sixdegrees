@@ -77,6 +77,9 @@ def main(argv):
         from .research import channel_report
         for h in args:
             channel_report(h)
+    elif cmd == "lineage":  # every holder of an office with portraits: lineage popes --from "Saint Peter" --to "Pope Francis"
+        from .lineage import main as lineage_main
+        print(lineage_main(args))
     elif cmd == "studio":  # import a YouTube Studio metrics snapshot (docs/studio-metrics-prompt.md) and compare groups
         from .studio import run
         print(run(args[0]))

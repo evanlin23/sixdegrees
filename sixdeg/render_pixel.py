@@ -197,8 +197,11 @@ def render(slug: str, log=print) -> Path:
         last = i == n_links - 1
         speech = len(a) / audio.SR + 0.08
         # last photo: cut hard right after the final word / the CONNECTED! slam, for a seamless loop
-        d = max(speech + 0.05, seg_reveal(speech) + THROW + 0.5) if last else speech + PAD
-        reveal = t + (speech * 0.9 - THROW if link.get("lineage") else seg_reveal(speech))
+        # the final destination stays hidden (camera tight on A) until the END of the last line, then lands and we
+        # cut almost at once: "ends super fast after the last link is shown" (what the 40k-view 2025 hit did)
+        rv = max(REVEAL, (speech - THROW - 0.3) / speech) if last and not link.get("lineage") else REVEAL
+        d = max(speech + 0.05, rv * speech + THROW + 0.3) if last else speech + PAD
+        reveal = t + (speech * 0.9 - THROW if link.get("lineage") else rv * speech)
         if last and use_outro:   # "And that's how." lands with the CONNECTED! stamp, then a hard cut
             oa, ow = audio.say(OUTRO, voice)
             ot = max(t + 0.08 + speech, reveal + THROW + 0.3)
@@ -206,7 +209,7 @@ def render(slug: str, log=print) -> Path:
             words = list(words) + [(w, a0 + ot - (t + 0.08), b0 + ot - (t + 0.08)) for w, a0, b0 in ow]
             d = max(d, ot - t + len(oa) / audio.SR + 0.12)
         segs.append({"kind": "link", "i": i, "t0": t, "t1": t + d, "cap": PixelCaptions(words, t + 0.08),
-                     "speech": speech})
+                     "speech": speech, "rv": rv})
         voice_clips.append((t + 0.08, a))
         sfx += [(t, assets.sfx("px_cut", 0.45)), (t, assets.sfx("shutter", 0.35)),
                 (reveal, assets.sfx("px_jump", 0.35)),
@@ -269,31 +272,40 @@ def render(slug: str, log=print) -> Path:
         dr.rectangle([0, 0, W, BAND], fill=INK)
         paste(base, title_im, CX, 165)
         if i is not None:
-            paste(base, pixel_text(f"LINK {i + 1}/{n_links}", 22, fill=YELLOW, shadow=False), CX, 232)
+            paste(base, pixel_text(f"LINK {i + 1}", 22, fill=YELLOW, shadow=False), CX, 232)   # no total: the end stays a surprise
 
     def blocks(base, upto, active, tt, sharpen=1.0):
-        """Chain bar: revealed faces sharp, upcoming faces blurred; the newest one sharpens in (sharpen 0..1)."""
+        """Chain bar: the faces revealed so far, then a "?" slot, with the destination (blurred until reached) at the
+        far right. It never shows how many links are left, so viewers can't tell the end is near."""
         n = len(C.people)
+        shown = list(range(min(upto + 1, n)))                 # revealed so far (the newest one sharpens in)
+        reached_end = shown and shown[-1] == n - 1
+        slots = shown + ([] if reached_end else ["?", n - 1])
         span = SAFE[2] - SAFE[0]
-        size = min(92, int(span / n) - 16)
-        gap = span / n
+        gap = span / max(6, len(slots))
+        size = min(92, int(gap) - 16)
         y = BAR_Y
         dr = ImageDraw.Draw(base)
-        for k, nm in enumerate(C.people):
-            cx = SAFE[0] + gap * (k + 0.5)
+        for pos, k in enumerate(slots):
+            cx = SAFE[0] + gap * (pos + 0.5) if not (k == n - 1 and not reached_end) else SAFE[2] - gap * 0.5
             bob = -6 * abs(math.sin(tt * 6)) if k in active else 0
             x0, y0 = cx - size / 2, y - size / 2 + bob
             dr.rectangle([x0 + 8, y0 + 8, x0 + size + 8, y0 + size + 8], fill=INK)
             dr.rectangle([x0, y0, x0 + size, y0 + size], fill=YELLOW if k in active else WHITE, outline=INK, width=6)
             inner = size - 12
-            if k < upto or (k == upto and sharpen >= 1):
-                th = sharp[nm].resize((inner, inner), Image.BICUBIC)
-            elif k == upto:
-                th = Image.blend(blurred[nm].resize((inner, inner), Image.BICUBIC),
-                                 sharp[nm].resize((inner, inner), Image.BICUBIC), sharpen)
+            if k == "?":
+                q = pixel_text("?", max(20, inner // 2), fill=INK, outline=WHITE, shadow=False)
+                paste(base, q, cx, y + bob)
             else:
-                th = blurred[nm].resize((inner, inner), Image.BICUBIC)
-            base.alpha_composite(th.convert("RGBA"), (int(x0 + 6), int(y0 + 6)))
+                nm = C.people[k]
+                if k < upto or (k == upto and sharpen >= 1):
+                    th = sharp[nm].resize((inner, inner), Image.BICUBIC)
+                elif k == upto:
+                    th = Image.blend(blurred[nm].resize((inner, inner), Image.BICUBIC),
+                                     sharp[nm].resize((inner, inner), Image.BICUBIC), sharpen)
+                else:
+                    th = blurred[nm].resize((inner, inner), Image.BICUBIC)
+                base.alpha_composite(th.convert("RGBA"), (int(x0 + 6), int(y0 + 6)))
             dr.rectangle([x0, y0, x0 + size, y0 + size], outline=INK, width=6)
 
     def credit(base, i):
@@ -377,15 +389,18 @@ def render(slug: str, log=print) -> Path:
         img, cm = C.imgs[i], cams[i]
         last = i == n_links - 1
         k = min(1.0, (tt - seg["t0"]) / seg["speech"])
+        R = seg.get("rv", REVEAL)                       # this link's reveal point (late on the final link)
+        hold = max(0.62, R + 0.08)
         if k < 0.10:
             cam = cm["a"]
-        elif k < REVEAL:
-            cam = lerp_cam(cm["a"], cm["both"], ease((k - 0.10) / (REVEAL - 0.10)))
-        elif k < 0.62:
+        elif k < R:
+            pan = 0.10 if R <= REVEAL else R - 0.12     # final link: stay on A until just before the reveal
+            cam = cm["a"] if k < pan else lerp_cam(cm["a"], cm["both"], ease((k - pan) / (R - pan)))
+        elif k < hold:
             cam = cm["both"]
         else:
-            cam = lerp_cam(cm["both"], cm["b"], ease((k - 0.62) / 0.30))
-        since = (k - REVEAL) * seg["speech"]
+            cam = lerp_cam(cm["both"], cm["b"], ease(min(1.0, (k - hold) / 0.30)))
+        since = (k - R) * seg["speech"]
         land = since - THROW
         incut = tt - seg["t0"]
         punch = 0.10 * math.exp(-land * 8) if land >= 0 else 0.0
@@ -426,7 +441,7 @@ def render(slug: str, log=print) -> Path:
             dr.rectangle([pa[0] - 10, pa[1] - 10, pa[0] + 10, pa[1] + 10], fill=RED, outline=INK, width=4)
         # name tags
         names = (spec["links"][i]["a"], spec["links"][i]["b"])
-        for role, nm, appear, col in (("ba", names[0], 0.0, CYAN), ("bb", names[1], REVEAL + THROW / seg["speech"], YELLOW)):
+        for role, nm, appear, col in (("ba", names[0], 0.0, CYAN), ("bb", names[1], R + THROW / seg["speech"], YELLOW)):
             bx = cm[role]
             fx, fy = to_screen(M, bx[0] + bx[2] / 2, bx[1] + bx[3] / 2)
             if not (CARD[0] < fx < CARD[2] and CARD[1] < fy < CARD[3]):

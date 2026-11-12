@@ -119,10 +119,17 @@ def _prep_lineage(link: dict, work: Path, i: int, log=print) -> tuple[dict, dict
     if ppl[0]["name"] != link["a"] or ppl[-1]["name"] != link["b"]:
         raise SystemExit(f"link {i}: lineage must start with '{link['a']}' and end with '{link['b']}'")
     items, recs = [], []
+    big = len(ppl) > 20          # a full line (all 266 popes) scrolls past in seconds: small portraits are plenty
     for j, p in enumerate(ppl):
         sp = {"file": p["file"]} if p.get("file") else {"url": p["url"], "credit": p.get("credit", ""),
                                                          "license": p.get("license", "unknown"), "source": p.get("source", p.get("url"))}
-        r = _fetch_image(sp, work / f"link{i}_L{j:02d}")
+        try:
+            r = _fetch_image(sp, work / f"link{i}_L{j:03d}", **({"width": 400} if big else {}))
+        except Exception as ex:  # noqa: BLE001 - in a long line one missing portrait is fine; the ends are not
+            if j in (0, len(ppl) - 1):
+                raise
+            log(f"  ! lineage portrait {p['name']}: {ex}")
+            continue
         recs.append(r)
         img = faces.load(work / r["path"])
         det = faces.detect(img)
@@ -140,14 +147,16 @@ def _prep_lineage(link: dict, work: Path, i: int, log=print) -> tuple[dict, dict
         d = ImageDraw.Draw(im)
         x, y, w, h = it["box"]
         d.rectangle([x, y, x + w, y + h], outline=(0, 220, 0), width=max(3, im.width // 150))
-        im.thumbnail((260, 320))
-        cell = Image.new("RGB", (270, 360), (20, 20, 20)); cell.paste(im, (5, 5))
-        ImageDraw.Draw(cell).text((6, 330), it["name"][:30], font=_font(16), fill=(255, 255, 255))
+        cw, ch = (130, 175) if big else (270, 360)
+        im.thumbnail((cw - 10, ch - 40))
+        cell = Image.new("RGB", (cw, ch), (20, 20, 20)); cell.paste(im, (5, 5))
+        ImageDraw.Draw(cell).text((6, ch - 30), it["name"][:30 if not big else 16], font=_font(16 if not big else 11),
+                                  fill=(255, 255, 255))
         thumbs.append(cell)
-    cols = 6
-    sheet = Image.new("RGB", (270 * cols, 360 * ((len(thumbs) + cols - 1) // cols)), (0, 0, 0))
+    cols = 16 if big else 6
+    sheet = Image.new("RGB", (cw * cols, ch * ((len(thumbs) + cols - 1) // cols)), (0, 0, 0))
     for j, c in enumerate(thumbs):
-        sheet.paste(c, ((j % cols) * 270, (j // cols) * 360))
+        sheet.paste(c, ((j % cols) * cw, (j // cols) * ch))
     sheet.save(work / f"review{i}.jpg", quality=85)
     first = faces.load(work / items[0]["path"])
     res = {"image": items[0]["path"], "size": [first.shape[1], first.shape[0]], "faces": [items[0]["box"]],
