@@ -483,13 +483,14 @@ def render(slug: str, log=print) -> Path:
                 base.alpha_composite(th.convert("RGBA"), (int(x0 + 6), int(y0 + 6)))
             dr.rectangle([x0, y0, x0 + size, y0 + size], outline=INK, width=6)
 
-    def credit(base, i):
+    def credit(base, i, xy=None):
+        """Photo credit (CC licences require it), right-aligned at xy (default: under the cards photo)."""
         cr = C.fj["credits"][i]
         who = (cr.get("artist") or "").strip()
         if len(who) > 26 or "(" in who or "http" in who:
             who = "Wikimedia Commons" if cr.get("file") else ""
         txt = f"PHOTO: {who + ' / ' if who else ''}{cr.get('license', '')}".upper()
-        ImageDraw.Draw(base).text((CARD[2], CARD[3] + 32), txt, font=sf(18), fill=(255, 255, 255), anchor="rm",
+        ImageDraw.Draw(base).text(xy or (CARD[2], CARD[3] + 32), txt, font=sf(18), fill=(255, 255, 255), anchor="rm",
                                   stroke_width=2, stroke_fill=INK)
 
     # ---------- frames
@@ -660,7 +661,7 @@ def render(slug: str, log=print) -> Path:
         c.update(spa=pa, spb=pb, rect=(X0, Y0, w, h))
         return c
 
-    def core_finish(base, seg, tt, c, connected_y=1020, sub=True, chain=True, caption=True):
+    def core_finish(base, seg, tt, c, connected_y=1020, sub=True, chain=True, caption=True, credit_xy=None):
         """The shared payoff + chrome every style keeps: CONNECTED!, the Subscribe nudge, the title band and chain
         bar, the photo credit, the caption and the cut flashes. A style can move CONNECTED! or skip a piece it
         draws itself (chain=False if it has its own progress display)."""
@@ -675,7 +676,12 @@ def render(slug: str, log=print) -> Path:
         if chain:
             upto = i + (1 if land >= 0 else 0)
             blocks(base, upto, {upto} if land >= 0 else {i}, tt, sharpen=min(1.0, land / 0.35) if land >= 0 else 1.0)
-        credit(base, i)
+        # the credit hugs the photo window the style actually drew (right edge, just under it), unless told otherwise
+        X0, Y0, w_, h_ = c["rect"]
+        cxy = credit_xy or (X0 + w_, Y0 + h_ + 32)
+        if not credit_xy and cxy[1] > SAFE[3] - 4:          # no room under it: print it inside the photo's bottom edge
+            cxy = (X0 + w_ - 12, Y0 + h_ - 18)
+        credit(base, i, cxy)
         if caption:
             seg["cap"].draw(base, tt)
         if incut < 0.10:
