@@ -814,6 +814,14 @@
  },
  {
   "from": "Adolf Hitler",
+  "to": "Albert Einstein",
+  "status": "done",
+  "source": "operator",
+  "hint": "required first link Lloyd George at Obersalzberg 1936 (USHMM/NARA public domain print), then Churchill (Terrible Twins 1907), Chaplin (Hollywood 1929), Einstein (City Lights premiere 1931)",
+  "slug": "adolf-hitler-to-albert-einstein"
+ },
+ {
+  "from": "Adolf Hitler",
   "to": "Sonic the Hedgehog",
   "status": "done",
   "source": "viral formula",
