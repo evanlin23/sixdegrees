@@ -23,5 +23,8 @@
  "voice": "gemini",
  "outro": true,
  "voice_rev": 2,
+ "narration": true,
+ "links": 5,
+ "lineage": 0,
  "slug": "adolf-hitler-to-spongebob-squarepants"
 }
