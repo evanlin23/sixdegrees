@@ -2,7 +2,7 @@
   "from": "Adolf Hitler",
   "to": "Shrek",
   "title": "How is Adolf Hitler connected to Shrek?",
-  "description": "Seven real pictures connect Adolf Hitler to Shrek, through Hindenburg, Kaiser Wilhelm II, King George V, Queen Elizabeth II, Barack Obama and Mike Myers.",
+  "description": "Seven real pictures connect Adolf Hitler to Shrek, through Hindenburg, Kaiser Wilhelm II, King George V, Queen Elizabeth II, Justin Trudeau and Mike Myers.",
   "hook": "How is Adolf Hitler connected to Shrek?",
   "people": {
     "Adolf Hitler": {
@@ -21,14 +21,14 @@
     "Elizabeth II": {
       "label": "Queen Elizabeth"
     },
-    "Barack Obama": {
-      "label": "Barack Obama"
-    },
     "Mike Myers": {
       "label": "Mike Myers"
     },
     "Shrek": {
       "label": "Shrek"
+    },
+    "Justin Trudeau": {
+      "label": "Justin Trudeau"
     }
   },
   "links": [
@@ -101,43 +101,29 @@
     },
     {
       "a": "Elizabeth II",
-      "b": "Barack Obama",
+      "b": "Justin Trudeau",
       "image": {
-        "file": "File:Barack Obama Michelle Obama Queen Elizabeth II Buckingham Palace London.jpg"
+        "file": "File:Prime Minister Boris Johnson G7 Summit Day One - 51242021245.jpg"
       },
-      "line": "Decades later, in 2009, Queen Elizabeth II welcomed President Barack Obama to Buckingham Palace.",
-      "a_face": 3,
-      "b_face": 0,
-      "fact": "Buckingham Palace, 2009",
+      "line": "In 2021, Queen Elizabeth II hosted Justin Trudeau and the other G7 leaders in Cornwall.",
+      "fact": "Eden Project, 2021",
       "where": {
-        "place": "Buckingham Palace",
-        "lat": 51.501,
-        "lon": -0.142
+        "place": "Eden Project, Cornwall",
+        "lat": 50.362,
+        "lon": -4.745
       }
     },
     {
-      "a": "Barack Obama",
+      "a": "Justin Trudeau",
       "b": "Mike Myers",
       "image": {
-        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/052112_Mike_Myers.webm/1280px-seek%3D148-052112_Mike_Myers.webm.jpg",
-        "credit": "The White House (video frame)",
-        "license": "Public domain",
-        "source": "https://commons.wikimedia.org/wiki/File:052112_Mike_Myers.webm",
-        "free": true
+        "url": "https://cf-images.assettype.com/thequint/2016-03/27a8e0e1-bd2e-42a6-ab0d-7c391736bd0c/Screen%20Shot%202016-03-11%20at%2012.15.51%20pm.png?w=1200",
+        "credit": "Justin Trudeau on Twitter (via The Quint)",
+        "license": "Fair use (commentary)",
+        "source": "https://www.thequint.com/news/world/when-trudeau-tangoed-his-way-to-washington-and-into-our-hearts"
       },
-      "a_face": [
-        1190,
-        325,
-        85,
-        100
-      ],
-      "b_face": [
-        300,
-        82,
-        92,
-        100
-      ],
-      "line": "In 2012, Mike Myers performed for Obama at a White House concert honoring Burt Bacharach.",
+      "line": "In 2016, at the White House state dinner, Trudeau greeted fellow Canadian Mike Myers.",
+      "fact": "White House, 2016",
       "where": {
         "place": "White House",
         "lat": 38.897,
@@ -170,6 +156,6 @@
       }
     }
   ],
-  "research_note": "The 1910 funeral of Edward VII put the Kaiser in one photo with his cousin George V, and the royals carry the chain to Obama.",
+  "research_note": "Edward VII's 1910 funeral put the Kaiser in one photo with his cousin George V; the royals carry the chain to Trudeau, who greeted Mike Myers at a White House dinner.",
   "fun_fact": "Kaiser Wilhelm II and King George V were first cousins, both grandsons of Queen Victoria, yet led opposite sides in World War I."
 }
