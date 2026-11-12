@@ -28,5 +28,8 @@
  "voice": "gemini",
  "outro": false,
  "voice_rev": 2,
+ "narration": false,
+ "links": 10,
+ "lineage": 14,
  "slug": "zeus-to-one-piece"
 }
