@@ -1,0 +1,1 @@
+{"lines": ["Jim Carrey posed with Sonic at the twenty twenty premiere."], "heard": [["Jim", 0.0, 0.38], ["Carrey", 0.38, 0.7], ["posed", 0.7, 0.88], ["with", 0.88, 1.12], ["Sonic", 1.12, 1.32], ["at", 1.32, 1.54], ["the", 1.54, 1.62], ["2020", 1.62, 1.92], ["premiere.", 1.92, 2.32]], "voice": "Achird", "model": "gemini-3.8-flash-tts"}
