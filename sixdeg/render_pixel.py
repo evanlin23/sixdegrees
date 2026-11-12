@@ -231,7 +231,8 @@ def render(slug: str, log=print) -> Path:
     if not narration:
         use_outro = False
     # presentation style pilot: episode "style" wins; otherwise "cards" until the rotation is switched on
-    STYLE = spec.get("style") or "cards"
+    import os as _os
+    STYLE = _os.environ.get("SIXDEG_STYLE") or spec.get("style") or "cards"   # env: test a style without editing
     script = [hook] + [l["line"] for l in spec["links"]] + ([OUTRO] if use_outro else [])
     audio.prefetch(script, voice, log)                                       # Gemini: one request per episode
     vinfo = {"engine": audio.narrator(script, voice), "outro": use_outro, "rev": audio.VOICE_REV,
@@ -1174,6 +1175,9 @@ def render(slug: str, log=print) -> Path:
 
     style_frames = {"globe": frame_globe, "cards": frame_link, "zoom": frame_zoom, "board": frame_board, "timeline": frame_timeline,
 }
+    if STYLE not in style_frames:                        # plug-in styles (sixdeg/styles/<name>.py)
+        from . import styles as _styles
+        style_frames.update(_styles.load(_styles.build_ctx(locals(), globals())))
     draw = {"hook": frame_hook, "link": style_frames.get(STYLE, frame_link)}
 
     def frame_at(tt):
