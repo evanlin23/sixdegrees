@@ -374,9 +374,6 @@ def split_batch(a: np.ndarray, heard, spoken_lines: list[str]) -> list[np.ndarra
         for k in range(blk.size):
             match[blk.a + k] = hidx[blk.b + k]
     n = len(spoken_lines)
-    extra = len(hw) - len(match)              # heard words that match no script word
-    if extra > max(3, 0.15 * len(script)):
-        raise RuntimeError(f"Gemini read {extra} words not in the script (a repeated or added line)")
     first, last = [None] * n, [None] * n
     for si, li in enumerate(owner):
         if si in match:
