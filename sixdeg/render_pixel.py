@@ -483,13 +483,14 @@ def render(slug: str, log=print) -> Path:
                 base.alpha_composite(th.convert("RGBA"), (int(x0 + 6), int(y0 + 6)))
             dr.rectangle([x0, y0, x0 + size, y0 + size], outline=INK, width=6)
 
-    def credit(base, i):
+    def credit(base, i, xy=None):
+        """Photo credit (CC licences require it), right-aligned at xy (default: under the cards photo)."""
         cr = C.fj["credits"][i]
         who = (cr.get("artist") or "").strip()
         if len(who) > 26 or "(" in who or "http" in who:
             who = "Wikimedia Commons" if cr.get("file") else ""
         txt = f"PHOTO: {who + ' / ' if who else ''}{cr.get('license', '')}".upper()
-        ImageDraw.Draw(base).text((CARD[2], CARD[3] + 32), txt, font=sf(18), fill=(255, 255, 255), anchor="rm",
+        ImageDraw.Draw(base).text(xy or (CARD[2], CARD[3] + 32), txt, font=sf(18), fill=(255, 255, 255), anchor="rm",
                                   stroke_width=2, stroke_fill=INK)
 
     # ---------- frames
@@ -660,7 +661,7 @@ def render(slug: str, log=print) -> Path:
         c.update(spa=pa, spb=pb, rect=(X0, Y0, w, h))
         return c
 
-    def core_finish(base, seg, tt, c, connected_y=1020, sub=True, chain=True, caption=True):
+    def core_finish(base, seg, tt, c, connected_y=1020, sub=True, chain=True, caption=True, credit_xy=None):
         """The shared payoff + chrome every style keeps: CONNECTED!, the Subscribe nudge, the title band and chain
         bar, the photo credit, the caption and the cut flashes. A style can move CONNECTED! or skip a piece it
         draws itself (chain=False if it has its own progress display)."""
@@ -675,7 +676,12 @@ def render(slug: str, log=print) -> Path:
         if chain:
             upto = i + (1 if land >= 0 else 0)
             blocks(base, upto, {upto} if land >= 0 else {i}, tt, sharpen=min(1.0, land / 0.35) if land >= 0 else 1.0)
-        credit(base, i)
+        # the credit hugs the photo window the style actually drew (right edge, just under it), unless told otherwise
+        X0, Y0, w_, h_ = c["rect"]
+        cxy = credit_xy or (X0 + w_, Y0 + h_ + 32)
+        if not credit_xy and cxy[1] > SAFE[3] - 4:          # no room under it: print it inside the photo's bottom edge
+            cxy = (X0 + w_ - 12, Y0 + h_ - 18)
+        credit(base, i, cxy)
         if caption:
             seg["cap"].draw(base, tt)
         if incut < 0.10:
@@ -949,193 +955,36 @@ def render(slug: str, log=print) -> Path:
         m = re.search(r"\b(1\d{3}|20\d{2})\b", (l.get("fact") or "") + " " + l["line"])
         return int(m.group(1)) if m else None
 
-    # --- zoom: one continuous camera inside a big photo window, A's face -> both -> drift -> B's face (B is the next
-    # photo's A, so links hand over on the same face). Scale is capped near the source's own pixels (never mush);
-    # where a small photo can't fill the window its edges fade into a dark blurred copy instead of a hard bar.
-    ZW_Y0, ZW_Y1 = BAND - 40, 1290                   # the photo window (full width, under the header)
-    ZW_W, ZW_H = W, ZW_Y1 - ZW_Y0
-    Z_FX = CX                                        # focal point x on screen (left of the feed buttons)
-    Z_CAP_Y, Z_DONE_Y, Z_ROW_Y = 1362, 1450, 1566   # caption band, CONNECTED!, the chain row (below the window)
-    Z_BUH_X, Z_TH = 95, 80
-    _zc = {}
-
-    def z_limits(i):
-        """(s_lo, s_hi): widest and tightest scale for photo i in the window."""
-        ih, iw = C.imgs[i].shape[:2]
-        s_cover = max(ZW_W / iw, ZW_H / ih)
-        s_lo = min(s_cover, max(1.3, 800 / iw))      # cover the window if that needs <= ~1.3x, else show it smaller
-        return s_lo, max(1.38, s_lo * 1.12)
-
-    def z_clamp(i, cam):
-        ih, iw = C.imgs[i].shape[:2]
-        lo, hi = z_limits(i)
-        s = max(lo, min(hi, cam[2]))
-        if iw * s >= ZW_W:
-            cx = max(Z_FX / s, min(iw - (ZW_W - Z_FX) / s, cam[0]))
-        else:
-            cx = iw / 2 + (Z_FX - ZW_W / 2) / s     # too narrow to cover: centred, edges feathered
-        if ih * s >= ZW_H:
-            cy = max(ZW_H / 2 / s, min(ih - ZW_H / 2 / s, cam[1]))
-        else:
-            cy = ih / 2
-        return cx, cy, s
-
-    def z_seg(i):
-        return next(s for s in segs if s["kind"] == "link" and s["i"] == i)
-
-    def z_keys(i, d):
-        """Camera keyframes [(time, (cx, cy, log s))] for link i lasting d seconds."""
-        if ("k", i) in _zc:
-            return _zc[("k", i)]
-        lo, hi = z_limits(i)
-        ba, bb = fbox(i, "a"), fbox(i, "b")
-        (ax, ay), (bx, by) = ctr(ba), ctr(bb)
-        x0, x1 = min(ba[0], bb[0]), max(ba[0] + ba[2], bb[0] + bb[2])
-        y0, y1 = min(ba[1], bb[1]), max(ba[1] + ba[3], bb[1] + bb[3])
-        sb = min(ZW_W * 0.62 / max(1, x1 - x0), ZW_H * 0.5 / max(1, y1 - y0))
-        both = ((x0 + x1) / 2, (y0 + y1) / 2 + (y1 - y0) * 0.3, max(lo, min(hi * 0.97, sb)))
-        fa = (ax, ay + ba[3] * 0.5, hi)
-        fb = (bx, by + bb[3] * 0.5, hi)
-        drift = (both[0] + (fb[0] - both[0]) * 0.35, both[1] + (fb[1] - both[1]) * 0.35, both[2] * 1.05)
-        sg = z_seg(i)
-        rv_t = sg.get("rv", REVEAL) * sg["speech"] + THROW
-        if sensitive(link_names(i)[0]):               # no hero close-up: open on the two-shot, already drifting
-            start = (both[0] - (fb[0] - both[0]) * 0.12, both[1], both[2] * 0.96)
-        else:
-            start = fa
-        last = i == n_links - 1
-        keys = [(0.0, start), (max(0.9, min(rv_t, d * 0.45)), both), (d * (0.6 if last else 0.72), drift),
-                (d + (0.0 if last else 0.4), fb)]
-        keys = [(t_, z_clamp(i, c)) for t_, c in keys]
-        keys = [(t_, (c[0], c[1], math.log(c[2]))) for t_, c in keys]
-        _zc[("k", i)] = keys
-        return keys
-
-    def z_cam(i, d, t):
-        """Smooth camera (cubic Hermite through the keyframes, continuous velocity); never fully still."""
-        keys = z_keys(i, d)
-        n = len(keys)
-        t = max(0.0, min(keys[-1][0], t))
-        j = next((k for k in range(n - 1) if t <= keys[k + 1][0]), n - 2)
-        (t0_, p0), (t1_, p1) = keys[j], keys[j + 1]
-        h = max(1e-3, t1_ - t0_)
-
-        def tang(k):
-            if k == 0:
-                return [(keys[1][1][m] - keys[0][1][m]) / (keys[1][0] - keys[0][0]) * 0.6 for m in range(3)]
-            if k == n - 1:
-                return [(keys[k][1][m] - keys[k - 1][1][m]) / (keys[k][0] - keys[k - 1][0]) * 0.8 for m in range(3)]
-            return [(keys[k + 1][1][m] - keys[k - 1][1][m]) / (keys[k + 1][0] - keys[k - 1][0]) for m in range(3)]
-        m0, m1 = tang(j), tang(j + 1)
-        u = (t - t0_) / h
-        h00, h10, h01, h11 = 2 * u ** 3 - 3 * u ** 2 + 1, u ** 3 - 2 * u ** 2 + u, -2 * u ** 3 + 3 * u ** 2, u ** 3 - u ** 2
-        c = [h00 * p0[m] + h10 * h * m0[m] + h01 * p1[m] + h11 * h * m1[m] for m in range(3)]
-        return z_clamp(i, (c[0], c[1], math.exp(c[2])))
+    # --- zoom: the core, bigger. The photo window runs (almost) edge to edge at ~1.1x with only a thin keyline, over a
+    # dark blurred copy of the same photo; everything else (camera, Buh, string, tags, payoff) is the shared core.
+    Z_S = 1.08                                       # core window scale: 950 x 1026 (ends above the Subscribe button)
+    Z_X0, Z_Y0 = (W - int((CARD[2] - CARD[0]) * Z_S)) // 2, 404
+    _zbg = {}
 
     def z_bg(i):
-        if ("bg", i) not in _zc:
+        """A dark, heavily blurred full-frame copy of photo i (the backdrop around the window)."""
+        if i not in _zbg:
             img = rgb(i)
             ih, iw = img.shape[:2]
             cs = max(W / iw, H / ih)
             b = cv2.resize(img, (int(iw * cs) + 2, int(ih * cs) + 2))
             y0, x0 = (b.shape[0] - H) // 2, (b.shape[1] - W) // 2
-            _zc[("bg", i)] = cv2.GaussianBlur(b[y0:y0 + H, x0:x0 + W], (0, 0), 30).astype(np.float32) * 0.3
-        return _zc[("bg", i)]
+            b = (cv2.GaussianBlur(b[y0:y0 + H, x0:x0 + W], (0, 0), 30) * 0.32).astype(np.uint8)
+            _zbg[i] = Image.fromarray(b).convert("RGBA")
+        return _zbg[i]
 
-    def z_view(i, cam):
-        """The full frame: photo i through the window at cam, over a dark blurred copy; soft edges, no hard bars."""
-        img = rgb(i)
-        ih, iw = img.shape[:2]
-        cx, cy, s = cam
-        M = np.float32([[s, 0, Z_FX - cx * s], [0, s, ZW_Y0 + ZW_H / 2 - cy * s]])
-        out = cv2.warpAffine(img, M, (W, H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE).astype(np.float32)
-        mask = cv2.warpAffine(np.full((ih, iw), 255, np.uint8), M, (W, H)).astype(np.float32) / 255
-        mask[ZW_Y1:] = 0
-        mask = cv2.GaussianBlur(mask, (0, 0), 22)[..., None]
-        out = out * mask + z_bg(i) * (1 - mask)
-        return Image.fromarray(out.astype(np.uint8)).convert("RGBA")
-
-    def z_tags(base, i, cam, revealed, alpha=1.0):
-        """Name tags under their own faces: inside the window, clear of the edges, never overlapping."""
-        an, bn = link_names(i)
-        cx, cy, s = cam
-        items = []
-        for role, nm, col in (("a", an, CYAN), ("b", bn, YELLOW)):
-            b = fbox(i, role)
-            fx = (b[0] + b[2] / 2 - cx) * s + Z_FX
-            fy_bot = (b[1] + b[3] - cy) * s + ZW_Y0 + ZW_H / 2
-            if not (-40 < fx < W + 40):
-                continue
-            txt = C.labels[nm].upper() if (role == "a" or revealed) else "???"
-            tg = pixel_tag(txt, col, 26)
-            x = max(SAFE[0] + tg.width / 2, min(SAFE[2] - tg.width / 2, fx))
-            y = max(ZW_Y0 + 50 + tg.height / 2, min(ZW_Y1 - 40 - tg.height / 2, fy_bot + 14 + tg.height / 2))
-            items.append([tg, x, y])
-        if len(items) == 2:
-            (ta, xa, ya), (tb, xb, yb) = items
-            if abs(xa - xb) < (ta.width + tb.width) / 2 + 36 and abs(ya - yb) < (ta.height + tb.height) / 2 + 14:
-                step = (ta.height + tb.height) / 2 + 16
-                lo_y = ZW_Y1 - 40 - tb.height / 2
-                if ya + step <= lo_y:
-                    items[1][2] = ya + step
-                else:
-                    items[1][2], items[0][2] = lo_y, lo_y - step
-        if alpha <= 0.01:
-            return
-        for tg, x, y in items:
-            paste(base, tg, x, y, alpha=alpha)
-
-    def z_row(base, i, revealed, local):
-        """The chain so far as a row of small faces ("?" for whoever isn't revealed yet); the current pair outlined."""
-        n = len(C.people)
-        x0, x1 = 205, SAFE[2] - Z_TH / 2
-        step = (x1 - x0) / max(1, n - 1)
-        known = i + (2 if revealed else 1)
-        dr = ImageDraw.Draw(base)
-        for j, nm in enumerate(C.people):
-            x, y = x0 + j * step, Z_ROW_Y
-            if j + 1 < n:
-                dr.rectangle([x + Z_TH / 2, y - 3, x + step - Z_TH / 2, y + 3], fill=(235, 235, 245) if j + 1 < known else (90, 80, 130))
-            box = [x - Z_TH / 2, y - Z_TH / 2, x + Z_TH / 2, y + Z_TH / 2]
-            dr.rectangle([box[0] + 6, box[1] + 6, box[2] + 6, box[3] + 6], fill=INK)
-            if j < known:
-                base.alpha_composite(sharp[nm].resize((Z_TH, Z_TH), Image.BICUBIC), (int(box[0]), int(box[1])))
-            else:
-                dr.rectangle(box, fill=PURPLE_Q)
-                paste(base, pixel_text("?", 34, fill=WHITE, shadow=False), x, y)
-            col = CYAN if j == i else (YELLOW if j == i + 1 else INK)
-            dr.rectangle(box, outline=col, width=5 if j in (i, i + 1) else 3)
+    def z_frame(b, X0, Y0, w, h):
+        dr = ImageDraw.Draw(b)
+        dr.rectangle([X0 - 6 + 10, Y0 - 6 + 10, X0 + w + 6 + 10, Y0 + h + 6 + 10], fill=INK)
+        dr.rectangle([X0 - 6, Y0 - 6, X0 + w + 6, Y0 + h + 6], fill=WHITE)
 
     def frame_zoom(seg, tt):
         i = seg["i"]
         if C.fj["links"][i].get("lineage"):
             return frame_lineage(seg, tt)
-        sp, R = seg["speech"], seg.get("rv", REVEAL)
-        local = tt - seg["t0"]
-        d = seg["t1"] - seg["t0"]
-        cam = z_cam(i, d, local)
-        base = z_view(i, cam)
-        if i > 0 and local < 0.4 and not C.fj["links"][i - 1].get("lineage"):
-            ps = z_seg(i - 1)                            # dissolve from the previous photo's last frame (same face)
-            pd = ps["t1"] - ps["t0"]
-            base = Image.blend(z_view(i - 1, z_cam(i - 1, pd, pd + local)), base, ease(local / 0.4))
-        rv_t = R * sp + THROW
-        # tags only once the crossfade has finished (else they sit on the old photo's people), then ease in
-        z_tags(base, i, cam, local > rv_t, alpha=1.0 if i == 0 else ease(max(0.0, min(1.0, (local - 0.42) / 0.25))))
-        z_row(base, i, local > rv_t, local)
-        # Buh, pinned bottom-left at the start of the chain row; hops when B is revealed (a small nod on sensitive links)
-        quiet = sensitive(link_names(i)[0]) or sensitive(link_names(i)[1])
-        u = (local - rv_t) / 0.5
-        hop = (math.sin(math.pi * u) * (22 if quiet else 70)) if 0 <= u <= 1 else 0.0
-        if i == n_links - 1:                          # last link: a little dance in place (CONNECTED! sits just above)
-            hop = 0.0
-        expr = "shock" if local < rv_t else ("smug" if quiet else "happy")
-        paste_pin(base, pin_sprite(expr, (14 if i == n_links - 1 and local > rv_t else 4) * math.sin(tt * (9 if i == n_links - 1 and local > rv_t else 2.1)), 0, 1, scale=3), Z_BUH_X,
-                  Z_ROW_Y + 52 - hop - 4 * abs(math.sin(tt * 2.6)))
-        header(base, i)
-        connected(base, seg, tt, y=Z_DONE_Y)
-        seg["cap"].draw(base, tt, y=Z_CAP_Y)
-        return base
+        base = z_bg(i).copy()
+        c = draw_core(base, seg, tt, Z_X0, Z_Y0, Z_S, frame=z_frame)
+        return core_finish(base, seg, tt, c)
 
     # --- board: Buh pins each photo to a corkboard; red string from photo to photo; zoom out at the end
     BW, PW, PH = 1700, 600, 660
@@ -1370,17 +1219,17 @@ def render(slug: str, log=print) -> Path:
             _map["tex"] = np.array(Image.open(FONTS.parent / "earth_texture.jpg").convert("RGB"))
         return _map["tex"]
 
-    # --- globe: the photo big on top; below, a pixel-art Earth window. Buh flies from place to place drawing a dotted
-    # route; the view frames both ends of each hop and zooms by distance (city scale for short hops). No spin: the
-    # view only slides and zooms, and the map floats gently.
-    G_Y0 = 1110                                         # map window top (feathered); it runs to the bottom
-    G_CY = 1340                                         # screen y of the view centre
+    # --- globe: the core photo window on top, over a starfield; below it a pixel-art Earth fills the lower screen.
+    # At the start of each link the view flies from the last place to this one (a red dot hops along a dotted route,
+    # the view frames both ends and zooms by distance), then the place is marked and named. The core stays the hero.
+    G_Y0 = 1150                                         # map top (feathered); it runs to the bottom
+    G_CY = 1610                                         # screen y of the view centre
     G_BOX = (330, 105)                                  # both ends of a hop stay within this many px of the centre
     G_R1 = 450                                          # globe radius on screen at zoom 1
     G_PX, G_M = 2, 24                                   # map pixel size; margin so the float never shows an edge
-    G_FLY = 1.7                                         # seconds of flight at the start of a link
-    G_PW, G_PH, G_PH_TOP = 840, 620, 262                # the photo (inside its print): width, max height, top y
-    G_CAP_Y, G_DONE_Y = 1062, 1428
+    G_FLY = 1.2                                         # seconds of flight at the start of a link
+    G_S = 0.8                                           # core window scale (704 x 760)
+    G_X0, G_WY0 = int(CX - (CARD[2] - CARD[0]) * G_S / 2), 425
     # zoom cap: one texel of the 3840 px Earth texture (3840 / 2pi px per radian) stays <= ~4 screen px (= 2 map pixels)
     G_ZMAX = 4.0 * (3840 / (2 * math.pi)) / G_R1
     _gxs = np.arange(-G_M, W + G_M, G_PX, dtype=np.float32) + G_PX / 2 - CX
@@ -1498,24 +1347,11 @@ def render(slug: str, log=print) -> Path:
             _gst["stars"] = Image.fromarray(st).convert("RGBA")
         return _gst["stars"]
 
-    def g_tags(base, i, cam, x0, revealed, tag_y):
-        """Name tags under their own faces (x from the face box), pushed apart or stacked so they never overlap."""
-        an, bn = link_names(i)
-        items = []
-        for role, nm, col in (("a", an, CYAN), ("b", bn, YELLOW)):
-            fx = (ctr(fbox(i, role))[0] - cam[0]) * cam[2] + G_PW / 2 + x0
-            txt = C.labels[nm].upper() if (role == "a" or revealed) else "???"
-            tg = pixel_tag(txt, col, 24)
-            items.append([tg, fx, tag_y])
-        lo_x = lambda it: SAFE[0] + it[0].width / 2
-        hi_x = lambda it: SAFE[2] - it[0].width / 2
-        for it in items:                                 # each tag centred on its own face (only kept off the edges)
-            it[1] = max(lo_x(it), min(hi_x(it), it[1]))
-        left, right = sorted(items, key=lambda it: it[1])
-        if right[1] - left[1] < (left[0].width + right[0].width) / 2 + 12:
-            items[1][2] = tag_y + (left[0].height + right[0].height) / 2 + 6   # B one row lower, same face x
-        for tg, x, y in items:
-            paste(base, tg, x, y)
+    def g_frame(b, X0, Y0, w, h):
+        """A slim white print border with a hard shadow, like the cards."""
+        dr = ImageDraw.Draw(b)
+        dr.rectangle([X0 - 12 + 14, Y0 - 12 + 14, X0 + w + 12 + 14, Y0 + h + 12 + 14], fill=INK)
+        dr.rectangle([X0 - 12, Y0 - 12, X0 + w + 12, Y0 + h + 12], fill=WHITE)
 
     _G_SHOW = re.compile(r"(?i)\bshow\b|tonight|late night|\blive\b|\btv\b|network|records|studios?\b|\bcbs\b|\bnbc\b|\babc\b")
     _G_ABBR = {"NYC": "New York", "NY": "New York", "DC": "Washington", "LA": "Los Angeles", "UK": "London"}
@@ -1530,73 +1366,49 @@ def render(slug: str, log=print) -> Path:
 
     def frame_globe(seg, tt):
         i = seg["i"]
-        if C.fj["links"][i].get("lineage") or ll(i) is None:
-            return frame_timeline(seg, tt)
+        if C.fj["links"][i].get("lineage"):
+            return frame_lineage(seg, tt)
         local = tt - seg["t0"]
-        sp, R = seg["speech"], seg.get("rv", REVEAL)
-        revealed = local > R * sp + THROW
-        cur, p = ll(i), prev_ll(i)
-        vc, z, travel, fly = g_state(i, local)
         base = g_stars().copy()
-        fx, fy = int(10 * math.sin(tt * 0.8)), int(12 * math.sin(tt * 0.6 + 1))   # gentle float, map and Buh together
-        layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-        layer.alpha_composite(g_map(vc, z), (-G_M + fx, G_Y0 - G_M + fy))
-        dr = ImageDraw.Draw(layer)
+        if ll(i) is not None:
+            cur, p = ll(i), prev_ll(i)
+            vc, z, travel, fly = g_state(i, local)
+            fx, fy = int(10 * math.sin(tt * 0.8)), int(12 * math.sin(tt * 0.6 + 1))   # gentle float
+            layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+            layer.alpha_composite(g_map(vc, z), (-G_M + fx, G_Y0 - G_M + fy))
+            dr = ImageDraw.Draw(layer)
 
-        def on_map(q):
-            return q is not None and -20 < q[0] < W + 20 and G_Y0 + 30 < q[1] < H + 20
+            def on_map(q):
+                return q is not None and -20 < q[0] < W + 20 and G_Y0 + 30 < q[1] < H + 20
 
-        for j in range(i + 1):                          # places visited so far (the current one only on arrival)
-            if ll(j) and (j < i or fly > 0.96 or p is None):
-                q = g_xy(ll(j), vc, z)
-                if on_map(q):
-                    q = (q[0] + fx, q[1] + fy)
-                    r = 9 if j == i else 6
-                    dr.rectangle([q[0] - r, q[1] - r, q[0] + r, q[1] + r], fill=RED, outline=INK, width=3)
-        if p is not None and ang_deg(p, cur) > 0.05:    # this hop's dotted route, drawn as far as Buh has got
-            a = ang_deg(p, cur)
-            nd = max(3, min(220, int(G_R1 * z * math.radians(a) / 26)))
-            for d_ in range(int(nd * fly) + 1):
-                q = g_xy(slerp_ll(p, cur, d_ / nd), vc, z)
-                if on_map(q):
-                    dr.rectangle([q[0] + fx - 4, q[1] + fy - 4, q[0] + fx + 4, q[1] + fy + 4], fill=WHITE, outline=INK, width=1)
-        # Buh: rides the route, then lands just beside the marker (never on it) and bobs; always kept on screen
-        q = g_xy(travel, vc, z) or (CX, G_CY)
-        dest = g_xy(cur, vc, z) or (CX, G_CY)
-        side = -1 if dest[0] > CX + 120 else 1          # Buh on one side of the marker, the place name on the other
-        bx = q[0] - side * 62 * ease(fly)
-        hop = math.sin(math.pi * fly) * 80 if fly < 1 else 5 * abs(math.sin(local * 3))
-        bx = max(SAFE[0] + 40, min(SAFE[2] - 40, bx)) + fx
-        by = max(G_Y0 + 150, min(1500, q[1] + 8 - hop)) + fy
-        look = 1 if (p is None or cur[1] >= p[1]) else -1
-        paste_pin(layer, pin_sprite("shock" if fly < 1 else "happy", 0, 0, look, scale=4), bx, by)
-        place = g_place((spec["links"][i].get("where") or {}).get("place", ""))
-        if fly >= 1 and place:
-            tg = pixel_tag(place.upper(), WHITE, 20)
-            lx = dest[0] + fx + side * (24 + tg.width / 2)
-            lx = max(SAFE[0] + tg.width / 2, min(SAFE[2] - tg.width / 2, lx))
-            paste(layer, tg, lx, dest[1] + fy - 8)
-        base.alpha_composite(layer)
-        # the photo, big, in a print at the top; it pops in over the first 0.3 s of the link
-        ih, iw = C.imgs[i].shape[:2]
-        ph = int(max(470, min(G_PH, G_PW * ih / iw)))   # the print takes the photo's own shape (less crop)
-        ba_, bb_ = fbox(i, "a"), fbox(i, "b")           # crop to the two faces (small faces in group shots get
-        fx0, fx1 = min(ba_[0], bb_[0]), max(ba_[0] + ba_[2], bb_[0] + bb_[2])   # bigger), never past ~1.25x
-        fy0, fy1 = min(ba_[1], bb_[1]), max(ba_[1] + ba_[3], bb_[1] + bb_[3])
-        sc_ = max(min(1.25, G_PW * 0.72 / max(1, fx1 - fx0), ph * 0.62 / max(1, fy1 - fy0)),
-                  G_PW / iw, ph / ih)                   # always covered: no blurred fill inside the print
-        cam = ((fx0 + fx1) / 2, (fy0 + fy1) / 2 + ph * 0.18 / sc_, sc_)   # faces in the upper part of the print
-        cam = (max(G_PW / 2 / sc_, min(iw - G_PW / 2 / sc_, cam[0])), max(ph / 2 / sc_, min(ih - ph / 2 / sc_, cam[1])), sc_)
-        pop = ease_out_back(min(1.0, local / 0.3))
-        card = framed(view(i, *cam, G_PW, ph), tilt=0.0, tape=True)
-        bob = 6 * math.sin(local * 2.1)
-        paste(base, card, CX + 6, G_PH_TOP + ph / 2 + 10 + bob, scale=0.6 + 0.4 * pop, nearest=False)
-        if local > 0.25:
-            g_tags(base, i, cam, CX - G_PW / 2, revealed, G_PH_TOP + ph + 70)
-        header(base, i)
-        connected(base, seg, tt, y=G_DONE_Y)
-        seg["cap"].draw(base, tt, y=G_CAP_Y)
-        return base
+            for j in range(i + 1):                      # places visited so far (the current one only on arrival)
+                if ll(j) and (j < i or fly > 0.96 or p is None):
+                    q = g_xy(ll(j), vc, z)
+                    if on_map(q):
+                        r = 9 if j == i else 6
+                        dr.rectangle([q[0] + fx - r, q[1] + fy - r, q[0] + fx + r, q[1] + fy + r], fill=RED, outline=INK, width=3)
+            if p is not None and ang_deg(p, cur) > 0.05:    # this hop's dotted route, as far as the flight has got
+                nd = max(3, min(220, int(G_R1 * z * math.radians(ang_deg(p, cur)) / 26)))
+                for d_ in range(int(nd * fly) + 1):
+                    q = g_xy(slerp_ll(p, cur, d_ / nd), vc, z)
+                    if on_map(q):
+                        dr.rectangle([q[0] + fx - 4, q[1] + fy - 4, q[0] + fx + 4, q[1] + fy + 4], fill=WHITE, outline=INK, width=1)
+                if fly < 1:                                 # the travelling marker: a little red plane-dot with a hop
+                    q = g_xy(travel, vc, z)
+                    if on_map(q):
+                        hop = math.sin(math.pi * fly) * 40
+                        x, y = q[0] + fx, q[1] + fy - hop
+                        dr.ellipse([x - 12, y - 12, x + 12, y + 12], fill=RED, outline=INK, width=4)
+            dest = g_xy(cur, vc, z)
+            place = before_b(g_place((spec["links"][i].get("where") or {}).get("place", "")), spec["links"][i])
+            if fly >= 1 and dest and place.strip("…"):
+                tg = pixel_tag(place.upper(), WHITE, 20)
+                side = -1 if dest[0] > CX + 120 else 1
+                lx = max(SAFE[0] + tg.width / 2, min(SAFE[2] - tg.width / 2, dest[0] + fx + side * (24 + tg.width / 2)))
+                paste(layer, tg, lx, dest[1] + fy - 8)
+            base.alpha_composite(layer)
+        c = draw_core(base, seg, tt, G_X0, G_WY0, G_S, frame=g_frame)
+        return core_finish(base, seg, tt, c)
 
     style_frames = {"globe": frame_globe, "cards": frame_link, "zoom": frame_zoom, "board": frame_board, "timeline": frame_timeline,
 }
