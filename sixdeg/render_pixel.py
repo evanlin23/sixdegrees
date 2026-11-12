@@ -587,11 +587,17 @@ def render(slug: str, log=print) -> Path:
             (ta, ax, ay, _), (tb, bx_, by_, _) = tags_
             if abs(ax - bx_) < (ta.width + tb.width) / 2 + 8 and abs(ay - by_) < (ta.height + tb.height) / 2 + 6:
                 tags_[1][2] = ay + (ta.height + tb.height) / 2 + 10 if by_ >= ay else ay - (ta.height + tb.height) / 2 - 10
-        for tag, tx, ty, pop in tags_:
+        tl = Image.new("RGBA", (W, H), (0, 0, 0, 0))     # tags ride on the photo like stickers and slide
+        for tag, tx, ty, pop in tags_:                   # UNDER its edge (clipped to the card), like the pins
             sh = Image.new("RGBA", (tag.width + 8, tag.height + 8), (0, 0, 0, 0))
             ImageDraw.Draw(sh).rectangle([8, 8, tag.width + 7, tag.height + 7], fill=(0, 0, 0, 140))
-            paste(base, sh, tx + 4, ty + 4, scale=pop)                      # drop shadow: reads as a printed sticker
-            paste(base, tag, tx, ty, scale=pop)
+            paste(tl, sh, tx + 4, ty + 4, scale=pop)                        # drop shadow: reads as a printed sticker
+            paste(tl, tag, tx, ty, scale=pop)
+        if tags_:
+            km = Image.new("L", (W, H), 0)
+            ImageDraw.Draw(km).rectangle([x0, y0, x0 + cw, y0 + ch], fill=255)
+            tl.putalpha(Image.composite(tl.getchannel("A"), Image.new("L", (W, H), 0), km))
+            base.alpha_composite(tl)
         # Pin
         if since < 0:
             bob = int(8 * abs(math.sin(tt * 7)))
