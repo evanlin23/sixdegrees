@@ -111,7 +111,9 @@
         "place": "Eden Project, Cornwall",
         "lat": 50.362,
         "lon": -4.745
-      }
+      },
+      "a_face": 4,
+      "b_face": 5
     },
     {
       "a": "Justin Trudeau",
@@ -128,7 +130,9 @@
         "place": "White House",
         "lat": 38.897,
         "lon": -77.036
-      }
+      },
+      "a_face": 2,
+      "b_face": 7
     },
     {
       "a": "Mike Myers",
