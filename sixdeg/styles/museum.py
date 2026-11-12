@@ -1,5 +1,6 @@
-"""Museum: a gallery walk. Each link photo hangs in an ornate gold frame on a long red wall, with a plaque (names,
-year, fact) under it; picture lights pool on the wall over a wooden floor in perspective. The camera dollies along
+"""Museum: a gallery walk. Each link photo hangs in a gilt frame on a long red wall, with a plaque (names, year,
+fact) under it; picture lights pool on the wall over a wooden floor in perspective. A link with a sensitive person
+(dictators etc.) hangs in a plain dark archive frame with no picture light and a grey plaque: no honour framing. The camera dollies along
 the wall from frame to frame and slowly pushes in on the current one."""
 from __future__ import annotations
 
@@ -15,15 +16,17 @@ NAME = "museum"
 def make(ctx):
     SP = 1150                               # distance between frames along the wall (world px)
     X0 = 700                                # first frame's centre x
-    PW, PH = 600, 460                       # photo inside the frame
-    MAT, T = 34, 66                         # passe-partout and gold moulding widths
+    PW, PH = 790, 580                       # photo inside the frame
+    MAT, T = 16, 42                         # passe-partout and moulding widths
     OW, OH = PW + 2 * (MAT + T), PH + 2 * (MAT + T)
-    FY = 660                                # frame centre y (world == screen at zoom 1)
-    PLQ_W, PLQ_H, PLQ_Y = 680, 204, 1134    # plaque size and centre y
-    FLOOR = 1470                            # wall meets floor (world y)
+    FY = 302 + OH // 2                      # frame centre y (world == screen at zoom 1)
+    PLQ_W, PLQ_H = 800, 214                 # plaque size
+    PLQ_Y = FY + OH // 2 + 24 + PLQ_H // 2  # plaque centre y
+    FLOOR = 1392                            # wall meets floor (world y)
+    DADO = PLQ_Y + PLQ_H // 2 + 22          # dado rail (world y)
     EYE = 760                               # camera pivot / horizon (screen y)
     DOLLY = 0.95                            # walk time between frames, s
-    CAP_Y = 1398
+    CAP_Y = 1346
     WALL = np.array([96, 22, 32], np.float32)
     n = ctx.n_links
     WW = 2 * X0 + (n - 1) * SP
@@ -35,6 +38,35 @@ def make(ctx):
         return X0 + j * SP
 
     # ---------- the gold frame (one sprite, reused for every picture)
+    def sensitive_link(j):
+        an, bn = ctx.link_names(j)
+        return ctx.sensitive(an) or ctx.sensitive(bn)
+
+    def cover_cam(i, w, h, fill):
+        """both_cam, but scaled to cover so view()'s blurred fill never shows inside the frame."""
+        cx, cy, s = ctx.both_cam(i, w, h, fill)
+        ih, iw = ctx.C.imgs[i].shape[:2]
+        s = max(s, w / iw, h / ih) * 1.002
+        return min(max(cx, w / 2 / s), iw - w / 2 / s), min(max(cy, h / 2 / s), ih - h / 2 / s), s
+
+    def archive_frame():
+        """A plain, flat dark-wood frame with a grey mat (sensitive links)."""
+        yy, xx = np.mgrid[0:OH, 0:OW].astype(np.float32)
+        d = np.minimum(np.minimum(xx, OW - 1 - xx), np.minimum(yy, OH - 1 - yy))
+        p = np.clip(d / T, 0, 1)
+        grain = 0.06 * np.sin(np.where(np.minimum(xx, OW - 1 - xx) < np.minimum(yy, OH - 1 - yy), yy, xx) / 3.3)
+        v = 0.75 + 0.25 * np.sin(np.pi * p) + grain
+        v = np.where((p > 0.02) & (p < 0.06), 1.25, v)
+        v = np.where(p > 0.95, 0.6, v)
+        out = np.zeros((OH, OW, 4), np.uint8)
+        out[..., :3] = (np.array([34, 28, 24], np.float32) * v[..., None]).clip(0, 255)
+        out[..., 3] = 255
+        m0 = T
+        out[m0:OH - m0, m0:OW - m0, :3] = (196, 194, 188)
+        out[m0:m0 + 3, m0:OW - m0, :3] = (70, 66, 60)
+        out[m0:OH - m0, m0:m0 + 3, :3] = (70, 66, 60)
+        return out
+
     def gold_frame():
         yy, xx = np.mgrid[0:OH, 0:OW].astype(np.float32)
         dl, dr, dt, db = xx, OW - 1 - xx, yy, OH - 1 - yy
@@ -51,17 +83,24 @@ def make(ctx):
             h = np.maximum(h, rose * (r < 1))
         gy, gx = np.gradient(h)
         shade = np.clip(0.55 + 9.0 * (-0.6 * gx - 0.8 * gy) + 0.25 * h, 0, 1.3)
-        ramp = np.array([[54, 32, 8], [150, 104, 30], [214, 168, 70], [255, 236, 160], [255, 250, 220]], np.float32)
-        k = np.clip(shade, 0, 1.0) * (len(ramp) - 1)
+        ramp = np.array([[34, 20, 8], [92, 62, 24], [146, 108, 46], [186, 148, 78], [222, 194, 128]], np.float32)
+        k = np.clip(shade * 0.92, 0, 1.0) * (len(ramp) - 1)
         k0 = np.floor(k).astype(int).clip(0, len(ramp) - 2)
         rgb = ramp[k0] + (ramp[k0 + 1] - ramp[k0]) * (k - k0)[..., None]
+        rng = np.random.default_rng(7)
+        wear = cv2.GaussianBlur(rng.normal(0, 1, (OH, OW)).astype(np.float32), (0, 0), 3)
+        recess = np.clip(0.5 - h, 0, 0.5)[..., None] * 2                     # red bole showing in the hollows
+        rgb = rgb * (1 - 0.35 * recess) + np.array([120, 46, 26], np.float32) * 0.35 * recess
+        rgb = rgb * (1 + 0.07 * wear[..., None])
+        rgb[(p > 0.97)] *= 0.55                                              # dark sight edge
+        rgb[(p < 0.03)] *= 0.6                                               # dark outer edge
         out = np.zeros((OH, OW, 4), np.uint8)
         out[..., :3] = rgb.clip(0, 255)
         out[..., 3] = 255
         # mat with a bevelled inner window
         m0, m1 = T, T + MAT
         out[m0:OH - m0, m0:OW - m0, :3] = (234, 226, 206)
-        out[m1 - 3:OH - m1 + 3, m1 - 3:OW - m1 + 3, :3] = (250, 246, 236)
+        out[m1 - 3:OH - m1 + 3, m1 - 3:OW - m1 + 3, :3] = (246, 240, 226)
         out[m0:m0 + 3, m0:OW - m0, :3] = (90, 70, 50)
         out[m0:OH - m0, m0:m0 + 3, :3] = (90, 70, 50)
         return out
@@ -71,27 +110,29 @@ def make(ctx):
         im = Image.new("RGBA", (PLQ_W + 16, PLQ_H + 16), (0, 0, 0, 0))
         d = ImageDraw.Draw(im)
         d.rectangle([10, 12, PLQ_W + 14, PLQ_H + 14], fill=(0, 0, 0, 90))
-        d.rectangle([0, 0, PLQ_W, PLQ_H], fill=(238, 230, 212), outline=(170, 128, 48), width=5)
-        d.rectangle([9, 9, PLQ_W - 9, PLQ_H - 9], outline=(200, 170, 110), width=1)
+        sens = sensitive_link(j)
+        rim, rim2 = ((110, 108, 104), (150, 148, 142)) if sens else ((150, 116, 52), (196, 166, 108))
+        d.rectangle([0, 0, PLQ_W, PLQ_H], fill=(226, 224, 218) if sens else (238, 230, 212), outline=rim, width=4)
+        d.rectangle([9, 9, PLQ_W - 9, PLQ_H - 9], outline=rim2, width=1)
         A = ctx.C.labels[an]
         B = ctx.C.labels[bn] if revealed else "?  ?  ?"
-        y = 20
+        y = 16
         for k, txt in enumerate((A, f"& {B}")):
-            size = 38
-            while font("Black", size).getlength(txt) > PLQ_W - 50 and size > 20:
+            size = 44
+            while font("Black", size).getlength(txt) > PLQ_W - 50 and size > 24:
                 size -= 1
             d.text((PLQ_W / 2, y), txt, font=font("Black", size), fill=(30, 22, 18) if k == 0 or revealed
                    else (150, 120, 90), anchor="ma")
-            y += 44
-        y += 6
-        d.line([PLQ_W / 2 - 120, y, PLQ_W / 2 + 120, y], fill=(170, 128, 48), width=2)
-        y += 10
+            y += 50
+        y += 4
+        d.line([PLQ_W / 2 - 120, y, PLQ_W / 2 + 120, y], fill=rim, width=2)
+        y += 9
         yr = ctx.year_of(j)
-        fact = ctx.fact_of(ctx.spec["links"][j])
+        fact = ctx.fact_of(ctx.spec["links"][j], full=revealed)
         if yr and fact.startswith(str(yr)):
             fact = fact[len(str(yr)):].lstrip(": ,")
         line = f"{yr}  ·  {fact}" if yr else fact
-        f = font("Bold", 24)
+        f = font("Bold", 30)
         words, lines, cur = line.split(), [], ""
         for w in words:
             t = f"{cur} {w}".strip()
@@ -103,7 +144,7 @@ def make(ctx):
         lines.append(cur)
         for ln in lines[:2]:
             d.text((PLQ_W / 2, y), ln, font=f, fill=(84, 66, 52), anchor="ma")
-            y += 30
+            y += 36
         return np.asarray(im)
 
     def cover():
@@ -126,9 +167,9 @@ def make(ctx):
         tex = 1 + 0.045 * (np.sin(xx / 9) * np.sin(yy / 9) > 0.35) + 0.02 * np.sin(xx / 3.1)   # faint damask
         img = WALL[None, None] * tex[..., None]
         # lower panel, dado rail, baseboard
-        img[1280:FLOOR] *= 0.72
-        img[1268:1284] = (150, 104, 40)
-        img[1266:1268] = (220, 180, 90)
+        img[DADO + 12:FLOOR] *= 0.72
+        img[DADO:DADO + 16] = (120, 84, 40)
+        img[DADO - 2:DADO] = (176, 140, 80)
         img[FLOOR - 52:FLOOR] = (52, 30, 18)
         img[FLOOR - 54:FLOOR - 50] = (90, 58, 34)
         for k in range(-1, n + 1):                                  # panel mouldings under each frame
@@ -136,10 +177,11 @@ def make(ctx):
             for (a, b) in ((x0, x0 + 360), (x0 + 400, x0 + 760)):
                 a, b = max(0, a), min(WW - 1, b)
                 if b > a:
-                    img[1312:1316, a:b] *= 1.25
-                    img[1386:1390, a:b] *= 0.7
-                    img[1312:1390, a:a + 4] *= 1.25
-                    img[1312:1390, b - 4:b] *= 0.7
+                    p0, p1 = DADO + 34, FLOOR - 66
+                    img[p0:p0 + 4, a:b] *= 1.25
+                    img[p1 - 4:p1, a:b] *= 0.7
+                    img[p0:p1, a:a + 4] *= 1.25
+                    img[p0:p1, b - 4:b] *= 0.7
         # frame shadows
         sh = np.zeros((Hh, WW), np.float32)
         for j in range(n):
@@ -154,20 +196,23 @@ def make(ctx):
             dy = yy[:, :1] - 640
             top = 250 + 0.0012 * dx ** 2
             edge = np.clip((yy[:, :1] - top) / 60, 0, 1)
-            gain += 1.35 * np.exp(-(dx / 430) ** 2 - (dy / 620) ** 2) * edge
+            lamp = 0.45 if 0 <= j < n and sensitive_link(j) else 1.35          # no spotlight on a sensitive link
+            gain += lamp * np.exp(-(dx / 470) ** 2 - (dy / 620) ** 2) * edge
         img *= gain[..., None]
         img = img.clip(0, 255).astype(np.uint8)
-        gf = gold_frame()
+        gf, af = gold_frame(), archive_frame()
         cv_ = cover()
         for j in range(n):
             x0, y0 = fx(j) - OW // 2, FY - OH // 2
-            g = gf.copy()
-            ph = np.asarray(ctx.view(j, *ctx.both_cam(j, PW, PH, 0.8), PW, PH))
+            g = (af if sensitive_link(j) else gf).copy()
+            ph = np.asarray(ctx.view(j, *cover_cam(j, PW, PH, 0.8), PW, PH))
             g[T + MAT:T + MAT + PH, T + MAT:T + MAT + PW] = ph
             lit = 0.85 + 0.3 * np.exp(-((np.arange(OH) - OH * 0.3) / (OH * 0.7)) ** 2)[:, None, None]
             img[y0:y0 + OH, x0:x0 + OW] = (g[..., :3] * lit).clip(0, 255).astype(np.uint8)
         # picture lights: a brass lamp on an arm over each frame
         for j in range(n):
+            if sensitive_link(j):
+                continue
             x, top = fx(j), FY - OH // 2
             for dx in (-150, 150):
                 cv2.line(img, (x + dx, top + 4), (x + dx // 3, 262), (120, 84, 30), 7)
@@ -312,7 +357,7 @@ def make(ctx):
             if 0 <= gx < ctx.W - 160:
                 out.alpha_composite(layer, (gx, int(py0 + bob)))
         ctx.header(out, i)
-        ctx.connected(out, seg, tt)
+        ctx.connected(out, seg, tt, y=930)                 # over the photo, below the faces
         seg["cap"].draw(out, tt, y=CAP_Y)
         return out
 
