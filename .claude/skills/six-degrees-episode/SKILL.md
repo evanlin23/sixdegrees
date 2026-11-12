@@ -78,11 +78,12 @@ episode.json: the hook shows the viewer's request bubble and the first comment c
   one either: the first route where every link has a real photo is fine.
   - **Every link still needs a real photo of both people together** (or a lineage scroll). Never invent one.
   - **Hide the destination where the route allows.** Nothing from B's world before the last 1–2 links.
-  - **Every link gets context, the last ones too (owner, 2026-11-12: "I don't like how we sped up so much at
-    the end").** Each line says where/when and how the two met, in about 8-16 words: "At the 2012 Easter Egg
-    Roll, Michelle Obama played soccer with SpongeBob himself." No 3-word sprint lines. End the last line on the
-    meeting, not a long explanation after B's name ("At Late Night with Seth Meyers, Ash Carter met Kevin
-    Hart."). Keep it tight: "Jon Favreau created Baby Yoda." beats a paragraph about his career.
+  - **Even pace to the end; the last link is the payoff (owner, 2026-11-12).** Never speed up: every link gets
+    the same beat on screen (the renderer holds each link at least 3.4 s). Every link but the last gets a context
+    line, where/when and how the two met, in about 8-16 words ("At the 2012 Easter Egg Roll, Michelle Obama played
+    soccer with SpongeBob himself."). No 3-word sprint lines like "Who voices Shrek." mid-chain. The LAST line
+    explains less, because the link itself is the payoff: short and on the meeting ("At Late Night with Seth Meyers,
+    Ash Carter met Kevin Hart.", "Jon Favreau created Baby Yoda."), never a paragraph after B's name.
   - **Real people first.** A mythical or ancient start (Zeus, Jesus) links through a real photo, e.g. the actor who
     played Zeus on screen, not a painting-to-painting hop.
   - **Use a big lineage when it's the natural route** (e.g. Trump back to George Washington through every
