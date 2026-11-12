@@ -546,12 +546,12 @@ def render(slug: str, log=print) -> Path:
         M = M.copy(); M[0, 2] += sx; M[1, 2] += sy
 
         def scr(x, y):
-            px, py = to_screen(M, x, y)
-            return max(CARD[0] + 30, min(CARD[2] - 30, px)), max(CARD[1] + 60, min(CARD[3] - 40, py))
+            # owner: the pinned spot moves WITH the picture (no clamping to the card edge, which left it stuck)
+            return to_screen(M, x, y)
         pa = scr(cm["ba"][0] + cm["ba"][2] / 2, cm["ba"][1] - cm["ba"][3] * 0.08)
         pb = scr(cm["bb"][0] + cm["bb"][2] / 2, cm["bb"][1] - cm["bb"][3] * 0.08)
-        # string
-        start = (pa[0] + 60, pa[1] - 30)
+        # string; Buh stands right on A's pinned spot (he used to sit 60 px to the right of it)
+        start = pa
         if since >= 0:
             if since < THROW:
                 x, y, _ = pixelpin_path(start, pb, since / THROW)
