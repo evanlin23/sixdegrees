@@ -2,7 +2,8 @@
 
 He runs in from the last checkpoint (hopping a pipe on the way), stops under a "?" block, and at the reveal jumps,
 bonks it and a coin pops out (the B tag lands with the coin). Parallax sky/hills/ground are drawn once at quarter
-resolution and scrolled; a WORLD / COINS / SCORE HUD ticks up. The last link ends on LEVEL CLEAR + CONNECTED!.
+resolution and scrolled; a WORLD / COINS / SCORE HUD ticks up (never on a link with a dictator: there the block just
+thuds and the score holds). The last link ends on CONNECTED! + LEVEL CLEAR.
 """
 from __future__ import annotations
 
@@ -16,14 +17,16 @@ NAME = "game"
 Q = 4                     # background pixel size (drawn at 1/Q resolution, scaled up NEAREST)
 SPACING = 1400            # world px between checkpoints
 WALK = 0.85               # s for Buh's dash from one checkpoint to the next
-GY = 1180                 # ground top (screen y)
-STOP_DX = -440            # Buh stops this far left of a billboard centre (world px)
-BOARD_SX = 560            # billboard centre on screen once Buh has arrived
-BOARD_CY = 640            # photo centre y
-PW, PH = 640, 470         # photo size
-BLOCK_Y = 770             # "?" block centre y
-TAG_A_Y, TAG_B_Y = 962, 1040
-CAP_Y = 1335
+GY = 1275                 # ground top (screen y)
+BUH_SX = 108              # Buh's screen x once he has arrived (left of the billboard)
+BOARD_SX = 640            # billboard centre on screen once Buh has arrived
+STOP_DX = BUH_SX - BOARD_SX   # Buh stops this far left of a billboard centre (world px)
+BOARD_CY = 690            # photo centre y
+PW, PH = 760, 560         # photo size
+BLOCK_Y = GY - 410        # "?" block centre y
+TAG_Y = 1062              # name tags, each under its own face
+TAG_X = (205, 935)        # tag row stays right of Buh and inside the safe area
+CAP_Y = 1370
 
 
 def _rng(seed):
@@ -173,10 +176,14 @@ def make(ctx):
         return bg.resize((ctx.W, ctx.H), Image.NEAREST)
 
     # ---------------------------------------------------------------- full-res sprites
-    def sign(i):
+    def cam(i):
+        cx, cy, sc = ctx.both_cam(i, PW, PH, 0.8)
+        return cx, cy, min(sc, 1.3)                   # never upscale a photo past ~1.3x
+
+    def sign(i, plate=True):
         """Checkpoint billboard: wooden board with the framed photo, a CHECKPOINT plate and posts to the ground."""
-        if ("sign", i) not in _cache:
-            ph = ctx.view(i, *ctx.both_cam(i, PW, PH, 0.8), PW, PH)
+        if ("sign", i, plate) not in _cache:
+            ph = ctx.view(i, *cam(i), PW, PH)
             bw, bh = PW + 70, PH + 70
             top = 70                                      # room for the plate
             im = Image.new("RGBA", (bw + 20, top + bh + (GY - (BOARD_CY + bh // 2))), (0, 0, 0, 0))
@@ -190,13 +197,56 @@ def make(ctx):
                 d.line([(8, y), (bw - 8, y)], fill=(140, 82, 38), width=3)
             for x, y in ((14, top + 14), (bw - 22, top + 14), (14, top + bh - 22), (bw - 22, top + bh - 22)):
                 d.rectangle([x, y, x + 8, y + 8], fill=(230, 220, 200), outline=INK, width=2)
-            pl = ctx.pixel_tag(f"CHECKPOINT {i + 1}", ctx.WHITE, 24)
-            im.alpha_composite(pl, (bw // 2 - pl.width // 2, top - pl.height + 18))
-            _cache[("sign", i)] = (im, ph, top, bw, bh)
-        return _cache[("sign", i)]
+            if plate:
+                pl = ctx.pixel_tag(f"CHECKPOINT {i + 1}", ctx.WHITE, 24)
+                im.alpha_composite(pl, (bw // 2 - pl.width // 2, top - pl.height + 18))
+            _cache[("sign", i, plate)] = (im, ph, top, bw, bh)
+        return _cache[("sign", i, plate)]
 
-    def draw_sign(base, i, sx, local, bump):
-        im, ph, top, bw, bh = sign(i)
+    def face_sx(i, role, sx):
+        """Screen x of a face on billboard i whose centre is at screen x sx."""
+        cx, _, sc = cam(i)
+        b = ctx.fbox(i, role)
+        return sx + (b[0] + b[2] / 2 - cx) * sc
+
+    def tag_layout(i):
+        """(size, x_a, x_b, face_a, face_b) relative to the board centre: both tags on one row, each as close under its own face as the row allows.
+        Laid out with both names from the start so A's tag never moves when B's appears."""
+        if ("tags", i) in _cache:
+            return _cache[("tags", i)]
+        an, bn = ctx.link_names(i)
+        fa, fb = face_sx(i, "a", BOARD_SX), face_sx(i, "b", BOARD_SX)
+        lo, hi = TAG_X
+        for size in (28, 26, 24, 22, 20, 18):
+            wa = ctx.pixel_tag(ctx.C.labels[an].upper(), ctx.CYAN, size).width
+            wb = ctx.pixel_tag(ctx.C.labels[bn].upper(), ctx.YELLOW, size).width
+            if wa + wb + 16 <= hi - lo:
+                break
+        items = sorted([(fa, wa, "a"), (fb, wb, "b")])
+        (f1, w1, r1), (f2, w2, r2) = items
+        x1 = min(max(f1, lo + w1 / 2), hi - w2 - 16 - w1 / 2)
+        x2 = min(max(f2, x1 + w1 / 2 + 16 + w2 / 2), hi - w2 / 2)
+        if x2 - w2 / 2 < x1 + w1 / 2 + 16:              # still touching: push the left one back
+            x1 = x2 - w2 / 2 - 16 - w1 / 2
+        pos = {r1: x1, r2: x2}
+        _cache[("tags", i)] = (size, pos["a"] - BOARD_SX, pos["b"] - BOARD_SX, fa - BOARD_SX, fb - BOARD_SX)
+        return _cache[("tags", i)]
+
+    def draw_tag(base, text, bg, size, x, face_x, y, scale=1.0):
+        """A pixel tag with a little arrow on top pointing up at its face."""
+        tg = ctx.pixel_tag(text, bg, size)
+        if scale <= 0.01:
+            return
+        ax = min(max(face_x, x - tg.width / 2 + 26), x + tg.width / 2 - 34)
+        top = y - tg.height / 2 * scale
+        d = ImageDraw.Draw(base)
+        s_ = 18 * scale
+        d.polygon([(ax - s_ - 4, top + 4), (ax + s_ + 4, top + 4), (ax, top - s_ - 6)], fill=INK)
+        d.polygon([(ax - s_, top + 4), (ax + s_, top + 4), (ax, top - s_)], fill=bg)
+        ctx.paste(base, tg, x, y, scale=scale)
+
+    def draw_sign(base, i, sx, local, bump, plate=True):
+        im, ph, top, bw, bh = sign(i, plate)
         y0 = BOARD_CY - bh // 2 - top - int(bump)
         base.alpha_composite(im, (int(sx - bw / 2), y0))
         card = ctx.framed(ph, tilt=1.4 * math.sin(local * 1.6 + i), border=10, tape=False)
@@ -258,11 +308,19 @@ def make(ctx):
             idle = 60 * math.sin(math.pi * (local % 1.7) / 0.35)
         return x1, idle, 4 * math.sin(local * 2.4), 0.0, ("smug" if local < hit else "happy")
 
+    def sens(j):
+        a, b = ctx.link_names(j)
+        return ctx.sensitive(a) or ctx.sensitive(b)
+
     def score_at(i, local, hit_t):
-        base_s = 1000 * i
+        """Always counts up from the previous link's total; a link with a dictator/killer scores nothing."""
+        s_ = sum(0 if sens(j) else 1150 for j in range(i))
+        if sens(i):
+            return s_
+        s_ += int(min(local, WALK) / WALK * 150)
         if local > hit_t:
-            base_s += int(1000 * min(1.0, (local - hit_t) / 0.4))
-        return base_s + int(min(local, WALK) / WALK * 150)
+            s_ += int(1000 * min(1.0, (local - hit_t) / 0.4))
+        return s_
 
     # ---------------------------------------------------------------- frame
     def frame(seg, tt):
@@ -299,6 +357,7 @@ def make(ctx):
                     s = 9
                     d.rectangle([px - s, py - s, px + s, py + s], fill=(ctx.YELLOW, ctx.RED, ctx.CYAN, ctx.WHITE)[(a_ + k) % 4])
 
+        sens_i = sens(i)
         # previous and current checkpoints scroll by
         for j in (i - 1, i):
             if 0 <= j < ctx.n_links and not ctx.C.fj["links"][j].get("lineage"):
@@ -307,7 +366,7 @@ def make(ctx):
                     bump = 0
                     if j == i and coin_t <= local < coin_t + 0.25:
                         bump = 10 * math.sin(math.pi * (local - coin_t) / 0.25)
-                    draw_sign(base, j, sx, local + j, bump)
+                    draw_sign(base, j, sx, local + j, bump, plate=not (last and j == i and land > 0))
 
         # "?" blocks above each stop point (the previous one is spent)
         for j in (i - 1, i):
@@ -327,48 +386,54 @@ def make(ctx):
         spr = ctx.pin_sprite(expr, bang, bsq, look, scale=5)
         ctx.paste_pin(base, spr, sx, GY - bh)
 
-        # coin + points
         if coin_t <= local < coin_t + 0.9:
             k = (local - coin_t) / 0.9
-            cy = BLOCK_Y - 70 - 260 * math.sin(min(1.0, k * 1.6) * math.pi / 2) + (180 * max(0.0, k - 0.62) ** 2 * 6)
-            ctx.paste(base, coin(local * 18), to_sx(stop_x(i)), cy, alpha=1.0 if k < 0.75 else (1 - k) * 4)
-            ctx.paste(base, ctx.pixel_text("+1000", 30, fill=ctx.WHITE), to_sx(stop_x(i)) + 110, BLOCK_Y - 90 - 120 * k,
-                      alpha=min(1.0, (1 - k) * 3))
-            d = ImageDraw.Draw(base)
-            for a_ in range(8):                          # sparkle burst
-                ang = a_ * math.pi / 4
-                rr = 40 + 160 * k
-                px, py = to_sx(stop_x(i)) + rr * math.cos(ang), BLOCK_Y - 40 + rr * math.sin(ang) * 0.6
-                s = int(8 * (1 - k)) + 2
-                d.rectangle([px - s, py - s, px + s, py + s], fill=ctx.YELLOW, outline=INK)
+            if sens_i:                                   # a plain thud: dust puffs off the block, no coin, no points
+                d = ImageDraw.Draw(base)
+                for a_ in (-1, 1):
+                    px = to_sx(stop_x(i)) + a_ * (50 + 60 * k)
+                    py = BLOCK_Y + 20 - 30 * k
+                    r_ = int(14 * (1 - k)) + 2
+                    d.rectangle([px - r_, py - r_, px + r_, py + r_], fill=(220, 214, 200))
+            else:                                        # coin + points
+                cy = BLOCK_Y - 70 - 260 * math.sin(min(1.0, k * 1.6) * math.pi / 2) + (180 * max(0.0, k - 0.62) ** 2 * 6)
+                ctx.paste(base, coin(local * 18), to_sx(stop_x(i)), cy, alpha=1.0 if k < 0.75 else (1 - k) * 4)
+                ctx.paste(base, ctx.pixel_text("+1000", 30, fill=ctx.WHITE), to_sx(stop_x(i)) + 110, BLOCK_Y - 90 - 120 * k,
+                          alpha=min(1.0, (1 - k) * 3))
+                d = ImageDraw.Draw(base)
+                for a_ in range(8):                      # sparkle burst
+                    ang = a_ * math.pi / 4
+                    rr = 40 + 160 * k
+                    px, py = to_sx(stop_x(i)) + rr * math.cos(ang), BLOCK_Y - 40 + rr * math.sin(ang) * 0.6
+                    s = int(8 * (1 - k)) + 2
+                    d.rectangle([px - s, py - s, px + s, py + s], fill=ctx.YELLOW, outline=INK)
 
-        # name tags (pixel tags on the sign's posts)
+        # name tags under the billboard, each under (and pointing at) its own face; they ride with the board
         an, bn = ctx.link_names(i)
-        slide = ctx.ease_out_back(min(1.0, max(0.0, (local - WALK + 0.2) / 0.3)))
-        ta = ctx.pixel_tag(ctx.C.labels[an].upper(), ctx.CYAN, 30)
-        ctx.paste(base, ta, BOARD_SX + 30 + 700 * (1 - slide), TAG_A_Y + 3 * math.sin(tt * 3))
+        size, xa, xb, fa, fb = tag_layout(i)
+        bsx = to_sx(wx(i))
+        pop_a = ctx.ease_out_back(min(1.0, max(0.0, (local - WALK + 0.1) / 0.25)))
+        draw_tag(base, ctx.C.labels[an].upper(), ctx.CYAN, size, bsx + xa, bsx + fa, TAG_Y + 3 * math.sin(tt * 3), pop_a)
         if local > coin_t:
             pop = ctx.ease_out_back(min(1.0, (local - coin_t) / 0.18))
-            tb = ctx.pixel_tag(ctx.C.labels[bn].upper(), ctx.YELLOW, 30)
-            ctx.paste(base, tb, BOARD_SX + 30, TAG_B_Y + 3 * math.sin(tt * 3 + 1), scale=0.4 + 0.6 * pop)
+            draw_tag(base, ctx.C.labels[bn].upper(), ctx.YELLOW, size, bsx + xb, bsx + fb, TAG_Y + 3 * math.sin(tt * 3 + 1),
+                     0.4 + 0.6 * pop)
 
-        # HUD
-        if last and land > 0.03:
-            st = ctx.ease_out_back(min(1.0, (land - 0.03) / 0.18))
-            ctx.paste(base, ctx.pixel_text("LEVEL CLEAR!", 54, fill=ctx.YELLOW), ctx.CX, 286, scale=0.3 + 0.7 * st)
-        else:
+        # HUD (on the last link it gives way to CONNECTED!)
+        if not (last and land > 0.03):
             y = 290
             ctx.paste(base, ctx.pixel_text(f"WORLD 1-{i + 1}", 26, fill=ctx.WHITE), ctx.SAFE[0] + 130, y)
-            coins = i + (1 if local >= coin_t else 0)
+            coins = sum(0 if sens(j) else 1 for j in range(i)) + (1 if local >= coin_t and not sens_i else 0)
             ctx.paste(base, coin(tt * 3, 34), ctx.CX - 30, y)
             ctx.paste(base, ctx.pixel_text(f"x{coins:02d}", 26, fill=ctx.WHITE), ctx.CX + 30, y)
             ctx.paste(base, ctx.pixel_text(f"{score_at(i, local, coin_t):06d}", 26, fill=ctx.YELLOW), ctx.SAFE[2] - 110, y)
 
         ctx.header(base, i)
-        if last:                                         # CONNECTED! drops a little lower, under the tags
-            ov = Image.new("RGBA", (ctx.W, ctx.H), (0, 0, 0, 0))
-            ctx.connected(ov, seg, tt)
-            base.alpha_composite(ov.crop((0, 0, ctx.W, ctx.H - 100)), (0, 100))
+        if last:                                         # CONNECTED! takes the HUD row, clear of the tags and faces
+            ctx.connected(base, seg, tt, y=300)
+            if land > 0.25:
+                st = ctx.ease_out_back(min(1.0, (land - 0.25) / 0.2))
+                ctx.paste(base, ctx.pixel_text("LEVEL CLEAR!", 30, fill=ctx.YELLOW), BOARD_SX, 380, scale=0.3 + 0.7 * st)
         seg["cap"].draw(base, tt, y=CAP_Y)
         return base
 
