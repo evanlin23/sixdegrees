@@ -1,6 +1,6 @@
 {
  "title": "How is Al Capone connected to Scooby-Doo?",
- "description": "Nine real pictures connect gangster Al Capone to Scooby-Doo, through baseball legends, Marilyn Monroe, the Kennedys and Robin Williams.\n\nAl Capone → Gabby Hartnett → Rogers Hornsby → Joe DiMaggio → Marilyn Monroe → John F. Kennedy → Ted Kennedy → Robin Williams → Sarah Michelle Gellar → Scooby-Doo\n\nGive me two names in the comments and I'll find the photos that connect them.\n\nPhoto credits:\nPhoto 1, Fair use (commentary): https://www.loc.gov/item/99472813/\nPhoto 2 by Kaufman & Fabry, Public domain: https://commons.wikimedia.org/wiki/File:1929_Chicago_Cubs_team_photograph_by_Kaufman_%26_Fabry.jpg\nPhoto 3, Public domain: https://commons.wikimedia.org/wiki/File:Joe_DiMaggio_and_Rogers_Hornsby_1950.jpg\nPhoto 4, Public domain: https://commons.wikimedia.org/wiki/File:Joe_DiMaggio_and_Marilyn_Monroe_1954.jpg\nPhoto 5 by Cecil W. Stoughton, Public domain: https://commons.wikimedia.org/wiki/File:JFK_and_Marilyn_Monroe_1962_larger.jpg\nPhoto 6 by Cecil W. Stoughton / Adam Cuerden, Public domain: https://commons.wikimedia.org/wiki/File:President_Kennedy_and_his_brothers._Attorney_General_Robert_F._Kennedy,_Senator_Edward_Moore_Kennedy,_President_John..._-_NARA_-_194238_-_Restoration.jpg\nPhoto 7 by Laura Patterson, Public domain: https://commons.wikimedia.org/wiki/File:Ted_Kennedy,_Joseph_Kennedy_II_with_Comic_Relief_USA_comedians.jpg\nPhoto 8 by Greg Hernandez, CC BY 2.0: https://commons.wikimedia.org/wiki/File:The_Crazy_Ones_CBS_2013.jpg\nPhoto 9 by Warner Bros. (Scooby-Doo, 2002), via Little White Lies, Fair use (commentary): https://lwlies.com/articles/20-years-on-scooby-doo-is-still-a-thrillingly-silly-throwback-teen-comedy/\n\n#alcapone #scoobydoo #sixdegrees #history #didyouknow #shorts",
+ "description": "Nine real pictures connect gangster Al Capone to Scooby-Doo, through baseball legends, Marilyn Monroe, the Kennedys and Robin Williams.\n\nAl Capone → Gabby Hartnett → Rogers Hornsby → Joe DiMaggio → Marilyn Monroe → John F. Kennedy → Ted Kennedy → Robin Williams → Sarah Michelle Gellar → Scooby-Doo\n\nHow they're connected (every photo is real and sourced):\n1. Al Capone → Gabby Hartnett: In 1931, Cubs catcher Gabby Hartnett signed a ball for Al Capone's son, right beside Capone.\n   Photo, Fair use (commentary): https://www.loc.gov/item/99472813/\n2. Gabby Hartnett → Rogers Hornsby: In 1929, Hartnett posed in the Cubs team photo with superstar Rogers Hornsby.\n   Photo by Kaufman & Fabry, Public domain: https://commons.wikimedia.org/wiki/File:1929_Chicago_Cubs_team_photograph_by_Kaufman_%26_Fabry.jpg\n3. Rogers Hornsby → Joe DiMaggio: In 1950, Hornsby posed with Yankees star Joe DiMaggio.\n   Photo, Public domain: https://commons.wikimedia.org/wiki/File:Joe_DiMaggio_and_Rogers_Hornsby_1950.jpg\n4. Joe DiMaggio → Marilyn Monroe: In 1954, DiMaggio married Marilyn Monroe.\n   Photo, Public domain: https://commons.wikimedia.org/wiki/File:Joe_DiMaggio_and_Marilyn_Monroe_1954.jpg\n5. Marilyn Monroe → JFK: In 1962, Marilyn sang Happy Birthday to President Kennedy.\n   Photo by Cecil W. Stoughton, Public domain: https://commons.wikimedia.org/wiki/File:JFK_and_Marilyn_Monroe_1962_larger.jpg\n6. JFK → Ted Kennedy: Kennedy's youngest brother was Senator Ted Kennedy.\n   Photo by Cecil W. Stoughton / Adam Cuerden, Public domain: https://commons.wikimedia.org/wiki/File:President_Kennedy_and_his_brothers._Attorney_General_Robert_F._Kennedy,_Senator_Edward_Moore_Kennedy,_President_John..._-_NARA_-_194238_-_Restoration.jpg\n7. Ted Kennedy → Robin Williams: In 1990, Ted Kennedy welcomed Robin Williams to the Capitol for Comic Relief.\n   Photo by Laura Patterson, Public domain: https://commons.wikimedia.org/wiki/File:Ted_Kennedy,_Joseph_Kennedy_II_with_Comic_Relief_USA_comedians.jpg\n8. Robin Williams → Sarah Michelle Gellar: In 2013, Robin Williams starred in The Crazy Ones with Sarah Michelle Gellar.\n   Photo by Greg Hernandez, CC BY 2.0: https://commons.wikimedia.org/wiki/File:The_Crazy_Ones_CBS_2013.jpg\n9. Sarah Michelle Gellar → Scooby-Doo: And in 2002, Gellar played Daphne beside Scooby-Doo himself.\n   Photo by Warner Bros. (Scooby-Doo, 2002), via Little White Lies, Fair use (commentary): https://lwlies.com/articles/20-years-on-scooby-doo-is-still-a-thrillingly-silly-throwback-teen-comedy/\n\nGive me two names in the comments and I'll find the photos that connect them.\n\n#alcapone #scoobydoo #sixdegrees #history #didyouknow #shorts",
  "tags": [
   "Al Capone",
   "Gabby Hartnett",
@@ -25,12 +25,13 @@
  "file": "al-capone-to-scooby-doo.mp4",
  "kind": "formula",
  "voice": "gemini",
- "outro": false,
+ "outro": true,
  "voice_rev": 2,
- "narration": false,
+ "narration": true,
  "links": 9,
  "lineage": 0,
- "music": "Mitski - Washing Machine Heart",
- "trending": true,
+ "music": "Like a Loop Machine",
+ "style": "cards",
+ "trending": false,
  "slug": "al-capone-to-scooby-doo"
 }
