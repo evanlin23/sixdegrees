@@ -206,12 +206,17 @@ def render(slug: str, log=print) -> Path:
             (0.18, assets.sfx("bass_hit", 0.4)),                            # B lands
             (0.5, assets.sfx("px_coin", 0.3))]
     t += d
+    # music-only: short chains get slower links so the video still runs >= 18 s (Shorts need 15 s; QA checks)
+    n_fast = 2 if n_links > 3 else 0
+    n_lin = sum(1 for l in spec["links"] if l.get("lineage"))
+    mid_n = max(1, n_links - n_fast - n_lin)
+    mid_pace = max(3.3, (18.0 - 3.0 - 2.2 * n_fast - 4.0 * n_lin) / mid_n)
     for i, link in enumerate(spec["links"]):
         a, words = audio.say(link["line"], voice)
         last = i == n_links - 1
         speech = len(a) / audio.SR + 0.08
         if not narration:   # music-only: the reference hits' pace, ~3.3 s a link, a sprint at the end, fast lineages
-            speech = 4.0 if link.get("lineage") else (2.2 if i >= n_links - 2 else 3.3)
+            speech = 4.0 if link.get("lineage") else (2.2 if i >= n_links - 2 and n_links > 3 else mid_pace)
         # last photo: cut hard right after the final word / the CONNECTED! slam, for a seamless loop
         # the final destination stays hidden (camera tight on A) until the END of the last line, then lands and we
         # cut almost at once: "ends super fast after the last link is shown" (what the 40k-view 2025 hit did)
