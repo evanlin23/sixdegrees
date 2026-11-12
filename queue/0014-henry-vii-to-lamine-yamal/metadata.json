@@ -22,5 +22,8 @@
  "voice": "gemini",
  "outro": true,
  "voice_rev": 2,
+ "narration": true,
+ "links": 4,
+ "lineage": 10,
  "slug": "henry-vii-to-lamine-yamal"
 }
