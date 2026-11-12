@@ -230,10 +230,12 @@ def render(slug: str, log=print) -> Path:
     narration = spec["narration"] if "narration" in spec else int(hashlib.sha1((slug + ":narration").encode()).hexdigest(), 16) % 3 != 0
     if not narration:
         use_outro = False
+    # presentation style pilot: episode "style" wins; otherwise "cards" until the rotation is switched on
+    STYLE = spec.get("style") or "cards"
     script = [hook] + [l["line"] for l in spec["links"]] + ([OUTRO] if use_outro else [])
     audio.prefetch(script, voice, log)                                       # Gemini: one request per episode
     vinfo = {"engine": audio.narrator(script, voice), "outro": use_outro, "rev": audio.VOICE_REV,
-             "narration": narration, "links": len(spec["links"]),
+             "narration": narration, "links": len(spec["links"]), "style": STYLE,
              "lineage": sum(len(l["lineage"]["people"]) for l in spec["links"] if l.get("lineage"))}
     vinfo["clipped"] = [t[:60] for t in script if audio.clipped_end(audio.say(t, voice)[0])]
     (out_dir / "voice.json").write_text(json.dumps(vinfo))
@@ -264,6 +266,8 @@ def render(slug: str, log=print) -> Path:
         # cut almost at once: "ends super fast after the last link is shown" (what the 40k-view 2025 hit did)
         rv = max(REVEAL, (speech - THROW - 0.3) / speech) if last and not link.get("lineage") else REVEAL
         d = max(speech + 0.05, rv * speech + THROW + 0.3) if last else speech + PAD
+        if last and STYLE == "board":
+            d += 1.1                                     # time to zoom out to the whole evidence board
         reveal = t + (speech * 0.9 - THROW if link.get("lineage") else rv * speech)
         if last and use_outro:   # "And that's how." lands with the CONNECTED! stamp, then a hard cut
             oa, ow = audio.say(OUTRO, voice)
@@ -681,7 +685,328 @@ def render(slug: str, log=print) -> Path:
         seg["cap"].draw(base, tt, y=(HERO_A[1] + HERO_B[0]) // 2)
         return base
 
-    draw = {"hook": frame_hook, "link": frame_link}
+    # ---------- presentation styles (pilot). "cards" is the original; the others reuse the same photos, face boxes,
+    # timings and captions. Chosen by episode "style" or the STYLES rotation; recorded per upload.
+    _rgb, _vbg = {}, {}
+
+    def rgb(i):
+        if i not in _rgb:
+            _rgb[i] = cv2.cvtColor(C.imgs[i], cv2.COLOR_BGR2RGB)
+        return _rgb[i]
+
+    def view(i, cx, cy, s, ow, oh):
+        """Photo i scaled by s with image point (cx, cy) at the centre of an ow x oh frame; blurred photo outside."""
+        img = rgb(i)
+        ih, iw = img.shape[:2]
+        M = np.float32([[s, 0, ow / 2 - cx * s], [0, s, oh / 2 - cy * s]])
+        out = cv2.warpAffine(img, M, (ow, oh), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
+        mask = cv2.warpAffine(np.full((ih, iw), 255, np.uint8), M, (ow, oh)).astype(np.float32)[..., None] / 255
+        if (i, ow, oh) not in _vbg:
+            cs = max(ow / iw, oh / ih)
+            b = cv2.resize(img, (int(iw * cs) + 2, int(ih * cs) + 2))
+            y0, x0 = (b.shape[0] - oh) // 2, (b.shape[1] - ow) // 2
+            _vbg[(i, ow, oh)] = cv2.GaussianBlur(b[y0:y0 + oh, x0:x0 + ow], (0, 0), 25).astype(np.float32) * 0.5
+        out = out * mask + _vbg[(i, ow, oh)] * (1 - mask)
+        return Image.fromarray(out.astype(np.uint8)).convert("RGBA")
+
+    def fbox(i, role):
+        return cams[i]["ba" if role == "a" else "bb"]
+
+    def ctr(b):
+        return b[0] + b[2] / 2, b[1] + b[3] / 2
+
+    def both_cam(i, ow, oh, fill=0.7):
+        ba, bb = fbox(i, "a"), fbox(i, "b")
+        x0, x1 = min(ba[0], bb[0]), max(ba[0] + ba[2], bb[0] + bb[2])
+        y0, y1 = min(ba[1], bb[1]), max(ba[1] + ba[3], bb[1] + bb[3])
+        sc = min(ow * fill / max(1, x1 - x0), oh * fill / max(1, (y1 - y0) * 2.0))
+        return (x0 + x1) / 2, (y0 + y1) / 2 + (y1 - y0) * 0.35, sc
+
+    def face_cam(b, oh, frac=0.42):
+        cx, cy = ctr(b)
+        return cx, cy, oh * frac / max(b[3], 1)
+
+    def lerp_cam3(p, q, u):
+        u = max(0.0, min(1.0, u))
+        return (p[0] + (q[0] - p[0]) * u, p[1] + (q[1] - p[1]) * u, math.exp(math.log(p[2]) + (math.log(q[2]) - math.log(p[2])) * u))
+
+    def link_names(i):
+        return spec["links"][i]["a"], spec["links"][i]["b"]
+
+    def header(base, i):
+        dr = ImageDraw.Draw(base)
+        dr.rectangle([0, 0, W, BAND - 40], fill=INK)
+        paste(base, title_im, CX, 165)
+        paste(base, pixel_text(f"LINK {i + 1}", 22, fill=YELLOW, shadow=False), CX, 202)
+
+    def connected(base, seg, tt):
+        i = seg["i"]
+        if i != n_links - 1:
+            return
+        land = tt - seg["t0"] - seg.get("rv", REVEAL) * seg["speech"] - THROW
+        if land > 0.05:
+            st = min(1.0, (land - 0.05) / 0.12)
+            paste(base, pixel_text("CONNECTED!", 72, fill=RED), CX, 1020, scale=2.0 - ease(st))
+
+    def year_of(i):
+        l = spec["links"][i]
+        m = re.search(r"\b(1\d{3}|20\d{2})\b", (l.get("fact") or "") + " " + l["line"])
+        return int(m.group(1)) if m else None
+
+    # --- zoom: one continuous camera, A's face -> both -> into B's face -> (B is next photo's A) ...
+    def frame_zoom(seg, tt):
+        i = seg["i"]
+        if C.fj["links"][i].get("lineage"):
+            return frame_lineage(seg, tt)
+        sp, R, last = seg["speech"], seg.get("rv", REVEAL), i == n_links - 1
+        k = (tt - seg["t0"]) / sp
+        fa, fb, bc = face_cam(fbox(i, "a"), H), face_cam(fbox(i, "b"), H), both_cam(i, W, H, 0.78)
+        if k < max(R, 0.3):
+            cam = lerp_cam3(fa, bc, ease(k / max(R, 0.3)))
+        elif last or k < 0.82:
+            cam = bc
+        else:
+            cam = lerp_cam3(bc, fb, ease((k - 0.82) / 0.18))
+        base = view(i, *cam, W, H)
+        incut = tt - seg["t0"]
+        if i > 0 and incut < 0.16 and not C.fj["links"][i - 1].get("lineage"):
+            prev = view(i - 1, *face_cam(fbox(i - 1, "b"), H), W, H)
+            base = Image.blend(prev, base, incut / 0.16)
+        an, bn = link_names(i)
+        for role, nm, appear, col in (("a", an, 0.0, CYAN), ("b", bn, R + THROW / sp, YELLOW)):
+            if k < appear:
+                continue
+            fx, fy = ctr(fbox(i, role))
+            x, y = (fx - cam[0]) * cam[2] + W / 2, (fy - cam[1]) * cam[2] + H / 2 + fbox(i, role)[3] * cam[2] * 0.62
+            if 0 < x < W and 0 < y < H:
+                paste(base, pixel_tag(C.labels[nm].upper(), col, 30), max(SAFE[0] + 150, min(SAFE[2] - 150, x)),
+                      max(SAFE[1] + 120, min(SAFE[3] - 120, y)))
+        header(base, i)
+        connected(base, seg, tt)
+        seg["cap"].draw(base, tt)
+        return base
+
+    # --- board: Buh pins each photo to a corkboard; red string from photo to photo; zoom out at the end
+    BW, PW, PH = 1700, 600, 660
+    bpos = [(BW / 2 + (-330 if j % 2 == 0 else 330), 560 + j * 620) for j in range(n_links)]
+    BH = int(bpos[-1][1] + 760) if n_links else 1920
+    _board = {}
+
+    def polaroid(i):
+        card = Image.new("RGBA", (PW, PH), (250, 248, 240, 255))
+        card.alpha_composite(view(i, *both_cam(i, PW - 40, PH - 150, 0.8), PW - 40, PH - 150), (20, 20))
+        dr = ImageDraw.Draw(card)
+        an, bn = link_names(i)
+        f = ImageFont.truetype(str(FONTS / "Inter-ExtraBold.otf"), 34)
+        txt = f"{C.labels[an]} + {C.labels[bn]}"
+        while f.getlength(txt) > PW - 40 and f.size > 20:
+            f = ImageFont.truetype(str(FONTS / "Inter-ExtraBold.otf"), f.size - 2)
+        dr.text((PW / 2, PH - 72), txt, font=f, fill=(30, 30, 30), anchor="mm")
+        yr = year_of(i)
+        if yr:
+            dr.text((PW / 2, PH - 32), str(yr), font=ImageFont.truetype(str(FONTS / "Inter-Bold.otf"), 26), fill=(120, 110, 100), anchor="mm")
+        return card.rotate(4 if i % 2 else -4, expand=True, resample=Image.BICUBIC)
+
+    def board_layer(k):
+        """Cork + the first k polaroids pinned, with strings between them."""
+        if k not in _board:
+            if k == 0:
+                rng = np.random.default_rng(7)
+                cork = np.zeros((BH, BW, 3), np.float32) + np.array([168, 120, 74], np.float32)
+                cork += rng.normal(0, 14, (BH, BW, 1)).astype(np.float32)
+                cork = cv2.GaussianBlur(cork, (0, 0), 1.2)
+                _board[0] = Image.fromarray(np.clip(cork, 0, 255).astype(np.uint8)).convert("RGBA")
+            else:
+                im = board_layer(k - 1).copy()
+                pc = polaroid(k - 1)
+                x, y = bpos[k - 1]
+                im.alpha_composite(pc, (int(x - pc.width / 2), int(y - pc.height / 2)))
+                dr = ImageDraw.Draw(im)
+                if k >= 2:
+                    (x0, y0), (x1, y1) = bpos[k - 2], bpos[k - 1]
+                    dr.line([(x0, y0 - PH / 2 + 20), (x1, y1 - PH / 2 + 20)], fill=(200, 20, 30), width=8)
+                for j in range(k):
+                    px, py = bpos[j]
+                    dr.ellipse([px - 16, py - PH / 2 + 4, px + 16, py - PH / 2 + 36], fill=(220, 30, 40), outline=INK, width=4)
+                _board[k] = im
+        return _board[k]
+
+    def board_view(layer, cx, cy, v):
+        rw, rh = W / v, H / v
+        box = (int(cx - rw / 2), int(cy - rh / 2), int(cx + rw / 2), int(cy + rh / 2))
+        return layer.crop(box).resize((W, H), Image.BILINEAR)
+
+    def frame_board(seg, tt):
+        i = seg["i"]
+        if C.fj["links"][i].get("lineage"):
+            return frame_lineage(seg, tt)
+        sp, R, last = seg["speech"], seg.get("rv", REVEAL), i == n_links - 1
+        local = tt - seg["t0"]
+        v = 1.25
+        cur = bpos[i]
+        prev = bpos[i - 1] if i > 0 else (cur[0], cur[1] - 620)
+        u = ease(min(1.0, local / 0.55))
+        cx, cy = prev[0] + (cur[0] - prev[0]) * u, prev[1] + (cur[1] - prev[1]) * u + 120
+        land = local - R * sp - THROW
+        if last and land > 0.25:                       # zoom out to the whole board
+            z = ease(min(1.0, (land - 0.25) / 0.7))
+            vfit = min(W / BW, H / BH) * 0.98
+            v = math.exp(math.log(1.25) + (math.log(vfit) - math.log(1.25)) * z)
+            cx, cy = cx + (BW / 2 - cx) * z, cy + (BH / 2 - cy) * z
+        layer = board_layer(i + 1 if (last and land > 0.25) else i)
+        base = board_view(layer, cx, cy, v)
+        to_s = lambda bx, by: ((bx - cx) * v + W / 2, (by - cy) * v + H / 2)
+        if not (last and land > 0.25):
+            drop = ease_out_back(min(1.0, local / 0.3))
+            pc = polaroid_cache.setdefault(i, polaroid(i))
+            sx, sy = to_s(*cur)
+            paste(base, pc, sx, sy - 80 * (1 - drop), scale=v * (1.25 - 0.25 * drop), nearest=False)
+            if i > 0:                                  # the red string runs out from the last photo
+                g = min(1.0, max(0.0, (local - 0.15) / 0.4))
+                ax, ay = to_s(prev[0], prev[1] - PH / 2 + 20)
+                bx, by = to_s(cur[0], cur[1] - PH / 2 + 20)
+                ImageDraw.Draw(base).line([(ax, ay), (ax + (bx - ax) * g, ay + (by - ay) * g)], fill=(200, 20, 30), width=int(8 * v))
+            px, py = to_s(cur[0], cur[1] - PH / 2 + 20)
+            hop = abs(math.sin(local * 7)) * 18
+            paste_pin(base, pin_sprite("shock" if local < 0.5 else ("smug" if k_even(local) else "happy"), 0, 0, 1), px, py - hop)
+        header(base, i)
+        connected(base, seg, tt)
+        seg["cap"].draw(base, tt)
+        return base
+
+    polaroid_cache = {}
+
+    def k_even(t):
+        return int(t * 2) % 2 == 0
+
+    # --- timeline: the photo above, a big year counter and a ruler collecting faces below
+    years = [year_of(j) for j in range(n_links)]
+    for j in range(n_links):                           # links without a year inherit the previous one
+        if years[j] is None:
+            years[j] = years[j - 1] if j and years[j - 1] else None
+    known = [y for y in years if y]
+    ymin, ymax = (min(known), max(known)) if known else (1900, 2025)
+    if ymax - ymin < 10:
+        ymin, ymax = ymin - 5, ymax + 5
+    pad = (ymax - ymin) * 0.08
+    RX0, RX1, RY = SAFE[0] + 40, SAFE[2] - 40, 1395
+
+    def rx(y):
+        return RX0 + (RX1 - RX0) * ((y - ymin + pad) / (ymax - ymin + 2 * pad))
+
+    def frame_timeline(seg, tt):
+        i = seg["i"]
+        if C.fj["links"][i].get("lineage"):
+            return frame_lineage(seg, tt)
+        local = tt - seg["t0"]
+        base = checker(tt * 2, ((28, 24, 52), (22, 18, 44)))
+        ph = view(i, *both_cam(i, 900, 760, 0.8), 900, 760)
+        dr = ImageDraw.Draw(base)
+        dr.rectangle([CX - 466, 286, CX + 466, 1066], fill=WHITE, outline=INK, width=6)
+        base.alpha_composite(ph, (int(CX - 450), 296))
+        an, bn = link_names(i)
+        sp, R = seg["speech"], seg.get("rv", REVEAL)
+        paste(base, pixel_tag(C.labels[an].upper(), CYAN, 28), CX - 220, 1030)
+        if local > R * sp + THROW:
+            paste(base, pixel_tag(C.labels[bn].upper(), YELLOW, 28), CX + 220, 1030)
+        y_now = years[i] or ymin
+        y_prev = (years[i - 1] or y_now) if i else y_now
+        u = ease(min(1.0, local / 0.6))
+        yv = y_prev + (y_now - y_prev) * u
+        paste(base, pixel_text(str(int(round(yv))), 110, fill=YELLOW), CX, 1240)
+        dr = ImageDraw.Draw(base)
+        dr.rectangle([RX0, RY - 5, RX1, RY + 5], fill=WHITE)
+        step = 10 if ymax - ymin <= 120 else (50 if ymax - ymin <= 600 else 250)
+        for yy in range(int(ymin // step * step), int(ymax) + step, step):
+            x = rx(yy)
+            if RX0 <= x <= RX1:
+                dr.rectangle([x - 2, RY - 16, x + 2, RY + 16], fill=WHITE)
+        for j in range(i + 1):                        # faces collected on the ruler
+            if years[j] is None:
+                continue
+            xj = rx(years[j]) if j < i else rx(yv)
+            th = sharp[C.people[j + 1]] if j + 1 < len(C.people) else None
+            if th is not None:
+                paste(base, th.resize((64, 64), Image.BICUBIC), xj, RY - 52 - (j % 2) * 30, nearest=False)
+        header(base, i)
+        connected(base, seg, tt)
+        seg["cap"].draw(base, tt, y=1150)
+        return base
+
+    # --- map: Buh flies to where each photo was taken (links need "where": {"lat", "lon", "place"})
+    _map = {}
+
+    def world_map():
+        if "img" not in _map:
+            m = Image.open(FONTS.parent / "world_equirect.png").convert("LA")
+            a = np.array(m.split()[-1].resize((3840, 1950), Image.NEAREST)) > 128
+            img = np.zeros((1950, 3840, 3), np.uint8)
+            img[:] = (24, 44, 86)
+            img[a] = (70, 150, 96)
+            yy, xx = np.mgrid[0:1950, 0:3840]
+            grid = ((xx % 40 == 0) | (yy % 40 == 0)) & ~a
+            img[grid] = (30, 54, 100)
+            _map["img"] = Image.fromarray(img).convert("RGBA")
+        return _map["img"]
+
+    def geo(i):
+        w = spec["links"][i].get("where") or {}
+        if "lat" not in w:
+            return None
+        return (w["lon"] + 180) / 360 * 3840, (90 - w["lat"]) / 180 * 1950
+
+    def frame_map(seg, tt):
+        i = seg["i"]
+        if C.fj["links"][i].get("lineage") or geo(i) is None:
+            return frame_timeline(seg, tt)
+        local = tt - seg["t0"]
+        cur = geo(i)
+        prev = next((geo(j) for j in range(i - 1, -1, -1) if geo(j)), None) or cur
+        fly = ease(min(1.0, local / 0.9))
+        dist = math.hypot(cur[0] - prev[0], cur[1] - prev[1])
+        vmid = min(1.4, max(0.28, W * 0.7 / max(dist, 1)))     # zoomed out mid-flight, back in on landing
+        v = 1.4 + (vmid - 1.4) * math.sin(math.pi * fly) if dist > 50 else 1.4
+        cx, cy = prev[0] + (cur[0] - prev[0]) * fly, prev[1] + (cur[1] - prev[1]) * fly
+        mp = world_map()
+        rw, rh = W / v, H / v
+        base = mp.crop((int(cx - rw / 2), int(cy - rh / 2 - 200 / v), int(cx + rw / 2), int(cy + rh / 2 - 200 / v))).resize((W, H), Image.NEAREST)
+        to_s = lambda px, py: ((px - cx) * v + W / 2, (py - cy) * v + H / 2 + 200)
+        dr = ImageDraw.Draw(base)
+        for j in range(i + 1):                          # visited places and the route
+            g = geo(j)
+            if not g:
+                continue
+            gx, gy = to_s(*g)
+            dr.ellipse([gx - 12, gy - 12, gx + 12, gy + 12], fill=RED, outline=INK, width=4)
+        ax, ay = to_s(*prev)
+        bx, by = to_s(cx, cy)
+        n_d = int(math.hypot(bx - ax, by - ay) / 24)
+        for d in range(n_d):
+            px, py = ax + (bx - ax) * d / max(n_d, 1), ay + (by - ay) * d / max(n_d, 1)
+            dr.rectangle([px - 4, py - 4, px + 4, py + 4], fill=WHITE)
+        hop = abs(math.sin(local * 9)) * 16
+        paste_pin(base, pin_sprite("shock" if fly < 1 else "happy", 0, 0, 1 if cur[0] >= prev[0] else -1), bx, by - hop)
+        place = (spec["links"][i].get("where") or {}).get("place", "")
+        if fly >= 1 and place:
+            paste(base, pixel_tag(place.upper(), WHITE, 26), bx, by + 60)
+        if local > 0.75:                                # the photo pops up over the landing spot
+            pop = ease_out_back(min(1.0, (local - 0.75) / 0.25))
+            card = Image.new("RGBA", (720, 620), WHITE + (255,))
+            card.alpha_composite(view(i, *both_cam(i, 700, 600, 0.8), 700, 600), (10, 10))
+            paste(base, card, CX, 640, scale=0.5 + 0.5 * pop, nearest=False)
+            an, bn = link_names(i)
+            sp, R = seg["speech"], seg.get("rv", REVEAL)
+            paste(base, pixel_tag(C.labels[an].upper(), CYAN, 28), CX - 200, 990)
+            if local > R * sp + THROW:
+                paste(base, pixel_tag(C.labels[bn].upper(), YELLOW, 28), CX + 200, 990)
+        header(base, i)
+        connected(base, seg, tt)
+        seg["cap"].draw(base, tt)
+        return base
+
+    style_frames = {"cards": frame_link, "zoom": frame_zoom, "board": frame_board, "timeline": frame_timeline,
+                    "map": frame_map}
+    draw = {"hook": frame_hook, "link": style_frames.get(STYLE, frame_link)}
 
     def frame_at(tt):
         for j, sg in enumerate(segs):
