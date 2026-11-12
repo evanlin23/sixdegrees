@@ -22,7 +22,10 @@
  "file": "attila-to-squidward.mp4",
  "kind": "formula",
  "voice": "gemini",
- "outro": true,
+ "outro": false,
  "voice_rev": 2,
+ "narration": false,
+ "links": 6,
+ "lineage": 9,
  "slug": "attila-to-squidward"
 }
