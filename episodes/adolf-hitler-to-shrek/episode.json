@@ -1,0 +1,240 @@
+{
+  "from": "Adolf Hitler",
+  "to": "Shrek",
+  "title": "How is Adolf Hitler connected to Shrek?",
+  "description": "Ten real pictures connect Adolf Hitler to Shrek, through Hindenburg, the Kaiser, Teddy Roosevelt, every president to Reagan, Arnold, Obama, King Charles, Mark Carney and Mike Myers.",
+  "hook": "How is Adolf Hitler connected to Shrek?",
+  "people": {
+    "Adolf Hitler": {
+      "label": "Adolf Hitler"
+    },
+    "Paul von Hindenburg": {
+      "label": "Hindenburg"
+    },
+    "Wilhelm II, German Emperor": {
+      "label": "Kaiser Wilhelm II",
+      "short": "Kaiser Wilhelm"
+    },
+    "Theodore Roosevelt": {
+      "label": "Teddy Roosevelt",
+      "short": "Teddy Roosevelt"
+    },
+    "Ronald Reagan": {
+      "label": "Ronald Reagan"
+    },
+    "Arnold Schwarzenegger": {
+      "label": "Arnold Schwarzenegger",
+      "short": "Schwarzenegger"
+    },
+    "Barack Obama": {
+      "label": "Barack Obama"
+    },
+    "Mike Myers": {
+      "label": "Mike Myers"
+    },
+    "Shrek": {
+      "label": "Shrek"
+    },
+    "Charles III": {
+      "label": "King Charles"
+    },
+    "Mark Carney": {
+      "label": "Mark Carney"
+    }
+  },
+  "links": [
+    {
+      "a": "Adolf Hitler",
+      "b": "Paul von Hindenburg",
+      "image": {
+        "file": "File:Bundesarchiv Bild 183-S38324, Tag von Potsdam, Adolf Hitler, Paul v. Hindenburg.jpg"
+      },
+      "line": "In 1933, Hitler shook hands with President Hindenburg, the old war hero who had just made him chancellor.",
+      "a_face": 3,
+      "b_face": [
+        1426,
+        165,
+        220,
+        250
+      ]
+    },
+    {
+      "a": "Paul von Hindenburg",
+      "b": "Wilhelm II, German Emperor",
+      "image": {
+        "file": "File:Hindenburg, Kaiser, Ludendorff HD-SN-99-02150.JPG"
+      },
+      "line": "In 1917, Hindenburg studied war maps with his boss, Kaiser Wilhelm II, the last emperor of Germany.",
+      "a_face": 0,
+      "b_face": 1
+    },
+    {
+      "a": "Wilhelm II, German Emperor",
+      "b": "Theodore Roosevelt",
+      "image": {
+        "file": "File:Theodore Roosevelt riding on horseback with Kaiser Wilhelm II LCCN2013650883.jpg"
+      },
+      "line": "In 1910, the Kaiser took Teddy Roosevelt on horseback to watch the German army practice.",
+      "a_face": 0,
+      "b_face": 1
+    },
+    {
+      "a": "Theodore Roosevelt",
+      "b": "Ronald Reagan",
+      "lineage": {
+        "label": "LINE OF PRESIDENTS",
+        "people": [
+          {
+            "name": "Theodore Roosevelt",
+            "file": "File:Theodore Roosevelt by the Pach Bros.jpg",
+            "label": "26th"
+          },
+          {
+            "name": "William Howard Taft",
+            "file": "File:Cabinet card of William Howard Taft by Pach Brothers - Cropped to image.jpg",
+            "label": "27th"
+          },
+          {
+            "name": "Woodrow Wilson",
+            "file": "File:President Woodrow Wilson Harris & Ewing (3x4 cropped b).jpg",
+            "label": "28th"
+          },
+          {
+            "name": "Warren G. Harding",
+            "file": "File:Warren G Harding portrait as senator June 1920.jpg",
+            "label": "29th"
+          },
+          {
+            "name": "Calvin Coolidge",
+            "file": "File:President Calvin Coolidge, 1924 portrait photograph (3x4 cropped).jpeg",
+            "label": "30th"
+          },
+          {
+            "name": "Herbert Hoover",
+            "file": "File:President Hoover portrait.jpg",
+            "label": "31st"
+          },
+          {
+            "name": "Franklin Delano Roosevelt",
+            "file": "File:FDR 1944 Color Portrait.jpg",
+            "label": "32nd"
+          },
+          {
+            "name": "Harry S. Truman",
+            "file": "File:TRUMAN 58-766-06 (cropped).jpg",
+            "label": "33rd"
+          },
+          {
+            "name": "Dwight D. Eisenhower",
+            "file": "File:Dwight D. Eisenhower, official photo portrait, May 29, 1959.jpg",
+            "label": "34th"
+          },
+          {
+            "name": "John F. Kennedy",
+            "file": "File:John F. Kennedy, White House color photo portrait.jpg",
+            "label": "35th"
+          },
+          {
+            "name": "Lyndon B. Johnson",
+            "file": "File:Lyndon B. Johnson, photo portrait, leaning on chair, color cropped.jpg",
+            "label": "36th"
+          },
+          {
+            "name": "Richard Nixon",
+            "file": "File:Richard Nixon presidential portrait.jpg",
+            "label": "37th"
+          },
+          {
+            "name": "Gerald Ford",
+            "file": "File:Gerald Ford presidential portrait (cropped).jpg",
+            "label": "38th"
+          },
+          {
+            "name": "Jimmy Carter",
+            "file": "File:JimmyCarterPortrait2.jpg",
+            "label": "39th"
+          },
+          {
+            "name": "Ronald Reagan",
+            "file": "File:Ronald Reagan 1981 presidential portrait.jpg",
+            "label": "40th"
+          }
+        ]
+      },
+      "line": "Teddy Roosevelt was the 26th president, and the line runs all the way to the 40th, Ronald Reagan."
+    },
+    {
+      "a": "Ronald Reagan",
+      "b": "Arnold Schwarzenegger",
+      "image": {
+        "file": "File:President Ronald Reagan with Arnold Schwarzenegger Retouched.jpg"
+      },
+      "line": "In 1984, Reagan met a bodybuilder turned movie star, Arnold, at the Republican convention in Dallas.",
+      "a_face": 5,
+      "b_face": 2
+    },
+    {
+      "a": "Arnold Schwarzenegger",
+      "b": "Barack Obama",
+      "image": {
+        "file": "File:P031909PS-0263 (3484026683).jpg"
+      },
+      "line": "In 2009, Arnold walked with Obama in Los Angeles.",
+      "a_face": 1,
+      "b_face": 3
+    },
+    {
+      "a": "Barack Obama",
+      "b": "Charles III",
+      "image": {
+        "file": "File:President Barack Obama meets with Prince Charles, Prince of Wales, in the Oval Office, May 4, 2011.jpg"
+      },
+      "line": "In 2011, Obama hosted Prince Charles in the Oval Office.",
+      "a_face": 1,
+      "b_face": 0
+    },
+    {
+      "a": "Charles III",
+      "b": "Mark Carney",
+      "image": {
+        "file": "File:Diana Carney, King Charles III, and Mark Carney at Rideau Hall, 2025 (cropped).jpg"
+      },
+      "line": "In 2025, the King met Canada's Mark Carney.",
+      "a_face": 2,
+      "b_face": 3
+    },
+    {
+      "a": "Mark Carney",
+      "b": "Mike Myers",
+      "image": {
+        "url": "https://www.ctvnews.ca/resizer/v2/XFQWPZCO7ZAA3BJHW7OZBG54B4.jpeg?smart=true&auth=649dca20d49d2a91706c879ea4cee1311af1677a335f069677ac414e4ab6fe43&width=1200&height=630",
+        "credit": "Liberal Party of Canada campaign ad (via CTV News)",
+        "license": "Fair use (commentary)",
+        "source": "https://www.ctvnews.ca/federal-election-2025/article/mike-myers-joins-mark-carney-in-liberal-ad-supporting-elbows-up-movement/"
+      },
+      "line": "Who made an ad with Mike Myers.",
+      "a_face": 1,
+      "b_face": 0
+    },
+    {
+      "a": "Mike Myers",
+      "b": "Shrek",
+      "image": {
+        "pair": [
+          {
+            "file": "File:Mike Myers 2017 (37220071326) (cropped).jpg"
+          },
+          {
+            "url": "http://www.impawards.com/2001/posters/shrek_ver3_xlg.jpg",
+            "credit": "DreamWorks Pictures (via IMP Awards)",
+            "license": "Fair use (commentary)",
+            "source": "http://www.impawards.com/2001/shrek_ver3.html"
+          }
+        ]
+      },
+      "a_face": 1,
+      "line": "Who voices Shrek.",
+      "b_face": 3
+    }
+  ]
+}
