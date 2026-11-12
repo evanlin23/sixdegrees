@@ -1,6 +1,7 @@
-"""Web: "six degrees" as a growing network graph. Each person is a glowing node; every link a new node flies in, an
-edge draws to it and the photo hangs off the edge as a card before shrinking into it. Grey decoy nodes float all
-around, and the finale pulls back to the highlighted path through the whole web."""
+"""Web: "six degrees" as a growing network graph. Each person is a glowing node in a strip of web under the title;
+the link photo is one big glowing panel below it, and A's and B's nodes each run a tether down into their own face
+in it. Buh rides the new edge from A to B as it draws; finished edges carry their photos as thumbnails, and the
+finale closes in on the destination node while the last photo stays up."""
 from __future__ import annotations
 
 import math
@@ -19,6 +20,25 @@ PATH = (40, 220, 255)
 HOT = (255, 214, 10)
 # path node layout (world px): a compact meander that fits a portrait screen at the finale
 PATTERN = [(0, 0), (560, 40), (980, 420), (520, 760), (30, 700), (260, 1180), (900, 1150)]
+PW, PH, GL = 860, 580, 24                # the photo panel (and its glow margin)
+PH_Y0 = 590                             # panel top; the web strip sits above it, under the title band
+PH_Y1 = PH_Y0 + PH
+WEB_AY = 405
+CAP_Y = 1384
+
+
+def photo_params(ctx, i, w, h, fill=0.8, maxup=1.3):
+    """(cx, cy, scale, ow, oh) for link photo i in a w x h window: both faces in, cover-cropped where the source
+    allows, never upscaled beyond maxup (a small source gives ow, oh < w, h and gets a dark matte, not blur)."""
+    ih, iw = ctx.C.imgs[i].shape[:2]
+    cx, cy, s = ctx.both_cam(i, w, h, fill)
+    ba, bb = ctx.fbox(i, "a"), ctx.fbox(i, "b")
+    spread = max(ba[0] + ba[2], bb[0] + bb[2]) - min(ba[0], bb[0])
+    s = min(maxup, max(s, max(w / iw, h / ih)), 0.95 * w / max(1, spread))
+    ow, oh = min(w, int(iw * s)), min(h, int(ih * s))
+    hw, hh = ow / 2 / s, oh / 2 / s
+    cx, cy = min(max(cx, hw), iw - hw), min(max(cy, hh), ih - hh)
+    return cx, cy, s, ow, oh
 
 
 def _positions(n):
@@ -154,55 +174,50 @@ def make(ctx):
 
     def tag(nm, col):
         if (nm, col) not in _tags:
-            _tags[(nm, col)] = ctx.pixel_tag(ctx.C.labels[nm].upper(), col, 24)
+            _tags[(nm, col)] = ctx.pixel_tag(ctx.C.labels[nm].upper(), col, 28)
         return _tags[(nm, col)]
 
-    _cards, _thumbs = {}, {}
+
+    # ---------- the link photo: one big glowing "evidence" panel under the web; edges run from the nodes into it
+    _fits, _cards, _thumbs = {}, {}, {}
+
+    def fit(i):
+        if i not in _fits:
+            _fits[i] = photo_params(ctx, i, PW, PH)
+        return _fits[i]
 
     def card(i, revealed):
         key = (i, revealed)
         if key in _cards:
             return _cards[key]
-        PW, PH = 800, 420
-        an, bn = ctx.link_names(i)
-        im = Image.new("RGBA", (PW + 60, PH + 190), (0, 0, 0, 0))
+        cx, cy, s, ow, oh = fit(i)
+        col = HOT if revealed else PATH
+        im = Image.new("RGBA", (PW + 2 * GL, PH + 2 * GL), (0, 0, 0, 0))
         g = Image.new("RGBA", im.size, (0, 0, 0, 0))
-        ImageDraw.Draw(g).rounded_rectangle([14, 14, PW + 46, PH + 176], 22, fill=PATH + (170,))
-        im.alpha_composite(g.filter(ImageFilter.GaussianBlur(10)))
+        ImageDraw.Draw(g).rounded_rectangle([GL - 10, GL - 10, GL + PW + 10, GL + PH + 10], 34, fill=col + (190,))
+        im.alpha_composite(g.filter(ImageFilter.GaussianBlur(14)))
         d = ImageDraw.Draw(im)
-        d.rounded_rectangle([20, 20, PW + 40, PH + 170], 18, fill=(18, 24, 48), outline=PATH, width=5)
-        ta = tag(an, ctx.CYAN)
-        tb = tag(bn, ctx.YELLOW) if revealed else ctx.pixel_tag("? ? ?", (150, 160, 190), 24)
-        plus = ctx.pixel_text("+", 30, fill=ctx.WHITE)
-        tot = ta.width + plus.width + tb.width + 10
-        sc = min(1.0, (PW - 20) / tot)
-        x = 30 + (PW + 20 - tot * sc) / 2
-        for t_ in (ta, plus, tb):
-            t2 = t_.resize((int(t_.width * sc), int(t_.height * sc)), Image.NEAREST) if sc < 1 else t_
-            im.alpha_composite(t2, (int(x), int(62 - t2.height / 2)))
-            x += t2.width + 5 * sc
-        ph = ctx.view(i, *ctx.both_cam(i, PW, PH, 0.8), PW, PH)
-        im.alpha_composite(ph, (30, 100))
-        d.rectangle([30, 100, 30 + PW, 100 + PH], outline=PATH, width=2)
-        words, lines, cur = ctx.fact_of(ctx.spec["links"][i]).upper().split(), [], ""
-        for w in words:
-            if cur and len(cur) + len(w) + 1 > 38:
-                lines.append(cur)
-                cur = w
-            else:
-                cur = f"{cur} {w}".strip()
-        lines.append(cur)
-        f = ctx.pf(19)
-        for k, ln in enumerate(lines[:2]):
-            d.text((44, PH + 114 + k * 28), ln, font=f, fill=(220, 230, 255))
+        d.rounded_rectangle([GL - 6, GL - 6, GL + PW + 6, GL + PH + 6], 32, fill=(10, 14, 30), outline=col, width=6)
+        ph = ctx.view(i, cx, cy, s, ow, oh)
+        m = Image.new("L", (ow, oh), 0)
+        ImageDraw.Draw(m).rounded_rectangle([0, 0, ow - 1, oh - 1], 26, fill=255)
+        im.paste(ph, (GL + (PW - ow) // 2, GL + (PH - oh) // 2), m)
         _cards[key] = im
         return im
 
+    def face_x(i, role):
+        """Screen x of person role's face inside the photo panel."""
+        cx, cy, s, ow, oh = fit(i)
+        fx = ctx.ctr(ctx.fbox(i, role))[0]
+        return ctx.CX + (fx - cx) * s
+
     def thumb(i):
         if i not in _thumbs:
-            ph = ctx.view(i, *ctx.both_cam(i, 150, 100, 0.8), 150, 100)
+            cx, cy, s, ow, oh = photo_params(ctx, i, 150, 100)
+            ph = ctx.view(i, cx, cy, s, ow, oh)
             im = Image.new("RGBA", (160, 110), PATH + (255,))
-            im.alpha_composite(ph, (5, 5))
+            im.paste((10, 14, 30), [5, 5, 155, 105])
+            im.alpha_composite(ph, (5 + (150 - ow) // 2, 5 + (100 - oh) // 2))
             _thumbs[i] = im
         return _thumbs[i]
 
@@ -212,54 +227,55 @@ def make(ctx):
     def rev_t(s):
         return s.get("rv", ctx.REVEAL) * s["speech"] + ctx.THROW
 
-    def card_out(s):
-        dur = s["t1"] - s["t0"]
-        if s["i"] == ctx.n_links - 1:
-            return max(0.9, rev_t(s) - 0.55)
-        return max(rev_t(s) + 0.4, min(dur - 0.5, rev_t(s) + 1.3))
-
     def seg_at(T):
         for s in segs:
             if T < s["t1"] or s is segs[-1]:
                 return s
         return segs[-1]
 
-    # finale framing: the gap between the last two rows of nodes sits behind the CONNECTED! stamp (y 1020)
-    gap_y = (BB[3] + max([y for y in ys if y < BB[3] - 200] or [BB[1]])) / 2 + 45
-    FIT_Z = min((ctx.SAFE[2] - ctx.SAFE[0] - 260) / max(1, BB[2] - BB[0]),
-                (1020 - 330) / max(1, gap_y - BB[1]), (1260 - 1020 - 90) / max(1, BB[3] - gap_y), 0.9)
-    FIT = ((BB[0] + BB[2]) / 2, gap_y, FIT_Z, 1020.0)
-    if FIT_Z < 0.4:
-        FIT_Z = min((ctx.SAFE[2] - ctx.SAFE[0] - 260) / max(1, BB[2] - BB[0]), 900 / max(1, BB[3] - BB[1]))
-        FIT = ((BB[0] + BB[2]) / 2, (BB[1] + BB[3]) / 2, FIT_Z, 760.0)
-
     def target(T):
-        """Camera target (cx, cy, zoom, screen anchor y) at time T, before smoothing."""
+        """Camera (x, y, zoom, screen y) over the web strip: A and B of the link; on the last link it closes in on
+        the destination node after the reveal."""
         s = seg_at(T)
-        local = T - s["t0"]
-        if T < s["t0"]:
-            a = idx.get(ctx.link_names(s["i"])[0], 0)
-            return P[a][0], P[a][1], 0.95, 560.0
         a, b = (idx.get(n, 0) for n in ctx.link_names(s["i"]))
         A, B = P[a], P[b]
-        if s["i"] == ctx.n_links - 1 and local > card_out(s) - 0.1:
-            return FIT
-        if local < card_out(s):
-            dx, dy = abs(B[0] - A[0]) + 1, abs(B[1] - A[1]) + 1
-            z = max(0.5, min(0.95, 560 / dx, 250 / dy))
-            return (A[0] + B[0]) / 2, (A[1] + B[1]) / 2, z, 480.0
-        return B[0], B[1], 1.0, 720.0
+        if s["i"] == ctx.n_links - 1 and T - s["t0"] > rev_t(s) - 0.1:
+            return B[0], B[1], 1.15, WEB_AY - 10
+        dx, dy = abs(B[0] - A[0]) + 1, abs(B[1] - A[1]) + 1
+        z = max(0.5, min(0.85, 600 / dx, 235 / dy))
+        return (A[0] + B[0]) / 2, (A[1] + B[1]) / 2, z, WEB_AY
 
     def cam(T):
         n = 9
         acc = [0.0, 0.0, 0.0, 0.0]
         for k in range(n):
-            x, y, z, ay = target(T - 0.75 * k / (n - 1))
+            x, y, z, ay = target(T - 0.7 * k / (n - 1))
             acc[0] += x
             acc[1] += y
             acc[2] += math.log(z)
             acc[3] += ay
         return acc[0] / n, acc[1] / n, math.exp(acc[2] / n), acc[3] / n
+
+    def place_tags(items):
+        """items: [(img, face_x)] -> [(img, x, y)] under their faces, pushed apart, kept inside SAFE."""
+        y = PH_Y1 + 36
+        out = []
+        items = sorted(items, key=lambda q: q[1])
+        xs = [max(ctx.SAFE[0] + im.width / 2, min(ctx.SAFE[2] - im.width / 2, fx)) for im, fx in items]
+        if len(items) == 2:
+            (l, _), (r, _) = items
+            gap = xs[1] - xs[0] - (l.width + r.width) / 2 - 14
+            if gap < 0:
+                xs[0] -= -gap / 2
+                xs[1] += -gap / 2
+                xs[0] = max(ctx.SAFE[0] + l.width / 2, xs[0])
+                xs[1] = min(ctx.SAFE[2] - r.width / 2, xs[1])
+        for k, (im, _) in enumerate(items):
+            yy = y
+            if k == 1 and xs[1] - xs[0] < (items[0][0].width + im.width) / 2 + 8:
+                yy = y + im.height + 6                        # still too close: stack it below
+            out.append((im, xs[k], yy))
+        return out
 
     def frame(seg, tt):
         i = seg["i"]
@@ -269,29 +285,25 @@ def make(ctx):
         rv = rev_t(seg)
         revealed = local > rv
         last = i == ctx.n_links - 1
+        fin = last and revealed
         an, bn = ctx.link_names(i)
         ia, ib = idx.get(an, 0), idx.get(bn, 0)
         cx, cy, z, ay = cam(tt)
-        cx += 20 * math.sin(tt * 0.5)                         # the camera never quite settles
-        cy += 14 * math.cos(tt * 0.43)
-        z *= 1 + 0.025 * math.sin(tt * 0.9)
+        cx += 14 * math.sin(tt * 0.5)                         # the camera never quite settles
+        cy += 8 * math.cos(tt * 0.43)
         ax = ctx.CX
-        fin = 0.0
-        if last:
-            fin = ctx.ease(max(0.0, min(1.0, (local - card_out(seg) + 0.1) / 0.8)))
 
         def scr(p):
             return (p[0] - cx) * z + ax, (p[1] - cy) * z + ay
 
-        # far web, parallax
+        # far web, parallax (fills the whole screen, top to bottom)
         fz = z * 0.75
         fcx, fcy = cx * 0.6, cy * 0.6
         Mx = np.float32([[fz, 0, fz * (FOX - fcx) + ax], [0, fz, fz * (FOY - fcy) + ay]])
         base = Image.fromarray(cv2.warpAffine(FAR, Mx, (ctx.W, ctx.H), flags=cv2.INTER_LINEAR,
-                                              borderMode=cv2.BORDER_CONSTANT, borderValue=BG)).convert("RGBA")
+                                              borderMode=cv2.BORDER_REFLECT)).convert("RGBA")
         d = ImageDraw.Draw(base)
 
-        # positions of everything that exists now
         pos = {}
         for k, p in enumerate(DEC):
             f = flo(k + 40, tt, 1.3)
@@ -299,34 +311,22 @@ def make(ctx):
         for k in range(N):
             f = flo(k, tt)
             pos[("p", k)] = scr((P[k][0] + f[0], P[k][1] + f[1]))
-        # the incoming node B flies in from beyond itself
-        fly = ctx.ease_out_back(max(0.0, min(1.0, (local - 0.05) / 0.55)))
-        A, B = P[ia], P[ib]
-        ux, uy = B[0] - A[0], B[1] - A[1]
-        L = math.hypot(ux, uy) or 1.0
-        start = (B[0] + ux / L * 900 + 300, B[1] + uy / L * 900 - 500)
-        fb = flo(ib, tt)
-        bw = (start[0] + (B[0] - start[0]) * fly + fb[0], start[1] + (B[1] - start[1]) * fly + fb[1])
-        pos[("p", ib)] = scr(bw)
-        exists = set(range(0, ib + 1)) if ib > ia else set(range(0, ia + 1)) | {ib}
+        exists = set(range(0, max(ia, ib) + 1))
 
-        # decoy edges (and decoys hooked onto existing path nodes)
         ew = max(2, int(3 * z))
         for a, b in DEDGE:
             if b[0] == "p" and b[1] not in exists:
                 continue
             pa, pb = pos[a], pos[b]
-            if (min(pa[0], pb[0]) > ctx.W + 50 or max(pa[0], pb[0]) < -50 or min(pa[1], pb[1]) > ctx.H + 50
-                    or max(pa[1], pb[1]) < -50):
+            if min(pa[1], pb[1]) > PH_Y0 + 40 or max(pa[1], pb[1]) < 150:
                 continue
             d.line([pa, pb], fill=DECOY_EDGE, width=ew)
         ds = max(0.35, z * 0.75)
         for k in range(len(DEC)):
             x, y = pos[("d", k)]
-            if -80 < x < ctx.W + 80 and -80 < y < ctx.H + 80:
+            if -80 < x < ctx.W + 80 and 150 < y < PH_Y0 + 80:
                 ctx.paste(base, DIMG, x, y, scale=ds * DSIZE[k], nearest=False)
 
-        # path edges: done ones glow cyan, the new one draws itself from A to B
         def edge(pa, pb, col, w, u=1.0, pulse=True):
             pb2 = (pa[0] + (pb[0] - pa[0]) * u, pa[1] + (pb[1] - pa[1]) * u)
             d.line([pa, pb2], fill=tuple(int(c * 0.35 + b * 0.65) for c, b in zip(col, BG)), width=int(w * 2.4))
@@ -334,84 +334,90 @@ def make(ctx):
             if pulse:
                 for q in range(3):
                     v = ((tt * 0.6 + q / 3) % 1.0) * u
-                    if v < u:
-                        px, py = pa[0] + (pb[0] - pa[0]) * v, pa[1] + (pb[1] - pa[1]) * v
-                        r = w * 0.9
-                        d.ellipse([px - r, py - r, px + r, py + r], fill=(255, 255, 255))
+                    px, py = pa[0] + (pb[0] - pa[0]) * v, pa[1] + (pb[1] - pa[1]) * v
+                    r = w * 0.9
+                    d.ellipse([px - r, py - r, px + r, py + r], fill=(255, 255, 255))
 
         pw = max(4, int(9 * z))
-        for k in range(ctx.n_links):
-            if k == i:
-                continue
+        for k in range(i):
             a, b = (idx.get(n, 0) for n in ctx.link_names(k))
-            if k < i:
-                edge(pos[("p", a)], pos[("p", b)], HOT if fin > 0.3 else PATH, pw)
-        u = ctx.ease(max(0.0, min(1.0, (local - 0.25) / 0.5)))
+            edge(pos[("p", a)], pos[("p", b)], HOT if fin else PATH, pw)
+        u = ctx.ease(max(0.0, min(1.0, (local - 0.1) / max(0.3, rv - 0.1))))   # the new edge reaches B at the reveal
+        pa_, pb_ = pos[("p", ia)], pos[("p", ib)]
         if u > 0:
-            edge(pos[("p", ia)], pos[("p", ib)], HOT, pw + 2, u)
-        # photo thumbnails sitting on finished edges
-        co = card_out(seg)
-        for k in range(i + 1):
-            if k == i and local < co + 0.3:
-                continue
+            edge(pa_, pb_, HOT, pw + 2, u)
+        # finished edges carry their photos as little thumbnails
+        ts = max(0.45, min(0.75, z * 0.8))
+        for k in range(i):
             a, b = (idx.get(n, 0) for n in ctx.link_names(k))
             pa, pb = pos[("p", a)], pos[("p", b)]
-            mx, my = pa[0] + (pb[0] - pa[0]) * 0.55, pa[1] + (pb[1] - pa[1]) * 0.55
-            ts = max(0.45, min(0.8, z * 0.8)) * (1 - 0.25 * fin)
-            if k == i:
-                ts *= ctx.ease_out_back(min(1.0, (local - co - 0.3) / 0.25))
-            ctx.paste(base, thumb(k), mx, my, scale=ts, nearest=False)
+            ctx.paste(base, thumb(k), pa[0] + (pb[0] - pa[0]) * 0.5, pa[1] + (pb[1] - pa[1]) * 0.5, scale=ts,
+                      nearest=False)
 
-        # path nodes and their names
-        ns = max(0.6, min(1.0, z * 1.05))
+        # tethers: node A and node B each run a line down into their own face in the photo
+        k_in = ctx.ease(max(0.0, min(1.0, local / 0.3)))
+        tk = ctx.ease(max(0.0, min(1.0, (local - 0.15) / 0.35)))
+        for role, k, col in (("a", ia, PATH), ("b", ib, HOT if revealed else (150, 160, 190))):
+            nx, ny = pos[("p", k)]
+            fx = face_x(i, role)
+            ex, ey = nx + (fx - nx) * tk, ny + (PH_Y0 - ny) * tk
+            if tk > 0.02:
+                d.line([(nx, ny), (ex, ey)], fill=tuple(int(c * 0.4 + b * 0.6) for c, b in zip(col, BG)), width=10)
+                d.line([(nx, ny), (ex, ey)], fill=col, width=4)
+                d.ellipse([ex - 10, ey - 10, ex + 10, ey + 10], fill=col)
+
+        # path nodes (faces only: the names live under the photo)
+        ns = max(0.6, min(1.05, z * 1.05))
         for k in sorted(exists):
             nm = people[k]
             x, y = pos[("p", k)]
-            st = "face"
+            st_ = "face"
             s = ns
             if k == ib:
-                st = "hot" if revealed else "q"
+                st_ = "hot" if revealed else "q"
                 if revealed:
                     s *= 1 + 0.3 * math.sin(math.pi * min(1.0, (local - rv) / 0.3))
+                    if last:
+                        s *= 1 + 0.35 * ctx.ease(min(1.0, (local - rv) / 0.4))
                 else:
-                    s *= 0.85 + 0.15 * fly + 0.04 * math.sin(tt * 8)
-            elif fin > 0.3:
-                st = "hot"
-            ctx.paste(base, NODE[(nm, st)], x, y, scale=s, nearest=False)
-        for k in sorted(exists):
-            if k == ib and not revealed or (k not in (ia, ib) and fin < 0.3):
-                continue                                       # older nodes keep just their faces (less clutter)
-            nm = people[k]
-            x, y = pos[("p", k)]
-            tg = tag(nm, ctx.YELLOW if (k == ib or fin > 0.3) else ctx.CYAN)
-            ls = 0.8 + 0.2 * (1 - fin)
-            ly = y + NR * ns + tg.height * ls / 2 - 2
-            lx = max(ctx.SAFE[0] + tg.width * ls / 2, min(ctx.SAFE[2] - tg.width * ls / 2, x))
-            if ctx.SAFE[0] - 80 < x < ctx.SAFE[2] + 80 and ctx.BAND - 20 < ly - tg.height * ls / 2 and ly < ctx.SAFE[3] - 30:
-                ctx.paste(base, tg, lx, ly, scale=ls)
+                    s *= 1 + 0.04 * math.sin(tt * 8)
+            elif fin:
+                st_ = "hot"
+            ctx.paste(base, NODE[(nm, st_)], x, y, scale=s, nearest=False)
 
-        # the photo card hangs off the new edge, then shrinks into it
-        cin = ctx.ease_out_back(max(0.0, min(1.0, (local - 0.35) / 0.3)))
-        shr = ctx.ease(max(0.0, min(1.0, (local - co) / 0.35)))
-        if cin > 0.01 and shr < 0.99:
-            pa, pb = pos[("p", ia)], pos[("p", ib)]
-            em = (pa[0] + (pb[0] - pa[0]) * 0.55, pa[1] + (pb[1] - pa[1]) * 0.55)
-            cd = card(i, revealed)
-            home = (ctx.CX, 1028 + 6 * math.sin(tt * 2.2))
-            cxp = home[0] + (em[0] - home[0]) * shr
-            cyp = home[1] + (em[1] - home[1]) * shr
-            sc = (0.92 + 0.08 * cin) * (1 - 0.88 * shr)
-            if revealed and local - rv < 0.25:
-                sc *= 1 + 0.05 * math.sin(math.pi * (local - rv) / 0.25)
-            top = (cxp, cyp - cd.height * sc / 2 + 20 * sc)
-            if shr < 0.05 and cin > 0.5:                      # a tether from the card to its edge
-                d.line([em, top], fill=PATH, width=4)
-                d.ellipse([em[0] - 9, em[1] - 9, em[0] + 9, em[1] + 9], fill=PATH)
-            ctx.paste(base, cd, cxp, cyp, scale=sc * min(1.0, cin), nearest=False)
+        # Buh rides the tip of the new edge toward B, then hops beside the node
+        ub = 0.2 + 0.6 * u
+        bx, by = pa_[0] + (pb_[0] - pa_[0]) * ub, pa_[1] + (pb_[1] - pa_[1]) * ub
+        expr, squash = "happy", 0.0
+        if revealed:
+            ar = local - rv
+            expr = "shock" if ar < 0.5 else "smug"
+            squash = 0.25 * math.sin(math.pi * min(1.0, ar / 0.3)) if ar < 0.3 else 0.0
+        bob = 6 * abs(math.sin(tt * 5))
+        look = 1 if pb_[0] >= pa_[0] else -1
+        ctx.paste_pin(base, ctx.pin_sprite(expr, 6 * math.sin(tt * 3), squash, look, scale=3), bx, by - bob + 10)
+
+        # the photo panel: always on screen, cross-fading from the last link's photo
+        hy = PH_Y0 + PH / 2
+        if i > 0 and k_in < 1 and not ctx.C.fj["links"][i - 1].get("lineage"):
+            ctx.paste(base, card(i - 1, True), ctx.CX, hy, nearest=False)
+            ctx.paste(base, card(i, revealed), ctx.CX, hy, alpha=k_in, nearest=False)
+        elif i == 0 and k_in < 1:
+            ctx.paste(base, card(i, revealed), ctx.CX, hy + 50 * (1 - k_in), scale=0.94 + 0.06 * k_in, alpha=k_in,
+                      nearest=False)
+        else:
+            ps = 1 + (0.03 * math.sin(math.pi * (local - rv) / 0.25) if revealed and local - rv < 0.25 else 0)
+            ctx.paste(base, card(i, revealed), ctx.CX, hy, scale=ps, nearest=False)
+
+        # name tags under each face
+        ta = tag(an, ctx.CYAN)
+        tb = tag(bn, ctx.YELLOW) if revealed else ctx.pixel_tag("? ? ?", (150, 160, 190), 28)
+        for im, x, y in place_tags([(ta, face_x(i, "a")), (tb, face_x(i, "b"))]):
+            ctx.paste(base, im, x, y, alpha=k_in)
 
         ctx.header(base, i)
-        ctx.connected(base, seg, tt)
-        seg["cap"].draw(base, tt, y=1368)
+        ctx.connected(base, seg, tt, y=PH_Y0 + PH * 0.8)
+        seg["cap"].draw(base, tt, y=CAP_Y)
         return base
 
     return frame

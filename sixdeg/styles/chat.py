@@ -1,10 +1,10 @@
-"""Group chat: the chain plays out as messages on a phone. A types, sends the link's fact and the photo as an
-attachment, then B (a "?" until the reveal) replies with an @-mention; earlier links keep scrolling up."""
+"""Group chat: the chain plays out as messages on a phone. A neutral narrator account (Buh, "buh.connects") types
+the link's line and posts the photo with the people tagged ("@A with @???" until the reveal, when the tag fills in
+and the teaser line is edited to the full sentence); earlier links keep scrolling up. The people never speak."""
 from __future__ import annotations
 
 import math
 
-import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
 NAME = "chat"
@@ -29,6 +29,23 @@ BX = 152                       # bubble left edge
 MAXW = 700                     # bubble max width
 PW, PH = 640, 470              # photo attachment
 GAP = 20
+SPACE = 150                    # room left under the last photo for CONNECTED!
+BUH = "buh"                    # the narrator account
+BUH_COL = (255, 214, 10)
+
+
+def photo_params(ctx, i, w, h, fill=0.8, maxup=1.3):
+    """(cx, cy, scale, ow, oh) for link photo i in a w x h window: both faces in, cover-cropped where the source
+    allows, never upscaled beyond maxup (a small source gives ow, oh < w, h)."""
+    ih, iw = ctx.C.imgs[i].shape[:2]
+    cx, cy, s = ctx.both_cam(i, w, h, fill)
+    ba, bb = ctx.fbox(i, "a"), ctx.fbox(i, "b")
+    spread = max(ba[0] + ba[2], bb[0] + bb[2]) - min(ba[0], bb[0])
+    s = min(maxup, max(s, max(w / iw, h / ih)), 0.95 * w / max(1, spread))
+    ow, oh = min(w, int(iw * s)), min(h, int(ih * s))
+    hw, hh = ow / 2 / s, oh / 2 / s
+    cx, cy = min(max(cx, hw), iw - hw), min(max(cy, hh), ih - hh)
+    return cx, cy, s, ow, oh
 
 
 def make(ctx):
@@ -42,9 +59,11 @@ def make(ctx):
     st = {}                        # lazily built: wallpaper, bars, avatars, the message timeline
 
     def short(n):
-        return ctx.C.labels[n]
+        return "buh.connects" if n == BUH else ctx.C.labels[n]
 
     def col(n):
+        if n == BUH:
+            return BUH_COL
         return NAME_COLS[ctx.C.people.index(n) % len(NAME_COLS)] if n in ctx.C.people else MUTED
 
     def avatar(n, size=AV):
@@ -54,7 +73,13 @@ def make(ctx):
             mask = Image.new("L", (size * 4, size * 4), 0)
             ImageDraw.Draw(mask).ellipse([0, 0, size * 4 - 1, size * 4 - 1], fill=255)
             mask = mask.resize((size, size), Image.LANCZOS)
-            if n is None:
+            if n == BUH:
+                face = Image.new("RGBA", (size, size), (52, 44, 92, 255))
+                spr = ctx.pin_sprite("happy", 0, 0, 0, scale=6)
+                sc = size * 1.25 / spr.height
+                spr = spr.resize((max(1, int(spr.width * sc)), max(1, int(spr.height * sc))), Image.LANCZOS)
+                face.alpha_composite(spr, (int(size / 2 - spr.width / 2), int(size * 0.12)))
+            elif n is None:
                 face = Image.new("RGBA", (size, size), (70, 80, 98, 255))
                 ImageDraw.Draw(face).text((size / 2, size / 2 + 2), "?", font=font("Inter-Black.otf", int(size * 0.55)),
                                           fill=(220, 226, 236), anchor="mm")
@@ -92,14 +117,14 @@ def make(ctx):
         im.alpha_composite(avatar(n), (0, im.height - AV))
         return im
 
-    def text_msg(n, text, stamp, mention=None):
+    def text_msg(n, text, stamp, mention=None, n_lines=0, width=0):
         fn, fb, fs = font("Inter-Bold.otf", 28), font("Inter-Bold.otf", 40), font("Inter-Bold.otf", 22)
         pre = f"@{mention} " if mention else ""
         lines = wrap(pre + text, fb, MAXW - 64)
         lh = 52
-        w = max(fn.getlength(short(n)), max(fb.getlength(ln) for ln in lines) + 70) + 52
+        w = max(fn.getlength(short(n)), max(fb.getlength(ln) for ln in lines) + 70, width - 52) + 52
         w = int(min(MAXW, w))
-        h = 22 + 38 + lh * len(lines) + 16
+        h = 22 + 38 + lh * max(n_lines, len(lines)) + 16
         im = bubble(w, h)
         d = ImageDraw.Draw(im)
         d.text((40, 20), short(n), font=fn, fill=col(n))
@@ -117,19 +142,25 @@ def make(ctx):
         d.text((w, h - 14), stamp, font=fs, fill=MUTED, anchor="rs")
         return with_avatar(im, n)
 
-    def photo_msg(n, i, who, stamp):
-        """The photo attachment; the slot for the (moving) photo is at PHOTO_OFF inside the returned image."""
+    def photo_msg(n, i, a, b, stamp):
+        """The photo attachment, posted by the narrator with A and B (or "???") tagged; the slot for the (moving)
+        photo is at PHOTO_OFF inside the returned image."""
         fn, fc, fs = font("Inter-Bold.otf", 28), font("Inter-Bold.otf", 32), font("Inter-Bold.otf", 22)
         w, h = PW + 32, 22 + 38 + PH + 70
         im = bubble(w, h)
         d = ImageDraw.Draw(im)
         d.text((40, 20), short(n), font=fn, fill=col(n))
-        d.text((40, 64 + PH + 18), "with ", font=fc, fill=TEXT)
-        x = 40 + fc.getlength("with ")
-        tag = f"@{who}" if who else "@???"
-        d.rounded_rectangle([x - 4, 64 + PH + 14, x + fc.getlength(tag) + 6, 64 + PH + 56], 10, fill=(40, 70, 112))
-        d.text((x, 64 + PH + 18), tag, font=fc, fill=MENTION if who else MUTED)
-        d.text((w, h - 14), stamp, font=fs, fill=MUTED, anchor="rs")
+        size = 32
+        while size > 22 and fc.getlength(f"@{a} with @{b or '???'}") + 30 > w - 50:
+            size -= 2
+            fc = font("Inter-Bold.otf", size)
+        x, y = 40, 64 + PH + 18 + (32 - size) // 2
+        for part, chip, known in ((f"@{a}", True, True), (" with ", False, True), (f"@{b}" if b else "@???", True, b)):
+            if chip:
+                d.rounded_rectangle([x - 4, y - 4, x + fc.getlength(part) + 6, y + 38], 10, fill=(40, 70, 112))
+            d.text((x, y), part, font=fc, fill=(MENTION if known else MUTED) if chip else TEXT)
+            x += fc.getlength(part) + (8 if chip else 0)
+        d.text((w - 4, 36), stamp, font=fs, fill=MUTED, anchor="rm")      # stamp up top, clear of the tags
         return with_avatar(im, n)
 
     PHOTO_OFF = (BX - ctx.SAFE[0] + 16, 64)
@@ -138,10 +169,19 @@ def make(ctx):
     pmask = pmask.resize((PW, PH), Image.LANCZOS)
 
     def photo(i, k):
+        """The attachment with a slow push-in (k 0..1). Never upscaled past ~1.3x; a small source sits on a dark
+        matte inside the slot instead of a blurred fill."""
         if ("ph", i) not in st:
-            st[("ph", i)] = ctx.both_cam(i, PW, PH, 0.8)
-        cx, cy, s = st[("ph", i)]
-        im = ctx.view(i, cx + 30 * math.sin(k * 2.2), cy - 12 * k, s * (1.0 + 0.14 * k), PW, PH)
+            st[("ph", i)] = photo_params(ctx, i, PW, PH, maxup=1.15)
+        cx, cy, s, ow, oh = st[("ph", i)]
+        ih, iw = ctx.C.imgs[i].shape[:2]
+        s *= 1.0 + 0.12 * k
+        hw, hh = ow / 2 / s, oh / 2 / s
+        cx = min(max(cx + 30 * math.sin(k * 2.2), hw), iw - hw)
+        cy = min(max(cy - 12 * k, hh), ih - hh)
+        ph = ctx.view(i, cx, cy, s, ow, oh)
+        im = Image.new("RGBA", (PW, PH), (22, 28, 38, 255))
+        im.alpha_composite(ph, ((PW - ow) // 2, (PH - oh) // 2))
         im.putalpha(pmask)
         return im
 
@@ -196,19 +236,21 @@ def make(ctx):
             yr = ctx.year_of(i)
             if i > 0:
                 msgs.append(dict(kind="div", ts=t0, ta=t0, im=divider(f"Link {i + 1}" + (f"  ·  {yr}" if yr else ""))))
-            fact = ctx.fact_of(ctx.spec["links"][i])
-            msgs.append(dict(kind="text", who=an, ts=t0 + 0.04, ta=t0 + 0.38 * u, im=text_msg(an, fact, stamp)))
-            pre, post = photo_msg(an, i, None, stamp), photo_msg(an, i, short(bn), stamp)
+            link = ctx.spec["links"][i]
+            teaser, full = ctx.before_b(link["line"], link), link["line"]
+            fb = font("Inter-Bold.otf", 40)
+            nl = len(wrap(full, fb, MAXW - 64))
+            post = text_msg(BUH, full, stamp + " · edited", n_lines=nl)
+            msgs.append(dict(kind="text", who=BUH, ts=t0 + 0.04, ta=t0 + 0.38 * u, tpost=t0 + rvt,
+                             im=text_msg(BUH, teaser, stamp, n_lines=nl, width=post.width - BX + 14), post=post))
+            pre, post = photo_msg(BUH, i, short(an), None, stamp), photo_msg(BUH, i, short(an), short(bn), stamp)
             pta = t0 + 0.72 * u
-            msgs.append(dict(kind="photo", who=an, i=i, ts=t0 + 0.50 * u, ta=pta, im=pre, post=post,
-                             tpost=t0 + rvt, seg=seg))
-            ba, bb = ctx.fbox(i, "a"), ctx.fbox(i, "b")
-            side = "left" if ctx.ctr(bb)[0] < ctx.ctr(ba)[0] else "right"
-            lines = [f"that's me on the {side}!", f"yep, I'm the one on the {side}", f"me on the {side}, hi!",
-                     f"that's us! I'm on the {side}"]
-            msgs.append(dict(kind="text", who=bn, ts=max(pta + 0.25, t0 + rvt - 1.1), ta=t0 + rvt, anon=True,
-                             im=text_msg(bn, lines[i % len(lines)], stamp, mention=short(an)),
-                             react=t0 + rvt + 0.65))
+            calm = ctx.sensitive(an) or ctx.sensitive(bn)        # no reactions on a link with a dictator
+            msgs.append(dict(kind="photo", who=BUH, i=i, ts=t0 + 0.50 * u, ta=pta, im=pre, post=post,
+                             tpost=t0 + rvt, seg=seg, tagged=(an, bn), react=None if calm else t0 + rvt + 0.65))
+            if i == ctx.n_links - 1:                           # room under the last photo for CONNECTED!
+                msgs.append(dict(kind="space", ts=t0 + rvt, ta=t0 + rvt, im=Image.new("RGBA", (8, SPACE)),
+                                 tpost=t0 + rvt))
         return msgs
 
     TYP_H = 96
@@ -259,12 +301,15 @@ def make(ctx):
             st["bar"] = bar
         base.alpha_composite(st["bar"], (0, TOP0))
         d = ImageDraw.Draw(base)
-        # group avatar: the people seen so far, overlapping
-        seen = []
-        for n in ctx.C.people:
-            if n in [m.get("who") for m in msgs if m["ta"] <= tt and not (m.get("anon") and m["ta"] > tt)]:
-                seen.append(n)
-        seen = seen[-3:]
+        # group avatar: the narrator plus the people tagged so far (B only once revealed), overlapping
+        tagged = set()
+        for m in msgs:
+            if m["kind"] == "photo" and m["ta"] <= tt:
+                tagged.add(m["tagged"][0])
+                if tt >= m["tpost"]:
+                    tagged.add(m["tagged"][1])
+        n_tagged = len(tagged)
+        seen = [BUH] + [n for n in ctx.C.people if n in tagged][-2:]
         x = 120
         for k, n in enumerate(seen):
             a = avatar(n, 64)
@@ -275,11 +320,11 @@ def make(ctx):
         tx = x + max(1, len(seen)) * 38 + 50
         d.text((tx, TOP0 + 22), "Six Degrees Group", font=font("Inter-Bold.otf", 36), fill=TEXT)
         if typing_who is not False:
-            who = "Someone" if typing_who is None else short(typing_who).split()[-1] if len(short(typing_who)) > 14 else short(typing_who)
+            who = short(typing_who)
             dots = "." * (1 + int(tt * 4) % 3)
             d.text((tx, TOP0 + 68), f"{who} is typing{dots}", font=font("Inter-Bold.otf", 26), fill=TYPING)
         else:
-            d.text((tx, TOP0 + 68), f"{len(ctx.C.people)} members, {min(len(ctx.C.people), i + 2)} online",
+            d.text((tx, TOP0 + 68), f"{n_tagged} people tagged",
                    font=font("Inter-Bold.otf", 26), fill=MUTED)
 
     def composer(base, tt):
@@ -320,7 +365,7 @@ def make(ctx):
             elif tt < m["ta"]:
                 h = TYP_H * ctx.ease((tt - m["ts"]) / 0.18)
                 mode = "typing"
-                typing_who = None if m.get("anon") else m["who"]
+                typing_who = m["who"]
             else:
                 h = TYP_H + (full - TYP_H) * ctx.ease((tt - m["ta"]) / 0.22)
                 mode = "msg"
@@ -334,7 +379,7 @@ def make(ctx):
             if y < TOP1 - 40:
                 break
             if mode == "typing":
-                im = typing_im(None if m.get("anon") else m["who"], tt)
+                im = typing_im(m["who"], tt)
                 a = min(1.0, (tt - m["ts"]) / 0.12)
                 ctx.paste(base, im, ctx.SAFE[0] + im.width / 2, y - h / 2, alpha=a, nearest=False)
             else:
@@ -349,7 +394,9 @@ def make(ctx):
                         im.alpha_composite(photo(m["i"], pk), PHOTO_OFF)
                     else:
                         im.alpha_composite(static_photo(m["i"]), PHOTO_OFF)
-                if m["kind"] == "div":
+                if m["kind"] == "space":
+                    pass
+                elif m["kind"] == "div":
                     x0 = ctx.SAFE[0]
                     ctx.paste(base, im, x0 + im.width / 2, y - im.height / 2, alpha=k)
                 else:
@@ -358,12 +405,19 @@ def make(ctx):
                     base.alpha_composite(im, (ctx.SAFE[0], int(y - im.height)))
                     if m.get("react") and tt >= m["react"]:
                         rk = ctx.ease_out_back((tt - m["react"]) / 0.25)
-                        ctx.paste(base, reaction(), ctx.SAFE[0] + BX + 30, y + 4, scale=0.3 + 0.7 * rk, nearest=False)
+                        ctx.paste(base, reaction(), ctx.SAFE[0] + im.width - 30, y - im.height + 2,
+                                  scale=0.3 + 0.7 * rk, nearest=False)      # tapback on the bubble's top corner
             y -= h + GAP
         topbar(base, i, msgs, tt, typing_who)
         composer(base, tt)
+        # Buh, the narrator, peeks up from under the composer and reacts to each reveal
+        rv = tt - seg["t0"] - seg.get("rv", ctx.REVEAL) * seg["speech"] - ctx.THROW
+        expr = "happy" if rv < 0 else "shock" if rv < 0.6 else "smug"
+        hop = 30 * math.sin(math.pi * min(1.0, rv / 0.35)) if 0 < rv < 0.35 else 0.0
+        ctx.paste_pin(base, ctx.pin_sprite(expr, 5 * math.sin(tt * 2.5), 0, 1, scale=7), 250,
+                      1760 - hop + 8 * math.sin(tt * 3))
         ctx.header(base, i)
-        ctx.connected(base, seg, tt)
+        ctx.connected(base, seg, tt, y=BOTTOM - SPACE / 2 + 6)
         seg["cap"].draw(base, tt, y=CAP_Y)
         return base
 
