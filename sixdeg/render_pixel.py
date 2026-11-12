@@ -492,7 +492,8 @@ def render(slug: str, log=print) -> Path:
         paste(base, pixel_text(f"{lab}  {min(n, int(p) + 1)}/{n}", 22, fill=YELLOW, shadow=False), CX, 232)
         if last and land > 0.35:
             st = min(1.0, (land - 0.35) / 0.12)
-            paste(base, pixel_text("CONNECTED!", 72, fill=RED), CX, y, scale=2.0 - ease(st))
+            _ci = pixel_text("CONNECTED!", 72, fill=RED)
+            paste(base, _ci, CX, y, scale=min(2.0 - ease(st), (SAFE[2] - SAFE[0]) / _ci.width))   # never clipped
         upto = i + (1 if land >= 0 else 0)
         blocks(base, upto, {upto} if land >= 0 else {i}, tt, sharpen=min(1.0, land / 0.35) if land >= 0 else 1.0)
         seg["cap"].draw(base, tt)
@@ -590,7 +591,8 @@ def render(slug: str, log=print) -> Path:
         # CONNECTED!
         if last and land > 0.35:
             st = min(1.0, (land - 0.35) / 0.12)
-            paste(base, pixel_text("CONNECTED!", 72, fill=RED), CX, y, scale=2.0 - ease(st))
+            _ci = pixel_text("CONNECTED!", 72, fill=RED)
+            paste(base, _ci, CX, y, scale=min(2.0 - ease(st), (SAFE[2] - SAFE[0]) / _ci.width))   # never clipped
         band(base, i)
         upto = i + (1 if land >= 0 else 0)
         blocks(base, upto, {upto} if land >= 0 else {i}, tt, sharpen=min(1.0, land / 0.35) if land >= 0 else 1.0)
@@ -807,7 +809,8 @@ def render(slug: str, log=print) -> Path:
         land = tt - seg["t0"] - seg.get("rv", REVEAL) * seg["speech"] - THROW
         if land > 0.05:
             st = min(1.0, (land - 0.05) / 0.12)
-            paste(base, pixel_text("CONNECTED!", 72, fill=RED), CX, y, scale=2.0 - ease(st))
+            _ci = pixel_text("CONNECTED!", 72, fill=RED)
+            paste(base, _ci, CX, y, scale=min(2.0 - ease(st), (SAFE[2] - SAFE[0]) / _ci.width))   # never clipped
 
     def year_of(i):
         l = spec["links"][i]
