@@ -654,9 +654,10 @@
  {
   "from": "P. Diddy",
   "to": "IShowSpeed",
-  "status": "todo",
+  "status": "done",
   "requested_by": "a viewer",
-  "source": "YouTube comment (comment under Hitler to Kermit), Studio snapshot 2026-11-10"
+  "source": "YouTube comment (comment under Hitler to Kermit), Studio snapshot 2026-11-10",
+  "slug": "diddy-to-ishowspeed"
  },
  {
   "from": "Julius Caesar",
@@ -794,6 +795,14 @@
   "source": "viral formula",
   "hint": "via Franco and King Juan Carlos; reuses the Laura Bush end from Stalin to Elmo",
   "slug": "adolf-hitler-to-elmo"
+ },
+ {
+  "from": "Adolf Hitler",
+  "to": "Mario",
+  "status": "done",
+  "source": "viral formula",
+  "hint": "boxing route: Max Schmeling, Joe Louis, Muhammad Ali, then Arnold and Chris Pratt (reuses the end of Mussolini to Mario)",
+  "slug": "adolf-hitler-to-mario"
  },
  {
   "from": "Adolf Hitler",

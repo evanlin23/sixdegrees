@@ -1,0 +1,108 @@
+{
+  "from": "Sean Combs",
+  "to": "IShowSpeed",
+  "requested_by": "a viewer",
+  "request_text": "P. Diddy to IShowSpeed",
+  "title": "How is Diddy connected to IShowSpeed?",
+  "description": "Eight real photos link Diddy to IShowSpeed: through J.Lo, Shakira, Obama, Pope Francis, Argentina's president, Elon Musk's chainsaw and Ronaldo's selfie.",
+  "hook": "How is Diddy connected to IShowSpeed?",
+  "people": {
+    "Sean Combs": {
+      "label": "Diddy"
+    },
+    "Jennifer Lopez": {
+      "label": "J.Lo"
+    },
+    "Cristiano Ronaldo": {
+      "label": "Ronaldo"
+    }
+  },
+  "links": [
+    {
+      "a": "Sean Combs",
+      "b": "Jennifer Lopez",
+      "image": {
+        "url": "https://www.sheknows.com/wp-content/uploads/2024/03/sean-diddy-combs-jennifer-lopez.jpg?w=1440",
+        "credit": "Getty Images, via SheKnows",
+        "license": "Fair use (commentary)",
+        "source": "https://www.sheknows.com/entertainment/articles/2988422/jennifer-lopez-sean-diddy-combs-relationship/"
+      },
+      "line": "In 2000, Diddy was dating Jennifer Lopez, and they sat front row at the first Latin Grammys."
+    },
+    {
+      "a": "Jennifer Lopez",
+      "b": "Shakira",
+      "image": {
+        "url": "https://images.foxtv.com/static.fox5atlanta.com/www.fox5atlanta.com/content/uploads/2020/02/1200/630/GettyImages-1203653033.jpg?ve=1&tl=1",
+        "credit": "Getty Images, via FOX 5 Atlanta",
+        "license": "Fair use (commentary)",
+        "source": "https://www.fox5atlanta.com/news/jennifer-lopez-and-shakira-light-up-super-bowl-liv-halftime-show"
+      },
+      "line": "In 2020, Jennifer Lopez and Shakira headlined the Super Bowl halftime show together in Miami."
+    },
+    {
+      "a": "Shakira",
+      "b": "Barack Obama",
+      "image": {
+        "file": "File:Antonio de la Rúa, Barack Obama, & Shakira (2009-02-02).jpg"
+      },
+      "line": "In 2009, Shakira posed with Barack Obama in his first year as president."
+    },
+    {
+      "a": "Barack Obama",
+      "b": "Pope Francis",
+      "image": {
+        "file": "File:Pope Francis and Barack Obama in the Oval Office.jpg"
+      },
+      "line": "In 2015, Pope Francis visited Obama in the Oval Office, and had him laughing."
+    },
+    {
+      "a": "Pope Francis",
+      "b": "Javier Milei",
+      "image": {
+        "url": "https://images2-mega.cdn.mdstrm.com/meganoticias/2024/02/11/_439037_2_65c8c069742e7.jpg",
+        "credit": "Vatican Media, via Meganoticias",
+        "license": "Fair use (commentary)",
+        "source": "https://www.meganoticias.cl/mundo/439037-papa-francisco-presidente-javier-milei-argentinos-se-abrazan-en-el-vaticano-11-02-2024.html"
+      },
+      "line": "In 2024, the Pope hugged Argentina's president, a man who had once called him an imbecile.",
+      "a_face": [
+        700,
+        580,
+        540,
+        700
+      ],
+      "b_face": 1
+    },
+    {
+      "a": "Javier Milei",
+      "b": "Elon Musk",
+      "image": {
+        "file": "File:Elon Musk & Javier Milei (54348704622).jpg"
+      },
+      "line": "He then gave Elon Musk a chainsaw."
+    },
+    {
+      "a": "Elon Musk",
+      "b": "Cristiano Ronaldo",
+      "image": {
+        "url": "https://www.gbnews.com/media-library/image.jpg?id=62210720&width=1200&height=600&coordinates=0%2C0%2C0%2C100",
+        "credit": "Cristiano Ronaldo / Instagram, via GB News",
+        "license": "Fair use (commentary)",
+        "source": "https://www.gbnews.com/sport/football/cristiano-ronaldo-white-house-selfie-elon-musk-donald-trump"
+      },
+      "line": "Musk squeezed into Ronaldo's selfie."
+    },
+    {
+      "a": "Cristiano Ronaldo",
+      "b": "IShowSpeed",
+      "image": {
+        "url": "https://www.dexerto.com/cdn-image/wp-content/uploads/2023/06/17/IShowSpeed-finally-meets-Cristiano-Ronaldo.jpg",
+        "credit": "IShowSpeed / Instagram, via Dexerto",
+        "license": "Fair use (commentary)",
+        "source": "https://www.dexerto.com/entertainment/ishowspeed-finally-meets-legendary-footballer-cristiano-ronaldo-2181063/"
+      },
+      "line": "Who met his biggest fan."
+    }
+  ]
+}
