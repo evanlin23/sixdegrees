@@ -51,6 +51,7 @@ def sensitive(name) -> bool:
     return bool(SENSITIVE.search(name or ""))
 
 
+MIN_LINK = 3.4                        # seconds on screen per link, at least (even pace to the end)
 CAP_Y = 1300                          # captions
 HERO_A = (0, 790, 470)                # hook: face A photo spans y0..y1 (full bleed), face centred at y=fy within it
 HERO_B = (900, H, 340)                # face B photo; the 790..900 seam between them carries the spoken question
@@ -308,6 +309,7 @@ def render(slug: str, log=print) -> Path:
                 rv = max(REVEAL, (hit[0] + 0.08 - THROW + 0.15) / speech)
                 rv = min(rv, (speech - THROW - 0.1) / speech) if not last else min(rv, max(REVEAL, (speech - THROW - 0.3) / speech))
         d = max(speech + 0.05, rv * speech + THROW + 1.2) if last else speech + PAD   # hold the payoff ~1 s (owner: "cutting too fast")
+        d = max(d, MIN_LINK)        # owner: the pace never speeds up; a short line still gets a full beat on screen
         if last and STYLE == "board":
             d += 1.1                                     # time to zoom out to the whole evidence board
         reveal = t + (speech * 0.9 - THROW if link.get("lineage") else rv * speech)
