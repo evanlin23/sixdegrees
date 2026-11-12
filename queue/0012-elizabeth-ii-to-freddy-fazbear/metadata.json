@@ -21,7 +21,10 @@
  "file": "elizabeth-ii-to-freddy-fazbear.mp4",
  "kind": "request",
  "voice": "gemini",
- "outro": true,
+ "outro": false,
  "voice_rev": 2,
+ "narration": false,
+ "links": 5,
+ "lineage": 0,
  "slug": "elizabeth-ii-to-freddy-fazbear"
 }
