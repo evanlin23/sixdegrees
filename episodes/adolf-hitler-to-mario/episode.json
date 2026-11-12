@@ -5,32 +5,58 @@
   "description": "Three boxing champions, the Terminator and Star-Lord connect Adolf Hitler to Mario.",
   "hook": "How is Adolf Hitler connected to Mario?",
   "people": {
-    "Adolf Hitler": {"label": "Adolf Hitler", "short": "Hitler"},
-    "Max Schmeling": {"label": "Max Schmeling"},
-    "Joe Louis": {"label": "Joe Louis"},
-    "Muhammad Ali": {"label": "Muhammad Ali"},
-    "Arnold Schwarzenegger": {"label": "Arnold Schwarzenegger", "short": "Arnold"},
-    "Chris Pratt": {"label": "Chris Pratt"},
-    "Mario": {"label": "Mario"}
+    "Adolf Hitler": {
+      "label": "Adolf Hitler",
+      "short": "Hitler"
+    },
+    "Max Schmeling": {
+      "label": "Max Schmeling"
+    },
+    "Joe Louis": {
+      "label": "Joe Louis"
+    },
+    "Muhammad Ali": {
+      "label": "Muhammad Ali"
+    },
+    "Arnold Schwarzenegger": {
+      "label": "Arnold Schwarzenegger",
+      "short": "Arnold"
+    },
+    "Chris Pratt": {
+      "label": "Chris Pratt"
+    },
+    "Mario": {
+      "label": "Mario"
+    }
   },
   "links": [
     {
       "a": "Adolf Hitler",
       "b": "Max Schmeling",
-      "image": {"file": "File:Anny Ondra, Max Schmeling and Hitler after the 1st fight against Joe Louis.jpg"},
+      "image": {
+        "file": "File:Anny Ondra, Max Schmeling and Hitler after the 1st fight against Joe Louis.jpg"
+      },
       "line": "In 1936, Hitler welcomed home German boxer Max Schmeling after his shock win in New York."
     },
     {
       "a": "Max Schmeling",
       "b": "Joe Louis",
-      "image": {"file": "File:Joe Louis and Max Schmeling 1971 Press Photo.jpg"},
-      "line": "The man he beat, Joe Louis, knocked him out in their rematch, and later they became friends."
+      "image": {
+        "file": "File:Joe Louis and Max Schmeling 1971 Press Photo.jpg"
+      },
+      "line": "The man he beat, Joe Louis, knocked him out in their rematch, and later they became friends.",
+      "a_face": 1,
+      "b_face": 0
     },
     {
       "a": "Joe Louis",
       "b": "Muhammad Ali",
-      "image": {"file": "File:4 Champions ALI LOUIS WALCOTT BRADDOCK 1965 UPI photo.jpg"},
-      "line": "In 1965, Joe Louis dropped by the training camp of the young champ, Muhammad Ali."
+      "image": {
+        "file": "File:4 Champions ALI LOUIS WALCOTT BRADDOCK 1965 UPI photo.jpg"
+      },
+      "line": "In 1965, Joe Louis dropped by the training camp of the young champ, Muhammad Ali.",
+      "a_face": 1,
+      "b_face": 3
     },
     {
       "a": "Muhammad Ali",
@@ -41,7 +67,9 @@
         "license": "Fair use (commentary)",
         "source": "https://biznakenya.com/boxing-legend-muhammad-ali-dies-aged-74/"
       },
-      "line": "In 2002, Arnold raised Ali's hand at a charity fight night."
+      "line": "In 2002, Arnold raised Ali's hand at a charity fight night.",
+      "a_face": 2,
+      "b_face": 4
     },
     {
       "a": "Arnold Schwarzenegger",
@@ -59,7 +87,9 @@
       "b": "Mario",
       "image": {
         "pair": [
-          {"file": "File:Chris Pratt by Gage Skidmore.jpg"},
+          {
+            "file": "File:Chris Pratt by Gage Skidmore.jpg"
+          },
           {
             "url": "https://i0.wp.com/screen-connections.com/wp-content/uploads/2023/03/The.Super_.Mario_.Bros_.Movie-New.Character.Posters-Mario.jpg",
             "credit": "Nintendo / Illumination / Universal Pictures",
