@@ -189,7 +189,11 @@ def render(slug: str, log=print) -> Path:
                     cur = f"{cur} {w}".strip()
             if cur:
                 lines.append(cur)
-            self.lines = lines[:2]
+            if len(lines) > 2:
+                lines = lines[:2]
+                lines[1] = lines[1].rstrip(",;:…") + "…"
+            self.lines = [ln.rstrip(",;:") if k == len(lines) - 1 and not ln.endswith("…") else ln
+                          for k, ln in enumerate(lines)]
 
         def draw(self, base, t, y=CAP_Y):
             if t < self.t0 + 0.15 or not self.lines:
