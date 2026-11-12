@@ -28,5 +28,8 @@
  "voice": "gemini",
  "outro": false,
  "voice_rev": 2,
+ "narration": true,
+ "links": 10,
+ "lineage": 9,
  "slug": "jesus-to-roxy"
 }
