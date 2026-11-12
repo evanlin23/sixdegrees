@@ -78,9 +78,16 @@ episode.json: the hook shows the viewer's request bubble and the first comment c
   one either: the first route where every link has a real photo is fine.
   - **Every link still needs a real photo of both people together** (or a lineage scroll). Never invent one.
   - **Hide the destination where the route allows.** Nothing from B's world before the last 1–2 links.
-  - **Pacing:** with few links, give each line a fun fact (up to ~18 words) so the video is long enough to follow
-    (QA fails under 15 s; lengthen the lines, not the chain). The last line is short (3–7 words) and the video
-    ends the instant B appears.
+  - **Even pace to the end; the last link is the payoff (owner, 2026-11-12).** Never speed up: every link gets
+    the same beat on screen (the renderer holds each link at least 3.4 s). Every link but the last gets a context
+    line, where/when and how the two met, in about 8-16 words ("At the 2012 Easter Egg Roll, Michelle Obama played
+    soccer with SpongeBob himself."). No 3-word sprint lines like "Who voices Shrek." mid-chain. The LAST line
+    explains less, because the link itself is the payoff: short and on the meeting ("At Late Night with Seth Meyers,
+    Ash Carter met Kevin Hart.", "Jon Favreau created Baby Yoda."), never a paragraph after B's name.
+  - **Real people first.** A mythical or ancient start (Zeus, Jesus) links through a real photo, e.g. the actor who
+    played Zeus on screen, not a painting-to-painting hop.
+  - **Use a big lineage when it's the natural route** (e.g. Trump back to George Washington through every
+    president), per the lineage rule below.
 - **Lineage scrolls only for HUGE lineages** (creator's call: "only if it's a lot, like the popes"): roughly
   40+ holders (popes, Chinese/Roman emperors, English/French monarchs). Never for short lists like German
   chancellors or most presidents' lists under ~40; use a real photo link instead. When used, show EVERYONE. A line of popes, presidents or emperors scrolls past super fast with every

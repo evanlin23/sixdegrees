@@ -80,7 +80,8 @@
         "license": "Fair use (commentary)",
         "source": "https://www.goodmorningamerica.com/culture/story/arnold-schwarzeneggers-family-supports-fubar-premiere-122790066"
       },
-      "line": "His son-in-law is Chris Pratt."
+      "line": "In 2025, at his FUBAR premiere in Los Angeles, Arnold posed with son-in-law Chris Pratt.",
+      "fact": "FUBAR premiere, LA, 2025"
     },
     {
       "a": "Chris Pratt",
@@ -98,7 +99,7 @@
           }
         ]
       },
-      "line": "Who voices Mario.",
+      "line": "Chris Pratt voices Mario.",
       "b_face": 1
     }
   ]

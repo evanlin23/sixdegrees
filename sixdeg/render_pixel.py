@@ -51,6 +51,7 @@ def sensitive(name) -> bool:
     return bool(SENSITIVE.search(name or ""))
 
 
+MIN_LINK = 3.4                        # seconds on screen per link, at least (even pace to the end)
 CAP_Y = 1300                          # captions
 HERO_A = (0, 790, 470)                # hook: face A photo spans y0..y1 (full bleed), face centred at y=fy within it
 HERO_B = (900, H, 340)                # face B photo; the 790..900 seam between them carries the spoken question
@@ -307,7 +308,8 @@ def render(slug: str, log=print) -> Path:
             if hit:
                 rv = max(REVEAL, (hit[0] + 0.08 - THROW + 0.15) / speech)
                 rv = min(rv, (speech - THROW - 0.1) / speech) if not last else min(rv, max(REVEAL, (speech - THROW - 0.3) / speech))
-        d = max(speech + 0.05, rv * speech + THROW + 0.3) if last else speech + PAD
+        d = max(speech + 0.05, rv * speech + THROW + 1.2) if last else speech + PAD   # hold the payoff ~1 s (owner: "cutting too fast")
+        d = max(d, MIN_LINK)        # owner: the pace never speeds up; a short line still gets a full beat on screen
         if last and STYLE == "board":
             d += 1.1                                     # time to zoom out to the whole evidence board
         reveal = t + (speech * 0.9 - THROW if link.get("lineage") else rv * speech)
@@ -544,35 +546,58 @@ def render(slug: str, log=print) -> Path:
         M = M.copy(); M[0, 2] += sx; M[1, 2] += sy
 
         def scr(x, y):
-            px, py = to_screen(M, x, y)
-            return max(CARD[0] + 30, min(CARD[2] - 30, px)), max(CARD[1] + 60, min(CARD[3] - 40, py))
+            # owner: the pinned spot moves WITH the picture (no clamping to the card edge, which left it stuck)
+            return to_screen(M, x, y)
         pa = scr(cm["ba"][0] + cm["ba"][2] / 2, cm["ba"][1] - cm["ba"][3] * 0.08)
         pb = scr(cm["bb"][0] + cm["bb"][2] / 2, cm["bb"][1] - cm["bb"][3] * 0.08)
-        # string
-        start = (pa[0] + 60, pa[1] - 30)
+        # string; Buh stands right on A's pinned spot (he used to sit 60 px to the right of it)
+        start = pa
         if since >= 0:
             if since < THROW:
                 x, y, _ = pixelpin_path(start, pb, since / THROW)
                 pe = (x, y)
             else:
                 pe = pb
-            dr.line([pa, pe], fill=INK, width=14)
-            dr.line([pa, pe], fill=RED, width=8)
-            dr.rectangle([pa[0] - 10, pa[1] - 10, pa[0] + 10, pa[1] + 10], fill=RED, outline=INK, width=4)
+            sl = Image.new("RGBA", (W, H), (0, 0, 0, 0))              # the string lives ON the photo:
+            sd = ImageDraw.Draw(sl)                                     # clipped to the card when it runs off
+            sd.line([pa, pe], fill=INK, width=14)
+            sd.line([pa, pe], fill=RED, width=8)
+            sd.rectangle([pa[0] - 10, pa[1] - 10, pa[0] + 10, pa[1] + 10], fill=RED, outline=INK, width=4)
+            cm_ = Image.new("L", (W, H), 0)
+            ImageDraw.Draw(cm_).rectangle([x0, y0, x0 + cw, y0 + ch], fill=255)
+            sl.putalpha(Image.composite(sl.getchannel("A"), Image.new("L", (W, H), 0), cm_))
+            base.alpha_composite(sl)
         # name tags
         names = (spec["links"][i]["a"], spec["links"][i]["b"])
+        tags_ = []
         for role, nm, appear, col in (("ba", names[0], 0.0, CYAN), ("bb", names[1], R + THROW / seg["speech"], YELLOW)):
             bx = cm[role]
             fx, fy = to_screen(M, bx[0] + bx[2] / 2, bx[1] + bx[3] / 2)
-            if not (CARD[0] < fx < CARD[2] and CARD[1] < fy < CARD[3]):
+            if not (-200 < fx < W + 200 and -200 < fy < H + 200):   # face far off screen (deep zoom on the other)
                 continue
             if k >= appear:
+                # owner: the tag sits under the chin but is NOT part of the photo: a sticker on top, always whole,
+                # never cut or hidden at the photo's edge (it used to vanish when the face neared the card edge)
                 pop = ease_out_back((k - appear) * seg["speech"] / 0.12)
                 tag = pixel_tag(C.labels[nm].upper(), col, 26 if len(C.labels[nm]) < 15 else 22)
                 tx, ty = to_screen(M, bx[0] + bx[2] / 2, bx[1] + bx[3])   # under the chin
-                tx = max(SAFE[0] + tag.width / 2, min(SAFE[2] - tag.width / 2, tx))
-                ty = max(CARD[1] + 60, min(CARD[3] - 230, ty + 34))
-                paste(base, tag, tx, ty, scale=pop)
+                ty = ty + 34          # owner: like the pins, the tag stays where the face is, moving with the photo
+                tags_.append([tag, tx, ty, pop])
+        if len(tags_) == 2:                       # never stack one tag on the other: push B's below A's
+            (ta, ax, ay, _), (tb, bx_, by_, _) = tags_
+            if abs(ax - bx_) < (ta.width + tb.width) / 2 + 8 and abs(ay - by_) < (ta.height + tb.height) / 2 + 6:
+                tags_[1][2] = ay + (ta.height + tb.height) / 2 + 10 if by_ >= ay else ay - (ta.height + tb.height) / 2 - 10
+        tl = Image.new("RGBA", (W, H), (0, 0, 0, 0))     # tags ride on the photo like stickers and slide
+        for tag, tx, ty, pop in tags_:                   # UNDER its edge (clipped to the card), like the pins
+            sh = Image.new("RGBA", (tag.width + 8, tag.height + 8), (0, 0, 0, 0))
+            ImageDraw.Draw(sh).rectangle([8, 8, tag.width + 7, tag.height + 7], fill=(0, 0, 0, 140))
+            paste(tl, sh, tx + 4, ty + 4, scale=pop)                        # drop shadow: reads as a printed sticker
+            paste(tl, tag, tx, ty, scale=pop)
+        if tags_:
+            km = Image.new("L", (W, H), 0)
+            ImageDraw.Draw(km).rectangle([x0, y0, x0 + cw, y0 + ch], fill=255)
+            tl.putalpha(Image.composite(tl.getchannel("A"), Image.new("L", (W, H), 0), km))
+            base.alpha_composite(tl)
         # Pin
         if since < 0:
             bob = int(8 * abs(math.sin(tt * 7)))
@@ -718,7 +743,7 @@ def render(slug: str, log=print) -> Path:
             dr.rectangle([0, HERO_B[0], W, HERO_B[0] + 6], fill=YELLOW)
             hop = abs(math.sin(kk * 8)) * 26
             paste_pin(base, pin_sprite("shock" if kk < 0.8 else ("smug" if int(kk * 2) % 2 else "angry"), 0, 0, -1),
-                      SAFE[2] - 50, HERO_A[1] - 6 - hop)                 # Buh stands on the seam
+                      SAFE[2] - 170, HERO_A[1] - 6 - hop)                # Buh stands on the seam (clear of the Shorts buttons)
             if spec.get("requested_by"):   # the viewer's comment IS the hook (every reference hit opens on one)
                 pop = ease_out_back(min(1.0, kk / 0.25))
                 paste(base, comment_im, CX, (HERO_A[1] + HERO_B[0]) // 2 + 10, scale=0.6 + 0.4 * pop, nearest=False)

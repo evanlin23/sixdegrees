@@ -137,6 +137,12 @@ def pick(wt: Path, log: list[dict], n: int) -> list[Path]:
         if want_gemini and (meta.get("voice") != "gemini" or meta.get("voice_rev", 1) < VOICE_REV):
             continue                       # old voice, or voiced before the clipping fix: wait for a re-render
         ready.append((it, _kind(meta), meta.get("title", "")))
+    hf = ROOT / "data" / "hold.json"             # Review Room: a Short with an open owner note waits until it's fixed
+    hold = json.loads(hf.read_text()) if hf.exists() else {}
+    held = set(hold.get("slugs", []))
+    only = [w.lower() for w in hold.get("only", [])]     # owner: post only these pairs for now (e.g. ["hitler"])
+    ready = [r for r in ready if r[0].name.split("-", 1)[1] not in held
+             and (not only or any(w in r[0].name.lower() for w in only))]
     of = ROOT / "data" / "upload_order.json"
     order = json.loads(of.read_text()) if of.exists() else {}
     lists = [v for k, v in order.items() if not k.startswith("_")]

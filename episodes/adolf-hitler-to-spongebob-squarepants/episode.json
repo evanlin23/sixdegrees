@@ -49,14 +49,14 @@
       "a": "Michelle Obama",
       "b": "SpongeBob SquarePants",
       "image": {
-        "url": "https://assets2.cbsnewsstatic.com/hub/i/r/2012/07/27/9864d4b6-c3cb-11e2-a43e-02911869d855/thumbnail/620x442/9e5be6f2d6e0885c7e8b4f4ccd96d635/15-Michelle-Obama-Olympic.jpg",
+        "url": "https://assets2.cbsnewsstatic.com/hub/i/r/2012/07/27/9864d4b6-c3cb-11e2-a43e-02911869d855/15-Michelle-Obama-Olympic.jpg",
         "credit": "Tim Whitby/Getty Images for Nickelodeon",
         "license": "Fair use (commentary)",
         "source": "https://www.cbsnews.com/pictures/michelle-obama-at-the-olympics"
       },
-      "line": "And in 2012, Michelle Obama played soccer with SpongeBob himself in London.",
-      "a_face": 8,
-      "b_face": [185, 60, 190, 185]
+      "line": "At Let's Move London in 2012, Michelle Obama played soccer with SpongeBob himself.",
+      "a_face": [3497, 431, 217, 303],
+      "b_face": [1400, 454, 1438, 1400]
     }
   ]
 }
