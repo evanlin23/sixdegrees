@@ -833,6 +833,14 @@ def render(slug: str, log=print) -> Path:
 
     def board_view(layer, cx, cy, v):
         rw, rh = W / v, H / v
+        if rw >= BW or rh >= BH:                         # fully zoomed out: show the whole board on cork
+            out = Image.new("RGBA", (W, H), (120, 84, 50, 255))
+            f = min(W / BW, H / BH)
+            sm = layer.resize((int(BW * f), int(BH * f)), Image.BILINEAR)
+            out.alpha_composite(sm, ((W - sm.width) // 2, (H - sm.height) // 2))
+            return out
+        cx = min(max(cx, rw / 2), BW - rw / 2)
+        cy = min(max(cy, rh / 2), BH - rh / 2)
         box = (int(cx - rw / 2), int(cy - rh / 2), int(cx + rw / 2), int(cy + rh / 2))
         return layer.crop(box).resize((W, H), Image.BILINEAR)
 
@@ -850,7 +858,7 @@ def render(slug: str, log=print) -> Path:
         land = local - R * sp - THROW
         if last and land > 0.25:                       # zoom out to the whole board
             z = ease(min(1.0, (land - 0.25) / 0.7))
-            vfit = min(W / BW, H / BH) * 0.98
+            vfit = min(W / BW, H / BH) * 0.999
             v = math.exp(math.log(1.25) + (math.log(vfit) - math.log(1.25)) * z)
             cx, cy = cx + (BW / 2 - cx) * z, cy + (BH / 2 - cy) * z
         layer = board_layer(i + 1 if (last and land > 0.25) else i)
@@ -938,8 +946,12 @@ def render(slug: str, log=print) -> Path:
 
     def world_map():
         if "img" not in _map:
-            m = Image.open(FONTS.parent / "world_equirect.png").convert("LA")
-            a = np.array(m.split()[-1].resize((3840, 1950), Image.NEAREST)) > 128
+            m = np.array(Image.open(FONTS.parent / "world_equirect.png").convert("LA"))
+            opaque = m[..., 1] > 128
+            ys, xs = np.where(opaque)                       # the drawn map inside the file's transparent border
+            y0, y1, x0, x1 = ys.min(), ys.max() + 1, xs.min(), xs.max() + 1
+            land = opaque[y0:y1, x0:x1] & (m[y0:y1, x0:x1, 0] < 230)   # land is grey, ocean is white
+            a = np.array(Image.fromarray(land.astype(np.uint8) * 255).resize((3840, 1950), Image.NEAREST)) > 128
             img = np.zeros((1950, 3840, 3), np.uint8)
             img[:] = (24, 44, 86)
             img[a] = (70, 150, 96)
@@ -964,12 +976,15 @@ def render(slug: str, log=print) -> Path:
         prev = next((geo(j) for j in range(i - 1, -1, -1) if geo(j)), None) or cur
         fly = ease(min(1.0, local / 0.9))
         dist = math.hypot(cur[0] - prev[0], cur[1] - prev[1])
-        vmid = min(1.4, max(0.28, W * 0.7 / max(dist, 1)))     # zoomed out mid-flight, back in on landing
-        v = 1.4 + (vmid - 1.4) * math.sin(math.pi * fly) if dist > 50 else 1.4
+        VL = 0.55                                       # landed: about a third of the world across the screen
+        vmid = min(VL, max(0.28, W * 0.75 / max(dist, 1)))     # zoomed out mid-flight to fit both places
+        v = VL + (vmid - VL) * math.sin(math.pi * fly) if dist > 50 else VL
         cx, cy = prev[0] + (cur[0] - prev[0]) * fly, prev[1] + (cur[1] - prev[1]) * fly
         mp = world_map()
         rw, rh = W / v, H / v
-        base = mp.crop((int(cx - rw / 2), int(cy - rh / 2 - 200 / v), int(cx + rw / 2), int(cy + rh / 2 - 200 / v))).resize((W, H), Image.NEAREST)
+        base = Image.new("RGBA", (W, H), (24, 44, 86, 255))          # ocean beyond the map's edges
+        base.alpha_composite(mp.crop((int(cx - rw / 2), int(cy - rh / 2 - 200 / v), int(cx + rw / 2),
+                                      int(cy + rh / 2 - 200 / v))).resize((W, H), Image.NEAREST))
         to_s = lambda px, py: ((px - cx) * v + W / 2, (py - cy) * v + H / 2 + 200)
         dr = ImageDraw.Draw(base)
         for j in range(i + 1):                          # visited places and the route
