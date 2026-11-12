@@ -2,31 +2,19 @@
   "from": "Zeus",
   "to": "The Rock",
   "requested_by": "@matyldabankers1693",
-  "title": "Zeus to The Rock, starting with a Rubens painting",
-  "description": "A Rubens painting, four centuries of French rulers and a Kremlin handshake connect the king of the Greek gods to Dwayne Johnson.",
+  "title": "How is Zeus connected to The Rock?",
+  "description": "Zeus's movie actor, his Naked Gun co-star and a Golden Globes red carpet connect the king of the Greek gods to The Rock.",
   "hook": "How is Zeus connected to The Rock?",
   "people": {
     "Zeus": {
       "label": "Zeus"
     },
-    "Henry IV of France": {
-      "label": "King Henry IV"
+    "Liam Neeson": {
+      "label": "Liam Neeson"
     },
-    "Emmanuel Macron": {
-      "label": "Emmanuel Macron"
-    },
-    "Vladimir Putin": {
-      "label": "Vladimir Putin"
-    },
-    "Barack Obama": {
-      "label": "Barack Obama"
-    },
-    "Ash Carter": {
-      "label": "Ash Carter",
-      "wiki": "Ash Carter"
-    },
-    "Kevin Hart": {
-      "label": "Kevin Hart"
+    "Pamela Anderson": {
+      "label": "Pamela Anderson",
+      "short": "Pamela"
     },
     "The Rock": {
       "label": "The Rock",
@@ -36,122 +24,66 @@
   "links": [
     {
       "a": "Zeus",
-      "b": "Henry IV of France",
+      "b": "Liam Neeson",
       "image": {
-        "file": "File:0 Henri IV reçoit le portrait de Marie de Médicis - P.P. Rubens - 1771 - Louvre 2.JPG"
-      },
-      "line": "Rubens painted Zeus, whom the Romans called Jupiter, watching over France's King Henry IV.",
-      "a_face": 0,
-      "b_face": 5
-    },
-    {
-      "a": "Henry IV of France",
-      "b": "Emmanuel Macron",
-      "line": "Henry's throne passed through Louis XIV, Napoleon and de Gaulle, down to President Emmanuel Macron.",
-      "lineage": {
-        "label": "RULERS OF FRANCE",
-        "people": [
+        "pair": [
           {
-            "name": "Henry IV of France",
-            "file": "File:Frans_Pourbus_the_Younger_(Antwerp_1569_-_Paris_1622)_-_Henri_IV,_King_of_France_(1553-1610)_-_RCIN_402972_-_Royal_Collection.jpg",
-            "label": "1589"
+            "url": "https://cdn.mos.cms.futurecdn.net/cxQadjqRoQTn9gDEWPWDKY-1200-80.jpg",
+            "credit": "Warner Bros. Pictures, Clash of the Titans (2010) (via CinemaBlend)",
+            "license": "Fair use (commentary)",
+            "source": "https://cinemablend.com/news/2561567/liam-neeson-wants-another-shot-at-playing-clash-of-the-titans-zeus"
           },
           {
-            "name": "Louis XIII",
-            "file": "File:Luis_XIII,_rey_de_Francia_(Philippe_de_Champaigne).jpg",
-            "label": "1610"
-          },
-          {
-            "name": "Louis XIV",
-            "file": "File:Louis_XIV_of_France.jpg",
-            "label": "1643"
-          },
-          {
-            "name": "Louis XVI",
-            "file": "File:Antoine-François_Callet_-_Louis_XVI,_roi_de_France_et_de_Navarre_(1754-1793),_revêtu_du_grand_costume_royal_en_1779_-_Google_Art_Project.jpg",
-            "label": "1774"
-          },
-          {
-            "name": "Napoleon",
-            "file": "File:Jacques-Louis_David_-_The_Emperor_Napoleon_in_His_Study_at_the_Tuileries_-_Google_Art_Project.jpg",
-            "label": "1804"
-          },
-          {
-            "name": "Louis Philippe I",
-            "file": "File:1841_portrait_painting_of_Louis_Philippe_I_(King_of_the_French)_by_Winterhalter.jpg",
-            "label": "1830"
-          },
-          {
-            "name": "Napoleon III",
-            "file": "File:Alexandre_Cabanel_002.jpg",
-            "label": "1848"
-          },
-          {
-            "name": "Charles de Gaulle",
-            "file": "File:De_Gaulle-OWI_(cropped)_(c)(2).jpg",
-            "label": "1959"
-          },
-          {
-            "name": "François Mitterrand",
-            "file": "File:President_François_Mitterrand_in_1983_(cropped).jpg",
-            "label": "1981"
-          },
-          {
-            "name": "Jacques Chirac",
-            "file": "File:Jacques_Chirac_(1997)_(cropped).jpg",
-            "label": "1995"
-          },
-          {
-            "name": "Emmanuel Macron",
-            "file": "File:Emmanuel_Macron_2025_(cropped).jpg",
-            "label": "2017"
+            "file": "File:Liam Neeson Deauville 2012.jpg"
           }
         ]
-      }
-    },
-    {
-      "a": "Emmanuel Macron",
-      "b": "Vladimir Putin",
-      "image": {
-        "file": "File:Vladimir_Putin_and_Emmanuel_Macron_(2018-05-24)_07.jpg"
       },
-      "line": "In 2018, Macron visited Vladimir Putin in Saint Petersburg."
-    },
-    {
-      "a": "Vladimir Putin",
-      "b": "Barack Obama",
-      "image": {
-        "file": "File:Barack_Obama_and_Vladimir_Putin_shake_hands_at_G8_summit,_2013.jpg"
+      "line": "In the 2010 film Clash of the Titans, Zeus was played by actor Liam Neeson.",
+      "fact": "Clash of the Titans, 2010",
+      "where": {
+        "place": "Shepperton Studios, England",
+        "lat": 51.407,
+        "lon": -0.464
       },
-      "line": "In 2013, Putin shook hands with Barack Obama at the G8 summit in Northern Ireland.",
-      "a_face": 1,
-      "b_face": 0
-    },
-    {
-      "a": "Barack Obama",
-      "b": "Ash Carter",
-      "image": {
-        "file": "File:Barack_Obama_and_Ashton_Carter_on_6_July_2015.jpg"
-      },
-      "line": "In 2015, Obama went to the Pentagon with his Defense Secretary, Ash Carter, to plan the fight against ISIS."
-    },
-    {
-      "a": "Ash Carter",
-      "b": "Kevin Hart",
-      "image": {
-        "file": "File:161013-D-SV709-078_(30012677960).jpg"
-      },
-      "line": "A year later, Carter met comedian Kevin Hart backstage at Late Night with Seth Meyers.",
       "a_face": 0,
       "b_face": 1
     },
     {
-      "a": "Kevin Hart",
+      "a": "Liam Neeson",
+      "b": "Pamela Anderson",
+      "image": {
+        "url": "https://imgix.bustle.com/uploads/getty/2025/7/29/0ba93714/new-york-new-york.jpg?w=1200&fm=jpg",
+        "credit": "Getty Images (via W Magazine)",
+        "license": "Fair use (commentary)",
+        "source": "https://www.wmagazine.com/fashion/pamela-anderson-liam-neeson-naked-gun-premiere-new-york"
+      },
+      "line": "In 2025, Neeson walked The Naked Gun premiere in New York with co-star Pamela Anderson.",
+      "fact": "Naked Gun premiere, 2025",
+      "where": {
+        "place": "SVA Theatre, New York",
+        "lat": 40.7448,
+        "lon": -73.9998
+      },
+      "a_face": 5,
+      "b_face": 4
+    },
+    {
+      "a": "Pamela Anderson",
       "b": "The Rock",
       "image": {
-        "file": "File:Albert_mit_the_Rock_and_Kevin_Hart.jpg"
+        "file": "File:Pamela Anderson and Dwayne Johnson at Golden Globes 2025.jpg"
       },
-      "line": "And in Berlin in 2016, Hart posed with his Central Intelligence co-star, The Rock."
+      "line": "At the 2025 Golden Globes, Pamela Anderson met The Rock.",
+      "fact": "Golden Globes, 2025",
+      "where": {
+        "place": "Beverly Hilton, Beverly Hills",
+        "lat": 34.0662,
+        "lon": -118.4129
+      },
+      "a_face": 0,
+      "b_face": 2
     }
-  ]
+  ],
+  "fun_fact": "Liam Neeson played Zeus twice, in Clash of the Titans (2010) and Wrath of the Titans (2012).",
+  "research_note": "The old route started with a Rubens painting; this one starts with the actor who played Zeus, then two real red-carpet photos."
 }
