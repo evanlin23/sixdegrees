@@ -654,9 +654,10 @@
  {
   "from": "P. Diddy",
   "to": "IShowSpeed",
-  "status": "todo",
+  "status": "done",
   "requested_by": "a viewer",
-  "source": "YouTube comment (comment under Hitler to Kermit), Studio snapshot 2026-11-10"
+  "source": "YouTube comment (comment under Hitler to Kermit), Studio snapshot 2026-11-10",
+  "slug": "diddy-to-ishowspeed"
  },
  {
   "from": "Julius Caesar",
