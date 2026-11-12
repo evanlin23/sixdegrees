@@ -241,12 +241,12 @@ def make(ctx):
             fb = font("Inter-Bold.otf", 40)
             nl = len(wrap(full, fb, MAXW - 64))
             post = text_msg(BUH, full, stamp + " · edited", n_lines=nl)
-            msgs.append(dict(kind="text", who=BUH, ts=t0 + 0.04, ta=t0 + 0.38 * u, tpost=t0 + rvt,
+            msgs.append(dict(kind="text", who=BUH, ts=t0 + 0.04, ta=t0 + 0.22 * u, tpost=t0 + rvt,
                              im=text_msg(BUH, teaser, stamp, n_lines=nl, width=post.width - BX + 14), post=post))
             pre, post = photo_msg(BUH, i, short(an), None, stamp), photo_msg(BUH, i, short(an), short(bn), stamp)
-            pta = t0 + 0.72 * u
+            pta = t0 + 0.42 * u
             calm = ctx.sensitive(an) or ctx.sensitive(bn)        # no reactions on a link with a dictator
-            msgs.append(dict(kind="photo", who=BUH, i=i, ts=t0 + 0.50 * u, ta=pta, im=pre, post=post,
+            msgs.append(dict(kind="photo", who=BUH, i=i, ts=t0 + 0.26 * u, ta=pta, im=pre, post=post,
                              tpost=t0 + rvt, seg=seg, tagged=(an, bn), react=None if calm else t0 + rvt + 0.65))
             if i == ctx.n_links - 1:                           # room under the last photo for CONNECTED!
                 msgs.append(dict(kind="space", ts=t0 + rvt, ta=t0 + rvt, im=Image.new("RGBA", (8, SPACE)),
@@ -402,6 +402,8 @@ def make(ctx):
                 else:
                     if sc < 0.999:
                         im = im.resize((int(im.width * sc), int(im.height * sc)), Image.BILINEAR)
+                    if h < im.height - 1:              # still sliding up into its slot: only what fits shows
+                        im = im.crop((0, 0, im.width, max(1, int(h))))
                     base.alpha_composite(im, (ctx.SAFE[0], int(y - im.height)))
                     if m.get("react") and tt >= m["react"]:
                         rk = ctx.ease_out_back((tt - m["react"]) / 0.25)
