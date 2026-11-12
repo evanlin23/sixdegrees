@@ -1,0 +1,76 @@
+{
+  "from": "Adolf Hitler",
+  "to": "Albert Einstein",
+  "title": "How is Adolf Hitler connected to Albert Einstein?",
+  "description": "A British prime minister, Winston Churchill and Charlie Chaplin connect Adolf Hitler to Albert Einstein.",
+  "hook": "How is Adolf Hitler connected to Albert Einstein?",
+  "fun_fact": "After his 1936 visit, Lloyd George wrote in the Daily Express that Hitler was 'the George Washington of Germany'.",
+  "research_note": "Einstein did visit Churchill at Chartwell in 1933, but no photo of the two together is known, so the route runs through Chaplin, who met both men.",
+  "people": {
+    "Adolf Hitler": {
+      "label": "Adolf Hitler",
+      "short": "Hitler"
+    },
+    "David Lloyd George": {
+      "label": "David Lloyd George",
+      "short": "Lloyd George"
+    },
+    "Winston Churchill": {
+      "label": "Winston Churchill",
+      "short": "Churchill"
+    },
+    "Charlie Chaplin": {
+      "label": "Charlie Chaplin"
+    },
+    "Albert Einstein": {
+      "label": "Albert Einstein"
+    }
+  },
+  "links": [
+    {
+      "a": "Adolf Hitler",
+      "b": "David Lloyd George",
+      "image": {
+        "url": "https://collections.ushmm.org/iiif-b/assets/734983",
+        "credit": "US National Archives (NARA), via US Holocaust Memorial Museum",
+        "license": "Public domain",
+        "source": "https://collections.ushmm.org/search/catalog/pa1051321"
+      },
+      "fact": "Obersalzberg, 1936",
+      "line": "In 1936, Britain's old wartime prime minister, David Lloyd George, visited Hitler at his mountain home.",
+      "a_face": 4,
+      "b_face": 2
+    },
+    {
+      "a": "David Lloyd George",
+      "b": "Winston Churchill",
+      "image": {
+        "file": "File:ChurchillGeorge0001.jpg"
+      },
+      "fact": "The Terrible Twins, 1907",
+      "line": "Back in 1907, he and a young Winston Churchill were such close allies they were nicknamed the Terrible Twins.",
+      "a_face": 0,
+      "b_face": 2
+    },
+    {
+      "a": "Winston Churchill",
+      "b": "Charlie Chaplin",
+      "image": {
+        "file": "File:ChurchillChaplin0001.jpg"
+      },
+      "fact": "Hollywood, 1929",
+      "line": "In 1929, Churchill dropped by Hollywood to watch Charlie Chaplin film City Lights.",
+      "a_face": 0,
+      "b_face": 1
+    },
+    {
+      "a": "Charlie Chaplin",
+      "b": "Albert Einstein",
+      "image": {
+        "file": "File:Albert Einstein and Charlie Chaplin City Lights premiere 1931.jpg"
+      },
+      "fact": "City Lights premiere, 1931",
+      "line": "And Einstein came to the premiere."
+    }
+  ]
+}

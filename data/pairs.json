@@ -811,5 +811,13 @@
   "source": "viral formula",
   "hint": "parade: Hindenburg, the Kaiser, Teddy Roosevelt, presidents to Reagan, Arnold, Obama, King Charles, Mark Carney, Mike Myers",
   "slug": "adolf-hitler-to-shrek"
+ },
+ {
+  "from": "Adolf Hitler",
+  "to": "Albert Einstein",
+  "status": "done",
+  "source": "operator",
+  "hint": "required first link Lloyd George at Obersalzberg 1936 (USHMM/NARA public domain print), then Churchill (Terrible Twins 1907), Chaplin (Hollywood 1929), Einstein (City Lights premiere 1931)",
+  "slug": "adolf-hitler-to-albert-einstein"
  }
 ]
