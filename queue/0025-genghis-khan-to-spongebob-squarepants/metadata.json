@@ -24,5 +24,8 @@
  "voice": "gemini",
  "outro": true,
  "voice_rev": 2,
+ "narration": true,
+ "links": 6,
+ "lineage": 13,
  "slug": "genghis-khan-to-spongebob-squarepants"
 }
