@@ -198,6 +198,8 @@ def render(slug: str, log=print) -> Path:
     a, words = audio.say(hook, voice)
     HOOK_VO = 0.0    # the question starts on the very first frame
     d = max(len(a) / audio.SR + 0.3 + HOOK_VO, FF + RW + 1.3)
+    if not narration:
+        d = 3.0                     # the reference hits all hold the intro card for about 3 s
     segs.append({"kind": "hook", "t0": t, "t1": t + d, "cap": PixelCaptions(words, t + HOOK_VO)})
     voice_clips.append((t + HOOK_VO, a))
     sfx += [(0.0, assets.sfx("impact", 0.4)),                              # A slams in on frame 0
@@ -208,6 +210,8 @@ def render(slug: str, log=print) -> Path:
         a, words = audio.say(link["line"], voice)
         last = i == n_links - 1
         speech = len(a) / audio.SR + 0.08
+        if not narration:   # music-only: the reference hits' pace, ~3.3 s a link, a sprint at the end, fast lineages
+            speech = 4.0 if link.get("lineage") else (2.2 if i >= n_links - 2 else 3.3)
         # last photo: cut hard right after the final word / the CONNECTED! slam, for a seamless loop
         # the final destination stays hidden (camera tight on A) until the END of the last line, then lands and we
         # cut almost at once: "ends super fast after the last link is shown" (what the 40k-view 2025 hit did)
@@ -542,6 +546,30 @@ def render(slug: str, log=print) -> Path:
             _hero[key] = Image.fromarray(cv2.cvtColor(out, cv2.COLOR_BGR2RGB)).convert("RGBA")
         return _hero[key]
 
+    def make_comment_card():
+        """A YouTube-style comment card: avatar, @handle, the request in the viewer's words."""
+        who = spec.get("requested_by", "")
+        handle = who if who.startswith("@") else (who or "a viewer")
+        text = spec.get("request_text") or f'{short_name(spec["from"])} to {short_name(spec["to"])}'
+        fh = ImageFont.truetype(str(FONTS / "Inter-Bold.otf"), 30)
+        ft = ImageFont.truetype(str(FONTS / "Inter-ExtraBold.otf"), 46)
+        while ft.getlength(text) > 700 and ft.size > 28:
+            ft = ImageFont.truetype(str(FONTS / "Inter-ExtraBold.otf"), ft.size - 2)
+        w = int(max(560, min(860, 150 + max(fh.getlength(handle), ft.getlength(text)))))
+        h = 150
+        im = Image.new("RGBA", (w + 12, h + 12), (0, 0, 0, 0))
+        d = ImageDraw.Draw(im)
+        d.rounded_rectangle([12, 12, w + 11, h + 11], 26, fill=(0, 0, 0, 120))           # shadow
+        d.rounded_rectangle([0, 0, w, h], 26, fill=(255, 255, 255, 255), outline=INK, width=4)
+        d.ellipse([22, 30, 92, 100], fill=(120, 130, 150, 255))                             # avatar
+        d.ellipse([44, 44, 70, 70], fill=(225, 228, 235, 255))
+        d.pieslice([32, 70, 82, 120], 180, 360, fill=(225, 228, 235, 255))
+        d.text((112, 26), handle, font=fh, fill=(96, 96, 96))
+        d.text((112, 64), text, font=ft, fill=(15, 15, 15))
+        return im
+
+    comment_im = make_comment_card() if spec.get("requested_by") else None
+
     def frame_hook(seg, tt):
         k = tt - seg["t0"]
         last = n_links - 1
@@ -589,12 +617,15 @@ def render(slug: str, log=print) -> Path:
             hop = abs(math.sin(kk * 8)) * 26
             paste_pin(base, pin_sprite("shock" if kk < 0.8 else ("smug" if int(kk * 2) % 2 else "angry"), 0, 0, -1),
                       SAFE[2] - 50, HERO_A[1] - 6 - hop)                 # Buh stands on the seam
-            if spec.get("requested_by"):
-                req = f'{spec["requested_by"]}: "{short_name(spec["from"]).upper()} TO {short_name(spec["to"]).upper()}"'
-                fsz = 24
-                while pf(fsz).getlength(req) > SAFE[2] - SAFE[0] - 40 and fsz > 14:
-                    fsz -= 2
-                paste(base, pixel_tag(req, WHITE, fsz), CX, SAFE[1] + 40, scale=1)   # readable from frame 0
+            if spec.get("requested_by"):   # the viewer's comment IS the hook (every reference hit opens on one)
+                pop = ease_out_back(min(1.0, kk / 0.25))
+                paste(base, comment_im, CX, (HERO_A[1] + HERO_B[0]) // 2 + 10, scale=0.6 + 0.4 * pop, nearest=False)
+                ax = CX + comment_im.width // 2 - 70
+                ay = (HERO_A[1] + HERO_B[0]) // 2 + comment_im.height // 2 + 10
+                dr = ImageDraw.Draw(base)
+                dr.line([(ax, ay), (ax + 30, ay + 70), (ax + 10, ay + 150)], fill=RED, width=14, joint="curve")
+                dr.polygon([(ax - 18, ay + 132), (ax + 38, ay + 140), (ax + 6, ay + 190)], fill=RED)
+                return base
         seg["cap"].draw(base, tt, y=(HERO_A[1] + HERO_B[0]) // 2)
         return base
 
