@@ -944,6 +944,12 @@ def render(slug: str, log=print) -> Path:
     # --- map: Buh flies to where each photo was taken (links need "where": {"lat", "lon", "place"})
     _map = {}
 
+    def earth_tex():
+        """NASA 'Whole world - land and oceans' (public domain), as an RGB array (equirectangular)."""
+        if "tex" not in _map:
+            _map["tex"] = np.array(Image.open(FONTS.parent / "earth_texture.jpg").convert("RGB"))
+        return _map["tex"]
+
     def world_map():
         if "img" not in _map:
             m = np.array(Image.open(FONTS.parent / "world_equirect.png").convert("LA"))
@@ -951,14 +957,10 @@ def render(slug: str, log=print) -> Path:
             ys, xs = np.where(opaque)                       # the drawn map inside the file's transparent border
             y0, y1, x0, x1 = ys.min(), ys.max() + 1, xs.min(), xs.max() + 1
             land = opaque[y0:y1, x0:x1] & (m[y0:y1, x0:x1, 0] < 230)   # land is grey, ocean is white
+            _map["land"] = land
             a = np.array(Image.fromarray(land.astype(np.uint8) * 255).resize((3840, 1950), Image.NEAREST)) > 128
-            img = np.zeros((1950, 3840, 3), np.uint8)
-            img[:] = (24, 44, 86)
-            img[a] = (70, 150, 96)
-            yy, xx = np.mgrid[0:1950, 0:3840]
-            grid = ((xx % 40 == 0) | (yy % 40 == 0)) & ~a
-            img[grid] = (30, 54, 100)
-            _map["img"] = Image.fromarray(img).convert("RGBA")
+            tex = Image.fromarray(earth_tex()).resize((1280, 650), Image.BILINEAR)   # chunky pixels, real detail
+            _map["img"] = tex.resize((3840, 1950), Image.NEAREST).convert("RGBA")
         return _map["img"]
 
     def geo(i):
@@ -1019,7 +1021,115 @@ def render(slug: str, log=print) -> Path:
         seg["cap"].draw(base, tt)
         return base
 
-    style_frames = {"cards": frame_link, "zoom": frame_zoom, "board": frame_board, "timeline": frame_timeline,
+
+    # --- globe: a pixel-art Earth turns to face each place; Buh hops along the great circle; the photo pops above
+    GR, GPX = 225, 2                                    # globe radius in "pixels" and the pixel size on screen
+    GCX, GCY = CX, 1440                                 # globe centre on screen (its lower part runs off the bottom)
+    _gyy, _gxx = np.mgrid[-GR:GR, -GR:GR].astype(np.float32) + 0.5
+    _grho = np.sqrt(_gxx ** 2 + _gyy ** 2)
+    _gin = _grho < GR
+
+    def ll(i):
+        w = spec["links"][i].get("where") or {}
+        return (w["lat"], w["lon"]) if "lat" in w else None
+
+    def slerp_ll(a, b, u):
+        la1, lo1, la2, lo2 = map(math.radians, (a[0], a[1], b[0], b[1]))
+        p1 = np.array([math.cos(la1) * math.cos(lo1), math.cos(la1) * math.sin(lo1), math.sin(la1)])
+        p2 = np.array([math.cos(la2) * math.cos(lo2), math.cos(la2) * math.sin(lo2), math.sin(la2)])
+        om = math.acos(max(-1.0, min(1.0, float(p1 @ p2))))
+        if om < 1e-6:
+            return a
+        q = (math.sin((1 - u) * om) * p1 + math.sin(u * om) * p2) / math.sin(om)
+        return math.degrees(math.asin(q[2])), math.degrees(math.atan2(q[1], q[0]))
+
+    def globe_img(lat0, lon0):
+        tex = earth_tex()
+        lh, lw = tex.shape[:2]
+        la0, lo0 = math.radians(lat0), math.radians(lon0)
+        c = np.arcsin(np.clip(_grho / GR, 0, 1))
+        sc, cc = np.sin(c), np.cos(c)
+        y = -_gyy
+        rho = np.maximum(_grho, 1e-6)
+        lat = np.arcsin(np.clip(cc * math.sin(la0) + y * sc * math.cos(la0) / rho, -1, 1))
+        lon = lo0 + np.arctan2(_gxx * sc, rho * cc * math.cos(la0) - y * sc * math.sin(la0))
+        px = ((np.degrees(lon) + 180) % 360 / 360 * lw).astype(int).clip(0, lw - 1)
+        py = ((90 - np.degrees(lat)) / 180 * lh).astype(int).clip(0, lh - 1)
+        shade = (0.45 + 0.55 * cc)[..., None]                    # darker towards the rim
+        col = tex[py, px].astype(np.float32) * shade
+        img = np.zeros((2 * GR, 2 * GR, 4), np.uint8)
+        img[..., :3] = col.astype(np.uint8)
+        img[..., 3] = np.where(_gin, 255, 0)
+        rim = _gin & (_grho > GR - 2.2)
+        img[rim, :3] = (16, 12, 30)
+        return Image.fromarray(img).resize((2 * GR * GPX, 2 * GR * GPX), Image.NEAREST)
+
+    def globe_xy(lat, lon, lat0, lon0):
+        """Screen position of (lat, lon) on the globe facing (lat0, lon0), or None when it's on the far side."""
+        la, lo, la0, lo0 = map(math.radians, (lat, lon, lat0, lon0))
+        cosc = math.sin(la0) * math.sin(la) + math.cos(la0) * math.cos(la) * math.cos(lo - lo0)
+        if cosc < 0:
+            return None
+        x = GR * math.cos(la) * math.sin(lo - lo0)
+        y = GR * (math.cos(la0) * math.sin(la) - math.sin(la0) * math.cos(la) * math.cos(lo - lo0))
+        return GCX + x * GPX, GCY - y * GPX
+
+    _stars = None
+
+    def frame_globe(seg, tt):
+        nonlocal _stars
+        i = seg["i"]
+        if C.fj["links"][i].get("lineage") or ll(i) is None:
+            return frame_timeline(seg, tt)
+        local = tt - seg["t0"]
+        cur = ll(i)
+        prev = next((ll(j) for j in range(i - 1, -1, -1) if ll(j)), None) or cur
+        fly = ease(min(1.0, local / 0.9))
+        travel = slerp_ll(prev, cur, fly)               # where Buh is
+        face = (travel[0], travel[1] + 6.0 * local - 6.0)   # the view: follows Buh and keeps slowly spinning
+        if _stars is None:
+            rng = np.random.default_rng(3)
+            st = np.zeros((H, W, 3), np.uint8)
+            st[:] = (10, 8, 24)
+            for _ in range(260):
+                x, y = rng.integers(0, W), rng.integers(0, H)
+                st[y:y + 3, x:x + 3] = (200, 200, 230) if rng.random() < 0.8 else (255, 214, 10)
+            _stars = Image.fromarray(st).convert("RGBA")
+        base = _stars.copy()
+        g = globe_img(face[0] - 12, face[1])           # tilt a little so the place sits above centre
+        base.alpha_composite(g, (int(GCX - g.width / 2), int(GCY - g.height / 2)))
+        dr = ImageDraw.Draw(base)
+        for j in range(i + 1):                          # visited places
+            if ll(j):
+                q = globe_xy(*ll(j), face[0] - 12, face[1])
+                if q:
+                    dr.rectangle([q[0] - 9, q[1] - 9, q[0] + 9, q[1] + 9], fill=RED, outline=INK, width=3)
+        for k_ in range(0, 21):                         # the route so far, along the great circle
+            q = globe_xy(*slerp_ll(prev, cur, fly * k_ / 20), face[0] - 12, face[1])
+            if q:
+                dr.rectangle([q[0] - 4, q[1] - 4, q[0] + 4, q[1] + 4], fill=WHITE)
+        q = globe_xy(*travel, face[0] - 12, face[1]) or (GCX, GCY - 100)
+        hop = abs(math.sin(local * 9)) * 18
+        paste_pin(base, pin_sprite("shock" if fly < 1 else "happy", 0, 0, 1 if cur[1] >= prev[1] else -1), q[0], q[1] - hop)
+        place = (spec["links"][i].get("where") or {}).get("place", "")
+        if fly >= 1 and place:
+            paste(base, pixel_tag(place.upper(), WHITE, 26), q[0], q[1] + 50)
+        if local > 0.75:
+            pop = ease_out_back(min(1.0, (local - 0.75) / 0.25))
+            card = Image.new("RGBA", (720, 600), WHITE + (255,))
+            card.alpha_composite(view(i, *both_cam(i, 700, 580, 0.8), 700, 580), (10, 10))
+            paste(base, card, CX, 560, scale=0.5 + 0.5 * pop, nearest=False)
+            an, bn = link_names(i)
+            sp, R = seg["speech"], seg.get("rv", REVEAL)
+            paste(base, pixel_tag(C.labels[an].upper(), CYAN, 28), CX - 200, 900)
+            if local > R * sp + THROW:
+                paste(base, pixel_tag(C.labels[bn].upper(), YELLOW, 28), CX + 200, 900)
+        header(base, i)
+        connected(base, seg, tt)
+        seg["cap"].draw(base, tt, y=1000)
+        return base
+
+    style_frames = {"globe": frame_globe, "cards": frame_link, "zoom": frame_zoom, "board": frame_board, "timeline": frame_timeline,
                     "map": frame_map}
     draw = {"hook": frame_hook, "link": style_frames.get(STYLE, frame_link)}
 
