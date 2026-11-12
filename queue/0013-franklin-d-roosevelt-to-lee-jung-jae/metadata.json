@@ -22,5 +22,8 @@
  "voice": "gemini",
  "outro": false,
  "voice_rev": 2,
+ "narration": true,
+ "links": 4,
+ "lineage": 0,
  "slug": "franklin-d-roosevelt-to-lee-jung-jae"
 }
