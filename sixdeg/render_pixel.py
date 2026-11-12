@@ -170,6 +170,11 @@ def render(slug: str, log=print) -> Path:
 
     # ---------- audio + timeline
     segs, voice_clips, sfx = [], [], []
+
+    class _NoCapEarly:
+        def draw(self, *a, **k):
+            pass
+
     t = 0.0
     n_words = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"]
     hook = spec.get("hook") or f"How is {short_name(spec['from'])} connected to {short_name(spec['to'])}?"
@@ -178,9 +183,16 @@ def render(slug: str, log=print) -> Path:
     import hashlib
     OUTRO = "And that's how."
     use_outro = spec["outro"] if "outro" in spec else int(hashlib.sha1(slug.encode()).hexdigest(), 16) % 2 == 0
+    # A/B test 2: a third of the episodes are music-only (no narration, just names on screen and the opening question
+    # as text), like our 40k-view 2025 Da Vinci -> Naruto. The voice still sets the timing, it just isn't mixed in.
+    narration = spec["narration"] if "narration" in spec else int(hashlib.sha1((slug + ":narration").encode()).hexdigest(), 16) % 3 != 0
+    if not narration:
+        use_outro = False
     script = [hook] + [l["line"] for l in spec["links"]] + ([OUTRO] if use_outro else [])
     audio.prefetch(script, voice, log)                                       # Gemini: one request per episode
-    vinfo = {"engine": audio.narrator(script, voice), "outro": use_outro, "rev": audio.VOICE_REV}
+    vinfo = {"engine": audio.narrator(script, voice), "outro": use_outro, "rev": audio.VOICE_REV,
+             "narration": narration, "links": len(spec["links"]),
+             "lineage": sum(len(l["lineage"]["people"]) for l in spec["links"] if l.get("lineage"))}
     vinfo["clipped"] = [t[:60] for t in script if audio.clipped_end(audio.say(t, voice)[0])]
     (out_dir / "voice.json").write_text(json.dumps(vinfo))
     a, words = audio.say(hook, voice)
@@ -221,6 +233,11 @@ def render(slug: str, log=print) -> Path:
         t += d
     total = t
     track = assets.pick_track(slug, spec.get("music"))
+    if not narration:          # music-only: keep the hook's caption (the question as text), drop the spoken lines
+        voice_clips = []
+        for sg in segs:
+            if sg["kind"] != "hook":
+                sg["cap"] = _NoCapEarly()
     wav = audio.mix(total, voice_clips, sfx, seed=0, out=out_dir / "mix.wav", music=assets.music(track, total))
     log(f"music: {track['title']} (Mixkit); timeline {total:.1f}s")
 

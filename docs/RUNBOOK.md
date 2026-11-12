@@ -52,8 +52,13 @@ for producer sessions. What goes viral and the pair formula are in **`docs/STYLE
   the `request` list. Edit the lists to change what posts next.
 - Title is always "How is A connected to B?" with the names people know; description = chain, call to action,
   photo credits, hashtags; first comment credits the requester.
-- A/B test: half the episodes (hash of the slug) end with Achird saying "And that's how." Compare completion and
-  replays by the `outro` flag in the stats review.
+- A/B tests, all deterministic per slug and recorded in `metadata.json`/`uploaded.json`, compared by
+  `python -m sixdeg studio` and the weekly review:
+  - `outro`: half the episodes end with Achird saying "And that's how." (episode override `"outro"`).
+  - `narration`: a third of the episodes are **music-only**: no voice, names on screen, the opening question as
+    text (like the 2025 Da Vinci → Naruto). Episode override: `"narration": false/true`.
+  - `links`: chain length, grouped short (≤6), mid (7) and parade (8+). This is a content choice, so the episode
+    skill aims for a mix.
 
 ## Opening (what keeps viewers past second 1)
 
