@@ -81,6 +81,7 @@ def kit(slug: str) -> str:
         meta["links"] = vinfo.get("links", len(spec["links"]))
         meta["lineage"] = vinfo.get("lineage", 0)          # portraits in lineage scrolls (0 = none)
         meta["music"] = vinfo.get("music")
+        meta["style"] = vinfo.get("style", "cards")        # presentation-style pilot
         meta["trending"] = vinfo.get("trending", False)    # a claimed song: must stay under 60 s
     out = d / "out"
     out.mkdir(exist_ok=True)
