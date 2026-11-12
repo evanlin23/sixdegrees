@@ -1,0 +1,109 @@
+{
+  "from": "Adolf Hitler",
+  "to": "Jensen Huang",
+  "title": "How is Adolf Hitler connected to Jensen Huang?",
+  "hook": "How is Adolf Hitler connected to Jensen Huang?",
+  "description": "Three real pictures connect Adolf Hitler to Jensen Huang: every German chancellor from Hitler to Angela Merkel, Merkel with Donald Trump, and Trump with Jensen Huang.",
+  "fun_fact": "Before he founded Nvidia, Jensen Huang worked at Denny's as a teenager, washing dishes and busing tables.",
+  "research_note": "Wikidata splits Germany's chancellors into the Reich and Federal offices, so the scroll joins both lists (Walter Scheel's nine days as acting chancellor are left out, as they usually are).",
+  "people": {
+    "Adolf Hitler": {
+      "label": "Adolf Hitler"
+    },
+    "Angela Merkel": {
+      "label": "Angela Merkel"
+    },
+    "Donald Trump": {
+      "label": "Donald Trump"
+    },
+    "Jensen Huang": {
+      "label": "JENSEN HUANG"
+    }
+  },
+  "links": [
+    {
+      "a": "Adolf Hitler",
+      "b": "Angela Merkel",
+      "fact": "Every chancellor, 1933 to 2005",
+      "line": "Hitler was Germany's chancellor, and after the war the line of chancellors runs all the way to Angela Merkel.",
+      "lineage": {
+        "label": "LINE OF CHANCELLORS",
+        "people": [
+          {
+            "name": "Adolf Hitler",
+            "file": "File:Adolf Hitler cropped restored 3x4.jpg",
+            "label": "1933"
+          },
+          {
+            "name": "Joseph Goebbels",
+            "file": "File:Bundesarchiv Bild 146-1968-101-20A, Joseph Goebbels.jpg",
+            "label": "1945"
+          },
+          {
+            "name": "Lutz Graf Schwerin von Krosigk",
+            "file": "File:Ludwig Schwerin von Krosigk.jpg",
+            "label": "1945"
+          },
+          {
+            "name": "Konrad Adenauer",
+            "file": "File:Konrad Adenauer - 14. CDU-Bundesparteitag-kasf0095.JPG",
+            "label": "1949"
+          },
+          {
+            "name": "Ludwig Erhard",
+            "file": "File:Bundesarchiv B 145 Bild-F004204-0003, Ludwig Erhard mit seinem Buch.jpg",
+            "label": "1963"
+          },
+          {
+            "name": "Kurt Georg Kiesinger",
+            "file": "File:Bundesarchiv B 145 Bild-F029561-0008, Essen, CDU-Bundestagswahlkongress (cropped).jpg",
+            "label": "1966"
+          },
+          {
+            "name": "Willy Brandt",
+            "file": "File:Bundesarchiv B 145 Bild-F057884-0009, Willy Brandt.jpg",
+            "label": "1969"
+          },
+          {
+            "name": "Helmut Schmidt",
+            "file": "File:Bundeskanzler Helmut Schmidt.jpg",
+            "label": "1974"
+          },
+          {
+            "name": "Helmut Kohl",
+            "file": "File:Helmut Kohl (1996).jpg",
+            "label": "1982"
+          },
+          {
+            "name": "Gerhard Schröder",
+            "file": "File:Герхард Шредер (05-12-2019) (cropped).jpg",
+            "label": "1998"
+          },
+          {
+            "name": "Angela Merkel",
+            "file": "File:Angela Merkel. Tallinn Digital Summit.jpg",
+            "label": "2005"
+          }
+        ]
+      }
+    },
+    {
+      "a": "Angela Merkel",
+      "b": "Donald Trump",
+      "image": {
+        "file": "File:Angela Merkel and Donald Trump in the Oval Office, March 2017.jpg"
+      },
+      "fact": "Oval Office, 2017",
+      "line": "In 2017, Merkel visited Donald Trump in the Oval Office, under a portrait of George Washington."
+    },
+    {
+      "a": "Donald Trump",
+      "b": "Jensen Huang",
+      "image": {
+        "file": "File:P20250430JB-0891.jpg"
+      },
+      "fact": "White House, 2025",
+      "line": "In 2025, Trump watched Nvidia's boss speak."
+    }
+  ]
+}
