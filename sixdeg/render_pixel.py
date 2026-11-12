@@ -785,12 +785,17 @@ def render(slug: str, log=print) -> Path:
         sp, R, last = seg["speech"], seg.get("rv", REVEAL), i == n_links - 1
         k = (tt - seg["t0"]) / sp
         fa, fb, bc = face_cam(fbox(i, "a"), H), face_cam(fbox(i, "b"), H), both_cam(i, W, H, 0.78)
-        if k < max(R, 0.3):
-            cam = lerp_cam3(fa, bc, ease(k / max(R, 0.3)))
-        elif last or k < 0.82:
-            cam = bc
+        # one path that never stops: A's face -> both -> drift toward B with a slow push-in -> into B's face.
+        # (piecewise linear, so there's no stall in the middle; only the very start eases in)
+        bd = (bc[0] + (fb[0] - bc[0]) * 0.3, bc[1] + (fb[1] - bc[1]) * 0.3, bc[2] * 1.18)
+        k1, k2 = max(R, 0.3), (1.0 if last else 0.82)
+        if k < k1:
+            u = k / k1
+            cam = lerp_cam3(fa, bc, u * u * (2 - u) if u < 1 else 1.0)      # eases in, leaves at full speed
+        elif k < k2:
+            cam = lerp_cam3(bc, bd, (k - k1) / max(0.01, k2 - k1))
         else:
-            cam = lerp_cam3(bc, fb, ease((k - 0.82) / 0.18))
+            cam = lerp_cam3(bd, fb, min(1.0, (k - k2) / max(0.01, 1 - k2)))
         base = view(i, *cam, W, H)
         incut = tt - seg["t0"]
         if i > 0 and incut < 0.16 and not C.fj["links"][i - 1].get("lineage"):
@@ -1124,8 +1129,7 @@ def render(slug: str, log=print) -> Path:
         prev = next((ll(j) for j in range(i - 1, -1, -1) if ll(j)), None) or cur
         fly = ease(min(1.0, local / 1.4))               # Buh's flight over the surface, smooth in and out
         travel = slerp_ll(prev, cur, fly)               # where Buh is
-        vc = slerp_ll(prev, cur, ease(min(1.0, local / 1.9)))   # the view lags behind, so you see him travel
-        face = (vc[0], vc[1] + 4.0 * local - 4.0)       # ...and the globe keeps slowly spinning
+        face = slerp_ll(prev, cur, ease(min(1.0, local / 1.6)))   # the view follows just behind Buh (no spin)
         if _stars is None:
             rng = np.random.default_rng(3)
             st = np.zeros((H, W, 3), np.uint8)
@@ -1141,8 +1145,9 @@ def render(slug: str, log=print) -> Path:
             z *= 1 - 0.35 * math.sin(math.pi * fly)
         RZ = GR * max(0.7, z)
         g = globe_img(face[0] - 12 / max(1.0, z), face[1], RZ)   # tilt a little so the place sits above centre
-        base.alpha_composite(g, (0, int(GCY + GY0 * GPX)))
-        dr = ImageDraw.Draw(base)
+        layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))   # globe + route + Buh float together as one piece
+        layer.alpha_composite(g, (0, int(GCY + GY0 * GPX)))
+        dr = ImageDraw.Draw(layer)
         for j in range(i + 1):                          # visited places
             if ll(j):
                 q = globe_xy(*ll(j), face[0] - 12 / max(1.0, z), face[1], RZ)
@@ -1161,10 +1166,11 @@ def render(slug: str, log=print) -> Path:
                     dr.rectangle([q[0] - 4, q[1] - 4, q[0] + 4, q[1] + 4], fill=WHITE, outline=INK, width=1)
         q = globe_xy(*travel, face[0] - 12 / max(1.0, z), face[1], RZ) or (GCX, GCY - 100)
         hop = math.sin(math.pi * fly) * 70 if fly < 1 else 6 * math.sin(local * 4)   # an arc in flight, a bob after
-        paste_pin(base, pin_sprite("shock" if fly < 1 else "happy", 0, 0, 1 if cur[1] >= prev[1] else -1), q[0], q[1] - hop)
+        paste_pin(layer, pin_sprite("shock" if fly < 1 else "happy", 0, 0, 1 if cur[1] >= prev[1] else -1), q[0], q[1] - hop)
         place = (spec["links"][i].get("where") or {}).get("place", "")
         if fly >= 1 and place:
-            paste(base, pixel_tag(place.upper(), WHITE, 26), q[0], q[1] + 50)
+            paste(layer, pixel_tag(place.upper(), WHITE, 26), q[0], q[1] + 50)
+        base.alpha_composite(layer, (int(10 * math.sin(tt * 0.8)), int(14 * math.sin(tt * 0.6 + 1))))   # gentle float
         if local > 0.75:
             pop = ease_out_back(min(1.0, (local - 0.75) / 0.25))
             card = framed(view(i, *both_cam(i, 680, 540, 0.8), 680, 540), tilt=2.5 * math.sin(local * 1.7) + (-2 if i % 2 else 2))
