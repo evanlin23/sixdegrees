@@ -1,7 +1,7 @@
-"""Web: "six degrees" as a growing network graph. Each person is a glowing node in a strip of web under the title;
-the link photo is one big glowing panel below it, and A's and B's nodes each run a tether down into their own face
-in it. Buh rides the new edge from A to B as it draws; finished edges carry their photos as thumbnails, and the
-finale closes in on the destination node while the last photo stays up."""
+"""Web: "six degrees" as a network graph you fly through. Every link photo is a NODE of the graph: a big photo card
+floating in a dark web of grey, unknown photo-nodes. The edge between two cards runs from a person's face medallion
+under one photo to the same person's medallion over the next, and the camera flies along it with Buh from card to
+card. Under each card B's medallion is "?" until the reveal; a ghost "?" node waits further down the web."""
 from __future__ import annotations
 
 import math
@@ -15,16 +15,19 @@ NAME = "web"
 
 BG = (12, 16, 34)
 DECOY = (70, 80, 110)
-DECOY_EDGE = (36, 44, 72)
+DECOY_EDGE = (34, 42, 70)
 PATH = (40, 220, 255)
 HOT = (255, 214, 10)
-# path node layout (world px): a compact meander that fits a portrait screen at the finale
-PATTERN = [(0, 0), (560, 40), (980, 420), (520, 760), (30, 700), (260, 1180), (900, 1150)]
-PW, PH, GL = 860, 580, 24                # the photo panel (and its glow margin)
-PH_Y0 = 590                             # panel top; the web strip sits above it, under the title band
-PH_Y1 = PH_Y0 + PH
-WEB_AY = 405
-CAP_Y = 1384
+CALM = (196, 200, 212)                  # links with a dictator: neutral frame, no glow, no gold
+PW, PH, STRIP, BORD = 860, 590, 72, 8   # photo, tag strip under it, border
+CW, CH = PW + 2 * BORD, PH + STRIP + 2 * BORD
+GL = 30                                 # glow margin around a card sprite
+MR = 52                                 # medallion radius
+MED_OFF = 24                            # gap between a card's border and its medallions
+STEP_Y, STEP_X = 1240, 380              # world offset from one card to the next (x alternates)
+SX, SY = 505, 780                       # screen point the current card is centred on
+FLY = 0.5                               # seconds the camera flies from one card to the next
+CAP_Y = 1404
 
 
 def photo_params(ctx, i, w, h, fill=0.8, maxup=1.3):
@@ -41,70 +44,88 @@ def photo_params(ctx, i, w, h, fill=0.8, maxup=1.3):
     return cx, cy, s, ow, oh
 
 
-def _positions(n):
-    pos = []
-    for k in range(n):
-        blk, j = divmod(k, len(PATTERN))
-        x, y = PATTERN[j]
-        if blk % 2:
-            x = 980 - x
-        pos.append((float(x), float(y + blk * 1650)))
-    return pos
+def bez(p0, p3, t):
+    """Vertical S-curve from p0 to p3 (tangents straight down at both ends)."""
+    dy = (p3[1] - p0[1]) * 0.55
+    p1, p2 = (p0[0], p0[1] + dy), (p3[0], p3[1] - dy)
+    u = 1 - t
+    return (u ** 3 * p0[0] + 3 * u * u * t * p1[0] + 3 * u * t * t * p2[0] + t ** 3 * p3[0],
+            u ** 3 * p0[1] + 3 * u * u * t * p1[1] + 3 * u * t * t * p2[1] + t ** 3 * p3[1])
 
 
 def make(ctx):
-    people = list(ctx.C.people)
-    N = len(people)
-    idx = {nm: k for k, nm in enumerate(people)}
-    P = _positions(N)
-    xs, ys = [p[0] for p in P], [p[1] for p in P]
-    BB = (min(xs), min(ys), max(xs), max(ys))
+    N = ctx.n_links
     rnd = random.Random(11)
+    CC = [(float(STEP_X * (k % 2) - STEP_X / 2), float(k * STEP_Y)) for k in range(N + 1)]   # + the ghost slot
 
-    def flo(k, t, amp=1.0):
-        """Gentle float of node k: two slow sines with per-node phases."""
-        return (amp * 16 * math.sin(t * 0.8 + k * 1.7) + amp * 6 * math.sin(t * 1.9 + k * 0.6),
-                amp * 13 * math.cos(t * 0.67 + k * 2.3) + amp * 5 * math.cos(t * 1.5 + k * 1.1))
+    def calm(i):
+        a, b = ctx.link_names(i)
+        return ctx.sensitive(a) or ctx.sensitive(b)
 
-    # ---------- near decoys: grey people-nodes floating around the path, with faint edges
+    _fits = {}
+
+    def fit(i):
+        if i not in _fits:
+            _fits[i] = photo_params(ctx, i, PW, PH)
+        return _fits[i]
+
+    def face_dx(i, role):
+        """x of person role's face relative to card i's centre (card px), kept clear of the card's corners."""
+        cx, cy, s, ow, oh = fit(i)
+        fx = (ctx.ctr(ctx.fbox(i, role))[0] - cx) * s
+        return max(-CW / 2 + MR + 26, min(CW / 2 - MR - 26, fx))
+
+    def med_a(i):
+        return CC[i][0] + face_dx(i, "a"), CC[i][1] - CH / 2 - MED_OFF - MR
+
+    def med_b(i):
+        if i >= N:
+            return CC[i][0], CC[i][1] - CH / 2 - MED_OFF - MR
+        return CC[i][0] + face_dx(i, "b"), CC[i][1] + CH / 2 + MED_OFF + MR
+
+    # ---------- the incoming edge of each card: from the previous card's B medallion to this card's A medallion
+    def edge_pts(i, n=28):
+        p0, p3 = med_b(i - 1), (med_a(i) if i < N else med_b(i))
+        return [bez(p0, p3, k / (n - 1)) for k in range(n)]
+
+    # ---------- decoys: grey unknown photo-nodes all around the chain, with faint edges
+    xs = [c[0] for c in CC]
     DEC = []
+    corridor = [p for k in range(1, N + 1) for p in edge_pts(k, 12)]
     tries = 0
-    while len(DEC) < 70 and tries < 5000:
+    while len(DEC) < 90 and tries < 8000:
         tries += 1
-        x = rnd.uniform(BB[0] - 900, BB[2] + 900)
-        y = rnd.uniform(BB[1] - 1100, BB[3] + 1100)
-        if min(math.dist((x, y), p) for p in P) < 230 or any(math.dist((x, y), d) < 190 for d in DEC):
+        x = rnd.uniform(min(xs) - 1300, max(xs) + 1300)
+        y = rnd.uniform(-1300, CC[-1][1] + 1300)
+        if any(abs(x - c[0]) < CW / 2 + 110 and abs(y - c[1]) < CH / 2 + 190 for c in CC):
             continue
-        # keep the path's own edges clear of clutter
-        ok = True
-        for a, b in zip(P[:-1], P[1:]):
-            ux, uy = b[0] - a[0], b[1] - a[1]
-            L2 = ux * ux + uy * uy
-            u = max(0.0, min(1.0, ((x - a[0]) * ux + (y - a[1]) * uy) / L2))
-            if math.dist((x, y), (a[0] + ux * u, a[1] + uy * u)) < 130:
-                ok = False
-                break
-        if ok:
-            DEC.append((x, y))
-    nodes_all = [("d", k, p) for k, p in enumerate(DEC)] + [("p", k, p) for k, p in enumerate(P)]
+        if any(math.dist((x, y), p) < 150 for p in corridor) or any(math.dist((x, y), d) < 240 for d in DEC):
+            continue
+        DEC.append((x, y))
+    DSIZE = [rnd.choice([0.55, 0.65, 0.75, 0.9]) for _ in DEC]
     DEDGE = set()
     for k, p in enumerate(DEC):
-        near = sorted(range(len(nodes_all)), key=lambda j: math.dist(p, nodes_all[j][2]))[1:4]
-        for j in near[: rnd.choice([1, 2, 2, 3])]:
-            if math.dist(p, nodes_all[j][2]) < 520:
-                DEDGE.add(tuple(sorted([("d", k), nodes_all[j][:2]])))
+        near = sorted(range(len(DEC)), key=lambda j: math.dist(p, DEC[j]))[1:3]
+        for j in near[: rnd.choice([1, 2, 2])]:
+            if math.dist(p, DEC[j]) < 560:
+                DEDGE.add((min(k, j), max(k, j)))
     DEDGE = sorted(DEDGE)
-    DSIZE = [rnd.choice([0.5, 0.6, 0.7, 0.8]) for _ in DEC]
+    CEDGE = []                                       # decoys wired to the side of a card (the graph goes on)
+    for k, p in enumerate(DEC):
+        for c in range(N):
+            cx, cy = CC[c]
+            if abs(p[1] - cy) < CH / 2 - 40 and CW / 2 < abs(p[0] - cx) < CW / 2 + 520 and rnd.random() < 0.7:
+                CEDGE.append((k, c, (cx + math.copysign(CW / 2, p[0] - cx), p[1] + rnd.uniform(-60, 60))))
 
     # ---------- far layer: a much bigger web, dim and soft (parallax)
     M = 2600
-    FOX, FOY = BB[0] - M, BB[1] - M
-    FW, FH = int(BB[2] - BB[0] + 2 * M), int(BB[3] - BB[1] + 2 * M)
+    FOX, FOY = min(xs) - M, -M
+    FW, FH = int(max(xs) - min(xs) + 2 * M), int(CC[-1][1] + 2 * M)
 
     def build_far():
         im = Image.new("RGB", (FW, FH), BG)
         d = ImageDraw.Draw(im)
-        pts = [(rnd.uniform(0, FW), rnd.uniform(0, FH)) for _ in range(900)]
+        pts = [(rnd.uniform(0, FW), rnd.uniform(0, FH)) for _ in range(1100)]
         grid = {}
         for k, (x, y) in enumerate(pts):
             grid.setdefault((int(x // 300), int(y // 300)), []).append(k)
@@ -113,113 +134,118 @@ def make(ctx):
             cand = [j for dx in (-1, 0, 1) for dy in (-1, 0, 1) for j in grid.get((gx + dx, gy + dy), []) if j != k]
             cand.sort(key=lambda j: math.dist(pts[k], pts[j]))
             for j in cand[:2]:
-                d.line([pts[k], pts[j]], fill=(26, 32, 58), width=3)
+                d.line([pts[k], pts[j]], fill=(24, 30, 54), width=3)
         for x, y in pts:
-            r = rnd.uniform(7, 15)
-            d.ellipse([x - r, y - r, x + r, y + r], fill=(38, 46, 76))
-        im = im.filter(ImageFilter.GaussianBlur(2.5))
-        return np.asarray(im)
+            r = rnd.uniform(6, 13)
+            d.ellipse([x - r, y - r, x + r, y + r], fill=(34, 42, 70))
+        return np.asarray(im.filter(ImageFilter.GaussianBlur(2.5)))
 
     FAR = build_far()
 
     # ---------- sprites
-    NR = 74                                                    # node radius at zoom 1
-
-    def glow(col, r):
-        S = int(r * 3.2)
-        im = Image.new("RGBA", (S, S), (0, 0, 0, 0))
-        ImageDraw.Draw(im).ellipse([S / 2 - r * 1.15, S / 2 - r * 1.15, S / 2 + r * 1.15, S / 2 + r * 1.15],
-                                   fill=col + (150,))
-        return im.filter(ImageFilter.GaussianBlur(r * 0.35))
-
-    def node_img(nm, state):
-        """state: 'face' (visited), 'hot' (just revealed), 'q' (incoming, unknown)."""
-        col = {"face": PATH, "hot": HOT, "q": (150, 160, 190)}[state]
-        g = glow(col, NR)
-        c = g.width / 2
-        d = ImageDraw.Draw(g)
-        d.ellipse([c - NR, c - NR, c + NR, c + NR], fill=col)
-        r = NR - 9
-        if state == "q":
-            d.ellipse([c - r, c - r, c + r, c + r], fill=(34, 40, 66))
-            q = ctx.pixel_text("?", 56, fill=ctx.WHITE)
-            g.alpha_composite(q, (int(c - q.width / 2), int(c - q.height / 2)))
-        else:
-            face = ctx.sharp[nm].convert("RGBA").resize((2 * r, 2 * r), Image.BICUBIC)
-            m = Image.new("L", face.size, 0)
-            ImageDraw.Draw(m).ellipse([0, 0, 2 * r - 1, 2 * r - 1], fill=255)
-            g.paste(face, (int(c - r), int(c - r)), m)
-        return g
-
-    NODE = {(nm, st): node_img(nm, st) for nm in people for st in ("face", "hot", "q")}
-
-    def decoy_img(r):
-        S = 2 * r + 4
-        im = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+    def decoy_img():
+        w, h = 170, 124
+        im = Image.new("RGBA", (w, h), (0, 0, 0, 0))
         d = ImageDraw.Draw(im)
-        d.ellipse([2, 2, S - 2, S - 2], fill=DECOY)
-        d.ellipse([7, 7, S - 7, S - 7], fill=(44, 52, 80))
-        c = S / 2                                              # a generic head-and-shoulders silhouette
-        d.ellipse([c - r * 0.28, c - r * 0.55, c + r * 0.28, c - r * 0.02], fill=DECOY)
-        d.chord([c - r * 0.55, c + r * 0.05, c + r * 0.55, c + r * 1.0], 180, 360, fill=DECOY)
-        m = Image.new("L", im.size, 0)
-        ImageDraw.Draw(m).ellipse([2, 2, S - 2, S - 2], fill=255)
-        out = Image.new("RGBA", im.size, (0, 0, 0, 0))
-        out.paste(im, (0, 0), m)
-        return out
+        d.rounded_rectangle([0, 0, w - 1, h - 1], 14, fill=(28, 34, 58), outline=DECOY, width=4)
+        for k, cx in enumerate((w * 0.36, w * 0.64)):          # two generic silhouettes: an unknown photo
+            r = 17
+            cy = h * 0.42
+            d.ellipse([cx - r, cy - r, cx + r, cy + r], fill=(56, 64, 94))
+            d.chord([cx - 34, cy + 16, cx + 34, cy + 80], 180, 360, fill=(56, 64, 94))
+        d.rectangle([4, h - 10, w - 5, h - 5], fill=(28, 34, 58))
+        return im
 
-    DIMG = decoy_img(60)
+    DIMG = decoy_img()
 
-    _tags = {}
+    def ghost_img():
+        im = Image.new("RGBA", (CW, CH), (0, 0, 0, 0))
+        d = ImageDraw.Draw(im)
+        d.rounded_rectangle([0, 0, CW - 1, CH - 1], 26, fill=(18, 24, 46, 200))
+        for x in range(0, CW, 40):                             # dashed outline
+            d.line([(x, 2), (x + 20, 2)], fill=(110, 122, 160), width=5)
+            d.line([(x, CH - 3), (x + 20, CH - 3)], fill=(110, 122, 160), width=5)
+        for y in range(0, CH, 40):
+            d.line([(2, y), (2, y + 20)], fill=(110, 122, 160), width=5)
+            d.line([(CW - 3, y), (CW - 3, y + 20)], fill=(110, 122, 160), width=5)
+        q = ctx.pixel_text("?", 150, fill=(110, 122, 160))
+        im.alpha_composite(q, (int(CW / 2 - q.width / 2), int(CH * 0.3 - q.height / 2)))
+        return im
 
-    def tag(nm, col):
-        if (nm, col) not in _tags:
-            _tags[(nm, col)] = ctx.pixel_tag(ctx.C.labels[nm].upper(), col, 28)
-        return _tags[(nm, col)]
+    GHOST = ghost_img()
 
+    _cards = {}
 
-    # ---------- the link photo: one big glowing "evidence" panel under the web; edges run from the nodes into it
-    _fits, _cards, _thumbs = {}, {}, {}
-
-    def fit(i):
-        if i not in _fits:
-            _fits[i] = photo_params(ctx, i, PW, PH)
-        return _fits[i]
-
-    def card(i, revealed):
-        key = (i, revealed)
+    def card(i, state):
+        """state: 'cur' (before the reveal), 'rev' (B just named), 'done' (an earlier link)."""
+        key = (i, state)
         if key in _cards:
             return _cards[key]
-        cx, cy, s, ow, oh = fit(i)
-        col = HOT if revealed else PATH
-        im = Image.new("RGBA", (PW + 2 * GL, PH + 2 * GL), (0, 0, 0, 0))
-        g = Image.new("RGBA", im.size, (0, 0, 0, 0))
-        ImageDraw.Draw(g).rounded_rectangle([GL - 10, GL - 10, GL + PW + 10, GL + PH + 10], 34, fill=col + (190,))
-        im.alpha_composite(g.filter(ImageFilter.GaussianBlur(14)))
+        plain = calm(i)
+        col = CALM if plain else {"cur": PATH, "rev": HOT, "done": PATH}[state]
+        glowing = not plain and state != "done"
+        im = Image.new("RGBA", (CW + 2 * GL, CH + 2 * GL), (0, 0, 0, 0))
+        if glowing:
+            g = Image.new("RGBA", im.size, (0, 0, 0, 0))
+            ImageDraw.Draw(g).rounded_rectangle([GL - 8, GL - 8, GL + CW + 8, GL + CH + 8], 34, fill=col + (170,))
+            im.alpha_composite(g.filter(ImageFilter.GaussianBlur(14)))
         d = ImageDraw.Draw(im)
-        d.rounded_rectangle([GL - 6, GL - 6, GL + PW + 6, GL + PH + 6], 32, fill=(10, 14, 30), outline=col, width=6)
+        d.rounded_rectangle([GL, GL, GL + CW, GL + CH], 26, fill=(10, 14, 30), outline=col, width=BORD)
+        cx, cy, s, ow, oh = fit(i)
         ph = ctx.view(i, cx, cy, s, ow, oh)
         m = Image.new("L", (ow, oh), 0)
-        ImageDraw.Draw(m).rounded_rectangle([0, 0, ow - 1, oh - 1], 26, fill=255)
-        im.paste(ph, (GL + (PW - ow) // 2, GL + (PH - oh) // 2), m)
+        ImageDraw.Draw(m).rounded_rectangle([0, 0, ow - 1, oh - 1], 18, fill=255)
+        px, py = GL + BORD + (PW - ow) // 2, GL + BORD + (PH - oh) // 2
+        im.paste(ph, (px, py), m)
+        # name tags in the strip under the photo, each under its own face, never overlapping
+        an, bn = ctx.link_names(i)
+        known_b = state != "cur"
+        ta = ctx.pixel_tag(ctx.C.labels[an].upper(), ctx.CYAN, 22)
+        tb = ctx.pixel_tag(ctx.C.labels[bn].upper() if known_b else "? ? ?",
+                           (ctx.YELLOW if not plain else ctx.WHITE) if known_b else (150, 160, 190), 22)
+        lo, hi = GL + BORD + 6, GL + BORD + PW - 6
+        items = sorted([[ta, GL + CW / 2 + face_dx(i, "a")], [tb, GL + CW / 2 + face_dx(i, "b")]],
+                       key=lambda q: q[1])
+        for q in items:
+            q[1] = max(lo + q[0].width / 2, min(hi - q[0].width / 2, q[1]))
+        (l, xl), (r, xr) = items
+        over = (l.width + r.width) / 2 + 10 - (xr - xl)
+        if over > 0:
+            xl, xr = xl - over / 2, xr + over / 2
+            if xl - l.width / 2 < lo:
+                xr += lo - (xl - l.width / 2)
+                xl = lo + l.width / 2
+            if xr + r.width / 2 > hi:
+                xl -= xr + r.width / 2 - hi
+                xr = hi - r.width / 2
+        ty = GL + BORD + PH + STRIP / 2
+        for t_, x_ in ((l, xl), (r, xr)):
+            im.alpha_composite(t_, (int(x_ - t_.width / 2), int(ty - t_.height / 2)))
         _cards[key] = im
         return im
 
-    def face_x(i, role):
-        """Screen x of person role's face inside the photo panel."""
-        cx, cy, s, ow, oh = fit(i)
-        fx = ctx.ctr(ctx.fbox(i, role))[0]
-        return ctx.CX + (fx - cx) * s
+    _meds = {}
 
-    def thumb(i):
-        if i not in _thumbs:
-            cx, cy, s, ow, oh = photo_params(ctx, i, 150, 100)
-            ph = ctx.view(i, cx, cy, s, ow, oh)
-            im = Image.new("RGBA", (160, 110), PATH + (255,))
-            im.paste((10, 14, 30), [5, 5, 155, 105])
-            im.alpha_composite(ph, (5 + (150 - ow) // 2, 5 + (100 - oh) // 2))
-            _thumbs[i] = im
-        return _thumbs[i]
+    def medal(nm, col):
+        key = (nm, col)
+        if key not in _meds:
+            S = 2 * MR + 8
+            im = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+            d = ImageDraw.Draw(im)
+            d.ellipse([0, 0, S - 1, S - 1], fill=col)
+            r = MR - 4
+            c = S / 2
+            if nm is None:
+                d.ellipse([c - r, c - r, c + r, c + r], fill=(34, 40, 66))
+                q = ctx.pixel_text("?", 44, fill=ctx.WHITE)
+                im.alpha_composite(q, (int(c - q.width / 2), int(c - q.height / 2)))
+            else:
+                face = ctx.sharp[nm].convert("RGBA").resize((2 * r, 2 * r), Image.BICUBIC)
+                m = Image.new("L", face.size, 0)
+                ImageDraw.Draw(m).ellipse([0, 0, 2 * r - 1, 2 * r - 1], fill=255)
+                im.paste(face, (int(c - r), int(c - r)), m)
+            _meds[key] = im
+        return _meds[key]
 
     # ---------- the clock
     segs = [s for s in ctx.segs if s["kind"] == "link"]
@@ -227,55 +253,58 @@ def make(ctx):
     def rev_t(s):
         return s.get("rv", ctx.REVEAL) * s["speech"] + ctx.THROW
 
-    def seg_at(T):
-        for s in segs:
-            if T < s["t1"] or s is segs[-1]:
-                return s
-        return segs[-1]
+    def side(i, role):
+        """Buh perches on the side of a medallion that faces the card's middle."""
+        dx = face_dx(i, role)
+        return 1 if dx < 0 else -1
 
-    def target(T):
-        """Camera (x, y, zoom, screen y) over the web strip: A and B of the link; on the last link it closes in on
-        the destination node after the reveal."""
-        s = seg_at(T)
-        a, b = (idx.get(n, 0) for n in ctx.link_names(s["i"]))
-        A, B = P[a], P[b]
-        if s["i"] == ctx.n_links - 1 and T - s["t0"] > rev_t(s) - 0.1:
-            return B[0], B[1], 1.15, WEB_AY - 10
-        dx, dy = abs(B[0] - A[0]) + 1, abs(B[1] - A[1]) + 1
-        z = max(0.5, min(0.85, 600 / dx, 235 / dy))
-        return (A[0] + B[0]) / 2, (A[1] + B[1]) / 2, z, WEB_AY
+    def perch_a(i):
+        x, y = med_a(i)
+        return x + side(i, "a") * (MR + 58), y + MR
 
-    def cam(T):
-        n = 9
-        acc = [0.0, 0.0, 0.0, 0.0]
-        for k in range(n):
-            x, y, z, ay = target(T - 0.7 * k / (n - 1))
-            acc[0] += x
-            acc[1] += y
-            acc[2] += math.log(z)
-            acc[3] += ay
-        return acc[0] / n, acc[1] / n, math.exp(acc[2] / n), acc[3] / n
+    def perch_b(i):
+        x, y = med_b(i)
+        return x + side(i, "b") * (MR + 58), y + MR
 
-    def place_tags(items):
-        """items: [(img, face_x)] -> [(img, x, y)] under their faces, pushed apart, kept inside SAFE."""
-        y = PH_Y1 + 36
-        out = []
-        items = sorted(items, key=lambda q: q[1])
-        xs = [max(ctx.SAFE[0] + im.width / 2, min(ctx.SAFE[2] - im.width / 2, fx)) for im, fx in items]
-        if len(items) == 2:
-            (l, _), (r, _) = items
-            gap = xs[1] - xs[0] - (l.width + r.width) / 2 - 14
-            if gap < 0:
-                xs[0] -= -gap / 2
-                xs[1] += -gap / 2
-                xs[0] = max(ctx.SAFE[0] + l.width / 2, xs[0])
-                xs[1] = min(ctx.SAFE[2] - r.width / 2, xs[1])
-        for k, (im, _) in enumerate(items):
-            yy = y
-            if k == 1 and xs[1] - xs[0] < (items[0][0].width + im.width) / 2 + 8:
-                yy = y + im.height + 6                        # still too close: stack it below
-            out.append((im, xs[k], yy))
-        return out
+    def hop_times(s):
+        d = s["t1"] - s["t0"]
+        hs = max(FLY + 0.2, min(rev_t(s) + 0.3, d - 0.6))
+        return hs, min(hs + 0.55, d - 0.03)
+
+    def buh_world(s, local):
+        """Buh's needle-tip position (world) and whether he is in flight."""
+        i = s["i"]
+        if i > 0 and local < FLY:
+            u = ctx.ease(max(0.0, local / FLY))
+            return bez(perch_b(i - 1), perch_a(i), u), True
+        if i == N - 1:
+            return perch_a(i), False
+        hs, he = hop_times(s)
+        if local < hs:
+            return perch_a(i), False
+        if local >= he:
+            return perch_b(i), False
+        # down the outside of the card's right edge, clear of the photo
+        rx = CC[i][0] + CW / 2 + 66
+        a, b = perch_a(i), perch_b(i)
+        pts = [a, (rx, a[1]), (rx, b[1]), b]
+        L = [math.dist(p, q) for p, q in zip(pts[:-1], pts[1:])]
+        u = ctx.ease((local - hs) / max(0.05, he - hs)) * sum(L)
+        for p, q, l in zip(pts[:-1], pts[1:], L):
+            if u <= l or l == L[-1]:
+                v = u / max(1e-6, l)
+                return (p[0] + (q[0] - p[0]) * v, p[1] + (q[1] - p[1]) * v), True
+            u -= l
+        return b, False
+
+    def cam(seg, local):
+        i = seg["i"]
+        if i > 0 and local < FLY:
+            u = ctx.ease(local / FLY)
+            x = CC[i - 1][0] + (CC[i][0] - CC[i - 1][0]) * u
+            y = CC[i - 1][1] + (CC[i][1] - CC[i - 1][1]) * u
+            return x, y, 1 - 0.36 * math.sin(math.pi * u)
+        return CC[i][0], CC[i][1], 1.0
 
     def frame(seg, tt):
         i = seg["i"]
@@ -284,139 +313,122 @@ def make(ctx):
         local = tt - seg["t0"]
         rv = rev_t(seg)
         revealed = local > rv
-        last = i == ctx.n_links - 1
-        fin = last and revealed
+        last = i == N - 1
         an, bn = ctx.link_names(i)
-        ia, ib = idx.get(an, 0), idx.get(bn, 0)
-        cx, cy, z, ay = cam(tt)
-        cx += 14 * math.sin(tt * 0.5)                         # the camera never quite settles
-        cy += 8 * math.cos(tt * 0.43)
-        ax = ctx.CX
+        cx, cy, z = cam(seg, local)
+        cx += 10 * math.sin(tt * 0.5)                          # the camera never quite settles
+        cy += 7 * math.cos(tt * 0.43)
 
         def scr(p):
-            return (p[0] - cx) * z + ax, (p[1] - cy) * z + ay
+            return (p[0] - cx) * z + SX, (p[1] - cy) * z + SY
 
-        # far web, parallax (fills the whole screen, top to bottom)
-        fz = z * 0.75
-        fcx, fcy = cx * 0.6, cy * 0.6
-        Mx = np.float32([[fz, 0, fz * (FOX - fcx) + ax], [0, fz, fz * (FOY - fcy) + ay]])
+        def on(p, m=200):
+            return -m < p[0] < ctx.W + m and -m < p[1] < ctx.H + m
+
+        # far web, parallax
+        fz = z * 0.7
+        fcx, fcy = cx * 0.55, cy * 0.55
+        Mx = np.float32([[fz, 0, fz * (FOX - fcx) + SX], [0, fz, fz * (FOY - fcy) + SY]])
         base = Image.fromarray(cv2.warpAffine(FAR, Mx, (ctx.W, ctx.H), flags=cv2.INTER_LINEAR,
                                               borderMode=cv2.BORDER_REFLECT)).convert("RGBA")
         d = ImageDraw.Draw(base)
 
-        pos = {}
-        for k, p in enumerate(DEC):
-            f = flo(k + 40, tt, 1.3)
-            pos[("d", k)] = scr((p[0] + f[0], p[1] + f[1]))
-        for k in range(N):
-            f = flo(k, tt)
-            pos[("p", k)] = scr((P[k][0] + f[0], P[k][1] + f[1]))
-        exists = set(range(0, max(ia, ib) + 1))
+        def flo(k, amp=1.0):
+            return (amp * 12 * math.sin(tt * 0.8 + k * 1.7), amp * 10 * math.cos(tt * 0.67 + k * 2.3))
 
+        dpos = [scr((p[0] + flo(k)[0], p[1] + flo(k)[1])) for k, p in enumerate(DEC)]
         ew = max(2, int(3 * z))
         for a, b in DEDGE:
-            if b[0] == "p" and b[1] not in exists:
-                continue
-            pa, pb = pos[a], pos[b]
-            if min(pa[1], pb[1]) > PH_Y0 + 40 or max(pa[1], pb[1]) < 150:
-                continue
-            d.line([pa, pb], fill=DECOY_EDGE, width=ew)
-        ds = max(0.35, z * 0.75)
-        for k in range(len(DEC)):
-            x, y = pos[("d", k)]
-            if -80 < x < ctx.W + 80 and 150 < y < PH_Y0 + 80:
-                ctx.paste(base, DIMG, x, y, scale=ds * DSIZE[k], nearest=False)
+            if on(dpos[a], 600) or on(dpos[b], 600):
+                d.line([dpos[a], dpos[b]], fill=DECOY_EDGE, width=ew)
+        for k, c, pt in CEDGE:
+            if c <= i and (on(dpos[k], 600)):
+                d.line([dpos[k], scr(pt)], fill=DECOY_EDGE, width=ew)
+        for k, p in enumerate(dpos):
+            if on(p, 120):
+                ctx.paste(base, DIMG, p[0], p[1], scale=z * DSIZE[k], nearest=False)
 
-        def edge(pa, pb, col, w, u=1.0, pulse=True):
-            pb2 = (pa[0] + (pb[0] - pa[0]) * u, pa[1] + (pb[1] - pa[1]) * u)
-            d.line([pa, pb2], fill=tuple(int(c * 0.35 + b * 0.65) for c, b in zip(col, BG)), width=int(w * 2.4))
-            d.line([pa, pb2], fill=col, width=w)
-            if pulse:
-                for q in range(3):
-                    v = ((tt * 0.6 + q / 3) % 1.0) * u
-                    px, py = pa[0] + (pb[0] - pa[0]) * v, pa[1] + (pb[1] - pa[1]) * v
-                    r = w * 0.9
-                    d.ellipse([px - r, py - r, px + r, py + r], fill=(255, 255, 255))
+        def edge(pts, col, w, glow=True):
+            sp = [scr(p) for p in pts]
+            if glow:
+                d.line(sp, fill=tuple(int(c * 0.35 + b * 0.65) for c, b in zip(col, BG)), width=int(w * 2.6),
+                       joint="curve")
+            d.line(sp, fill=col, width=w, joint="curve")
+            for q in range(3):                                  # pulses running down the edge
+                v = (tt * 0.7 + q / 3) % 1.0
+                p = sp[min(len(sp) - 1, int(v * (len(sp) - 1)))]
+                r = w * 0.9
+                d.ellipse([p[0] - r, p[1] - r, p[0] + r, p[1] + r], fill=(255, 255, 255))
 
-        pw = max(4, int(9 * z))
-        for k in range(i):
-            a, b = (idx.get(n, 0) for n in ctx.link_names(k))
-            edge(pos[("p", a)], pos[("p", b)], HOT if fin else PATH, pw)
-        u = ctx.ease(max(0.0, min(1.0, (local - 0.1) / max(0.3, rv - 0.1))))   # the new edge reaches B at the reveal
-        pa_, pb_ = pos[("p", ia)], pos[("p", ib)]
-        if u > 0:
-            edge(pa_, pb_, HOT, pw + 2, u)
-        # finished edges carry their photos as little thumbnails
-        ts = max(0.45, min(0.75, z * 0.8))
-        for k in range(i):
-            a, b = (idx.get(n, 0) for n in ctx.link_names(k))
-            pa, pb = pos[("p", a)], pos[("p", b)]
-            ctx.paste(base, thumb(k), pa[0] + (pb[0] - pa[0]) * 0.5, pa[1] + (pb[1] - pa[1]) * 0.5, scale=ts,
-                      nearest=False)
-
-        # tethers: node A and node B each run a line down into their own face in the photo
-        k_in = ctx.ease(max(0.0, min(1.0, local / 0.3)))
-        tk = ctx.ease(max(0.0, min(1.0, (local - 0.15) / 0.35)))
-        for role, k, col in (("a", ia, PATH), ("b", ib, HOT if revealed else (150, 160, 190))):
-            nx, ny = pos[("p", k)]
-            fx = face_x(i, role)
-            ex, ey = nx + (fx - nx) * tk, ny + (PH_Y0 - ny) * tk
-            if tk > 0.02:
-                d.line([(nx, ny), (ex, ey)], fill=tuple(int(c * 0.4 + b * 0.6) for c, b in zip(col, BG)), width=10)
-                d.line([(nx, ny), (ex, ey)], fill=col, width=4)
-                d.ellipse([ex - 10, ey - 10, ex + 10, ey + 10], fill=col)
-
-        # path nodes (faces only: the names live under the photo)
-        ns = max(0.6, min(1.05, z * 1.05))
-        for k in sorted(exists):
-            nm = people[k]
-            x, y = pos[("p", k)]
-            st_ = "face"
-            s = ns
-            if k == ib:
-                st_ = "hot" if revealed else "q"
+        ew2 = max(4, int(9 * z))
+        # the ghost "?" node further down the web and its dashed stub (where the chain goes next)
+        if not last:
+            g = scr(CC[i + 1])
+            ga = min(1.0, max(0.0, (local - FLY) / 0.4)) if i > 0 else min(1.0, local / 0.4)
+            if on(g, 600) and ga > 0:
+                pts = [scr(p) for p in edge_pts(i + 1)]
                 if revealed:
-                    s *= 1 + 0.3 * math.sin(math.pi * min(1.0, (local - rv) / 0.3))
-                    if last:
-                        s *= 1 + 0.35 * ctx.ease(min(1.0, (local - rv) / 0.4))
-                else:
-                    s *= 1 + 0.04 * math.sin(tt * 8)
-            elif fin:
-                st_ = "hot"
-            ctx.paste(base, NODE[(nm, st_)], x, y, scale=s, nearest=False)
+                    for k in range(0, len(pts) - 1, 2):
+                        d.line([pts[k], pts[k + 1]], fill=(110, 122, 160), width=max(3, int(5 * z)))
+                ctx.paste(base, GHOST, g[0], g[1], scale=z, alpha=0.85 * ga, nearest=False)
+        # edges between the cards already reached
+        for k in range(1, i + 1):
+            pts = edge_pts(k)
+            if on(scr(pts[0]), 900) or on(scr(pts[-1]), 900):
+                edge(pts, PATH, ew2)
 
-        # Buh rides the tip of the new edge toward B, then hops beside the node
-        ub = 0.2 + 0.6 * u
-        bx, by = pa_[0] + (pb_[0] - pa_[0]) * ub, pa_[1] + (pb_[1] - pa_[1]) * ub
+        # the cards (photo nodes): earlier ones, then this one
+        for k in range(0, i + 1):
+            c = scr(CC[k])
+            if not on(c, CH):
+                continue
+            stt = "done" if k < i else ("rev" if revealed else "cur")
+            ps = z
+            if k == i and revealed and local - rv < 0.25:
+                ps *= 1 + 0.025 * math.sin(math.pi * (local - rv) / 0.25)
+            ctx.paste(base, card(k, stt), c[0], c[1], scale=ps, nearest=False)
+            # medallions: A over the card, B under it
+            ka, kb = ctx.link_names(k)
+            kc = CALM if calm(k) else PATH
+            pa = scr(med_a(k))
+            ctx.paste(base, medal(ka, kc), pa[0], pa[1], scale=z, nearest=False)
+            pb = scr(med_b(k))
+            if k < i or revealed:
+                colb = CALM if calm(k) else (HOT if k == i else PATH)
+                s_ = z
+                if k == i and local - rv < 0.3:
+                    s_ *= 1 + 0.3 * math.sin(math.pi * (local - rv) / 0.3)
+                ctx.paste(base, medal(kb, colb), pb[0], pb[1], scale=s_, nearest=False)
+            else:
+                ctx.paste(base, medal(None, (150, 160, 190)), pb[0], pb[1], scale=z * (1 + 0.04 * math.sin(tt * 8)),
+                          nearest=False)
+
+        # Buh, flying along the edge between cards, then perched by the medallions
+        (wx, wy), flying = buh_world(seg, local)
+        bx, by = scr((wx, wy))
         expr, squash = "happy", 0.0
         if revealed:
             ar = local - rv
             expr = "shock" if ar < 0.5 else "smug"
             squash = 0.25 * math.sin(math.pi * min(1.0, ar / 0.3)) if ar < 0.3 else 0.0
-        bob = 6 * abs(math.sin(tt * 5))
-        look = 1 if pb_[0] >= pa_[0] else -1
-        ctx.paste_pin(base, ctx.pin_sprite(expr, 6 * math.sin(tt * 3), squash, look, scale=3), bx, by - bob + 10)
+        bob = 0.0 if flying else 5 * abs(math.sin(tt * 4))
+        tilt = 8 * math.sin(tt * 9) if flying else 4 * math.sin(tt * 3)
+        spr = ctx.pin_sprite(expr, tilt, squash, 1 if bx < SX + 300 else -1, scale=3)
+        tip = max(by - bob, 240 + spr.height * 0.93)          # never under the title band
+        ctx.paste_pin(base, spr, max(70.0, min(ctx.W - 60.0, bx)), tip)
 
-        # the photo panel: always on screen, cross-fading from the last link's photo
-        hy = PH_Y0 + PH / 2
-        if i > 0 and k_in < 1 and not ctx.C.fj["links"][i - 1].get("lineage"):
-            ctx.paste(base, card(i - 1, True), ctx.CX, hy, nearest=False)
-            ctx.paste(base, card(i, revealed), ctx.CX, hy, alpha=k_in, nearest=False)
-        elif i == 0 and k_in < 1:
-            ctx.paste(base, card(i, revealed), ctx.CX, hy + 50 * (1 - k_in), scale=0.94 + 0.06 * k_in, alpha=k_in,
-                      nearest=False)
-        else:
-            ps = 1 + (0.03 * math.sin(math.pi * (local - rv) / 0.25) if revealed and local - rv < 0.25 else 0)
-            ctx.paste(base, card(i, revealed), ctx.CX, hy, scale=ps, nearest=False)
-
-        # name tags under each face
-        ta = tag(an, ctx.CYAN)
-        tb = tag(bn, ctx.YELLOW) if revealed else ctx.pixel_tag("? ? ?", (150, 160, 190), 28)
-        for im, x, y in place_tags([(ta, face_x(i, "a")), (tb, face_x(i, "b"))]):
-            ctx.paste(base, im, x, y, alpha=k_in)
+        # a soft band behind the captions, so the moving web never fights them
+        if "band" not in _cards:
+            bh = 150
+            a = (np.clip(1 - np.abs(np.linspace(-1, 1, bh)) ** 3, 0, 1) * 165).astype(np.uint8)
+            band = np.zeros((bh, ctx.W, 4), np.uint8)
+            band[..., :3] = BG
+            band[..., 3] = a[:, None]
+            _cards["band"] = Image.fromarray(band)
+        base.alpha_composite(_cards["band"], (0, int(CAP_Y - 75)))
 
         ctx.header(base, i)
-        ctx.connected(base, seg, tt, y=PH_Y0 + PH * 0.8)
+        ctx.connected(base, seg, tt, y=1302)
         seg["cap"].draw(base, tt, y=CAP_Y)
         return base
 
