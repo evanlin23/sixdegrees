@@ -47,7 +47,9 @@
         "place": "Sudbury Hall, Derbyshire",
         "lat": 52.887,
         "lon": -1.764
-      }
+      },
+      "a_face": 5,
+      "b_face": 0
     },
     {
       "a": "Venus",
@@ -61,7 +63,19 @@
         "place": "Rome mint",
         "lat": 41.893,
         "lon": 12.483
-      }
+      },
+      "b_face": [
+        80,
+        50,
+        105,
+        165
+      ],
+      "a_face": [
+        334,
+        37,
+        25,
+        32
+      ]
     },
     {
       "a": "Julius Caesar",
@@ -76,22 +90,22 @@
           },
           {
             "name": "Augustus",
-            "file": "File:Augustus of Prima Porta %28inv. 2290%29.jpg",
+            "file": "File:Augustus of Prima Porta (inv. 2290).jpg",
             "label": "1st emperor"
           },
           {
             "name": "Tiberius",
-            "file": "File:%28Venice%29 Tiberius Portrait of the %27Imperium Maius%27 type in Museo Archeologico Nazionale.jpg",
+            "file": "File:(Venice) Tiberius Portrait of the 'Imperium Maius' type in Museo Archeologico Nazionale.jpg",
             "label": "2nd"
           },
           {
             "name": "Caligula",
-            "file": "File:Portrait Head of Caligula - Getty Museum %2872.AA.155%29.jpg",
+            "file": "File:Portrait Head of Caligula - Getty Museum (72.AA.155).jpg",
             "label": "3rd"
           },
           {
             "name": "Claudius",
-            "file": "File:Ch%C3%A2teau de Versailles%2C salon de la paix%2C buste d%27empereur romain %28Claude%29.jpg",
+            "file": "File:Château de Versailles, salon de la paix, buste d'empereur romain (Claude).jpg",
             "label": "4th"
           },
           {
@@ -101,7 +115,7 @@
           },
           {
             "name": "Galba",
-            "file": "File:Stockholm - Antikengalerie 4 - B%C3%BCste Kaiser Galba.jpg",
+            "file": "File:Stockholm - Antikengalerie 4 - Büste Kaiser Galba.jpg",
             "label": "6th"
           },
           {
@@ -111,12 +125,12 @@
           },
           {
             "name": "Vitellius",
-            "file": "File:Aulus Vitellius %28MRABASF Matritum%29 01.jpg",
+            "file": "File:Aulus Vitellius (MRABASF Matritum) 01.jpg",
             "label": "8th"
           },
           {
             "name": "Vespasian",
-            "file": "File:Head of Vespasianus in Palazzo Massimo %28Rome%29.jpg",
+            "file": "File:Head of Vespasianus in Palazzo Massimo (Rome).jpg",
             "label": "9th"
           },
           {
@@ -166,7 +180,7 @@
           },
           {
             "name": "Pertinax",
-            "file": "File:Alba Iulia National Museum of the Union 2011 - Possible Statue of Roman Emperor Pertinax Close Up%2C Apulum.JPG",
+            "file": "File:Alba Iulia National Museum of the Union 2011 - Possible Statue of Roman Emperor Pertinax Close Up, Apulum.JPG",
             "label": "19th"
           },
           {
@@ -176,7 +190,7 @@
           },
           {
             "name": "Septimius Severus",
-            "file": "File:SeptimeS%C3%A9v%C3%A8re.jpg",
+            "file": "File:SeptimeSévère.jpg",
             "label": "21st"
           },
           {
@@ -196,17 +210,17 @@
           },
           {
             "name": "Diadumenian",
-            "file": "File:Aureus Diadumenianus %28obverse%29.jpg",
+            "file": "File:Aureus Diadumenianus (obverse).jpg",
             "label": "25th"
           },
           {
             "name": "Elagabalus",
-            "file": "File:Bust of Elagabalus - Palazzo Nuovo - Musei Capitolini - Rome 2016 %282%29.jpg",
+            "file": "File:Bust of Elagabalus - Palazzo Nuovo - Musei Capitolini - Rome 2016 (2).jpg",
             "label": "26th"
           },
           {
             "name": "Severus Alexander",
-            "file": "File:0 Alexandre S%C3%A9v%C3%A8re - MR 408 - Louvre %281b%29.JPG",
+            "file": "File:0 Alexandre Sévère - MR 408 - Louvre (1b).JPG",
             "label": "27th"
           },
           {
@@ -256,12 +270,12 @@
           },
           {
             "name": "Decius",
-            "file": "File:Bust of Decius - Palazzo Nuovo - Musei Capitolini - Rome 2016 %282%29.jpg",
+            "file": "File:Bust of Decius - Palazzo Nuovo - Musei Capitolini - Rome 2016 (2).jpg",
             "label": "37th"
           },
           {
             "name": "Volusian",
-            "file": "File:Aureus Volusianus %28obverse%29.jpg",
+            "file": "File:Aureus Volusianus (obverse).jpg",
             "label": "38th"
           },
           {
@@ -276,7 +290,7 @@
           },
           {
             "name": "Trebonianus Gallus",
-            "file": "File:Archeologico di Firenze%2C ritratto di treboniano gallo 01.JPG",
+            "file": "File:Archeologico di Firenze, ritratto di treboniano gallo 01.JPG",
             "label": "41st"
           },
           {
@@ -301,7 +315,7 @@
           },
           {
             "name": "Saloninus",
-            "file": "File:Aureus Saloninus Caesar %28obverse%29.jpg",
+            "file": "File:Aureus Saloninus Caesar (obverse).jpg",
             "label": "46th"
           },
           {
@@ -321,7 +335,7 @@
           },
           {
             "name": "Aurelian",
-            "file": "File:Busto di Claudio II il Gotico%2C Brescia%2C Santa Giulia.jpg",
+            "file": "File:Busto di Claudio II il Gotico, Brescia, Santa Giulia.jpg",
             "label": "50th"
           },
           {
@@ -356,12 +370,12 @@
           },
           {
             "name": "Diocletian",
-            "file": "File:Istanbul - Museo archeol. - Diocleziano %28284-305 d.C.%29 - Foto G. Dall%27Orto 28-5-2006.jpg",
+            "file": "File:Istanbul - Museo archeol. - Diocleziano (284-305 d.C.) - Foto G. Dall'Orto 28-5-2006.jpg",
             "label": "57th"
           },
           {
             "name": "Maximian",
-            "file": "File:MSR - T%C3%AAte de l%27empreur Maximien Hercule - Inv 34 b %28cropped%29.jpg",
+            "file": "File:MSR - Tête de l'empreur Maximien Hercule - Inv 34 b (cropped).jpg",
             "label": "58th"
           },
           {
@@ -406,7 +420,14 @@
         "place": "Raphael Rooms, Vatican City",
         "lat": 41.9067,
         "lon": 12.4547
-      }
+      },
+      "a_face": [
+        905,
+        655,
+        130,
+        120
+      ],
+      "b_face": 8
     },
     {
       "a": "Pope Sylvester I",
@@ -426,12 +447,12 @@
           },
           {
             "name": "Julius I",
-            "file": "File:Pope Julius I %E2%80%93 Santa Maria in Trastevere.jpg",
+            "file": "File:Pope Julius I – Santa Maria in Trastevere.jpg",
             "label": "35th"
           },
           {
             "name": "Liberius",
-            "file": "File:Matthias Gr%C3%BCnewald - Establishment of the Santa Maria Maggiore in Rome %28detail%29 - WGA10780.jpg",
+            "file": "File:Matthias Grünewald - Establishment of the Santa Maria Maggiore in Rome (detail) - WGA10780.jpg",
             "label": "36th"
           },
           {
@@ -441,7 +462,7 @@
           },
           {
             "name": "Siricius",
-            "file": "File:Pormenor do Ret%C3%A1bulo de Santa Auta %28Papa Cir%C3%ADaco Aben%C3%A7oa Santa Auta e o Pr%C3%ADncipe Conan%29%2C Museu Nacional de Arte Antiga.png",
+            "file": "File:Pormenor do Retábulo de Santa Auta (Papa Ciríaco Abençoa Santa Auta e o Príncipe Conan), Museu Nacional de Arte Antiga.png",
             "label": "38th"
           },
           {
@@ -451,12 +472,12 @@
           },
           {
             "name": "Innocent I",
-            "file": "File:Fresco of Pope Innocent I - Basilica of Saint Paul Outside the Walls %28Before 1823%29.png",
+            "file": "File:Fresco of Pope Innocent I - Basilica of Saint Paul Outside the Walls (Before 1823).png",
             "label": "40th"
           },
           {
             "name": "Zosimus",
-            "file": "File:Pope Zosimus portrait %E2%80%93 Nuremberg chronicles %28f 133v 1%29.jpg",
+            "file": "File:Pope Zosimus portrait – Nuremberg chronicles (f 133v 1).jpg",
             "label": "41st"
           },
           {
@@ -476,17 +497,17 @@
           },
           {
             "name": "Leo I",
-            "file": "File:Herrera mozo San Le%C3%B3n magno Lienzo. %C3%93valo. 164 x 105 cm. Museo del Prado.png",
+            "file": "File:Herrera mozo San León magno Lienzo. Óvalo. 164 x 105 cm. Museo del Prado.png",
             "label": "45th"
           },
           {
             "name": "Hilarius",
-            "file": "File:Nuremberg chronicles - Hilarius%2C Pope %28CXXXVIv%29.jpg",
+            "file": "File:Nuremberg chronicles - Hilarius, Pope (CXXXVIv).jpg",
             "label": "46th"
           },
           {
             "name": "Simplicius",
-            "file": "File:Pope Simplicius %28Nuremberg Chronicles%29.png",
+            "file": "File:Pope Simplicius (Nuremberg Chronicles).png",
             "label": "47th"
           },
           {
@@ -506,7 +527,7 @@
           },
           {
             "name": "Symmachus",
-            "file": "File:Pope Symmachus - Apse mosaic - Sant%27Agnese fuori le mura - Rome 2016.jpg",
+            "file": "File:Pope Symmachus - Apse mosaic - Sant'Agnese fuori le mura - Rome 2016.jpg",
             "label": "51st"
           },
           {
@@ -521,7 +542,7 @@
           },
           {
             "name": "Felix IV",
-            "file": "File:Mosaic of Felix IV in Santi Cosma e Damiano%2C Rome%2C Italy %28cropped%2Crotated%29.jpg",
+            "file": "File:Mosaic of Felix IV in Santi Cosma e Damiano, Rome, Italy (cropped,rotated).jpg",
             "label": "54th"
           },
           {
@@ -556,7 +577,7 @@
           },
           {
             "name": "John III",
-            "file": "File:Ioannes III. Giovanni III%2C santo e papa %28LXIII.%29.jpg",
+            "file": "File:Ioannes III. Giovanni III, santo e papa (LXIII.).jpg",
             "label": "61st"
           },
           {
@@ -591,17 +612,17 @@
           },
           {
             "name": "Adeodatus I",
-            "file": "File:Adeodatus. Adeodato I %E2%80%93 cropped.jpg",
+            "file": "File:Adeodatus. Adeodato I – cropped.jpg",
             "label": "68th"
           },
           {
             "name": "Boniface V",
-            "file": "File:BBoniface V %28smaller%29.jpg",
+            "file": "File:BBoniface V (smaller).jpg",
             "label": "69th"
           },
           {
             "name": "Honorius I",
-            "file": "File:Pope Honorius I - Apse mosaic - Sant%27Agnese fuori le mura - Rome 2016.jpg",
+            "file": "File:Pope Honorius I - Apse mosaic - Sant'Agnese fuori le mura - Rome 2016.jpg",
             "label": "70th"
           },
           {
@@ -611,7 +632,7 @@
           },
           {
             "name": "John IV",
-            "file": "File:Murner History Cod Karlsruhe 3117 %28crop%29.jpg",
+            "file": "File:Murner History Cod Karlsruhe 3117 (crop).jpg",
             "label": "72nd"
           },
           {
@@ -621,12 +642,12 @@
           },
           {
             "name": "Martin I",
-            "file": "File:14 Chiesa di Santa Maria della Consolazione %28Todi%29%2C el papa Mart%C3%AD I%2C de Carlo Laurenti.jpg",
+            "file": "File:14 Chiesa di Santa Maria della Consolazione (Todi), el papa Martí I, de Carlo Laurenti.jpg",
             "label": "74th"
           },
           {
             "name": "Eugene I",
-            "file": "File:Papa Eugenio I %281%29.jpg",
+            "file": "File:Papa Eugenio I (1).jpg",
             "label": "75th"
           },
           {
@@ -646,7 +667,7 @@
           },
           {
             "name": "Agatho",
-            "file": "File:Pope Agatho %28Menologion of Basil II%29 - cropped.jpg",
+            "file": "File:Pope Agatho (Menologion of Basil II) - cropped.jpg",
             "label": "79th"
           },
           {
@@ -661,7 +682,7 @@
           },
           {
             "name": "John V",
-            "file": "File:Ioannes V. Giovanni V %E2%80%93 cropped.jpg",
+            "file": "File:Ioannes V. Giovanni V – cropped.jpg",
             "label": "82nd"
           },
           {
@@ -676,7 +697,7 @@
           },
           {
             "name": "John VI",
-            "file": "File:Ioannes VI. Giovanni VI%2C papa %28LXXXVII.%29.jpg",
+            "file": "File:Ioannes VI. Giovanni VI, papa (LXXXVII.).jpg",
             "label": "85th"
           },
           {
@@ -706,37 +727,37 @@
           },
           {
             "name": "Zachary",
-            "file": "File:Et%C3%A0 di papa Zaccaria%2C cappella del primicerius Teodoro%2C Madonna in trono con Theodoto e la moglie%2C 741-752 %2809%29.jpg",
+            "file": "File:Età di papa Zaccaria, cappella del primicerius Teodoro, Madonna in trono con Theodoto e la moglie, 741-752 (09).jpg",
             "label": "91st"
           },
           {
             "name": "Stephen II",
-            "file": "File:Pape Etienne II %28cropped%29.jpg",
+            "file": "File:Pape Etienne II (cropped).jpg",
             "label": "92nd"
           },
           {
             "name": "Paul I",
-            "file": "File:Paus Paulus I Paulus primus %28titel op object%29 Liber Chronicarum %28serietitel%2C RP-P-2016-49-56-10%29.jpg",
+            "file": "File:Paus Paulus I Paulus primus (titel op object) Liber Chronicarum (serietitel, RP-P-2016-49-56-10).jpg",
             "label": "93rd"
           },
           {
             "name": "Stephen III",
-            "file": "File:Pope Stephen III %282%29.jpg",
+            "file": "File:Pope Stephen III (2).jpg",
             "label": "94th"
           },
           {
             "name": "Adrian I",
-            "file": "File:Zecca di roma%2C denaro di adriano I%2C 772-795%2C in argento %28bibl. apostolica vaticana%29.jpg",
+            "file": "File:Zecca di roma, denaro di adriano I, 772-795, in argento (bibl. apostolica vaticana).jpg",
             "label": "95th"
           },
           {
             "name": "Leo III",
-            "file": "File:Pope Leo III %E2%80%93 Triclinium Leoninum.jpg",
+            "file": "File:Pope Leo III – Triclinium Leoninum.jpg",
             "label": "96th"
           },
           {
             "name": "Stephen IV",
-            "file": "File:Pope Stephen IV %282%29.jpg",
+            "file": "File:Pope Stephen IV (2).jpg",
             "label": "97th"
           },
           {
@@ -756,7 +777,7 @@
           },
           {
             "name": "Gregory IV",
-            "file": "File:Gregory-IV %28cropped%29.jpg",
+            "file": "File:Gregory-IV (cropped).jpg",
             "label": "101st"
           },
           {
@@ -766,12 +787,12 @@
           },
           {
             "name": "Leo IV",
-            "file": "File:PopeLeoIV %28cropped%29.jpg",
+            "file": "File:PopeLeoIV (cropped).jpg",
             "label": "103rd"
           },
           {
             "name": "Pope Joan",
-            "file": "File:Papesse Jeanne BnF Fran%C3%A7ais 599 fol. 88.jpg",
+            "file": "File:Papesse Jeanne BnF Français 599 fol. 88.jpg",
             "label": "104th"
           },
           {
@@ -801,12 +822,12 @@
           },
           {
             "name": "Adrian III",
-            "file": "File:Adrianus III %28Saint Paul Outside the Walls%29.png",
+            "file": "File:Adrianus III (Saint Paul Outside the Walls).png",
             "label": "110th"
           },
           {
             "name": "Stephen V",
-            "file": "File:Pope Stephen V %282%29.jpg",
+            "file": "File:Pope Stephen V (2).jpg",
             "label": "111th"
           },
           {
@@ -856,12 +877,12 @@
           },
           {
             "name": "Anastasius III",
-            "file": "File:Stato della chiesa%2C denaro di anastasio III%2C 911-913.JPG",
+            "file": "File:Stato della chiesa, denaro di anastasio III, 911-913.JPG",
             "label": "121st"
           },
           {
             "name": "Lando",
-            "file": "File:Paus Lando Lando %28titel op object%29 Liber Chronicarum %28serietitel%29%2C RP-P-2016-49-64-7.svg",
+            "file": "File:Paus Lando Lando (titel op object) Liber Chronicarum (serietitel), RP-P-2016-49-64-7.svg",
             "label": "122nd"
           },
           {
@@ -876,7 +897,7 @@
           },
           {
             "name": "Stephen VII",
-            "file": "File:Pope Stephen VII %282%29.jpg",
+            "file": "File:Pope Stephen VII (2).jpg",
             "label": "125th"
           },
           {
@@ -906,7 +927,7 @@
           },
           {
             "name": "John XII",
-            "file": "File:Otto I begegnet Papst Johannes XII %28cropped%29.jpg",
+            "file": "File:Otto I begegnet Papst Johannes XII (cropped).jpg",
             "label": "131st"
           },
           {
@@ -921,7 +942,7 @@
           },
           {
             "name": "John XIII",
-            "file": "File:Johannes XIII %E2%80%93 Nuremberg chronicles %28f 178v 1%29.jpg",
+            "file": "File:Johannes XIII – Nuremberg chronicles (f 178v 1).jpg",
             "label": "134th"
           },
           {
@@ -951,7 +972,7 @@
           },
           {
             "name": "Sylvester II",
-            "file": "File:Meister der Reichenauer Schule 002 %28cropped%29.jpg",
+            "file": "File:Meister der Reichenauer Schule 002 (cropped).jpg",
             "label": "140th"
           },
           {
@@ -966,7 +987,7 @@
           },
           {
             "name": "Sergius IV",
-            "file": "File:Sergius IV %28Saint Paul Outside the Walls%29.png",
+            "file": "File:Sergius IV (Saint Paul Outside the Walls).png",
             "label": "143rd"
           },
           {
@@ -976,17 +997,17 @@
           },
           {
             "name": "John XIX",
-            "file": "File:Bari Exultet roll 1 - emperors and pope %28pope1%29 %28cropped%29.jpg",
+            "file": "File:Bari Exultet roll 1 - emperors and pope (pope1) (cropped).jpg",
             "label": "145th"
           },
           {
             "name": "Benedict IX",
-            "file": "File:Benedictus IX %28Abbey of Saint Mary of Grottaferrata%29.png",
+            "file": "File:Benedictus IX (Abbey of Saint Mary of Grottaferrata).png",
             "label": "146th"
           },
           {
             "name": "Sylvester III",
-            "file": "File:Pope Sylvester III %E2%80%93 Nuremberg chronicles f 188v 1.jpg",
+            "file": "File:Pope Sylvester III – Nuremberg chronicles f 188v 1.jpg",
             "label": "147th"
           },
           {
@@ -1011,12 +1032,12 @@
           },
           {
             "name": "Victor II",
-            "file": "File:Gebhard I Bischof von Eichst%C3%A4tt%2C als Victor II Papst.JPG",
+            "file": "File:Gebhard I Bischof von Eichstätt, als Victor II Papst.JPG",
             "label": "152nd"
           },
           {
             "name": "Stephen IX",
-            "file": "File:Paus Stefanus IX Stephanus nonus %28titel op object%29 Liber Chronicarum %28serietitel%29%2C RP-P-2016-49-67-5.svg",
+            "file": "File:Paus Stefanus IX Stephanus nonus (titel op object) Liber Chronicarum (serietitel), RP-P-2016-49-67-5.svg",
             "label": "153rd"
           },
           {
@@ -1026,7 +1047,7 @@
           },
           {
             "name": "Nicholas II",
-            "file": "File:Robert Guiscard claimed as a Duke %28Detail of Nicholas II%29.jpg",
+            "file": "File:Robert Guiscard claimed as a Duke (Detail of Nicholas II).jpg",
             "label": "155th"
           },
           {
@@ -1036,7 +1057,7 @@
           },
           {
             "name": "Gregory VII",
-            "file": "File:Gregorius %28Vita Gregorii VII%29.jpg",
+            "file": "File:Gregorius (Vita Gregorii VII).jpg",
             "label": "157th"
           },
           {
@@ -1046,12 +1067,12 @@
           },
           {
             "name": "Urban II",
-            "file": "File:Urbano II in consacrazione de l%27altare del monastero di Cluny %28detail%29.png",
+            "file": "File:Urbano II in consacrazione de l'altare del monastero di Cluny (detail).png",
             "label": "159th"
           },
           {
             "name": "Paschal II",
-            "file": "File:Filip1Frr %28cropped%29.jpg",
+            "file": "File:Filip1Frr (cropped).jpg",
             "label": "160th"
           },
           {
@@ -1071,7 +1092,7 @@
           },
           {
             "name": "Innocent II",
-            "file": "File:Pope Innocent II %E2%80%93 Santa Maria in Trastevere.jpg",
+            "file": "File:Pope Innocent II – Santa Maria in Trastevere.jpg",
             "label": "164th"
           },
           {
@@ -1096,12 +1117,12 @@
           },
           {
             "name": "Adrian IV",
-            "file": "File:Adrian IV%2C servus servorum dei %28cropped%29.png",
+            "file": "File:Adrian IV, servus servorum dei (cropped).png",
             "label": "169th"
           },
           {
             "name": "Alexander III",
-            "file": "File:B alexander III2 %28cropped%29.jpg",
+            "file": "File:B alexander III2 (cropped).jpg",
             "label": "170th"
           },
           {
@@ -1116,27 +1137,27 @@
           },
           {
             "name": "Gregory VIII",
-            "file": "File:Gregorius VIII%2C PA05322.jpg",
+            "file": "File:Gregorius VIII, PA05322.jpg",
             "label": "173rd"
           },
           {
             "name": "Clement III",
-            "file": "File:SpeculumGrandmontis %28Pope Clement III%29.jpg",
+            "file": "File:SpeculumGrandmontis (Pope Clement III).jpg",
             "label": "174th"
           },
           {
             "name": "Celestine III",
-            "file": "File:Coelestin III %28cropped 2%29.png",
+            "file": "File:Coelestin III (cropped 2).png",
             "label": "175th"
           },
           {
             "name": "Innocent III",
-            "file": "File:Pope Innocent III %28Monastery of Subiaco%29.jpg",
+            "file": "File:Pope Innocent III (Monastery of Subiaco).jpg",
             "label": "176th"
           },
           {
             "name": "Honorius III",
-            "file": "File:Interior of Santi Giovanni e Paolo %28Venice%29 - Honorius III by Leandro Bassano.jpg",
+            "file": "File:Interior of Santi Giovanni e Paolo (Venice) - Honorius III by Leandro Bassano.jpg",
             "label": "177th"
           },
           {
@@ -1146,7 +1167,7 @@
           },
           {
             "name": "Innocent IV",
-            "file": "File:The Council of Lyons excommunicating Frederic II %28cropped%29.png",
+            "file": "File:The Council of Lyons excommunicating Frederic II (cropped).png",
             "label": "180th"
           },
           {
@@ -1156,17 +1177,17 @@
           },
           {
             "name": "Urban IV",
-            "file": "File:Taddeo di bartolo%2C s. tommaso d%27aquino presenta la sua liturgia del corpus christi a urbano IV%2C 1403 ca. %28cropped%29 %28cropped%29.JPG",
+            "file": "File:Taddeo di bartolo, s. tommaso d'aquino presenta la sua liturgia del corpus christi a urbano IV, 1403 ca. (cropped) (cropped).JPG",
             "label": "182nd"
           },
           {
             "name": "Clement IV",
-            "file": "File:Tour Ferrande - Cl%C3%A9ment IV %26 Charles 1er de Sicile %28cropped%29.JPG",
+            "file": "File:Tour Ferrande - Clément IV & Charles 1er de Sicile (cropped).JPG",
             "label": "183rd"
           },
           {
             "name": "Gregory X",
-            "file": "File:Gregory X%2C Buffalmacco%2C Arezzo Cathedral.jpg",
+            "file": "File:Gregory X, Buffalmacco, Arezzo Cathedral.jpg",
             "label": "184th"
           },
           {
@@ -1181,17 +1202,17 @@
           },
           {
             "name": "John XXI",
-            "file": "File:Papa Jo%C3%A3o XXI - Galeria dos Arcebispos de Braga.png",
+            "file": "File:Papa João XXI - Galeria dos Arcebispos de Braga.png",
             "label": "187th"
           },
           {
             "name": "Nicholas III",
-            "file": "File:Scuola romana%2C affreschi del sancta sanctorum%2C 1280 ca.%2C Niccol%C3%B2 III dona la chiesa ai ss. pietro e paolo 03 %28cropped%29 %28cropped%29.jpg",
+            "file": "File:Scuola romana, affreschi del sancta sanctorum, 1280 ca., Niccolò III dona la chiesa ai ss. pietro e paolo 03 (cropped) (cropped).jpg",
             "label": "188th"
           },
           {
             "name": "Martin IV",
-            "file": "File:Louis9 Canonization %28cropped%29.jpg",
+            "file": "File:Louis9 Canonization (cropped).jpg",
             "label": "189th"
           },
           {
@@ -1211,7 +1232,7 @@
           },
           {
             "name": "Boniface VIII",
-            "file": "File:Giotto%2C bonifacio VIII proclama il giubileo del 1300%2C frammento 02.jpg",
+            "file": "File:Giotto, bonifacio VIII proclama il giubileo del 1300, frammento 02.jpg",
             "label": "193rd"
           },
           {
@@ -1231,12 +1252,12 @@
           },
           {
             "name": "Benedict XII",
-            "file": "File:Beno%C3%AEt XII Paolo de Siena 1341 crypte de St Pierre de Rome.jpg",
+            "file": "File:Benoît XII Paolo de Siena 1341 crypte de St Pierre de Rome.jpg",
             "label": "197th"
           },
           {
             "name": "Clement VI",
-            "file": "File:01 Cl%C3%A9ment VI %28Fresque de la chapelle Saint-Martial du palais des papes%29.jpg",
+            "file": "File:01 Clément VI (Fresque de la chapelle Saint-Martial du palais des papes).jpg",
             "label": "198th"
           },
           {
@@ -1246,12 +1267,12 @@
           },
           {
             "name": "Urban V",
-            "file": "File:Simone dei crocifissi%2C urbano V%2C 1375 ca.%2C forse dalla cattedrale di s. pietro 01 %28cropped%29.jpg",
+            "file": "File:Simone dei crocifissi, urbano V, 1375 ca., forse dalla cattedrale di s. pietro 01 (cropped).jpg",
             "label": "200th"
           },
           {
             "name": "Gregory XI",
-            "file": "File:Duke of Anjou leading Pope Gregory XI to the palace at Avignon%2C while cardinals follow %28cropped%29.png",
+            "file": "File:Duke of Anjou leading Pope Gregory XI to the palace at Avignon, while cardinals follow (cropped).png",
             "label": "201st"
           },
           {
@@ -1261,27 +1282,27 @@
           },
           {
             "name": "Boniface IX",
-            "file": "File:Cosmati%2C bonifacio IX inginocchiato%2C 1390-1410 ca %28cropped%29.jpg",
+            "file": "File:Cosmati, bonifacio IX inginocchiato, 1390-1410 ca (cropped).jpg",
             "label": "203rd"
           },
           {
             "name": "Innocent VII",
-            "file": "File:Nuremberg Chronicles f 235v 1 %28Innocentius VII%29.jpg",
+            "file": "File:Nuremberg Chronicles f 235v 1 (Innocentius VII).jpg",
             "label": "204th"
           },
           {
             "name": "Gregory XII",
-            "file": "File:Joos Van Wassenhove e Pedro Berruguete %E2%80%93 San Gregorio %E2%80%93 Galleria Nazionale delle Marche.jpg",
+            "file": "File:Joos Van Wassenhove e Pedro Berruguete – San Gregorio – Galleria Nazionale delle Marche.jpg",
             "label": "205th"
           },
           {
             "name": "Martin V",
-            "file": "File:Bicci di lorenzo%2C Papa Martino V consacra la chiesa di Sant%27Egidio a Firenze%2C 1424 ca.%2C 02%28cropped%29.jpg",
+            "file": "File:Bicci di lorenzo, Papa Martino V consacra la chiesa di Sant'Egidio a Firenze, 1424 ca., 02(cropped).jpg",
             "label": "206th"
           },
           {
             "name": "Eugene IV",
-            "file": "File:Domenico di Bartolo%2C madonna della misericordia%2C 1444%2C 06%28cropped%29.jpg",
+            "file": "File:Domenico di Bartolo, madonna della misericordia, 1444, 06(cropped).jpg",
             "label": "207th"
           },
           {
@@ -1296,7 +1317,7 @@
           },
           {
             "name": "Pius II",
-            "file": "File:Pio II Pont Max %28detail%29.jpg",
+            "file": "File:Pio II Pont Max (detail).jpg",
             "label": "210th"
           },
           {
@@ -1306,17 +1327,17 @@
           },
           {
             "name": "Sixtus IV",
-            "file": "File:Pedro Berruguete%2C Portrait of Pope Sixtus IV della Rovere %28early 1500s%29%2C Cleveland Museum of Art.jpg",
+            "file": "File:Pedro Berruguete, Portrait of Pope Sixtus IV della Rovere (early 1500s), Cleveland Museum of Art.jpg",
             "label": "212th"
           },
           {
             "name": "Innocent VIII",
-            "file": "File:Ritratto di papa Innocenzo VIII %E2%80%93 Calvi dell%27Umbria.jpg",
+            "file": "File:Ritratto di papa Innocenzo VIII – Calvi dell'Umbria.jpg",
             "label": "213th"
           },
           {
             "name": "Alexander VI",
-            "file": "File:Portrait of Pope Alexander VI Borgia %28Vatican Museums - Musei Vaticani%2C Vatican%29.jpg",
+            "file": "File:Portrait of Pope Alexander VI Borgia (Vatican Museums - Musei Vaticani, Vatican).jpg",
             "label": "214th"
           },
           {
@@ -1331,22 +1352,22 @@
           },
           {
             "name": "Leo X",
-            "file": "File:Raffaello%2C ritratto di papa leone X tra i cardinali luigi de%27 rossi e giulio de%27 medici%2C 1518%2C 03.jpg",
+            "file": "File:Raffaello, ritratto di papa leone X tra i cardinali luigi de' rossi e giulio de' medici, 1518, 03.jpg",
             "label": "217th"
           },
           {
             "name": "Adrian VI",
-            "file": "File:Portrait of Pope Adrian VI %28after Jan van Scorel%29.jpg",
+            "file": "File:Portrait of Pope Adrian VI (after Jan van Scorel).jpg",
             "label": "218th"
           },
           {
             "name": "Clement VII",
-            "file": "File:El papa Clemente VII%2C por Sebastiano del Piombo.jpg",
+            "file": "File:El papa Clemente VII, por Sebastiano del Piombo.jpg",
             "label": "219th"
           },
           {
             "name": "Paul III",
-            "file": "File:Portrait of Pope Paul III Farnese %28by Titian%29 - National Museum of Capodimonte.jpg",
+            "file": "File:Portrait of Pope Paul III Farnese (by Titian) - National Museum of Capodimonte.jpg",
             "label": "220th"
           },
           {
@@ -1356,17 +1377,17 @@
           },
           {
             "name": "Marcellus II",
-            "file": "File:Portrait of Pope Marcellus II Cervini %28Vatican Museums - Musei Vaticani%2C Vatican%29.jpg",
+            "file": "File:Portrait of Pope Marcellus II Cervini (Vatican Museums - Musei Vaticani, Vatican).jpg",
             "label": "222nd"
           },
           {
             "name": "Paul IV",
-            "file": "File:Pope Paul IV %E2%80%93 Jacopino Conte %28Manner%29%2C ca. 1560.jpg",
+            "file": "File:Pope Paul IV – Jacopino Conte (Manner), ca. 1560.jpg",
             "label": "223rd"
           },
           {
             "name": "Pius IV",
-            "file": "File:Portrait of Pope Pius IV%2C three-quarter-length%2C seated at a draped table %28Circle of Scipione Pulzone%29.jpg",
+            "file": "File:Portrait of Pope Pius IV, three-quarter-length, seated at a draped table (Circle of Scipione Pulzone).jpg",
             "label": "224th"
           },
           {
@@ -1381,27 +1402,27 @@
           },
           {
             "name": "Sixtus V",
-            "file": "File:%28Albi%29 Cath%C3%A9drale Sainte-C%C3%A9cile - Tr%C3%A8sor - Portrait du pape Sixte V - PalissyIM81001477.jpg",
+            "file": "File:(Albi) Cathédrale Sainte-Cécile - Trèsor - Portrait du pape Sixte V - PalissyIM81001477.jpg",
             "label": "227th"
           },
           {
             "name": "Urban VII",
-            "file": "File:Portrait of Pope Urban VII Castagna %28Jacopo del Conte%2C Vatican Museums%29.jpg",
+            "file": "File:Portrait of Pope Urban VII Castagna (Jacopo del Conte, Vatican Museums).jpg",
             "label": "228th"
           },
           {
             "name": "Gregory XIV",
-            "file": "File:Roman School %E2%80%93 Portrait of Pope Gregory XIV %2816th Century%29.jpg",
+            "file": "File:Roman School – Portrait of Pope Gregory XIV (16th Century).jpg",
             "label": "229th"
           },
           {
             "name": "Innocent IX",
-            "file": "File:Portrait of Pope Innocent IX %28Fidenza Cathedral Museum - Museo del Duomo di Fidenza%2C Fidenza%29 %E2%80%93 edited.jpg",
+            "file": "File:Portrait of Pope Innocent IX (Fidenza Cathedral Museum - Museo del Duomo di Fidenza, Fidenza) – edited.jpg",
             "label": "230th"
           },
           {
             "name": "Clement VIII",
-            "file": "File:Papa Clemente VIII Aldobrandini %E2%80%93 Giuseppe Cesari %28cropped%29.jpg",
+            "file": "File:Papa Clemente VIII Aldobrandini – Giuseppe Cesari (cropped).jpg",
             "label": "231st"
           },
           {
@@ -1416,22 +1437,22 @@
           },
           {
             "name": "Gregory XV",
-            "file": "File:%28Albi%29 Cath%C3%A9drale Sainte-C%C3%A9cile - Tr%C3%A8sor - Portrait du pape Gr%C3%A9goire XV - PalissyIM81001477.jpg",
+            "file": "File:(Albi) Cathédrale Sainte-Cécile - Trèsor - Portrait du pape Grégoire XV - PalissyIM81001477.jpg",
             "label": "234th"
           },
           {
             "name": "Urban VIII",
-            "file": "File:Pietro da Cortona - Portrait of Urban VIII %28ca. 1624-1627%29 - Google Art Project - edited.jpg",
+            "file": "File:Pietro da Cortona - Portrait of Urban VIII (ca. 1624-1627) - Google Art Project - edited.jpg",
             "label": "235th"
           },
           {
             "name": "Innocent X",
-            "file": "File:Diego Vel%C3%A1zquez%2C Portrait du pape Innocent X%2C 1650%2C huile sur toile%2C 140 %C3%97 120 cm%2C Rome%2C Galleria Doria Pamphilj %28inv. 237%29.jpg",
+            "file": "File:Diego Velázquez, Portrait du pape Innocent X, 1650, huile sur toile, 140 × 120 cm, Rome, Galleria Doria Pamphilj (inv. 237).jpg",
             "label": "236th"
           },
           {
             "name": "Alexander VII",
-            "file": "File:Portrait of Pope Alexander VII Chigi %28by Giovanni Battista Gaulli - Baciccio%29.jpg",
+            "file": "File:Portrait of Pope Alexander VII Chigi (by Giovanni Battista Gaulli - Baciccio).jpg",
             "label": "237th"
           },
           {
@@ -1441,7 +1462,7 @@
           },
           {
             "name": "Clement X",
-            "file": "File:Portrait of Pope Clement X%2C by Giovanni Battista Gaulli %28Baciccio%29 - Metropolitan Museum of Art.jpg",
+            "file": "File:Portrait of Pope Clement X, by Giovanni Battista Gaulli (Baciccio) - Metropolitan Museum of Art.jpg",
             "label": "239th"
           },
           {
@@ -1451,17 +1472,17 @@
           },
           {
             "name": "Alexander VIII",
-            "file": "File:Portrait of Pope Alexander VIII %E2%80%93 Roman School of 17th Century %E2%80%93 %28unframed%29.jpg",
+            "file": "File:Portrait of Pope Alexander VIII – Roman School of 17th Century – (unframed).jpg",
             "label": "241st"
           },
           {
             "name": "Innocent XII",
-            "file": "File:Antonio Zanchi %E2%80%93 Papa Innocenzo XII.jpg",
+            "file": "File:Antonio Zanchi – Papa Innocenzo XII.jpg",
             "label": "242nd"
           },
           {
             "name": "Clement XI",
-            "file": "File:Pope Clement XI %E2%80%93 Pier Leone Ghezzi %28c. 1708%29.jpg",
+            "file": "File:Pope Clement XI – Pier Leone Ghezzi (c. 1708).jpg",
             "label": "243rd"
           },
           {
@@ -1476,7 +1497,7 @@
           },
           {
             "name": "Clement XII",
-            "file": "File:Agostino Masucci %E2%80%93 Portrait of Pope Clement XII%2C seated.jpg",
+            "file": "File:Agostino Masucci – Portrait of Pope Clement XII, seated.jpg",
             "label": "246th"
           },
           {
@@ -1486,17 +1507,17 @@
           },
           {
             "name": "Clement XIII",
-            "file": "File:Anton Raphael Mengs %281728-1779%29 - Portret van paus Clemens XIII %281758%29 - Bologna Pinacoteca Nazionale - 26-04-2012 9-53-03.jpg",
+            "file": "File:Anton Raphael Mengs (1728-1779) - Portret van paus Clemens XIII (1758) - Bologna Pinacoteca Nazionale - 26-04-2012 9-53-03.jpg",
             "label": "248th"
           },
           {
             "name": "Clement XIV",
-            "file": "File:Giovanni Domenico Porta %E2%80%93 Ritratto di papa Clemente XIV %28c. 1770%29.jpg",
+            "file": "File:Giovanni Domenico Porta – Ritratto di papa Clemente XIV (c. 1770).jpg",
             "label": "249th"
           },
           {
             "name": "Pius VI",
-            "file": "File:Pompeo Batoni - Ritratto di Papa Pio VI %28National Gallery of Ireland%29.jpg",
+            "file": "File:Pompeo Batoni - Ritratto di Papa Pio VI (National Gallery of Ireland).jpg",
             "label": "250th"
           },
           {
@@ -1506,12 +1527,12 @@
           },
           {
             "name": "Leo XII",
-            "file": "File:Charles Picqu%C3%A9 %E2%80%93 Portrait de L%C3%A9on XII %281828%29.jpg",
+            "file": "File:Charles Picqué – Portrait de Léon XII (1828).jpg",
             "label": "252nd"
           },
           {
             "name": "Pius VIII",
-            "file": "File:Ritratto di Papa Pio VIII%2C by Clemente Alberi.jpg",
+            "file": "File:Ritratto di Papa Pio VIII, by Clemente Alberi.jpg",
             "label": "253rd"
           },
           {
@@ -1521,47 +1542,47 @@
           },
           {
             "name": "Pius IX",
-            "file": "File:Pius IX%2C by Adolphe Braun%2C 1875.jpg",
+            "file": "File:Pius IX, by Adolphe Braun, 1875.jpg",
             "label": "255th"
           },
           {
             "name": "Leo XIII",
-            "file": "File:Papa Leone XIII %283x4 cropped%29.jpeg",
+            "file": "File:Papa Leone XIII (3x4 cropped).jpeg",
             "label": "256th"
           },
           {
             "name": "Pius X",
-            "file": "File:Pius X%2C by Ernest Walter Histed %28retouched%29.jpg",
+            "file": "File:Pius X, by Ernest Walter Histed (retouched).jpg",
             "label": "257th"
           },
           {
             "name": "Benedict XV",
-            "file": "File:Benedictus XV%2C by Nicola Perscheid%2C 1915 %28retouched%29.jpg",
+            "file": "File:Benedictus XV, by Nicola Perscheid, 1915 (retouched).jpg",
             "label": "258th"
           },
           {
             "name": "Pius XI",
-            "file": "File:Pius XI%2C by Nicola Perscheid%2C circa 1922 %28retouched%29.jpg",
+            "file": "File:Pius XI, by Nicola Perscheid, circa 1922 (retouched).jpg",
             "label": "259th"
           },
           {
             "name": "Pius XII",
-            "file": "File:Pius XII with tabard%2C by Michael Pitcairn%2C 1951 %28retouched%29.jpg",
+            "file": "File:Pius XII with tabard, by Michael Pitcairn, 1951 (retouched).jpg",
             "label": "260th"
           },
           {
             "name": "John XXIII",
-            "file": "File:Ioannes XXIII%2C by De Agostini%2C 1958%E2%80%931963.jpg",
+            "file": "File:Ioannes XXIII, by De Agostini, 1958–1963.jpg",
             "label": "261st"
           },
           {
             "name": "Paul VI",
-            "file": "File:Pope Paul VI 1969 Portrait %284x5 cropped%29.jpg",
+            "file": "File:Pope Paul VI 1969 Portrait (4x5 cropped).jpg",
             "label": "262nd"
           },
           {
             "name": "John Paul I",
-            "file": "File:Paus Johannes Paulus I %28Bestanddeelnr 929-9074%29 %28cropped%29.jpg",
+            "file": "File:Paus Johannes Paulus I (Bestanddeelnr 929-9074) (cropped).jpg",
             "label": "263rd"
           },
           {
@@ -1623,7 +1644,9 @@
         "place": "Studio 6B, New York",
         "lat": 40.7587,
         "lon": -73.9787
-      }
+      },
+      "a_face": 1,
+      "b_face": 0
     }
   ],
   "fun_fact": "Caesar's family, the Julii, claimed descent from Venus through her son Aeneas, and Caesar built a temple to Venus the Ancestress.",
