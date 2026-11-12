@@ -10,6 +10,17 @@ Thresholds (YPP): 1,000 subscribers **and** 10M valid public Shorts views in 90 
 hours in 12 months). Lower tier (fan funding only): 500 subs + 3M Shorts views in 90 days. As of 2026-11-12:
 ~67 subs, ~42k views in 28 days. So there's time to build this before applying, and the work also helps growth.
 
+## Update 2026-11-12: all-in on Hitler pairs
+Only "How is Adolf Hitler connected to X?" Shorts post for now (they're the ones growing). That raises two risks:
+1. **Inauthentic/repetitive content:** one series in one template is the pattern YouTube flags. Countered by turning on
+   9 audited presentation styles (data/style.json rotation), varying the first link out of Hitler every episode,
+   viewer-requested X's (comment becomes the hook) and the visible research in every description.
+2. **Advertiser-friendly / hate-speech policy:** historical, educational framing is allowed; glorification is not.
+   Rules: neutral wording, nothing celebratory on a Hitler link (renderer `sensitive()`), no swastika as the focus of
+   the opening frame or thumbnail, no jokes about the Holocaust or its victims, and hold hateful comments in Studio.
+   Expect some Hitler Shorts to get limited ads (yellow icon); that doesn't block YPP. Before applying, the newest
+   uploads should also include non-Hitler formats (see B below).
+
 ## Where we're exposed today
 | Signal a reviewer sees | Today | Risk |
 |---|---|---|

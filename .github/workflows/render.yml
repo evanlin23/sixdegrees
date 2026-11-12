@@ -48,6 +48,7 @@ jobs:
           mkdir -p .cache/gemini
           if git fetch -q origin tts-cache 2>/dev/null; then git --work-tree=.cache/gemini checkout origin/tts-cache -- . && git reset -q; fi
           ls .cache/gemini | wc -l
+          python -m sixdeg resplit | tail -1 || true   # re-cut cached lines with the current splitter (~4 s, no Gemini calls)
       - name: which episodes
         id: which
         run: |
