@@ -1,6 +1,8 @@
-"""Wikipedia rabbit hole: a browser shows an encyclopedia article on A; the link's photo is the infobox image and the
-narrated line is a highlighted sentence with B as a blue link. The cursor hovers it (a preview card with B's face
-pops), clicks, the page loads and slides over to B's article, which is the next link."""
+"""Rabbit hole: a browser shows an encyclopedia article on A; the link's photo is a big infobox image and the narrated
+line is a highlighted sentence that appears word by word in sync with the voice (it is the only caption: no pixel
+captions on top). B's name only appears, as a blue link, at the reveal. Buh peeks out beside the infobox and jumps
+at the reveal; the cursor glides to the link, a preview card with B's face pops, it clicks, the page loads and slides
+over to B's article, which is the next link."""
 from __future__ import annotations
 
 import math
@@ -12,7 +14,7 @@ NAME = "wiki"
 
 PAGE_Y0 = 360                     # top of the page viewport (below the browser chrome)
 SCROLL = 150                      # how far the page scrolls to bring the highlighted sentence up
-PW, PH = 830, 470                 # infobox photo
+PW, PH = 841, 640                 # infobox photo
 X0, X1 = 70, 915                  # article text column
 BLUE = (51, 102, 204)
 INKT = (32, 33, 34)
@@ -68,8 +70,21 @@ def make(ctx):
                 return m.span()
         return None
 
+    def cam(i):
+        cx, cy, sc = ctx.both_cam(i, PW, PH, 0.84)
+        return cx, cy, min(sc, 1.3)                   # never upscale a photo past ~1.3x
+
+    def para(d, text, x, y, font, fill, maxw, lh, max_lines=3):
+        for ln in wrap(text, font, maxw, max_lines):
+            d.text((x, y), ln, font=font, fill=fill)
+            y += lh
+        return y
+
+    _intro_top = {}
+
     def page(i):
-        """Static article image for link i, plus the link's word boxes (page coords)."""
+        """Static article image for link i (without the narrated sentence), the sentence's word layout
+        [(x, y, word, is_link, width)] in page coords, and the top of the sentence."""
         if i in _pages:
             return _pages[i]
         an, bn = ctx.link_names(i)
@@ -78,76 +93,89 @@ def make(ctx):
         d = ImageDraw.Draw(im)
         tf = fit(label(an), 66, X1 - X0, "ExtraBold")
         d.text((X0, 22), label(an), font=tf, fill=INKT)
-        d.text((X0, 112), f"From {SITE[:-5].capitalize()}, the free encyclopedia", font=F(24), fill=GREY)
+        d.text((X0, 112), "Rabbithole \u00b7 every page links to someone else", font=F(24), fill=GREY)
         d.line([X0, 152, X1, 152], fill=(200, 204, 209), width=2)
-        # infobox: name band, photo, caption
+        # infobox: name band and a big photo
         bx0, bx1 = X0, X1
         d.rectangle([bx0, 168, bx1, 168 + 48], fill=(234, 236, 240))
-        d.text(((bx0 + bx1) / 2, 192), label(an), font=F(30), fill=INKT, anchor="mm")
-        ph = ctx.view(i, *ctx.both_cam(i, PW, PH, 0.8), PW, PH)
-        px = int((bx0 + bx1 - PW) / 2)
-        im.alpha_composite(ph, (px, 224))
         yr = ctx.year_of(i)
-        cap = wrap(ctx.fact_of(link), F(24), PW - 30, 2)
-        cy = 224 + PH + 12
-        for ln in cap:
-            d.text(((bx0 + bx1) / 2, cy + 14), ln, font=F(24), fill=GREY, anchor="mm")
-            cy += 32
-        d.rectangle([bx0, 168, bx1, cy + 10], outline=(162, 169, 177), width=2)
-        # body: placeholder lines, the highlighted sentence with B's link, more lines
-        y = bars(d, X0, cy + 40, [845, 790])
-        sf = F(36)
+        d.text(((bx0 + bx1) / 2, 192), label(an) + (f"  \u00b7  {yr}" if yr else ""), font=F(30), fill=INKT, anchor="mm")
+        ph = ctx.view(i, *cam(i), PW, PH)
+        px = int((bx0 + bx1 - PW) / 2)
+        im.alpha_composite(ph, (px, 220))
+        cy = 220 + PH + 2
+        d.rectangle([bx0, 168, bx1, cy], outline=(162, 169, 177), width=2)
+        # a short real paragraph before the sentence: how we got to this page (never names B)
+        if i > 0:
+            intro = ctx.before_b(ctx.spec["links"][i - 1]["line"], link)
+        else:
+            intro = f"{label(an)} is where this rabbit hole starts."
+        _intro_top[i] = cy + 14
+        y = para(d, intro, X0, cy + 22, F(28, "Regular"), (64, 66, 70), X1 - X0, 38, 2) + 14
+        # the narrated sentence: laid out once (no reflow while it types), drawn per frame
+        sf = F(38)
         line = link["line"]
         sp = b_span(line, bn)
         if sp is None:                                  # B not named in the line: add a "see also" link
             line = f"{line} See also: {label(bn)}."
             sp = b_span(line, bn)
-        words, pos = [], 0
+        words = []
         for m in re.finditer(r"\S+", line):
             is_link = sp[0] <= m.start() < sp[1] or (m.start() < sp[0] < m.end())
             words.append((m.group(0), is_link))
-        lines, cur, curw = [], [], 0.0
         space = sf.getlength(" ")
+        LH = 54
+        lay, x, sent_top = [], X0, y
         for w, lk in words:
             wd = sf.getlength(w)
-            if cur and curw + space + wd > X1 - X0:
-                lines.append(cur)
-                cur, curw = [], 0.0
-            cur.append((w, lk, wd))
-            curw += (space if len(cur) > 1 else 0) + wd
-        if cur:
-            lines.append(cur)
-        boxes = []
-        y += 6
-        sent_top = y
-        LH = 52
-        for ln in lines:
-            x = X0
-            lw = sum(wd for _, _, wd in ln) + space * (len(ln) - 1)
-            d.rectangle([x - 6, y - 4, x + lw + 6, y + LH - 8], fill=HILITE)
-            for k, (w, lk, wd) in enumerate(ln):
-                # keep trailing punctuation black, only the name is blue
-                core = w.rstrip(".,;:!?") if lk else w
-                d.text((x, y), core, font=sf, fill=BLUE if lk else INKT)
-                if lk:
-                    boxes.append((x, y, x + sf.getlength(core), y + 42))
-                    if core != w:
-                        d.text((x + sf.getlength(core), y), w[len(core):], font=sf, fill=INKT)
-                x += wd + space
-            y += LH
-        y = bars(d, X0, y + 16, [820, 860, 610])
-        d.text((X0, y + 30), "Legacy", font=F(40), fill=INKT)
-        d.line([X0, y + 86, X1, y + 86], fill=(200, 204, 209), width=2)
-        bars(d, X0, y + 110, [850, 800, 845, 700, 830, 860, 520, 840, 790, 845, 600])
-        # merge the link's word boxes per line
-        merged = []
-        for b in boxes:
-            if merged and abs(merged[-1][1] - b[1]) < 2:
-                merged[-1] = (merged[-1][0], merged[-1][1], b[2], b[3])
-            else:
-                merged.append(b)
-        _pages[i] = (im, merged, sent_top)
+            if x > X0 and x + wd > X1:
+                x, y = X0, y + LH
+            lay.append((x, y, w, lk, wd))
+            x += wd + space
+        y += LH
+        # the trail so far, in small print (real names, all before B)
+        trail = " \u203a ".join(label(ctx.link_names(j)[0]) for j in range(max(0, i - 3), i + 1))
+        if i > 3:
+            trail = "\u2026 \u203a " + trail
+        d.text((X0, y + 26), "Trail", font=F(30, "ExtraBold"), fill=INKT)
+        d.line([X0, y + 70, X1, y + 70], fill=(200, 204, 209), width=2)
+        para(d, trail + " \u203a ?", X0, y + 84, F(26, "Regular"), BLUE, X1 - X0, 36, 3)
+        _pages[i] = (im, lay, sent_top)
         return _pages[i]
+
+    def n_spoken(seg, tt, n):
+        """How many of the line's n words the voice has started by tt (music-only: paced over the speech)."""
+        g = getattr(seg["cap"], "groups", None)
+        if g:
+            ws = [w for grp in g for w in grp][:n]
+            if ws:
+                return sum(1 for _, a, _ in ws if a <= tt + 0.04) * n / len(ws)
+        return n * min(1.0, max(0.0, (tt - seg["t0"]) / max(0.5, seg["speech"] * 0.92)))
+
+    def draw_sentence(dst, lay, k, top, show_link, hover, clicked):
+        """The first k words of the sentence onto dst (page y offset -top); link words only when show_link."""
+        d = ImageDraw.Draw(dst)
+        sf = F(38)
+        sp_ = sf.getlength(" ")
+        vis = []
+        for j, (x, y, w, lk, wd) in enumerate(lay):
+            if j >= k or (lk and not show_link):
+                break
+            vis.append((x, y - top, w, lk, wd))
+        for j, (x, y, w, lk, wd) in enumerate(vis):
+            ext = sp_ if j + 1 < len(vis) and vis[j + 1][1] == y else 0
+            d.rectangle([x - 6, y - 4, x + wd + ext + 6, y + 46], fill=HILITE)
+        for x, y, w, lk, wd in vis:
+            core = w.rstrip(".,;:!?") if lk else w
+            d.text((x, y), core, font=sf, fill=BLUE if lk else INKT)
+            if core != w:
+                d.text((x + sf.getlength(core), y), w[len(core):], font=sf, fill=INKT)
+            if lk and (hover or clicked):
+                cw = sf.getlength(core)
+                if clicked:
+                    d.rounded_rectangle([x - 4, y - 2, x + cw + 4, y + 50], 6, outline=BLUE, width=2)
+                d.line([x, y + 46, x + cw, y + 46], fill=BLUE, width=3)
+        return vis
 
     def chrome(i):
         if i in _chrome:
@@ -203,7 +231,8 @@ def make(ctx):
 
     _cards = {}
 
-    def preview_card(bn):
+    def preview_card(i):
+        _, bn = ctx.link_names(i)
         if bn not in _cards:
             cw, ch = 640, 200
             im = Image.new("RGBA", (cw + 20, ch + 20), (0, 0, 0, 0))
@@ -216,21 +245,15 @@ def make(ctx):
             im.paste(face, (24, 24), m)
             nf = fit(label(bn), 44, cw - 220, "ExtraBold")
             d.text((200, 40), label(bn), font=nf, fill=INKT)
-            bars(d, 200, 112, [400, 340, 250], gap=30, h=13)
+            para(d, ctx.fact_of(ctx.spec["links"][i], full=True), 200, 104, F(22, "Regular"), GREY, cw - 220, 30, 3)
             _cards[bn] = im
         return _cards[bn]
 
-    def viewport(base, i, scroll, dx, hover=False, clicked=False):
-        im, boxes, _ = page(i)
+    def viewport(base, i, scroll, dx, k=10 ** 6, show_link=True, hover=False, clicked=False):
+        im, lay, _ = page(i)
         top = int(scroll)
-        crop = im.crop((0, top, ctx.W, top + ctx.H - PAGE_Y0))
-        if hover or clicked:
-            crop = crop.copy()
-            d = ImageDraw.Draw(crop)
-            for x0, y0, x1, y1 in boxes:
-                if clicked:
-                    d.rounded_rectangle([x0 - 4, y0 - top - 2, x1 + 4, y1 - top + 6], 6, outline=BLUE, width=2)
-                d.line([x0, y1 - top + 2, x1, y1 - top + 2], fill=BLUE, width=3)
+        crop = im.crop((0, top, ctx.W, top + ctx.H - PAGE_Y0)).copy()
+        draw_sentence(crop, lay, k, top, show_link, hover, clicked)
         base.alpha_composite(crop, (int(dx), PAGE_Y0))
 
     def scroll_at(local, trev, last=False):
@@ -250,6 +273,15 @@ def make(ctx):
         base = Image.new("RGBA", (ctx.W, ctx.H), (255, 255, 255, 255))
         last = i == ctx.n_links - 1                     # the chain ends here: no click, CONNECTED! lands instead
         scroll = scroll_at(local, trev, last)
+        revealed = local >= trev
+        _, lay, sent_top = page(i)
+        n_words = len(lay)
+        first_link = next((j for j, w in enumerate(lay) if w[3]), n_words)
+        k = int(math.ceil(n_spoken(seg, tt, n_words) - 1e-6))
+        if revealed:                                     # B's name lands (blue) at the reveal, even if said earlier
+            k = max(k, first_link + sum(1 for w in lay if w[3]))
+        else:
+            k = min(k, first_link)
         # page slide: the previous article leaves to the left as this one arrives from the right
         slide = 1.0
         if i > 0 and not ctx.C.fj["links"][i - 1].get("lineage"):
@@ -261,13 +293,29 @@ def make(ctx):
                 viewport(base, i - 1, scroll_at(pl, ptrev), -ctx.W * 0.35 * slide, clicked=True)
                 base.alpha_composite(Image.new("RGBA", (ctx.W, ctx.H - PAGE_Y0), (0, 0, 0, int(90 * slide))),
                                      (0, PAGE_Y0))
-        hover = local > trev - 0.25
+        hover = revealed
         if last:
             t_click = dur + 1
-        viewport(base, i, scroll, ctx.W * (1 - slide), hover=hover, clicked=local > t_click)
+        viewport(base, i, scroll, ctx.W * (1 - slide), k=k, show_link=revealed, hover=hover, clicked=local > t_click)
         if slide < 1:
             ImageDraw.Draw(base).line([ctx.W * (1 - slide) - 1, PAGE_Y0, ctx.W * (1 - slide) - 1, ctx.H],
                                       fill=(160, 160, 160), width=3)
+        # Buh peeks out from behind the infobox's right edge (upper half: clear of the feed's buttons)
+        if last and revealed:
+            expr = "happy"
+        elif revealed:
+            expr = "shock" if local < trev + 0.5 else "happy"
+        else:
+            expr = "smug"
+        hop = 0.0
+        if revealed and local < trev + 0.35:
+            hop = 50 * math.sin(math.pi * (local - trev) / 0.35)
+        elif last and revealed:
+            hop = abs(math.sin(local * 8)) * 34
+        peek = ctx.ease(local / 0.4) if i == 0 else 1.0
+        bxp = X1 + 78 + 60 * (1 - peek) + ctx.W * (1 - slide)
+        byp = 220 + PH * 0.62 - scroll + PAGE_Y0 + 6 * math.sin(local * 2.2) - hop
+        ctx.paste_pin(base, ctx.pin_sprite(expr, 8 + 4 * math.sin(local * 1.6), 0, 0, scale=3), bxp, byp)
         base.alpha_composite(chrome(i), (0, 230))
         # loading bar under the address field once the link is clicked (and while this page arrives)
         d = ImageDraw.Draw(base)
@@ -276,22 +324,23 @@ def make(ctx):
             d.rectangle([0, PAGE_Y0 - 5, int(ctx.W * (0.15 + 0.8 * ctx.ease(u))), PAGE_Y0], fill=BLUE)
         elif slide < 1:
             d.rectangle([0, PAGE_Y0 - 5, int(ctx.W * (0.95 + 0.05 * slide)), PAGE_Y0], fill=BLUE)
-        # where the link is on screen now
-        _, boxes, sent_top = page(i)
-        lx0, ly0, lx1, ly1 = boxes[0]
-        tx, ty = (lx0 + lx1) / 2, (ly0 + ly1) / 2 - scroll + PAGE_Y0 + 6
-        # preview card (B's face + name) pops above the link on hover
-        if local > trev and not last:
+        # where the link is (or will be) on screen now
+        lk = [w for w in lay if w[3]] or lay[-1:]
+        lx0, ly0 = lk[0][0], lk[0][1]
+        lx1 = lk[0][0] + lk[0][4]
+        tx, ty = (lx0 + lx1) / 2, ly0 + 26 - scroll + PAGE_Y0
+        # preview card (B's face + name) pops above the sentence on hover, after the reveal
+        if revealed and not last:
             pop = ctx.ease_out_back(min(1.0, (local - trev) / 0.22))
-            card = preview_card(bn)
+            card = preview_card(i)
             cx = min(max(tx, ctx.SAFE[0] + card.width / 2), ctx.SAFE[2] - card.width / 2)
-            ctx.paste(base, card, cx, sent_top - scroll + PAGE_Y0 - card.height / 2 - 12 + 20 * (1 - pop),
+            ctx.paste(base, card, cx, _intro_top[i] - scroll + PAGE_Y0 - card.height / 2 + 20 * (1 - pop),
                       scale=0.8 + 0.2 * pop, alpha=min(1.0, pop), nearest=False)
-        # the cursor: idles and drifts, glides to the link, clicks
-        wx = 760 + 70 * math.sin(local * 1.7) + 30 * math.sin(local * 3.1)
-        wy = 1060 + 90 * math.sin(local * 1.1 + 1) - 40 * math.cos(local * 2.3)
-        go0 = max(0.4, trev - 1.25)
-        u = ctx.ease((local - go0) / max(0.3, trev - 0.2 - go0))
+        # the cursor: idles below the sentence, glides to the link, clicks
+        wx = 760 + 60 * math.sin(local * 1.7) + 24 * math.sin(local * 3.1)
+        wy = sent_top - scroll + PAGE_Y0 + 230 + 40 * math.sin(local * 1.1 + 1)
+        go0 = max(0.4, trev - 1.0)
+        u = ctx.ease((local - go0) / max(0.3, trev - go0))
         mx, my = wx + (tx + 6 - wx) * u, wy + (ty - wy) * u
         if u >= 1:
             mx += 3 * math.sin(local * 5)
@@ -307,8 +356,14 @@ def make(ctx):
         if slide >= 1 or i == 0:
             base.alpha_composite(cursor(press), (int(mx - 3), int(my - 3)))
         ctx.header(base, i)
-        ctx.connected(base, seg, tt)
-        seg["cap"].draw(base, tt, y=1400)
+        if last:                                         # CONNECTED! across the photo, below both faces
+            fy = []
+            cx_, cy_, sc_ = cam(i)
+            for role in ("a", "b"):
+                b_ = ctx.fbox(i, role)
+                fy.append(220 + PH / 2 + (b_[1] + b_[3] - cy_) * sc_)
+            y = min(max(max(fy) + 90, 300), 220 + PH - 60) - scroll + PAGE_Y0
+            ctx.connected(base, seg, tt, y=int(y))
         return base
 
     return frame
