@@ -395,7 +395,17 @@ def split_batch(a: np.ndarray, heard, spoken_lines: list[str]) -> list[np.ndarra
         lo, hi = min(e, s2) - 0.05, max(e, s2) + 0.25
         i0, i1 = max(int(lo / 0.01), int(cuts[-1] / 0.01) + 1), min(int(hi / 0.01), len(lvl) - 1)
         cuts.append((i0 + int(np.argmin(lvl[i0:i1 + 1]))) * 0.01 + 0.01 if i1 > i0 else (e + s2) / 2)
-    cuts.append(len(a) / SR)
+    # the last line ends at its own last word, not at the end of the recording: Gemini sometimes reads the batch
+    # (or its tail) twice, and taking everything to the end swallowed the repeat and cut it mid-word. Prefer the
+    # first reading (matches within ~1.5x the line's word count of its first word), then the quietest 10 ms in
+    # [last word end - 0.05, + 0.4] s.
+    li = n - 1
+    words = sum(1 for o in owner if o == li)
+    in_first = [match[si] for si, o in enumerate(owner) if o == li and si in match
+                and match[si] <= first[li] + int(words * 1.5) + 3]
+    e = heard[max(in_first) if in_first else last[li]][2]
+    i0, i1 = max(int((e - 0.05) / 0.01), int(cuts[-1] / 0.01) + 1), min(int((e + 0.4) / 0.01), len(lvl) - 1)
+    cuts.append((i0 + int(np.argmin(lvl[i0:i1 + 1]))) * 0.01 + 0.01 if i1 > i0 else len(a) / SR)
     return [_trim(a[int(cuts[i] * SR):int(cuts[i + 1] * SR)]) for i in range(n)]
 
 

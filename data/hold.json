@@ -1,13 +1,15 @@
 {
  "_about": "Shorts held back from upload (owner left an open note in the Buh Connects Review Room, https://claude.ai/artifact/LGNj5e1hhig488NvnU2yp5). The lead session adds a slug when a note opens and removes it when the fix is re-rendered (or deletes the episode for 'cut it').",
  "slugs": [
-  "adolf-hitler-to-spongebob-squarepants",
   "adolf-hitler-to-shrek",
-  "adolf-hitler-to-mario",
   "elizabeth-ii-to-freddy-fazbear",
   "christopher-columbus-to-baby-yoda",
   "diddy-to-george-washington",
   "zeus-to-the-rock",
   "qin-shi-huang-to-kevin-hart"
- ]
+ ],
+ "only": [
+  "hitler"
+ ],
+ "_only": "Owner 2026-11-12: only the Adolf Hitler Shorts are blowing up, so post only slugs containing these words; everything else waits in the queue. Remove to post everything again."
 }
