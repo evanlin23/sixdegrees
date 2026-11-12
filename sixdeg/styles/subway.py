@@ -16,8 +16,11 @@ LINE = (226, 46, 58)                     # the Buh line
 PALE = tuple(int(c * 0.35 + p * 0.65) for c, p in zip(LINE, PAPER))
 # station layout (world px): a snake of straight runs and 45-degree bends that fits a portrait screen
 PATTERN = [(0, 0), (520, 0), (1000, 330), (520, 700), (0, 700), (250, 1150), (900, 1150)]
-MAP_Y0, MAP_Y1, MAP_AY = 230, 600, 415   # the map strip under the title band; the card sits below it
-CAP_Y = 1386
+CARD_TOP = 248                           # the next-stop card sits right under the title band
+SIGN0, SIGN1 = 978, 1068                 # a dark platform sign under the card carries the captions
+CAP_Y = (SIGN0 + SIGN1) // 2
+MAP_Y0, MAP_Y1, MAP_AY = SIGN1 + 12, 1580, 1372   # the live map fills the lower half; labels stay above MAP_Y1
+TRAIN_Y = (1268, 1640)                   # the camera keeps the train (and Buh on its roof) inside this band
 
 
 def photo_fit(ctx, i, w, h, fill=0.8, maxup=1.3):
@@ -200,7 +203,7 @@ def make(ctx):
             else:
                 cur = f"{cur} {w}".strip()
         lines.append(cur)
-        ims = [ctx.pixel_text(ln, 28, fill=ctx.WHITE) for ln in lines]
+        ims = [ctx.pixel_text(ln, 38, fill=ctx.WHITE) for ln in lines]
         w = max(i.width for i in ims)
         out = Image.new("RGBA", (w, sum(i.height - 8 for i in ims) + 8), (0, 0, 0, 0))
         y = 0
@@ -229,8 +232,7 @@ def make(ctx):
 
 
     # ---------- the next-stop card: one fixed place under the map strip, photo as big as the screen allows
-    PW, PH, HEAD, FOOT = 840, 520, 74, 100
-    CARD_TOP = MAP_Y1 + 12
+    PW, PH, HEAD, FOOT = 860, 540, 74, 100
     CARD_H = HEAD + 6 + PH + FOOT
     CARD_CY = CARD_TOP + CARD_H / 2
     FOOT_CY = CARD_TOP + HEAD + 6 + PH + FOOT / 2         # CONNECTED! lands here on the last link
@@ -314,9 +316,9 @@ def make(ctx):
         s = seg_at(T)
         a, b = ST[idx.get(ctx.link_names(s["i"])[0], 0)], ST[idx.get(ctx.link_names(s["i"])[1], 0)]
         if s["i"] == ctx.n_links - 1 and T - s["t0"] > arrive(s) - 0.15:
-            return b[0], b[1], 1.0, MAP_AY - 25
+            return b[0], b[1], 1.0, MAP_AY - 20
         dx, dy = abs(b[0] - a[0]) + 1, abs(b[1] - a[1]) + 1
-        z = max(0.5, min(0.85, 620 / dx, 190 / dy))
+        z = max(0.5, min(0.9, 640 / dx, 220 / dy))
         return (a[0] + b[0]) / 2, (a[1] + b[1]) / 2, z, MAP_AY
 
     def cam(T):
@@ -346,6 +348,9 @@ def make(ctx):
         cx += 10 * math.sin(tt * 0.9)
         cy += 6 * math.cos(tt * 0.7)
         ax = ctx.CX
+        td = train_d(tt)
+        wy = (at(td)[1] - cy) * z + ay                          # keep the train (and Buh) in the map band,
+        ay += max(0.0, TRAIN_Y[0] - wy) - max(0.0, wy - TRAIN_Y[1])   # never up under the card or the sign
 
         def scr(p):
             return (p[0] - cx) * z + ax, (p[1] - cy) * z + ay
@@ -357,7 +362,6 @@ def make(ctx):
         d = ImageDraw.Draw(base)
 
         # the travelled part of the line, bold, with little white dashes flowing along it
-        td = train_d(tt)
         ld = td + PARK * ctx.ease(max(0.0, min(1.0, (local - arr) / 0.2)))   # line reaches the stop once arrived
         pts = [scr(p) for p in upto(ld)]
         lw = max(8, int(34 * z))
@@ -393,7 +397,7 @@ def make(ctx):
         for k, nm in enumerate(people):
             known = k <= ia or (k == ib and revealed) or (ia < k < ib)
             sx, sy = scr(ST[k])
-            if not (-200 < sx < ctx.W + 200 and -200 < sy < CARD_TOP + 200):
+            if not (-200 < sx < ctx.W + 200 and MAP_Y0 - 200 < sy < ctx.H + 200):
                 continue
             s = rs
             if k == ib and revealed:                             # B's roundel pops when the train pulls in
@@ -408,7 +412,7 @@ def make(ctx):
             boxes.append((sx - r, sy - r, sx + r, sy + r))
             if known:
                 shown.append((k, nm, sx, sy, r))
-        # labels: B first, then A, then the rest; each goes under (or else over) its roundel where it is free
+        # labels: B first, then A, then the rest; each goes under, over or beside its roundel where it is free
         tb = ts * 1.0
         boxes.append((tx - 100 * tb, ty - 60 * tb, tx + 100 * tb, ty + 40 * tb))
         boxes.append((tx - 70 * tb, ty - 200 * tb, tx + 70 * tb, ty))          # Buh on the roof
@@ -417,12 +421,13 @@ def make(ctx):
             if not ctx.SAFE[0] - 30 < sx < ctx.SAFE[2] + 30:
                 continue                                         # off to the side: no label away from its face
             lab = LABEL[nm]
-            ls = 1.0 if (last and k == ib and revealed) else 0.78
+            ls = 1.0 if (last and k == ib and revealed) else 0.9
             w2, h2 = lab.width * ls / 2, lab.height * ls / 2
-            lx = max(ctx.SAFE[0] + w2, min(ctx.SAFE[2] - w2, sx))
-            for ly in (sy + r + h2 + 2, sy - r - h2 - 4):
+            cx_ = max(ctx.SAFE[0] + w2, min(ctx.SAFE[2] - w2, sx))
+            # under, over, then beside its own roundel (right, left), wherever it is free and inside the map band
+            for lx, ly in ((cx_, sy + r + h2 + 2), (cx_, sy - r - h2 - 4), (sx + r + w2 + 8, sy), (sx - r - w2 - 8, sy)):
                 rect = (lx - w2, ly - h2, lx + w2, ly + h2)
-                if rect[1] < MAP_Y0 + 4 or rect[3] > CARD_TOP - 4:
+                if rect[1] < MAP_Y0 + 4 or rect[3] > MAP_Y1 or rect[0] < ctx.SAFE[0] - 20 or rect[2] > ctx.SAFE[2] + 20:
                     continue
                 own = (sx - r, sy - r, sx + r, sy + r)
                 if any(rect[0] < b[2] and b[0] < rect[2] and rect[1] < b[3] and b[1] < rect[3]
@@ -441,7 +446,12 @@ def make(ctx):
         sway = (10 * math.sin(tt * 9)) if moving else 4 * math.sin(tt * 3)
         ctx.paste_pin(base, ctx.pin_sprite(expr, sway, squash, -1 if left else 1, scale=4), tx, ty + bob - 22 * ts)
 
-        # the card never moves: it cross-fades from the last stop to this one, flips its name at the arrival
+        # the platform sign the captions sit on
+        d.rectangle([0, SIGN0, ctx.W, SIGN1], fill=ctx.INK)
+        d.rectangle([0, SIGN0, ctx.W, SIGN0 + 8], fill=LINE)
+        d.rectangle([0, SIGN1 - 4, ctx.W, SIGN1], fill=(70, 66, 80))
+
+        # the card never moves: its text switches at once to this stop, only the photo cross-fades from the last
         fin = last and revealed
         pan = panel(i, revealed, fact=not fin)
         ps = 1.0
@@ -449,8 +459,11 @@ def make(ctx):
             ps = 1 + 0.03 * math.sin(math.pi * (local - arr) / 0.25)
         k_in = ctx.ease(max(0.0, min(1.0, local / 0.3)))
         if i > 0 and k_in < 1 and not ctx.C.fj["links"][i - 1].get("lineage"):
-            ctx.paste(base, panel(i - 1, True), ctx.CX, CARD_CY + 10, nearest=False)
-            ctx.paste(base, pan, ctx.CX, CARD_CY + 10, alpha=k_in, nearest=False)
+            ctx.paste(base, pan, ctx.CX, CARD_CY + 10, nearest=False)
+            old = panel(i - 1, True).crop((10, HEAD + 6, 11 + PW, HEAD + 7 + PH))
+            x0 = int(ctx.CX - pan.width / 2)
+            y0 = int(CARD_CY + 10 - pan.height / 2)
+            ctx.paste(base, old, x0 + 10 + old.width / 2, y0 + HEAD + 6 + old.height / 2, alpha=1 - k_in)
         elif i == 0 and k_in < 1:
             ctx.paste(base, pan, ctx.CX, CARD_CY + 10 + 60 * (1 - k_in), scale=0.94 + 0.06 * k_in, alpha=k_in,
                       nearest=False)

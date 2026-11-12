@@ -21,13 +21,16 @@ NAME_COLS = [(255, 138, 101), (129, 212, 250), (174, 213, 129), (255, 213, 79), 
              (244, 143, 177), (255, 171, 64)]
 
 TOP0, TOP1 = 230, 346          # chat title bar (under the channel header)
-BOTTOM = 1196                  # newest message sits on this line; earlier ones scroll up
-CAP_Y = 1262                   # captions, between the messages and the composer
-COMP0, COMP1 = 1352, 1438      # message composer
+BOTTOM = 1326                  # newest message sits on this line; earlier ones scroll up (the feed ends here)
+STRIP0 = 1340                  # a reserved caption strip between the feed and the composer: nothing scrolls into it
+COMP0, COMP1 = 1446, 1532      # message composer
+CAP_Y = (STRIP0 + COMP0) // 2  # captions live in the strip
+KB0 = COMP1                    # the phone keyboard fills the rest of the screen; Buh types on it
 AV = 72                        # avatar size
 BX = 152                       # bubble left edge
-MAXW = 700                     # bubble max width
-PW, PH = 640, 470              # photo attachment
+MAXW = 780                     # bubble max width
+PX0 = 46                       # photo posts span the whole feed width (no side avatar)
+PW, PH = 888, 580              # photo attachment
 GAP = 20
 SPACE = 150                    # room left under the last photo for CONNECTED!
 BUH = "buh"                    # the narrator account
@@ -145,25 +148,27 @@ def make(ctx):
     def photo_msg(n, i, a, b, stamp):
         """The photo attachment, posted by the narrator with A and B (or "???") tagged; the slot for the (moving)
         photo is at PHOTO_OFF inside the returned image."""
-        fn, fc, fs = font("Inter-Bold.otf", 28), font("Inter-Bold.otf", 32), font("Inter-Bold.otf", 22)
-        w, h = PW + 32, 22 + 38 + PH + 70
-        im = bubble(w, h)
+        fn, fc, fs = font("Inter-Bold.otf", 28), font("Inter-Bold.otf", 34), font("Inter-Bold.otf", 22)
+        w, h = PW + 20, PHOTO_OFF[1] + PH + 70
+        im = Image.new("RGBA", (w, h), (0, 0, 0, 0))
         d = ImageDraw.Draw(im)
-        d.text((40, 20), short(n), font=fn, fill=col(n))
-        size = 32
+        d.rounded_rectangle([0, 0, w - 1, h - 1], 30, fill=BUBBLE)
+        im.alpha_composite(avatar(n, 40), (16, 10))
+        d.text((66, 15), short(n), font=fn, fill=col(n))
+        size = 34
         while size > 22 and fc.getlength(f"@{a} with @{b or '???'}") + 30 > w - 50:
             size -= 2
             fc = font("Inter-Bold.otf", size)
-        x, y = 40, 64 + PH + 18 + (32 - size) // 2
+        x, y = 26, PHOTO_OFF[1] + PH + 16 + (34 - size) // 2
         for part, chip, known in ((f"@{a}", True, True), (" with ", False, True), (f"@{b}" if b else "@???", True, b)):
             if chip:
                 d.rounded_rectangle([x - 4, y - 4, x + fc.getlength(part) + 6, y + 38], 10, fill=(40, 70, 112))
             d.text((x, y), part, font=fc, fill=(MENTION if known else MUTED) if chip else TEXT)
             x += fc.getlength(part) + (8 if chip else 0)
-        d.text((w - 4, 36), stamp, font=fs, fill=MUTED, anchor="rm")      # stamp up top, clear of the tags
-        return with_avatar(im, n)
+        d.text((w - 22, 30), stamp, font=fs, fill=MUTED, anchor="rm")      # stamp up top, clear of the tags
+        return im
 
-    PHOTO_OFF = (BX - ctx.SAFE[0] + 16, 64)
+    PHOTO_OFF = (10, 58)
     pmask = Image.new("L", (PW * 2, PH * 2), 0)
     ImageDraw.Draw(pmask).rounded_rectangle([0, 0, PW * 2 - 1, PH * 2 - 1], 44, fill=255)
     pmask = pmask.resize((PW, PH), Image.LANCZOS)
@@ -345,6 +350,64 @@ def make(ctx):
         d.ellipse([876 - r, COMP0 + 44 - r, 876 + r, COMP0 + 44 + r], fill=(46, 132, 255))
         d.polygon([(862, COMP0 + 28), (896, COMP0 + 44), (862, COMP0 + 60), (868, COMP0 + 44)], fill=(255, 255, 255))
 
+    STRIP_BG = (10, 14, 20)
+    ROWS = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"]
+    KW, KH, KG = 94, 80, 10
+    KY = [KB0 + 18 + r * (KH + KG) for r in range(4)]          # key row tops
+
+    def key_rects():
+        out = []
+        for r, row in enumerate(ROWS):
+            x0 = (ctx.W - (len(row) * (KW + KG) - KG)) / 2
+            for k, ch in enumerate(row):
+                out.append((ch, r, x0 + k * (KW + KG), KY[r]))
+        return out
+
+    KEYS = key_rects()
+
+    def keyboard(base, tt, typing, rv):
+        """A plain phone keyboard under the composer. Buh, the narrator, types the posts on it with his pin and
+        reacts to each reveal."""
+        if "kb" not in st:
+            im = Image.new("RGBA", (ctx.W, ctx.H - KB0), (28, 34, 46, 255))
+            d = ImageDraw.Draw(im)
+            f = font("Inter-Bold.otf", 38)
+            for ch, r, x, y in KEYS:
+                d.rounded_rectangle([x, y - KB0 + 4, x + KW, y - KB0 + KH + 4], 12, fill=(18, 22, 30))
+                d.rounded_rectangle([x, y - KB0, x + KW, y - KB0 + KH], 12, fill=(64, 74, 92))
+                d.text((x + KW / 2, y - KB0 + KH / 2), ch, font=f, fill=(222, 228, 238), anchor="mm")
+            y = KY[3] - KB0
+            for x0, x1, lab in ((60, 250, "123"), (266, 814, "space"), (830, 1020, "return")):
+                d.rounded_rectangle([x0, y + 4, x1, y + KH + 4], 12, fill=(18, 22, 30))
+                d.rounded_rectangle([x0, y, x1, y + KH], 12, fill=(64, 74, 92) if lab == "space" else (46, 54, 70))
+                d.text(((x0 + x1) / 2, y + KH / 2), lab, font=font("Inter-Bold.otf", 30), fill=(200, 208, 220),
+                       anchor="mm")
+            st["kb"] = im
+        base.alpha_composite(st["kb"], (0, KB0))
+        d = ImageDraw.Draw(base)
+        lower = [k for k in KEYS if k[1] == 2]                     # Buh only reaches the bottom letter row
+        if typing:
+            step = 0.16                                           # one key press per step, hopping between them
+            n = int(tt / step)
+            u = tt / step - n
+            pk = lower[(n * 5 + 3) % len(lower)]
+            nk = lower[((n + 1) * 5 + 3) % len(lower)]
+            ax, bx = pk[2] + KW / 2, nk[2] + KW / 2
+            x = ax + (bx - ax) * ctx.ease(min(1.0, u / 0.8))
+            hop = 46 * math.sin(math.pi * min(1.0, u / 0.8))
+            if u < 0.35:                                          # the key under the pin lights up
+                d.rounded_rectangle([pk[2], pk[3] + 4, pk[2] + KW, pk[3] + KH + 4], 12, fill=(120, 170, 255))
+                d.text((pk[2] + KW / 2, pk[3] + 4 + KH / 2), pk[0], font=font("Inter-Bold.otf", 38),
+                       fill=(255, 255, 255), anchor="mm")
+            spr = ctx.pin_sprite("happy", 6 * math.sin(tt * 9), 0.15 if u < 0.2 else 0.0, 1 if bx >= ax else -1,
+                                 scale=5)
+            ctx.paste_pin(base, spr, x, pk[3] + KH / 2 + 4 - hop)
+        else:
+            expr = "happy" if rv < 0 else "shock" if rv < 0.6 else "smug"
+            hop = 40 * math.sin(math.pi * min(1.0, rv / 0.35)) if 0 < rv < 0.35 else 0.0
+            ctx.paste_pin(base, ctx.pin_sprite(expr, 5 * math.sin(tt * 2.5), 0, -1, scale=5), 925,
+                          KY[2] + KH / 2 - hop + 4 * math.sin(tt * 3))
+
     def frame(seg, tt):
         i = seg["i"]
         if ctx.C.fj["links"][i].get("lineage"):
@@ -404,22 +467,21 @@ def make(ctx):
                         im = im.resize((int(im.width * sc), int(im.height * sc)), Image.BILINEAR)
                     if h < im.height - 1:              # still sliding up into its slot: only what fits shows
                         im = im.crop((0, 0, im.width, max(1, int(h))))
-                    base.alpha_composite(im, (ctx.SAFE[0], int(y - im.height)))
+                    mx = PX0 if m["kind"] == "photo" else ctx.SAFE[0]
+                    base.alpha_composite(im, (mx, int(y - im.height)))
                     if m.get("react") and tt >= m["react"]:
                         rk = ctx.ease_out_back((tt - m["react"]) / 0.25)
-                        ctx.paste(base, reaction(), ctx.SAFE[0] + im.width - 30, y - im.height + 2,
+                        ctx.paste(base, reaction(), mx + im.width - 40, y - im.height + 2,
                                   scale=0.3 + 0.7 * rk, nearest=False)      # tapback on the bubble's top corner
             y -= h + GAP
+        # the reserved caption strip: the feed (and anything sliding into it) ends above it
+        base.paste(STRIP_BG, (0, BOTTOM + 8, ctx.W, COMP0))
         topbar(base, i, msgs, tt, typing_who)
         composer(base, tt)
-        # Buh, the narrator, peeks up from under the composer and reacts to each reveal
         rv = tt - seg["t0"] - seg.get("rv", ctx.REVEAL) * seg["speech"] - ctx.THROW
-        expr = "happy" if rv < 0 else "shock" if rv < 0.6 else "smug"
-        hop = 30 * math.sin(math.pi * min(1.0, rv / 0.35)) if 0 < rv < 0.35 else 0.0
-        ctx.paste_pin(base, ctx.pin_sprite(expr, 5 * math.sin(tt * 2.5), 0, 1, scale=7), 250,
-                      1760 - hop + 8 * math.sin(tt * 3))
+        keyboard(base, tt, typing_who == BUH, rv)
         ctx.header(base, i)
-        ctx.connected(base, seg, tt, y=BOTTOM - SPACE / 2 + 6)
+        ctx.connected(base, seg, tt, y=BOTTOM - SPACE / 2 + 2)
         seg["cap"].draw(base, tt, y=CAP_Y)
         return base
 

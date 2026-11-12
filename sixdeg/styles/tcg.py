@@ -21,6 +21,7 @@ MW, MH = 96, 130               # mini cards in the collection row
 ROW_Y = 318
 ROW_DX = 116
 CAP_Y = 1378
+SWAP = 0.26                    # seconds for the old card to fly up and the new one to deal in (before the caption)
 RARITY = ["COMMON", "UNCOMMON", "RARE", "ULTRA RARE", "LEGENDARY"]
 INKC = (28, 22, 34)
 
@@ -215,6 +216,16 @@ def make(ctx):
             if p is None:
                 d.rounded_rectangle([2, 2, MW - 3, MH - 3], 10, outline=(110, 96, 150), width=3)
                 d.text((MW / 2, MH / 2), "?", font=font("Inter-Black.otf", 40), fill=(110, 96, 150), anchor="mm")
+            elif ctx.sensitive(ctx.link_names(0)[0] if p == 0 else ctx.link_names(p - 1)[1]):
+                # a dictator is never a collectible: a neutral marker instead of a card
+                nm = ctx.link_names(0)[0] if p == 0 else ctx.link_names(p - 1)[1]
+                d.rounded_rectangle([6, 22, MW - 7, MH - 23], 8, fill=(78, 76, 90))
+                if p == 0:
+                    d.text((MW / 2, MH / 2), "START", font=fit("Inter-Black.otf", "START", 22, MW - 20, 10),
+                           fill=(214, 212, 222), anchor="mm")
+                else:
+                    face = ctx.sharp[nm].convert("L").convert("RGBA").resize((MW - 28, MW - 28), Image.LANCZOS)
+                    im.alpha_composite(face, (14, (MH - (MW - 28)) // 2))
             else:
                 nm = ctx.link_names(0)[0] if p == 0 else ctx.link_names(p - 1)[1]
                 plain = calm(0 if p == 0 else p - 1)
@@ -287,7 +298,7 @@ def make(ctx):
                 sparkle(d, x, y - (tt * 20 % 60), r * (0.6 + 0.4 * a), a * 0.8)
 
         # ---- collection row: person 0 .. i are collected (person i arrives with the previous card's fly-up)
-        tr = ctx.ease(max(0.0, min(1.0, local / 0.4))) if i > 0 else 1.0
+        tr = ctx.ease(max(0.0, min(1.0, local / SWAP))) if i > 0 else 1.0
         for p in range(N + 1):
             x = slot_x(p)
             have = p < i or (p == i and (i == 0 or tr >= 1)) or (last and revealed and p == N)
@@ -298,7 +309,7 @@ def make(ctx):
             k_in = 1.0
             sc0 = 0.9 + 0.1 * ctx.ease(min(1.0, local / 0.25))
         else:
-            k_in = ctx.ease(max(0.0, min(1.0, (local - 0.05) / 0.4)))
+            k_in = ctx.ease(max(0.0, min(1.0, local / SWAP)))
             sc0 = 1.0
         hx = ctx.CX + (1 - k_in) * 900
         hy = HERO_CY + 6 * math.sin(tt * 1.9)
@@ -306,7 +317,7 @@ def make(ctx):
         if revealed:
             pop = 1 + 0.04 * math.sin(math.pi * min(1.0, (local - rvt) / 0.3))
         lay = hero(i, revealed, fin=last and revealed)
-        put(base, live(lay, tt, i * 0.37), hx, hy, pop * sc0, wob + (1 - k_in) * -8,
+        put(base, live(lay, tt, i * 0.37), hx, hy, pop * sc0, wob * k_in,
             alpha=min(1.0, 0.3 + local / 0.15) if i == 0 else 1.0)
         if revealed and not calm(i):           # a sparkle burst when the name lands (not on a dictator's card)
             bk = (local - rvt) / 0.6
@@ -329,8 +340,17 @@ def make(ctx):
         ctx.paste_pin(base, ctx.pin_sprite(expr, 5 * math.sin(tt * 2.5), 0, 1, scale=7), 250,
                       1770 - hop + 8 * math.sin(tt * 3))
         ctx.header(base, i)
-        ctx.connected(base, seg, tt, y=HERO_TOP + 760)
-        seg["cap"].draw(base, tt, y=CAP_Y)
+        if last and revealed:
+            # CONNECTED! drawn on its own layer and shrunk so it fits the card's inner panel, never the foil rim
+            lay_c = Image.new("RGBA", (ctx.W, ctx.H), (0, 0, 0, 0))
+            cy_ = 960
+            ctx.connected(lay_c, seg, tt, y=cy_)
+            box = lay_c.crop((0, cy_ - 160, ctx.W, cy_ + 160))
+            k = 0.8
+            box = box.resize((int(box.width * k), int(box.height * k)), Image.BICUBIC)
+            ctx.paste(base, box, ctx.CX + (ctx.W / 2 - ctx.CX) * k, hy - HH / 2 + 742, nearest=False)
+        if i == 0 or local >= SWAP:                      # the caption waits until the cards have settled
+            seg["cap"].draw(base, tt, y=CAP_Y)
         return base
 
     return frame
