@@ -307,7 +307,7 @@ def render(slug: str, log=print) -> Path:
             if hit:
                 rv = max(REVEAL, (hit[0] + 0.08 - THROW + 0.15) / speech)
                 rv = min(rv, (speech - THROW - 0.1) / speech) if not last else min(rv, max(REVEAL, (speech - THROW - 0.3) / speech))
-        d = max(speech + 0.05, rv * speech + THROW + 0.3) if last else speech + PAD
+        d = max(speech + 0.05, rv * speech + THROW + 1.2) if last else speech + PAD   # hold the payoff ~1 s (owner: "cutting too fast")
         if last and STYLE == "board":
             d += 1.1                                     # time to zoom out to the whole evidence board
         reveal = t + (speech * 0.9 - THROW if link.get("lineage") else rv * speech)
@@ -718,7 +718,7 @@ def render(slug: str, log=print) -> Path:
             dr.rectangle([0, HERO_B[0], W, HERO_B[0] + 6], fill=YELLOW)
             hop = abs(math.sin(kk * 8)) * 26
             paste_pin(base, pin_sprite("shock" if kk < 0.8 else ("smug" if int(kk * 2) % 2 else "angry"), 0, 0, -1),
-                      SAFE[2] - 50, HERO_A[1] - 6 - hop)                 # Buh stands on the seam
+                      SAFE[2] - 170, HERO_A[1] - 6 - hop)                # Buh stands on the seam (clear of the Shorts buttons)
             if spec.get("requested_by"):   # the viewer's comment IS the hook (every reference hit opens on one)
                 pop = ease_out_back(min(1.0, kk / 0.25))
                 paste(base, comment_im, CX, (HERO_A[1] + HERO_B[0]) // 2 + 10, scale=0.6 + 0.4 * pop, nearest=False)
