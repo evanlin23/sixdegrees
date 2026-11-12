@@ -21,5 +21,8 @@
  "voice": "gemini",
  "outro": false,
  "voice_rev": 2,
+ "narration": false,
+ "links": 3,
+ "lineage": 0,
  "slug": "muammar-gaddafi-to-clifford-the-big-red-dog"
 }
