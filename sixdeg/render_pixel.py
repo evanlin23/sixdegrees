@@ -558,23 +558,41 @@ def render(slug: str, log=print) -> Path:
                 pe = (x, y)
             else:
                 pe = pb
-            dr.line([pa, pe], fill=INK, width=14)
-            dr.line([pa, pe], fill=RED, width=8)
-            dr.rectangle([pa[0] - 10, pa[1] - 10, pa[0] + 10, pa[1] + 10], fill=RED, outline=INK, width=4)
+            sl = Image.new("RGBA", (W, H), (0, 0, 0, 0))              # the string lives ON the photo:
+            sd = ImageDraw.Draw(sl)                                     # clipped to the card when it runs off
+            sd.line([pa, pe], fill=INK, width=14)
+            sd.line([pa, pe], fill=RED, width=8)
+            sd.rectangle([pa[0] - 10, pa[1] - 10, pa[0] + 10, pa[1] + 10], fill=RED, outline=INK, width=4)
+            cm_ = Image.new("L", (W, H), 0)
+            ImageDraw.Draw(cm_).rectangle([x0, y0, x0 + cw, y0 + ch], fill=255)
+            sl.putalpha(Image.composite(sl.getchannel("A"), Image.new("L", (W, H), 0), cm_))
+            base.alpha_composite(sl)
         # name tags
         names = (spec["links"][i]["a"], spec["links"][i]["b"])
+        tags_ = []
         for role, nm, appear, col in (("ba", names[0], 0.0, CYAN), ("bb", names[1], R + THROW / seg["speech"], YELLOW)):
             bx = cm[role]
             fx, fy = to_screen(M, bx[0] + bx[2] / 2, bx[1] + bx[3] / 2)
-            if not (CARD[0] < fx < CARD[2] and CARD[1] < fy < CARD[3]):
+            if not (-200 < fx < W + 200 and -200 < fy < H + 200):   # face far off screen (deep zoom on the other)
                 continue
             if k >= appear:
+                # owner: the tag sits under the chin but is NOT part of the photo: a sticker on top, always whole,
+                # never cut or hidden at the photo's edge (it used to vanish when the face neared the card edge)
                 pop = ease_out_back((k - appear) * seg["speech"] / 0.12)
                 tag = pixel_tag(C.labels[nm].upper(), col, 26 if len(C.labels[nm]) < 15 else 22)
                 tx, ty = to_screen(M, bx[0] + bx[2] / 2, bx[1] + bx[3])   # under the chin
                 tx = max(SAFE[0] + tag.width / 2, min(SAFE[2] - tag.width / 2, tx))
-                ty = max(CARD[1] + 60, min(CARD[3] - 230, ty + 34))
-                paste(base, tag, tx, ty, scale=pop)
+                ty = max(BAND + 40 + tag.height / 2, min(CAP_Y - 90, ty + 34))   # clear of the header and captions
+                tags_.append([tag, tx, ty, pop])
+        if len(tags_) == 2:                       # never stack one tag on the other: push B's below A's
+            (ta, ax, ay, _), (tb, bx_, by_, _) = tags_
+            if abs(ax - bx_) < (ta.width + tb.width) / 2 + 8 and abs(ay - by_) < (ta.height + tb.height) / 2 + 6:
+                tags_[1][2] = ay + (ta.height + tb.height) / 2 + 10 if by_ >= ay else ay - (ta.height + tb.height) / 2 - 10
+        for tag, tx, ty, pop in tags_:
+            sh = Image.new("RGBA", (tag.width + 8, tag.height + 8), (0, 0, 0, 0))
+            ImageDraw.Draw(sh).rectangle([8, 8, tag.width + 7, tag.height + 7], fill=(0, 0, 0, 140))
+            paste(base, sh, tx + 4, ty + 4, scale=pop)                      # drop shadow: reads as a printed sticker
+            paste(base, tag, tx, ty, scale=pop)
         # Pin
         if since < 0:
             bob = int(8 * abs(math.sin(tt * 7)))
