@@ -1,6 +1,6 @@
 {
  "title": "How is Diddy connected to George Washington?",
- "description": "Two real photos link Diddy to Barack Obama, and the line of presidents runs from Obama back to George Washington.\n\nSean Combs → Donald Trump → Barack Obama → George Washington\n\nGive me two names in the comments and I'll find the photos that connect them.\n\nPhoto credits:\nPhoto 1 by Sonia Moskowitz / Getty Images, via Hot 97, Fair use (commentary): https://www.hot97.com/news/president-donald-trump-responds-to-diddy-pardon-allegations/\nPhoto 2 by Jesusemen Oni / VOA, Public domain: https://commons.wikimedia.org/wiki/File:Barack_Obama_meets_with_Donald_Trump_in_the_Oval_Office.jpg\nPhoto 3, Public domain / CC BY 2.0: https://commons.wikimedia.org/wiki/File:President_Barack_Obama.jpg + https://commons.wikimedia.org/wiki/File:Official_Portrait_of_President_Reagan_1981.jpg + https://commons.wikimedia.org/wiki/File:Richard_Nixon_presidential_portrait_(2).jpg + https://commons.wikimedia.org/wiki/File:John_F._Kennedy,_White_House_color_photo_portrait.jpg + https://commons.wikimedia.org/wiki/File:FDR-1944-Campaign-Portrait_(3x4_retouched,_cropped).jpg + https://commons.wikimedia.org/wiki/File:Theodore_Roosevelt_by_the_Pach_Bros_(4x5_cropped)_(3).jpg + https://commons.wikimedia.org/wiki/File:Abraham_Lincoln_O-77_matte_collodion_print.jpg + https://commons.wikimedia.org/wiki/File:Official_Presidential_portrait_of_Thomas_Jefferson_(by_Rembrandt_Peale,_1800).jpg + https://commons.wikimedia.org/wiki/File:Gilbert_Stuart_Williamstown_Portrait_of_George_Washington.jpg\n\n#seancombs #georgewashington #sixdegrees #history #didyouknow #shorts",
+ "description": "Two real photos link Diddy to Barack Obama, and the line of presidents runs from Obama back to George Washington.\n\nSean Combs → Donald Trump → Barack Obama → George Washington\n\nHow they're connected (every photo is real and sourced):\n1. Diddy → Donald Trump: In 1998, Diddy and Donald Trump posed together at a celebrity polo match in the Hamptons.\n   Photo by Sonia Moskowitz / Getty Images, via Hot 97, Fair use (commentary): https://www.hot97.com/news/president-donald-trump-responds-to-diddy-pardon-allegations/\n2. Donald Trump → Barack Obama: In November 2016, the newly elected Trump met outgoing President Barack Obama in the Oval Office.\n   Photo by Jesusemen Oni / VOA, Public domain: https://commons.wikimedia.org/wiki/File:Barack_Obama_meets_with_Donald_Trump_in_the_Oval_Office.jpg\n3. Barack Obama → George Washington (9 portraits, every holder): Obama was the 44th president, and that line of presidents runs all the way back to the first, George Washington.\n   Photo, Public domain / CC BY 2.0: https://commons.wikimedia.org/wiki/File:President_Barack_Obama.jpg + https://commons.wikimedia.org/wiki/File:Official_Portrait_of_President_Reagan_1981.jpg + https://commons.wikimedia.org/wiki/File:Richard_Nixon_presidential_portrait_(2).jpg + https://commons.wikimedia.org/wiki/File:John_F._Kennedy,_White_House_color_photo_portrait.jpg + https://commons.wikimedia.org/wiki/File:FDR-1944-Campaign-Portrait_(3x4_retouched,_cropped).jpg + https://commons.wikimedia.org/wiki/File:Theodore_Roosevelt_by_the_Pach_Bros_(4x5_cropped)_(3).jpg + https://commons.wikimedia.org/wiki/File:Abraham_Lincoln_O-77_matte_collodion_print.jpg + https://commons.wikimedia.org/wiki/File:Official_Presidential_portrait_of_Thomas_Jefferson_(by_Rembrandt_Peale,_1800).jpg + https://commons.wikimedia.org/wiki/File:Gilbert_Stuart_Williamstown_Portrait_of_George_Washington.jpg\n\nGive me two names in the comments and I'll find the photos that connect them.\n\n#seancombs #georgewashington #sixdegrees #history #didyouknow #shorts",
  "tags": [
   "Sean Combs",
   "Donald Trump",
@@ -21,10 +21,11 @@
  "voice": "gemini",
  "outro": false,
  "voice_rev": 2,
- "narration": false,
+ "narration": true,
  "links": 3,
  "lineage": 9,
- "music": "Mitski - Washing Machine Heart",
- "trending": true,
+ "music": "Lil Sky Beats",
+ "style": "cards",
+ "trending": false,
  "slug": "diddy-to-george-washington"
 }
