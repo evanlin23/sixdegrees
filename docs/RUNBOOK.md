@@ -43,6 +43,19 @@ for producer sessions. What goes viral and the pair formula are in **`docs/STYLE
 - Guards: QA fails a line that ends mid-sound; the uploader only posts `voice == "gemini"` and
   `voice_rev >= VOICE_REV`. Backlog voicing: `voice.yml` with `batch` 5 and the slugs in queue order.
 
+## Trending songs (music-only episodes)
+
+- Music-only episodes use a trending song from the **private** repo `evanlin23/sixdegrees-music` (never commit
+  songs to this public repo; `music-private/` is git-ignored). `render.yml` clones it when the Actions secret
+  `MUSIC_REPO_TOKEN` exists: a fine-grained token with read-only Contents on that repo. Without it, music-only
+  episodes fall back to Mixkit.
+- In that repo: the audio files, plus an optional `tracks.json`
+  `[{"file": "washing-machine-heart.mp3", "title": "Washing Machine Heart", "artist": "Mitski", "start": 42.0}]`.
+  `start` is the second where the recognisable part begins. Each episode picks a track by slug hash, and the song
+  is recorded per upload (`music`, `trending`).
+- A claimed song is fine on a Short under 60 s: it stays up, and the music partners take a share of that Short's
+  pool revenue. Over 60 s it gets blocked, so QA fails trending-song renders at 59.5 s or longer.
+
 ## Uploads
 
 - `queue.consume` (via `upload.yml`): picks only Achird videos of the current voice revision, in the priority order

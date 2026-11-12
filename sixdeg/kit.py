@@ -70,6 +70,8 @@ def kit(slug: str) -> str:
         meta["narration"] = vinfo.get("narration", True)   # A/B test: False = music-only
         meta["links"] = vinfo.get("links", len(spec["links"]))
         meta["lineage"] = vinfo.get("lineage", 0)          # portraits in lineage scrolls (0 = none)
+        meta["music"] = vinfo.get("music")
+        meta["trending"] = vinfo.get("trending", False)    # a claimed song: must stay under 60 s
     out = d / "out"
     out.mkdir(exist_ok=True)
     mp4 = out / f"{slug}.mp4"

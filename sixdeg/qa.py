@@ -101,6 +101,9 @@ def qa(slug: str) -> dict:
             fails.append(f"fps {fps}")
         if not 15 <= dur <= 180:
             fails.append(f"duration {dur:.1f}s outside 15-180s (Shorts max is 3 min)")
+        if vj.exists() and json.loads(vj.read_text()).get("trending") and dur >= 59.5:
+            fails.append(f"duration {dur:.1f}s with a trending (claimed) song: Shorts over 60 s with a claim are "
+                         "blocked; shorten the chain or set \"music\" to a Mixkit track")
         elif dur > 60:
             warns.append(f"duration {dur:.1f}s: over 60 s, so keep lines tight for retention")
         lufs, peak = _loudness(mp4)

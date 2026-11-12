@@ -23,6 +23,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with: {fetch-depth: 0}
+      # trending songs for music-only episodes live in a PRIVATE repo (never committed here); skipped without the
+      # secret, and on pull requests from forks (secrets aren't available there). Fine-grained PAT, read-only
+      # Contents on evanlin23/sixdegrees-music.
+      - name: trending music (private repo)
+        env: {MUSIC_REPO_TOKEN: "${{ secrets.MUSIC_REPO_TOKEN }}"}
+        if: env.MUSIC_REPO_TOKEN != ''
+        run: git clone -q --depth 1 "https://x-access-token:${MUSIC_REPO_TOKEN}@github.com/evanlin23/sixdegrees-music.git" music-private && rm -rf music-private/.git && ls music-private
       - uses: actions/setup-python@v5
         with: {python-version: "3.12", cache: pip, cache-dependency-path: requirements-render.txt}
       - run: sudo apt-get update -q && sudo apt-get install -yq ffmpeg
