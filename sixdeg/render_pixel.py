@@ -797,13 +797,14 @@ def render(slug: str, log=print) -> Path:
                 slide = int(sgn * 70 * (1 - ease(min(1.0, kk / 0.22))))  # A slides in from the left, B from the right
                 base.alpha_composite(im, (slide + int(sx), y0 + int(sy)))
                 tag = pixel_tag(C.labels[nm].upper(), col, 44)
-                ty = y1 - tag.height // 2 - 24 if sgn < 0 else y0 + tag.height // 2 + 30   # A under its face, B above
+                # both tags under their faces (B's used to sit above B's face, where Buh now lands)
+                ty = y1 - tag.height // 2 - 24 if sgn < 0 else min(SAFE[3] + 60, y0 + fy + 210)
                 paste(base, tag, CX + int(sx), ty + int(sy))
                 # hero() puts the face box (brows..chin, ~340 px) centred at fy: its top is ~fy-150, the hair ~fy-300
                 if sgn < 0:   # Buh starts on top of A's head (pin tip in the hair, his body above it, off the face)
                     a_spot = (CX + 120 + slide + int(sx), max(150, y0 + fy - 290) + int(sy))
-                else:         # ...and jumps down onto the left side of B's head, clear of B's tag and the comment
-                    b_spot = (CX - 250 + slide + int(sx), y0 + fy + 10 + int(sy))
+                else:         # ...and jumps from head to head (owner): lands in B's hair
+                    b_spot = (CX + 120 + slide + int(sx), y0 + fy - 150 + int(sy))
             dr = ImageDraw.Draw(base)
             dr.rectangle([0, HERO_A[1], W, HERO_B[0]], fill=INK)               # the seam carries the question
             dr.rectangle([0, HERO_A[1] - 6, W, HERO_A[1]], fill=CYAN)
