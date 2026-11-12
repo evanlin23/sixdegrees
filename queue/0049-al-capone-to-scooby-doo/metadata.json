@@ -25,7 +25,10 @@
  "file": "al-capone-to-scooby-doo.mp4",
  "kind": "formula",
  "voice": "gemini",
- "outro": true,
+ "outro": false,
  "voice_rev": 2,
+ "narration": false,
+ "links": 9,
+ "lineage": 0,
  "slug": "al-capone-to-scooby-doo"
 }
