@@ -52,7 +52,8 @@ for producer sessions. What goes viral and the pair formula are in **`docs/STYLE
 - In that repo: the audio files, plus an optional `tracks.json`
   `[{"file": "washing-machine-heart.mp3", "title": "Washing Machine Heart", "artist": "Mitski", "start": 42.0}]`.
   `start` is the second where the recognisable part begins. Each episode picks a track by slug hash, and the song
-  is recorded per upload (`music`, `trending`).
+  is recorded per upload (`music`, `trending`). An episode's `"music"` pick applies only to narrated renders; to
+  keep Mixkit on a music-only render, set `"trending": false`.
 - A claimed song is fine on a Short under 60 s: it stays up, and the music partners take a share of that Short's
   pool revenue. Over 60 s it gets blocked, so QA fails trending-song renders at 59.5 s or longer.
 

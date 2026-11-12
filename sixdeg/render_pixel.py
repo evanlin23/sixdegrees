@@ -241,7 +241,9 @@ def render(slug: str, log=print) -> Path:
                     (reveal + THROW + 0.35, assets.sfx("px_pop", 0.4))]
         t += d
     total = t
-    track = (assets.pick_trending(slug) if not narration and not spec.get("music") else None) \
+    # music-only uses a trending song (an episode's "music" pick only applies to narrated renders); opt out with
+    # "trending": false
+    track = (assets.pick_trending(slug) if not narration and spec.get("trending", True) else None) \
         or assets.pick_track(slug, spec.get("music"))
     vinfo.update(music=f'{track.get("artist", "")} - {track["title"]}'.strip(" -"), trending=bool(track.get("trending")))
     (out_dir / "voice.json").write_text(json.dumps(vinfo))
