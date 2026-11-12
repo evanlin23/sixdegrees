@@ -81,7 +81,9 @@ episode.json: the hook shows the viewer's request bubble and the first comment c
   - **Pacing:** with few links, give each line a fun fact (up to ~18 words) so the video is long enough to follow
     (QA fails under 15 s; lengthen the lines, not the chain). The last line is short (3–7 words) and the video
     ends the instant B appears.
-- **Lineage links show EVERYONE** (only when a lineage is part of the shortest route). A line of popes, presidents or emperors scrolls past super fast with every
+- **Lineage scrolls only for HUGE lineages** (creator's call: "only if it's a lot, like the popes"): roughly
+  40+ holders (popes, Chinese/Roman emperors, English/French monarchs). Never for short lists like German
+  chancellors or most presidents' lists under ~40; use a real photo link instead. When used, show EVERYONE. A line of popes, presidents or emperors scrolls past super fast with every
     holder, not a hand-picked few. Generate the list with
     `python -m sixdeg lineage popes --from "Saint Peter" --to "Pope Francis"` (also `us-presidents`,
     `roman-emperors`, `uk-monarchs`, `english-monarchs`, `french-monarchs`, or a Wikidata QID) and paste its
