@@ -811,5 +811,13 @@
   "source": "viral formula",
   "hint": "parade: Hindenburg, the Kaiser, Teddy Roosevelt, presidents to Reagan, Arnold, Obama, King Charles, Mark Carney, Mike Myers",
   "slug": "adolf-hitler-to-shrek"
+ },
+ {
+  "from": "Adolf Hitler",
+  "to": "MrBeast",
+  "status": "done",
+  "source": "operator request",
+  "hint": "Mussolini, then Turkey's Inonu (Rome 1932, Cairo 1943), Churchill, the Queen, Trump, Ronaldo",
+  "slug": "adolf-hitler-to-mrbeast"
  }
 ]
