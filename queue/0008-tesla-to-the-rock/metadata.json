@@ -26,5 +26,8 @@
  "voice": "gemini",
  "outro": false,
  "voice_rev": 2,
+ "narration": false,
+ "links": 8,
+ "lineage": 0,
  "slug": "tesla-to-the-rock"
 }
