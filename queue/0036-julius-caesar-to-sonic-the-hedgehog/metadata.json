@@ -24,5 +24,8 @@
  "voice": "gemini",
  "outro": false,
  "voice_rev": 2,
+ "narration": true,
+ "links": 6,
+ "lineage": 16,
  "slug": "julius-caesar-to-sonic-the-hedgehog"
 }
