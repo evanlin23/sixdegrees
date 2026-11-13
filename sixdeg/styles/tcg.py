@@ -6,7 +6,10 @@ Foil sheen and a glare sweep run over the card frame only (never the art). The c
 an ornate double-keyline border with gold corner filigree, a holo lattice pattern in the frame ring, an embossed
 corner medallion (Buh's pin), a fact box under the name (the link's fact, cut before B until the reveal) and a set
 symbol. A link with a dictator gets a plain grey archive card: no foil, no glare, no stars, no rarity, no gold
-ornaments, and its mini card in the hand stays grey."""
+ornaments, and its mini card in the hand stays grey.
+Every card (the big one and the minis in the hand) has the real trading-card ratio, 63 x 88 mm (owner, 2026-11-13:
+"not tall enough"): the art window stays near full size and the card grows taller instead, giving the name bar and a
+two-line fact box more room. The captions sit just under the card, above the hand."""
 from __future__ import annotations
 
 import math
@@ -17,15 +20,16 @@ from PIL import Image, ImageDraw, ImageFont
 
 NAME = "tcg"
 
-SC = 0.70                      # core window scale: art = 616 x 665 (the fact box needs the room)
-PAD = 30                       # card frame around the art (sides)
-TOPBAR = 66                    # type line above the art
-FOOT = 126                     # name bar + fact box under the art
-RING = 20                      # the foil frame ring
-CARD_TOP = 404
+SC = 0.68                      # core window scale: art = 598 x 646
+PAD = 22                       # card frame around the art (sides)
+RATIO = 63 / 88                # a real trading card (width / height); the height follows from the width
+TOPBAR = 68                    # type line above the art (the rest of the height goes to the name bar + fact box)
+RING = 16                      # the foil frame ring
+CARD_TOP = 392                 # card top -> bottom ~1289, just above the captions
+CAP_DY = 32                    # captions drawn this far below CAP_Y (clear of the taller card, above the hand)
 SWAP = 0.45                    # seconds: the old card flies into the hand while the new one deals in
 MINI = 0.36                    # mini card scale in the hand
-PIVOT_Y = 2330                 # the hand fans around a point below the screen
+PIVOT_Y = 2362                 # the hand fans around a point below the screen
 HAND_R = 790
 RARITY = ["COMMON", "UNCOMMON", "RARE", "ULTRA RARE", "LEGENDARY"]
 INKC = (28, 22, 34)
@@ -35,7 +39,8 @@ def make(ctx):
     W, H = ctx.W, ctx.H
     N = ctx.n_links
     aw, ah = int(880 * SC), int(950 * SC)
-    CW, CH = aw + 2 * PAD, TOPBAR + ah + FOOT
+    CW = aw + 2 * PAD
+    CH = int(round(CW / RATIO))
     CX0 = int(ctx.CX - CW / 2)
     ART_X, ART_Y = PAD, TOPBAR                         # art window inside the card
     st = {}
@@ -209,7 +214,7 @@ def make(ctx):
             d.text((tx + 56, my), f"PHOTO CARD · {yr}" if yr else "PHOTO CARD", font=font("Inter-Bold.otf", 20),
                    fill=(236, 234, 244), anchor="lm")
             for k in range(5):
-                star(d, CW / 2 + 52 + k * 27, my, 11, (255, 200, 40) if k < n_st else (120, 120, 140), outline=INKC)
+                star(d, CW / 2 + 34 + k * 27, my, 11, (255, 200, 40) if k < n_st else (120, 120, 140), outline=INKC)
             d.text((CW - 42, my), RARITY[n_st - 1], font=fit("Inter-Black.otf", RARITY[n_st - 1], 20, 112, 13),
                    fill=(255, 120, 140) if n_st >= 4 else (236, 234, 244), anchor="rm")
         # the art window: an inset bevel (gold / grey keyline, then ink)
@@ -217,34 +222,45 @@ def make(ctx):
         d.rectangle([ART_X - 3, ART_Y - 3, ART_X + aw + 2, ART_Y + ah + 2], fill=INKC)
         # name bar: B (or ? ? ?) until the reveal, then the name; "with A" on the right
         fy = ART_Y + ah + 10
-        nb = fy + 46
+        nb = fy + 54
         d.rounded_rectangle([28, fy, CW - 29, nb], 12, fill=(250, 246, 232), outline=INKC, width=3)
         ny = (fy + nb) / 2
         nm = ctx.C.labels[bn] if revealed else "? ? ?"
         wa = "WITH " + ctx.C.labels[an].upper()
         fw_ = fit("Inter-Bold.otf", wa, 19, 230, 12)
         d.text((CW - 44, ny), wa, font=fw_, fill=(140, 120, 80), anchor="rm")
-        d.text((44, ny), nm, font=fit("Inter-ExtraBold.otf", nm, 36, CW - 120 - fw_.getlength(wa)), fill=INKC,
+        d.text((44, ny), nm, font=fit("Inter-ExtraBold.otf", nm, 40, CW - 120 - fw_.getlength(wa)), fill=INKC,
                anchor="lm")
         # fact box (the card's "move"): an energy dot, LINK, the fact (cut before B until the reveal), set symbol
         bt, bb = nb + 6, CH - R0 - 8
-        by_ = (bt + bb) / 2
         d.rounded_rectangle([28, bt, CW - 29, bb], 10, fill=(236, 236, 240) if plain else (255, 250, 236),
                             outline=(150, 150, 160) if plain else (190, 150, 70), width=2)
-        d.ellipse([40, by_ - 11, 62, by_ + 11], fill=(130, 130, 140) if plain else (226, 46, 58), outline=INKC, width=2)
-        d.ellipse([45, by_ - 7, 52, by_], fill=(190, 190, 196) if plain else (255, 255, 255))
+        ty_ = bt + 24                                   # first text line (the box holds two)
+        d.ellipse([40, ty_ - 11, 62, ty_ + 11], fill=(130, 130, 140) if plain else (226, 46, 58), outline=INKC, width=2)
+        d.ellipse([45, ty_ - 7, 52, ty_], fill=(190, 190, 196) if plain else (255, 255, 255))
         word = "RECORD" if plain else "LINK"
-        d.text((70, by_), word, font=font("Inter-Black.otf", 18), fill=INKC, anchor="lm")
+        d.text((70, ty_), word, font=font("Inter-Black.otf", 18), fill=INKC, anchor="lm")
         fact = ctx.fact_of(ctx.spec["links"][i], full=revealed)
         fx0 = 70 + font("Inter-Black.otf", 18).getlength(word) + 12
         fmax = CW - 29 - 56 - fx0
-        ff = font("Inter-SemiBold.otf", 18)
-        if ff.getlength(fact) > fmax:
-            while fact and ff.getlength(fact + "…") > fmax:
-                fact = fact[:-1]
-            fact = fact.rstrip(" ,;:…") + "…"
-        d.text((fx0, by_), fact, font=ff, fill=(70, 62, 56), anchor="lm")
-        set_symbol(d, CW - 54, by_, plain)
+        ff = font("Inter-SemiBold.otf", 21)
+        lines, cur = [], ""
+        for wd in fact.split():
+            t_ = f"{cur} {wd}".strip()
+            if ff.getlength(t_) > (fmax if not lines else CW - 29 - 56 - 70) and cur:
+                lines.append(cur)
+                cur = wd
+            else:
+                cur = t_
+        lines.append(cur)
+        if len(lines) > 2:
+            last = lines[1]
+            while last and ff.getlength(last + "…") > CW - 29 - 56 - 70:
+                last = last[:-1]
+            lines = [lines[0], last.rstrip(" ,;:…") + "…"]
+        for k, ln in enumerate(lines):
+            d.text((fx0 if k == 0 else 70, ty_ + 30 * k), ln, font=ff, fill=(70, 62, 56), anchor="lm")
+        set_symbol(d, CW - 54, (bt + bb) / 2, plain)
         ring = Image.new("L", (CW, CH), 0)
         rd = ImageDraw.Draw(ring)
         rd.rounded_rectangle([0, 0, CW - 1, CH - 1], 30, fill=255)
@@ -422,6 +438,12 @@ def make(ctx):
             put(base, finished(i - 1), x, y, sc, ha * tr - 8 * math.sin(math.pi * tr))
 
         X, Y, w_, h_ = c["rect"]                        # the credit sits inside the art's bottom edge (the bars are full)
+        cap = seg["cap"]
+
+        class _Low:                                     # captions just under the taller card (clear of it)
+            def draw(self, b, t, y=ctx.CAP_Y):
+                cap.draw(b, t, y + CAP_DY)
+        seg = dict(seg, cap=_Low())
         return ctx.core_finish(base, seg, tt, c, connected_y=int(Y + h_ - 110), credit_xy=(X + w_ - 12, Y + h_ - 18))
 
     return frame

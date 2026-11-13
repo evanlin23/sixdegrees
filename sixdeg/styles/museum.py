@@ -1,7 +1,10 @@
 """Museum: a gallery walk. The show's core photo window (draw_core: camera, Buh, string, name tags) hangs in a gilt
 frame on a red damask wall, under a picture light, with a wall label above it (names, year, fact; B stays "? ? ?"
 until the reveal, then a glint runs across the label). Between links the camera walks along the wall: the finished
-picture slides off to the left as a still in its frame and the next one comes in from the right. A link with a
+picture slides off to the left as a still in its frame and the next one comes in from the right. The wall is ONE
+long wall for the whole video (owner, 2026-11-13: continuity across slides): link j's picture hangs at its own fixed
+spot j * STEP along it, every finished picture stays hung there as a still, and the decorative paintings, plinths,
+ropes and benches between them are fixed to the wall too, so nothing reshuffles from link to link. A link with a
 sensitive person (dictators etc.) hangs in a plain dark archive frame with no picture light and a grey label: no
 honour framing, no gold.
 The room is furnished like a real gallery, all on the wall strip so it walks with the camera: neighbouring paintings
@@ -208,15 +211,15 @@ def make(ctx):
         return im
 
     def furnish(arr):
-        """Neighbour paintings, a plinth with a vase + plaque, velvet rope on stanchions and a bench, every STEP."""
+        """Neighbour paintings, a plinth with a vase + plaque, velvet rope on stanchions and a bench, every STEP.
+        Fixed to the wall: the painting between pictures k and k+1 is always the same one (kind (k + 1) % 3)."""
         im = Image.fromarray(arr)
         d = ImageDraw.Draw(im)
-        WW = im.width
         brass = [(140, 96, 30), (230, 180, 80), (255, 230, 150)]
-        for k in range(-1, WW // STEP + 2):
-            bx = k * STEP + W // 2                     # where a main picture hangs on the strip
+        for k in range(-1, n + 1):
+            bx = k * STEP + W // 2                     # where main picture k hangs on the wall
             # neighbour painting between two main pictures: peeks in at the screen edges when the camera rests
-            npic = neighbour(k % 3)
+            npic = neighbour((k + 1) % 3)
             nx = bx + STEP // 2 - npic.width // 2
             d.rectangle([nx + 10, 470 + 14, nx + npic.width + 14, 470 + npic.height + 18], fill=(30, 8, 12))
             im.paste(npic, (nx, 470))
@@ -263,11 +266,11 @@ def make(ctx):
                 d.ellipse([tx_ - 4, by + 22, tx_ + 4, by + 30], fill=(30, 20, 16))
         return np.asarray(im.convert("RGB")).copy()
 
-    # ---------- wall + floor: a wide strip that scrolls as the camera walks
+    # ---------- wall + floor: one long strip for the whole video (picture j centred at x = j * STEP + W / 2)
     def wall():
         if "wall" in st:
             return st["wall"]
-        WW = W + STEP * 2
+        WW = W + STEP * max(1, n - 1)
         yy, xx = np.mgrid[0:H, 0:WW].astype(np.float32)
         tex = 1 + 0.045 * (np.sin(xx / 9) * np.sin(yy / 9) > 0.35) + 0.02 * np.sin(xx / 3.1)   # faint damask
         img = WALL[None, None] * tex[..., None] * np.ones((H, WW, 1), np.float32)
@@ -277,7 +280,7 @@ def make(ctx):
         img[DADO - 2:DADO] = (176, 140, 80)
         img[FLOOR - 40:FLOOR] = (52, 30, 18)
         img[FLOOR - 42:FLOOR - 38] = (90, 58, 34)
-        for k in range(WW // STEP + 1):                 # panel mouldings, repeating every STEP
+        for k in range(-1, n + 1):                      # panel mouldings, repeating every STEP
             x0 = k * STEP + W // 2 - 380
             for (a, b) in ((x0, x0 + 360), (x0 + 400, x0 + 760)):
                 a, b = max(0, a), min(WW - 1, b)
@@ -311,6 +314,14 @@ def make(ctx):
         st["light"] = g
         return st["wall"]
 
+    def drop():
+        """The soft shadow a hung frame casts on the wall (cached)."""
+        if "drop" not in st:
+            sh = Image.new("RGBA", (OW + 60, OH + 60), (0, 0, 0, 0))
+            ImageDraw.Draw(sh).rectangle([30, 30, OW + 30, OH + 30], fill=(0, 0, 0, 120))
+            st["drop"] = sh.filter(ImageFilter.GaussianBlur(14))
+        return st["drop"]
+
     def walk(i, local):
         """Camera position along the wall (in steps) and the walk progress (1 = settled)."""
         if i == 0:
@@ -326,7 +337,7 @@ def make(ctx):
         pos, u = walk(i, local)
         bob = 6 * math.sin(u * math.pi * 4) * math.sin(math.pi * u) if u < 1 else 0.0   # footsteps
         wl = wall()
-        off = int(pos * STEP) % STEP
+        off = max(0, min(wl.shape[1] - W, int(round(pos * STEP))))   # the one long wall: no wrap, no reshuffle
         arr = wl[:, off:off + W].astype(np.float32) * 0.55
         # picture lights on the frames in view (none on a sensitive link)
         for j in (i - 1, i):
@@ -340,14 +351,14 @@ def make(ctx):
         base = Image.fromarray(arr.clip(0, 255).astype(np.uint8)).convert("RGBA")
         R = seg.get("rv", ctx.REVEAL) * seg["speech"] + ctx.THROW
         revealed = local > R
-        # the picture we just walked away from
-        if i > 0 and u < 1 and not ctx.C.fj["links"][i - 1].get("lineage"):
-            fx = ctx.CX + (i - 1 - pos) * STEP
-            sh = Image.new("RGBA", (OW + 60, OH + 60), (0, 0, 0, 0))
-            ImageDraw.Draw(sh).rectangle([30, 30, OW + 30, OH + 30], fill=(0, 0, 0, 120))
-            base.alpha_composite(sh.filter(ImageFilter.GaussianBlur(14)), (int(fx - OW / 2 - 16), FRAME_TOP - 10 + int(bob)))
-            base.alpha_composite(hung(i - 1), (int(fx - OW / 2), FRAME_TOP + int(bob)))
-            base.alpha_composite(label(i - 1, True), (int(fx - OW / 2 + 6), LBL_Y0 + int(bob)))
+        # the pictures we already walked past stay hung at their own spots (stills), wherever they are in view
+        for j in range(i):
+            fx = ctx.CX + (j - pos) * STEP
+            if ctx.C.fj["links"][j].get("lineage") or not (-OW / 2 - 40 < fx < W + OW / 2 + 40):
+                continue
+            base.alpha_composite(drop(), (int(fx - OW / 2 - 16), FRAME_TOP - 10 + int(bob)))
+            base.alpha_composite(hung(j), (int(fx - OW / 2), FRAME_TOP + int(bob)))
+            base.alpha_composite(label(j, True), (int(fx - OW / 2 + 6), LBL_Y0 + int(bob)))
         fx = ctx.CX + (i - pos) * STEP
         lx = int(fx - OW / 2 + 6)
         since = local - R
@@ -369,9 +380,7 @@ def make(ctx):
         fs = frame_sprite(i)
 
         def mount(b, X0, Y0, w, h):
-            sh = Image.new("RGBA", (OW + 60, OH + 60), (0, 0, 0, 0))
-            ImageDraw.Draw(sh).rectangle([30, 30, OW + 30, OH + 30], fill=(0, 0, 0, 120))
-            b.alpha_composite(sh.filter(ImageFilter.GaussianBlur(14)), (int(X0 - MAT - T - 16), int(Y0 - MAT - T - 10)))
+            b.alpha_composite(drop(), (int(X0 - MAT - T - 16), int(Y0 - MAT - T - 10)))
             b.alpha_composite(fs, (int(X0 - MAT - T), int(Y0 - MAT - T)))
 
         c = ctx.draw_core(base, seg, tt, fx - PW / 2, FRAME_TOP + T + MAT + bob, SC, frame=mount)

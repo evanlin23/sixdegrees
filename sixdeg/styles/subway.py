@@ -3,14 +3,17 @@ photo window is the "station" (a navy platform frame with the line's red stripe)
 roundel per person reached so far (their face), a "?" stop ahead, and a little train that pulls out while the camera
 pans to both faces and pulls into the next stop as Buh lands on B. Like a real transit map the line is not straight:
 stations sit on short level runs joined by 45-degree bends, and the train tilts to follow the track. The line only
-ever shows one stop ahead, so it never gives away how long the chain is."""
+ever shows one stop ahead, so it never gives away how long the chain is.
+The whole map moves with the train (owner, 2026-11-13): the paper, grid, river, parks, the other lines and their
+station names are one long map that pans 1:1 with the Buh line as the train advances, like a camera following along
+one big map; nothing behind the line stays put."""
 from __future__ import annotations
 
 import itertools
 import math
 import random
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 
 NAME = "subway"
 
@@ -33,31 +36,85 @@ def make(ctx):
     X0 = int(CX - w / 2)
     people = list(ctx.C.people)
     _c = {}
+    MW = W + SP * (ctx.n_links + 2)                      # the one long map: p = 0 .. n_links (+ slack)
+    STOPS = ["ELM ST", "MARKET", "NORTH PARK", "HARBOUR", "MUSEUM", "OLD MILL", "KING ST", "UNION SQ", "OAK HILL",
+             "CANAL", "STADIUM", "BAKER ST", "LIBRARY", "PIER 9", "WEST END", "OBSERVATORY", "GARDENS", "FERRY",
+             "BRIDGE RD", "CITY HALL", "MAPLE AVE", "DOCKS", "UNIVERSITY", "ARCADE"]
+    DISTRICTS = ["OLD TOWN", "RIVERSIDE", "THE HEIGHTS", "MIDTOWN", "EAST DOCKS", "GREENWAY", "UPTOWN"]
 
-    def backdrop():
-        if "bg" not in _c:
-            im = Image.new("RGBA", (W, H), PAPER + (255,))
-            d = ImageDraw.Draw(im)
-            for x in range(0, W, 60):
-                d.line([(x, 0), (x, H)], fill=GRID, width=2)
-            for y in range(0, H, 60):
-                d.line([(0, y), (W, y)], fill=GRID, width=2)
-            rnd = random.Random(5)
-            for _ in range(9):                                       # parks
-                x, y = rnd.uniform(-100, W), rnd.uniform(300, H)
-                d.rounded_rectangle([x, y, x + rnd.uniform(160, 340), y + rnd.uniform(110, 240)], 34, fill=(216, 229, 199))
-            river = [(-60, 1560), (180, 1560), (420, 1800), (W + 60, 1800)]
-            d.line(river, fill=(190, 214, 236), width=110)
-            for p in river[1:3]:
-                d.ellipse([p[0] - 55, p[1] - 55, p[0] + 55, p[1] + 55], fill=(190, 214, 236))
-            for col, pts in (((132, 166, 222), [(70, 300), (70, 900), (300, 1130), (300, H)]),            # other lines,
-                             ((140, 196, 152), [(W, 700), (1000, 700), (760, 940), (760, H)]),            # faded
-                             ((246, 204, 140), [(0, 1460), (520, 1460), (760, 1700), (W, 1700)])):
-                d.line(pts, fill=col, width=18, joint="curve")
-                for p in pts[1:-1]:
+    def mfont(name, size):
+        if (name, size) not in _c:
+            _c[(name, size)] = ImageFont.truetype(str(ctx.FONTS / f"Inter-{name}.otf"), size)
+        return _c[(name, size)]
+
+    def big_map():
+        """The whole transit map, MW px wide (built once): grid, districts, parks, a river, faded other lines with
+        named stations. It pans with the Buh line, so it is drawn in the same screen units (SP px per station)."""
+        if "map" in _c:
+            return _c["map"]
+        im = Image.new("RGBA", (MW, H), PAPER + (255,))
+        d = ImageDraw.Draw(im)
+        for x in range(0, MW, 60):
+            d.line([(x, 0), (x, H)], fill=GRID, width=2)
+        for y in range(0, H, 60):
+            d.line([(0, y), (MW, y)], fill=GRID, width=2)
+        rnd = random.Random(5)
+        for k in range(MW // 420 + 1):                       # district names, huge and faint, under everything
+            x, y = k * 420 + rnd.uniform(0, 160), rnd.choice((250, 1500, 1840))
+            d.text((x, y), DISTRICTS[k % len(DISTRICTS)], font=mfont("Black", 44), fill=(224, 216, 198))
+        for _ in range(MW // 120):                           # parks
+            x, y = rnd.uniform(-100, MW), rnd.uniform(240, H)
+            d.rounded_rectangle([x, y, x + rnd.uniform(160, 340), y + rnd.uniform(110, 240)], 34, fill=(216, 229, 199))
+        # the river: meanders across the whole map in 45-degree runs
+        river, x, y = [(-80, 1640)], -80, 1640
+        while x < MW + 80:
+            run = rnd.uniform(180, 420)
+            x += run
+            river.append((x, y))
+            ny = min(1820, max(1480, y + rnd.choice((-1, 1)) * rnd.uniform(90, 200)))
+            x += abs(ny - y)
+            y = ny
+            river.append((x, y))
+        d.line(river, fill=(190, 214, 236), width=110, joint="curve")
+        for p in river[1:-1]:
+            d.ellipse([p[0] - 55, p[1] - 55, p[0] + 55, p[1] + 55], fill=(190, 214, 236))
+        for k in range(1, len(river) - 1, 6):                # bridges
+            (ax, ay), (bx, by) = river[k - 1], river[k]
+            mx = (ax + bx) / 2
+            d.rectangle([mx - 8, ay - 64, mx + 8, ay + 64], fill=(214, 208, 194))
+        # other lines, faded: two long horizontal-ish lines and short north-south branches, all 45-degree bends
+        names = iter(STOPS * 6)
+        lines = []
+        for col, yb in (((132, 166, 222), 300), ((246, 204, 140), 1420)):
+            pts, x, y = [(-60, yb)], -60, yb
+            while x < MW + 60:
+                x += rnd.uniform(260, 480)
+                pts.append((x, y))
+                ny = yb + rnd.choice((-1, 0, 1)) * 90
+                x += abs(ny - y)
+                y = ny
+                pts.append((x, y))
+            lines.append((col, pts))
+        for k in range(MW // 640 + 1):                       # branches crossing the map top to bottom
+            x = 200 + k * 640 + rnd.uniform(-80, 80)
+            col = ((140, 196, 152), (196, 160, 214), (132, 166, 222))[k % 3]
+            lines.append((col, [(x, -40), (x, 640), (x + 220, 860), (x + 220, H + 40)] if k % 2 else
+                          [(x + 220, -40), (x + 220, 700), (x, 920), (x, H + 40)]))
+        for col, pts in lines:
+            d.line(pts, fill=col, width=18, joint="curve")
+        f = mfont("Bold", 17)
+        for col, pts in lines:                               # stations on the corners, with names
+            for p in pts[1:-1]:
+                if -20 < p[0] < MW + 20 and 220 < p[1] < H - 40:
                     d.ellipse([p[0] - 14, p[1] - 14, p[0] + 14, p[1] + 14], fill=WHITE, outline=col, width=6)
-            _c["bg"] = im
-        return _c["bg"].copy()
+                    d.text((p[0] + 20, p[1] - 30), next(names), font=f, fill=(150, 140, 124))
+        _c["map"] = im
+        return im
+
+    def backdrop(p):
+        """The screen's view of the map with the train at track position p (pans 1:1 with the Buh line)."""
+        ox = max(0, min(MW - W, int(round(p * SP))))
+        return big_map().crop((ox, 0, ox + W, H))
 
     def station(b, X, Y, ww, hh):
         """The platform frame around the window: navy, a red line stripe, white keyline, a hard drop shadow."""
@@ -125,12 +182,16 @@ def make(ctx):
             pts.append((sx(kv), ty(kv)))
         return pts
 
+    def progress(i, k, R, sp_):
+        """Track position of the train (in stations) and its run fraction u."""
+        dep = R - 0.22                                       # leaves as the camera starts to pan to both
+        u = (k - dep) / max(1e-3, (R - dep) + ctx.THROW / sp_)
+        return i + ctx.ease(max(0.0, min(1.0, u))), u
+
     def line(base, i, c):
         """The Buh line under the window: stations up to the next stop, the train between them."""
         sp_, k, R = c.get("speech", 1.0), c["k"], c["R"]
-        dep = R - 0.22                                       # leaves as the camera starts to pan to both
-        u = (k - dep) / max(1e-3, (R - dep) + ctx.THROW / sp_)
-        p = i + ctx.ease(max(0.0, min(1.0, u)))
+        p, u = progress(i, k, R, sp_)
         landed = c["land"] >= 0
         sx = lambda j: CX + 85 + (j - p) * SP            # noqa: E731  (the train sits just left of its stop)
         sv_of = lambda x: (x - CX - 85) / SP + p         # noqa: E731
@@ -168,7 +229,8 @@ def make(ctx):
         i = seg["i"]
         if ctx.C.fj["links"][i].get("lineage"):
             return ctx.frame_lineage(seg, tt)
-        base = backdrop()
+        k = min(1.0, (tt - seg["t0"]) / seg["speech"])     # the same clock draw_core runs on
+        base = backdrop(progress(i, k, seg.get("rv", ctx.REVEAL), seg["speech"])[0])
         c = ctx.draw_core(base, seg, tt, X0, Y0, S, frame=station)
         c["speech"] = seg["speech"]
         line(base, i, c)
