@@ -1,9 +1,11 @@
 {
   "from": "Muammar Gaddafi",
   "to": "Clifford the Big Red Dog",
-  "title": "Muammar Gaddafi to Clifford the Big Red Dog in three real photos",
+  "title": "How is Gaddafi connected to Clifford?",
   "description": "A 2009 summit photo, a White House welcome and an Easter Egg Roll connect Libya's Muammar Gaddafi to Clifford the Big Red Dog.",
-  "hook": "How is Muammar Gaddafi connected to Clifford the Big Red Dog?",
+  "hook": "How's Gaddafi linked to Clifford the Big Red Dog?",
+  "hook_variant": "A",
+  "text_variant": "T1",
   "people": {
     "Muammar Gaddafi": {
       "label": "Gaddafi",
@@ -17,7 +19,14 @@
     },
     "Clifford the Big Red Dog": {
       "label": "Clifford",
-      "short": "Clifford"
+      "short": "Clifford",
+      "hook_photo": "https://static.wikia.nocookie.net/clifford/images/8/85/Clifford.jpg/revision/latest?cb=20121209212057",
+      "hook_box": [
+        400,
+        40,
+        500,
+        520
+      ]
     }
   },
   "links": [
@@ -27,7 +36,7 @@
       "image": {
         "file": "File:G8 summit in L'Aquila, family photo.jpg"
       },
-      "line": "In 2009, Gaddafi posed beside Barack Obama at the G8 summit in Italy, where the two shook hands.",
+      "line": "In 2009, Gaddafi stood beside Barack Obama at the G8 summit in Italy.",
       "a_face": 21,
       "b_face": 7
     },
@@ -37,7 +46,7 @@
       "image": {
         "file": "File:Obamas escort Bushes to helicopter.jpg"
       },
-      "line": "In 2009, on Inauguration Day, Barack Obama walked Laura Bush and her husband to their farewell helicopter.",
+      "line": "That year, on Inauguration Day, Obama walked Laura Bush to her farewell helicopter.",
       "a_face": 7,
       "b_face": 13
     },
@@ -47,7 +56,7 @@
       "image": {
         "file": "File:Clifford the Big Red Dog at the WhiteHouse Easter Egg Roll, 2007Apr09.jpg"
       },
-      "line": "And in 2007, Laura Bush posed with Clifford the Big Red Dog at the White House Easter Egg Roll.",
+      "line": "And in 2007, Laura Bush posed with Clifford the Big Red Dog.",
       "a_face": 4,
       "b_face": [
         140,
