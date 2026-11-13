@@ -1,15 +1,31 @@
 {
   "from": "Attila",
   "to": "Squidward Tentacles",
-  "title": "Attila the Hun to Squidward: a fresco, 266 popes and a Jedi",
+  "title": "Attila the Hun to Squidward: how?",
   "description": "A Raphael fresco, the line of popes, two White House visits and a Hollywood ceremony connect Attila the Hun to Squidward, through his voice, Rodger Bumpass.",
   "hook": "How is Attila the Hun connected to Squidward?",
+  "hook_variant": "F",
+  "text_variant": "T0",
   "people": {
     "Attila": {
-      "label": "Attila the Hun"
+      "label": "Attila the Hun",
+      "hook_photo": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Raphael_-_The_Meeting_of_Leo_the_Great_and_Attila.jpg/3840px-Raphael_-_The_Meeting_of_Leo_the_Great_and_Attila.jpg",
+      "hook_box": [
+        2140,
+        1215,
+        130,
+        150
+      ]
     },
     "Squidward Tentacles": {
-      "label": "Squidward"
+      "label": "Squidward",
+      "hook_photo": "https://static.wikia.nocookie.net/spongebob/images/4/49/Squidward_unhappy_stock_art.png/revision/latest?cb=20251102234328",
+      "hook_box": [
+        1300,
+        480,
+        850,
+        750
+      ]
     },
     "Rodger Bumpass": {
       "refs": [
@@ -30,7 +46,7 @@
       "image": {
         "file": "File:Raphael - The Meeting of Leo the Great and Attila.jpg"
       },
-      "line": "Around 1514, Raphael painted Pope Leo I meeting Attila the Hun, who spared Rome in 452.",
+      "line": "Around 1514, Raphael painted Attila the Hun meeting Pope Leo I.",
       "a_face": [
         1080,
         620,
@@ -92,7 +108,7 @@
           }
         ]
       },
-      "line": "From Leo, the 45th pope, the line runs unbroken to the 266th, Pope Francis."
+      "line": "In 2013, 221 popes after Leo, the line reached Pope Francis."
     },
     {
       "a": "Pope Francis",
@@ -100,7 +116,7 @@
       "image": {
         "file": "File:Pope Francis and Joe Biden at the White House.jpg"
       },
-      "line": "In 2015, Vice President Joe Biden greeted Pope Francis at the White House.",
+      "line": "In 2015, Francis met Vice President Joe Biden at the White House.",
       "a_face": 1,
       "b_face": 3
     },
@@ -110,7 +126,7 @@
       "image": {
         "file": "File:P20240503AS-0590 (53783780087).jpg"
       },
-      "line": "In 2024, President Biden welcomed Star Wars legend Mark Hamill to the Oval Office."
+      "line": "In 2024, Biden welcomed Star Wars legend Mark Hamill to the Oval Office."
     },
     {
       "a": "Mark Hamill",
@@ -121,7 +137,7 @@
         "license": "Fair use (commentary)",
         "source": "https://mulderville.net/en/events/2990/the-spongebob-movie-search-for-squarepants-hollywood-honors-spongebob-squarepants-with-a-hand-footprint-ceremony"
       },
-      "line": "In 2025, Hamill, the Flying Dutchman in the new SpongeBob movie, posed with the cast, including Rodger Bumpass.",
+      "line": "In 2025, Hamill posed with the SpongeBob cast, including Rodger Bumpass.",
       "a_face": 6,
       "b_face": 4
     },
@@ -138,7 +154,7 @@
           }
         ]
       },
-      "line": "And Rodger Bumpass has been the voice of Squidward since 1999.",
+      "line": "And since 1999, Bumpass has voiced the grumpy Squidward.",
       "a_face": 0,
       "b_face": [
         370,
