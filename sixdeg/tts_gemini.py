@@ -46,14 +46,16 @@ def clean_tail(a: np.ndarray, sr: int = SR) -> np.ndarray:
     n = len(a) // hop
     db = np.array([20 * np.log10(np.sqrt(np.mean(a[i * hop:(i + 1) * hop] ** 2)) + 1e-9) for i in range(n)])
     quiet = db < -50
+    # "real" silence lasts 50 ms: a burst can contain a 10-20 ms run of digital zeros, which isn't the gap
+    real = np.array([quiet[max(0, k - 4):k + 1].all() for k in range(n)])
     i = n - 1
-    while i > 0 and not quiet[i]:          # walk back over the trailing burst
+    while i > 0 and not real[i]:           # walk back over the trailing burst
         i -= 1
     if (n - 1 - i) * 0.01 < 0.6 and i > 0:
         j = i
         while j > 0 and quiet[j]:          # and back over the silence before it
             j -= 1
-        a = a[:min(len(a), (j + 15) * hop)]   # keep 150 ms after the last sound
+        a = a[:min(len(a), (j + 15) * hop, (i + 1) * hop)]   # keep 150 ms after the last sound, not the burst
     f = min(len(a), int(sr * 0.03))
     a = a.copy()
     a[-f:] *= np.linspace(1, 0, f)

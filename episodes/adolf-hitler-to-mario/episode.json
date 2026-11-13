@@ -44,7 +44,7 @@
       "image": {
         "file": "File:Joe Louis and Max Schmeling 1971 Press Photo.jpg"
       },
-      "line": "The man he beat, Joe Louis, knocked him out in their rematch, and later they became friends.",
+      "line": "In 1938, Joe Louis knocked him out in their rematch, and years later the two became close friends.",
       "a_face": 1,
       "b_face": 0
     },
@@ -67,7 +67,7 @@
         "license": "Fair use (commentary)",
         "source": "https://biznakenya.com/boxing-legend-muhammad-ali-dies-aged-74/"
       },
-      "line": "In 2002, Arnold raised Ali's hand at a charity fight night.",
+      "line": "In 2002, Arnold Schwarzenegger raised Ali's hand at a charity fight night.",
       "a_face": 2,
       "b_face": 4
     },
@@ -80,7 +80,8 @@
         "license": "Fair use (commentary)",
         "source": "https://www.goodmorningamerica.com/culture/story/arnold-schwarzeneggers-family-supports-fubar-premiere-122790066"
       },
-      "line": "His son-in-law is Chris Pratt."
+      "line": "In 2025, at his FUBAR premiere, Arnold posed with his son-in-law, Chris Pratt.",
+      "fact": "FUBAR premiere, LA, 2025"
     },
     {
       "a": "Chris Pratt",
@@ -98,7 +99,7 @@
           }
         ]
       },
-      "line": "Who voices Mario.",
+      "line": "And in 2023, Chris Pratt became the voice of Mario himself.",
       "b_face": 1
     }
   ]

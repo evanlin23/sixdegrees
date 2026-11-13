@@ -73,6 +73,12 @@ def main(argv):
         from .episode import load, people_order
         from .pronounce import update
         print(json.dumps(update(people_order(load(argv[1])[1])), indent=1, ensure_ascii=False))
+    elif cmd == "series":  # every uploaded Hitler Short joins the series playlist
+        from .series import series
+        print(series())
+    elif cmd == "comments":  # top comments on the Hitler Shorts -> comments.json (viewer requests)
+        from .series import comments
+        print(json.dumps(comments()))
     elif cmd == "research":  # competitor channel report via the YouTube API
         from .research import channel_report
         for h in args:
@@ -126,6 +132,9 @@ def main(argv):
     elif cmd == "consume":
         from .queue import consume
         mx = int(args[args.index("--max") + 1]) if "--max" in args else 2
+        if os.environ.get("YT_PRIVACY", "scheduled") == "scheduled":   # the daily scheduling run fills every slot
+            from .upload import PER_DAY
+            mx = max(mx, PER_DAY)
         consume(mx, dry_run="--dry-run" in args)
     elif cmd == "make":
         from .episode import prep

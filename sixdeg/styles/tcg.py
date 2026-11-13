@@ -1,7 +1,15 @@
-"""Trading cards: every link is dealt as one big collectible photo card (art = the link photo, name bar, year, who it
-was taken with). B's name on the card is "? ? ?" until the reveal, then it pops in; finished cards fly up into a
-collection row of mini cards under the title. Foil sheen and a glare sweep run over the card frame only (never the
-faces). A link with a dictator gets a plain archive card: no foil, no glare, no stars, no rarity."""
+"""Trading cards: every link is dealt as one big collectible photo card whose art window IS the show's core
+(draw_core: the camera moves, Buh jumps head to head with the red string, the name tags ride the photo). The name
+bar reads "? ? ?" until the reveal, then B's name pops in. When the next link starts, the finished card shrinks and
+flies down into a fanned hand of mini cards at the bottom of the screen, which keeps growing through the episode.
+Foil sheen and a glare sweep run over the card frame only (never the art). The card is dressed like a real collectible:
+an ornate double-keyline border with gold corner filigree, a holo lattice pattern in the frame ring, an embossed
+corner medallion (Buh's pin), a fact box under the name (the link's fact, cut before B until the reveal) and a set
+symbol. A link with a dictator gets a plain grey archive card: no foil, no glare, no stars, no rarity, no gold
+ornaments, and its mini card in the hand stays grey.
+Every card (the big one and the minis in the hand) has the real trading-card ratio, 63 x 88 mm (owner, 2026-11-13:
+"not tall enough"): the art window stays near full size and the card grows taller instead, giving the name bar and a
+two-line fact box more room. The captions sit just under the card, above the hand."""
 from __future__ import annotations
 
 import math
@@ -12,49 +20,40 @@ from PIL import Image, ImageDraw, ImageFont
 
 NAME = "tcg"
 
-HW, HH = 760, 900              # hero card
-HERO_TOP = 405
-HERO_CY = HERO_TOP + HH / 2
-RING = 22                      # frame width (where the foil and glare live)
-ART = (28, 110, 732, 620)      # art box inside the card
-MW, MH = 96, 130               # mini cards in the collection row
-ROW_Y = 318
-ROW_DX = 116
-CAP_Y = 1378
-SWAP = 0.26                    # seconds for the old card to fly up and the new one to deal in (before the caption)
+SC = 0.68                      # core window scale: art = 598 x 646
+PAD = 22                       # card frame around the art (sides)
+RATIO = 63 / 88                # a real trading card (width / height); the height follows from the width
+TOPBAR = 68                    # type line above the art (the rest of the height goes to the name bar + fact box)
+RING = 16                      # the foil frame ring
+CARD_TOP = 392                 # card top -> bottom ~1289, just above the captions
+CAP_DY = 32                    # captions drawn this far below CAP_Y (clear of the taller card, above the hand)
+SWAP = 0.45                    # seconds: the old card flies into the hand while the new one deals in
+MINI = 0.36                    # mini card scale in the hand
+PIVOT_Y = 2362                 # the hand fans around a point below the screen
+HAND_R = 790
 RARITY = ["COMMON", "UNCOMMON", "RARE", "ULTRA RARE", "LEGENDARY"]
 INKC = (28, 22, 34)
 
 
-def photo_params(ctx, i, w, h, fill=0.8, maxup=1.3):
-    """(cx, cy, scale, ow, oh) for link photo i in a w x h window: both faces in, cover-cropped where the source
-    allows, never upscaled beyond maxup (a small source gives ow, oh < w, h and gets a dark matte)."""
-    ih, iw = ctx.C.imgs[i].shape[:2]
-    cx, cy, s = ctx.both_cam(i, w, h, fill)
-    ba, bb = ctx.fbox(i, "a"), ctx.fbox(i, "b")
-    spread = max(ba[0] + ba[2], bb[0] + bb[2]) - min(ba[0], bb[0])
-    s = min(maxup, max(s, max(w / iw, h / ih)), 0.95 * w / max(1, spread))
-    ow, oh = min(w, int(iw * s)), min(h, int(ih * s))
-    hw, hh = ow / 2 / s, oh / 2 / s
-    cx, cy = min(max(cx, hw), iw - hw), min(max(cy, hh), ih - hh)
-    return cx, cy, s, ow, oh
-
-
 def make(ctx):
-    F = {}
+    W, H = ctx.W, ctx.H
+    N = ctx.n_links
+    aw, ah = int(880 * SC), int(950 * SC)
+    CW = aw + 2 * PAD
+    CH = int(round(CW / RATIO))
+    CX0 = int(ctx.CX - CW / 2)
+    ART_X, ART_Y = PAD, TOPBAR                         # art window inside the card
+    st = {}
 
     def font(name, size):
-        if (name, size) not in F:
-            F[(name, size)] = ImageFont.truetype(str(ctx.FONTS / name), size)
-        return F[(name, size)]
+        if (name, size) not in st:
+            st[(name, size)] = ImageFont.truetype(str(ctx.FONTS / name), size)
+        return st[(name, size)]
 
     def fit(name, text, size, width, lo=16):
         while font(name, size).getlength(text) > width and size > lo:
             size -= 1
         return font(name, size)
-
-    st = {}
-    N = ctx.n_links
 
     def rmask(w, h, r):
         key = ("m", w, h, r)
@@ -80,7 +79,7 @@ def make(ctx):
     def foil_strip():
         """A wide pastel rainbow with diagonal bands; cropped at a moving offset for the holo sheen."""
         if "strip" not in st:
-            w, h = HW * 3, HH
+            w, h = CW * 3, CH
             yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
             hh = ((xx + yy * 0.6) / 520.0) % 1.0 * 6
             c = 0.55
@@ -97,43 +96,77 @@ def make(ctx):
             st["shine"] = np.exp(-((xs - w / 2) / 60.0) ** 2) * 230 + np.exp(-((xs - w / 2 - 110) / 18.0) ** 2) * 120
         return st["strip"], st["strip_a"], st["shine"]
 
-    def tags_for(i, revealed):
-        """Name chips under each face along the bottom of the art: [(img, x)] in card coordinates."""
-        cx, cy, s, ow, oh = photo_params(ctx, i, ART[2] - ART[0] - 8, ART[3] - ART[1] - 8)
-        acx = (ART[0] + ART[2]) / 2
-        an, bn = ctx.link_names(i)
-        items = []
-        for role, nm, colr in (("a", an, ctx.CYAN), ("b", bn, ctx.YELLOW)):
-            label = ctx.C.labels[nm].upper() if role == "a" or revealed else "? ? ?"
-            im = ctx.pixel_tag(label, colr if (role == "a" or revealed) else (190, 186, 200), 22)
-            fx = acx + (ctx.ctr(ctx.fbox(i, role))[0] - cx) * s
-            items.append([im, fx])
-        items.sort(key=lambda q: q[1])
-        lo, hi = ART[0] + 6, ART[2] - 6
-        for q in items:
-            q[1] = max(lo + q[0].width / 2, min(hi - q[0].width / 2, q[1]))
-        (l, xl), (r, xr) = items
-        gap = xr - xl - (l.width + r.width) / 2 - 10
-        if gap < 0:
-            xl, xr = xl + gap / 2, xr - gap / 2
-            xl = max(lo + l.width / 2, xl)
-            xr = min(hi - r.width / 2, xr)
-            if xr - xl < (l.width + r.width) / 2 + 6:      # still too tight: centre them side by side
-                tot = l.width + r.width + 10
-                xl = (lo + hi) / 2 - tot / 2 + l.width / 2
-                xr = xl + l.width / 2 + 10 + r.width / 2
-        return [(l, xl), (r, xr)]
+    def emblem(plain):
+        """The embossed corner medallion: a raised gold disc with Buh's pin pressed into it."""
+        key = ("emb", plain)
+        if key in st:
+            return st[key]
+        r, S2 = 27, 4                                   # drawn 4x, downsampled (smooth emboss)
+        D = (2 * r + 6) * S2
+        im = Image.new("RGBA", (D, D), (0, 0, 0, 0))
+        d = ImageDraw.Draw(im)
+        c = D / 2
+        for k in range(r * S2, 0, -S2):                 # a domed gold gradient, lit from the top left
+            u = k / (r * S2)
+            col = tuple(int(a_ * (1 - u) + b_ * u) for a_, b_ in zip((255, 236, 160), (150, 96, 20)))
+            o = (1 - u) * 5 * S2
+            d.ellipse([c - k - o, c - k - o, c + k - o, c + k - o], fill=col)
+        d.ellipse([c - r * S2, c - r * S2, c + r * S2, c + r * S2], outline=INKC, width=3 * S2)
+        d.ellipse([c - (r - 6) * S2, c - (r - 6) * S2, c + (r - 6) * S2, c + (r - 6) * S2], outline=(120, 76, 14), width=S2)
 
-    def hero(i, revealed, fin=False):
-        """The static card for link i + its frame-ring mask (foil and glare go there only)."""
-        key = ("hero", i, revealed, fin)
+        def pin(dx, dy, col):                           # Buh's pin, pressed in
+            hx, hy = c + dx, c - 6 * S2 + dy
+            d.ellipse([hx - 9 * S2, hy - 9 * S2, hx + 9 * S2, hy + 9 * S2], fill=col)
+            d.rectangle([hx - 12 * S2, hy + 6 * S2, hx + 12 * S2, hy + 10 * S2], fill=col)
+            d.polygon([(hx - 2 * S2, hy + 10 * S2), (hx + 2 * S2, hy + 10 * S2), (hx, hy + 22 * S2)], fill=col)
+        pin(-S2 * 1.5, -S2 * 1.5, (255, 248, 210))      # light edge up-left, dark edge down-right: embossed
+        pin(S2 * 1.5, S2 * 1.5, (96, 56, 8))
+        pin(0, 0, (214, 160, 52))
+        st[key] = im.resize((D // S2, D // S2), Image.LANCZOS)
+        return st[key]
+
+    def set_symbol(d, cx, cy, plain):
+        """The set symbol: two linked rings (the show's chain) in a small black shield."""
+        d.rounded_rectangle([cx - 17, cy - 13, cx + 17, cy + 13], 8, fill=INKC)
+        col = (190, 190, 200) if plain else (255, 214, 90)
+        d.ellipse([cx - 13, cy - 7, cx + 3, cy + 7], outline=col, width=3)
+        d.ellipse([cx - 3, cy - 7, cx + 13, cy + 7], outline=col, width=3)
+
+    def filigree(d, x, y, sx, sy, col, dark):
+        """A gold corner rosette on the ring at (x, y), with beads running along the ring on both edges."""
+        for k in range(3):
+            r = 5 - k
+            ax = x + sx * (20 + 13 * k)
+            d.ellipse([ax - r, y - r, ax + r, y + r], fill=col, outline=dark)
+            by = y + sy * (20 + 13 * k)
+            d.ellipse([x - r, by - r, x + r, by + r], fill=col, outline=dark)
+        d.ellipse([x - 12, y - 12, x + 12, y + 12], fill=col, outline=dark, width=2)
+        for k in range(8):                              # petals
+            a = k * math.pi / 4
+            px, py = x + 7 * math.cos(a), y + 7 * math.sin(a)
+            d.ellipse([px - 2, py - 2, px + 2, py + 2], fill=dark)
+        d.ellipse([x - 3, y - 3, x + 3, y + 3], fill=dark)
+
+    def holo_pattern():
+        """Holo lattice for the frame ring: diamonds with little stars at the crossings (0.45 .. 1)."""
+        if "pat" not in st:
+            yy, xx = np.mgrid[0:CH, 0:CW].astype(np.float32)
+            u, v = (xx + yy) % 34, (xx - yy) % 34
+            lattice = ((np.abs(u - 17) < 2.2) | (np.abs(v - 17) < 2.2)).astype(np.float32)
+            starc = np.exp(-(np.minimum(u, 34 - u) ** 2 + np.minimum(v, 34 - v) ** 2) / 10.0)
+            st["pat"] = np.clip(0.45 + 0.35 * lattice + 0.6 * starc, 0, 1)
+        return st["pat"]
+
+    def card(i, revealed):
+        """The static card for link i with an empty art window, + its frame-ring mask (foil and glare go there)."""
+        key = ("card", i, revealed)
         if key in st:
             return st[key]
         plain = calm(i)
         an, bn = ctx.link_names(i)
         n_st = stars_of(i)
-        im = Image.new("RGBA", (HW, HH), (0, 0, 0, 0))
-        yy = np.linspace(0, 1, HH)[:, None, None]
+        im = Image.new("RGBA", (CW, CH), (0, 0, 0, 0))
+        yy = np.linspace(0, 1, CH)[:, None, None]
         if plain:
             hi_, lo_ = np.array([150, 152, 160]), np.array([96, 98, 108])
         elif n_st >= 5:
@@ -142,48 +175,107 @@ def make(ctx):
             hi_, lo_ = np.array([255, 226, 130]), np.array([176, 120, 30])
         g = hi_ * (1 - yy) + lo_ * yy
         if not plain:
-            g = g + 30 * np.sin(np.linspace(0, 9, HW))[None, :, None]
-        g = np.clip(np.broadcast_to(g, (HH, HW, 3)), 0, 255).astype(np.uint8)
-        im.paste(Image.fromarray(np.dstack([g, np.full((HH, HW), 255, np.uint8)])), (0, 0), rmask(HW, HH, 34))
+            g = g + 30 * np.sin(np.linspace(0, 9, CW))[None, :, None]
+        g = np.clip(np.broadcast_to(g, (CH, CW, 3)), 0, 255).astype(np.uint8)
+        im.paste(Image.fromarray(np.dstack([g, np.full((CH, CW), 255, np.uint8)])), (0, 0), rmask(CW, CH, 30))
         d = ImageDraw.Draw(im)
-        panel = (226, 226, 230) if plain else (214, 220, 232)
-        d.rounded_rectangle([RING - 6, RING - 6, HW - RING + 5, HH - RING + 5], 22, fill=panel)
-        # name bar: B (or ? ? ?) and the link number
-        d.rounded_rectangle([28, 28, HW - 29, 100], 14, fill=(250, 246, 232), outline=INKC, width=3)
+        R0 = RING
+        # the inner panel: a soft gradient with a fine engraved cross-hatch (flat grey when plain)
+        if plain:
+            d.rounded_rectangle([R0, R0, CW - 1 - R0, CH - 1 - R0], 18, fill=(226, 226, 230))
+        else:
+            py, px = np.mgrid[0:CH, 0:CW].astype(np.float32)
+            hatch = ((((px + py) % 9) < 1) | (((px - py) % 9) < 1)).astype(np.float32)
+            top, bot = np.array([238, 240, 248], np.float32), np.array([202, 208, 226], np.float32)
+            pan = top * (1 - py[..., None] / CH) + bot * (py[..., None] / CH) - 12 * hatch[..., None]
+            pm = Image.new("L", (CW, CH), 0)
+            ImageDraw.Draw(pm).rounded_rectangle([R0, R0, CW - 1 - R0, CH - 1 - R0], 18, fill=255)
+            im.paste(Image.fromarray(np.clip(pan, 0, 255).astype(np.uint8)).convert("RGBA"), (0, 0), pm)
+        # double keyline: a dark engraved line just inside the ring and a fine coloured one inside that
+        d.rounded_rectangle([R0, R0, CW - 1 - R0, CH - 1 - R0], 18, outline=INKC, width=3)
+        d.rounded_rectangle([R0 + 6, R0 + 6, CW - 7 - R0, CH - 7 - R0], 13,
+                            outline=(170, 170, 178) if plain else (190, 150, 70), width=2)
+        yr = next((ctx.year_of(j) for j in range(i, -1, -1) if ctx.year_of(j)), None)   # "that year"
+        # type line on top (Buh may stand in front of it): medallion, card number, kind, year, stars + rarity
+        my = (R0 + 4 + TOPBAR - 8) / 2
+        d.rounded_rectangle([28, R0 + 4, CW - 29, TOPBAR - 8], 12, fill=(70, 72, 84) if plain else (60, 52, 80),
+                            outline=None if plain else (190, 150, 70), width=2)
+        tx = 42
+        if not plain:
+            em = emblem(False)
+            im.alpha_composite(em, (6, int(my - em.height / 2)))
+            tx = 6 + em.width + 2
+        d.text((tx, my), f"#{i + 1:02d}", font=font("Inter-Black.otf", 26),
+               fill=(200, 200, 210) if plain else (255, 120, 140), anchor="lm")
+        if plain:
+            note = f"ARCHIVE PHOTO  ·  {yr}  ·  HISTORICAL RECORD" if yr else "ARCHIVE PHOTO  ·  HISTORICAL RECORD"
+            d.text((CW / 2 + 30, my), note, font=font("Inter-Bold.otf", 22), fill=(236, 234, 244), anchor="mm")
+        else:
+            d.text((tx + 56, my), f"PHOTO CARD · {yr}" if yr else "PHOTO CARD", font=font("Inter-Bold.otf", 20),
+                   fill=(236, 234, 244), anchor="lm")
+            for k in range(5):
+                star(d, CW / 2 + 34 + k * 27, my, 11, (255, 200, 40) if k < n_st else (120, 120, 140), outline=INKC)
+            d.text((CW - 42, my), RARITY[n_st - 1], font=fit("Inter-Black.otf", RARITY[n_st - 1], 20, 112, 13),
+                   fill=(255, 120, 140) if n_st >= 4 else (236, 234, 244), anchor="rm")
+        # the art window: an inset bevel (gold / grey keyline, then ink)
+        d.rectangle([ART_X - 6, ART_Y - 6, ART_X + aw + 5, ART_Y + ah + 5], fill=(170, 172, 180) if plain else (196, 156, 72))
+        d.rectangle([ART_X - 3, ART_Y - 3, ART_X + aw + 2, ART_Y + ah + 2], fill=INKC)
+        # name bar: B (or ? ? ?) until the reveal, then the name; "with A" on the right
+        fy = ART_Y + ah + 10
+        nb = fy + 54
+        d.rounded_rectangle([28, fy, CW - 29, nb], 12, fill=(250, 246, 232), outline=INKC, width=3)
+        ny = (fy + nb) / 2
         nm = ctx.C.labels[bn] if revealed else "? ? ?"
-        d.text((48, 64), nm, font=fit("Inter-ExtraBold.otf", nm, 50, HW - 220), fill=INKC, anchor="lm")
-        d.text((HW - 48, 64), f"{i + 1}/{N}", font=font("Inter-Black.otf", 40), fill=(200, 40, 60), anchor="rm")
-        # art
-        d.rectangle(ART, fill=INKC)
-        aw, ah = ART[2] - ART[0] - 8, ART[3] - ART[1] - 8
-        cx, cy, s, ow, oh = photo_params(ctx, i, aw, ah)
-        im.alpha_composite(ctx.view(i, cx, cy, s, ow, oh), (ART[0] + 4 + (aw - ow) // 2, ART[1] + 4 + (ah - oh) // 2))
-        for tg, x in tags_for(i, revealed):
-            im.alpha_composite(tg, (int(x - tg.width / 2), int(ART[3] - tg.height - 10)))
-        # type line
-        d.rounded_rectangle([40, 632, HW - 41, 672], 12, fill=(70, 72, 84) if plain else (60, 52, 80))
-        d.text((HW / 2, 652), "ARCHIVE PHOTO  ·  CONNECTOR" if plain else "PHOTO CARD  ·  CONNECTOR",
-               font=font("Inter-Bold.otf", 24), fill=(236, 234, 244), anchor="mm")
-        if not fin:
-            d.rounded_rectangle([28, 684, HW - 29, 800], 14, fill=(250, 246, 232), outline=INKC, width=3)
-            yr = next((ctx.year_of(j) for j in range(i, -1, -1) if ctx.year_of(j)), None)   # "that year"
-            d.text((52, 716), "YEAR", font=font("Inter-Black.otf", 24), fill=(140, 120, 80), anchor="lm")
-            d.text((170, 716), str(yr) if yr else "?", font=font("Inter-Black.otf", 40), fill=INKC, anchor="lm")
-            d.text((52, 768), "WITH", font=font("Inter-Black.otf", 24), fill=(140, 120, 80), anchor="lm")
-            mt = ctx.C.labels[an]
-            d.text((170, 768), mt, font=fit("Inter-ExtraBold.otf", mt, 36, HW - 230), fill=INKC, anchor="lm")
-            if plain:
-                d.text((HW / 2, 840), "HISTORICAL RECORD", font=font("Inter-Bold.otf", 24), fill=(80, 80, 90),
-                       anchor="mm")
+        wa = "WITH " + ctx.C.labels[an].upper()
+        fw_ = fit("Inter-Bold.otf", wa, 19, 230, 12)
+        d.text((CW - 44, ny), wa, font=fw_, fill=(140, 120, 80), anchor="rm")
+        d.text((44, ny), nm, font=fit("Inter-ExtraBold.otf", nm, 40, CW - 120 - fw_.getlength(wa)), fill=INKC,
+               anchor="lm")
+        # fact box (the card's "move"): an energy dot, LINK, the fact (cut before B until the reveal), set symbol
+        bt, bb = nb + 6, CH - R0 - 8
+        d.rounded_rectangle([28, bt, CW - 29, bb], 10, fill=(236, 236, 240) if plain else (255, 250, 236),
+                            outline=(150, 150, 160) if plain else (190, 150, 70), width=2)
+        ty_ = bt + 24                                   # first text line (the box holds two)
+        d.ellipse([40, ty_ - 11, 62, ty_ + 11], fill=(130, 130, 140) if plain else (226, 46, 58), outline=INKC, width=2)
+        d.ellipse([45, ty_ - 7, 52, ty_], fill=(190, 190, 196) if plain else (255, 255, 255))
+        word = "RECORD" if plain else "LINK"
+        d.text((70, ty_), word, font=font("Inter-Black.otf", 18), fill=INKC, anchor="lm")
+        fact = ctx.fact_of(ctx.spec["links"][i], full=revealed)
+        fx0 = 70 + font("Inter-Black.otf", 18).getlength(word) + 12
+        fmax = CW - 29 - 56 - fx0
+        ff = font("Inter-SemiBold.otf", 21)
+        lines, cur = [], ""
+        for wd in fact.split():
+            t_ = f"{cur} {wd}".strip()
+            if ff.getlength(t_) > (fmax if not lines else CW - 29 - 56 - 70) and cur:
+                lines.append(cur)
+                cur = wd
             else:
-                for k in range(5):
-                    star(d, 66 + k * 50, 840, 22, (255, 200, 40) if k < n_st else (120, 120, 140), outline=INKC)
-                d.text((HW - 48, 840), RARITY[n_st - 1], font=font("Inter-Black.otf", 28),
-                       fill=(200, 40, 60) if n_st >= 4 else INKC, anchor="rm")
-        ring = Image.new("L", (HW, HH), 0)
+                cur = t_
+        lines.append(cur)
+        if len(lines) > 2:
+            last = lines[1]
+            while last and ff.getlength(last + "…") > CW - 29 - 56 - 70:
+                last = last[:-1]
+            lines = [lines[0], last.rstrip(" ,;:…") + "…"]
+        for k, ln in enumerate(lines):
+            d.text((fx0 if k == 0 else 70, ty_ + 30 * k), ln, font=ff, fill=(70, 62, 56), anchor="lm")
+        set_symbol(d, CW - 54, (bt + bb) / 2, plain)
+        ring = Image.new("L", (CW, CH), 0)
         rd = ImageDraw.Draw(ring)
-        rd.rounded_rectangle([0, 0, HW - 1, HH - 1], 34, fill=255)
-        rd.rounded_rectangle([RING - 6, RING - 6, HW - RING + 5, HH - RING + 5], 22, fill=0)
+        rd.rounded_rectangle([0, 0, CW - 1, CH - 1], 30, fill=255)
+        rd.rounded_rectangle([R0, R0, CW - 1 - R0, CH - 1 - R0], 18, fill=0)
+        if not plain:                                   # gold filigree on the ring's inner corners + side studs
+            gold, dark = (255, 214, 110), (110, 70, 10)
+            em = emblem(False)                          # the medallion owns the top-left corner
+            rd.ellipse([6, int(my - em.height / 2), 6 + em.width, int(my + em.height / 2)], fill=0)
+            h_ = R0 // 2 + 3
+            for (x, y, sx, sy) in ((CW - 1 - h_, h_, -1, 1), (h_, CH - 1 - h_, 1, -1), (CW - 1 - h_, CH - 1 - h_, -1, -1)):
+                filigree(d, x, y, sx, sy, gold, dark)
+                filigree(rd, x, y, sx, sy, 0, 0)        # keep the foil off the ornaments
+            for (x, y) in ((CW / 2, R0 / 2), (CW / 2, CH - R0 / 2), (R0 / 2, CH / 2), (CW - R0 / 2, CH / 2)):
+                d.polygon([(x, y - 8), (x + 8, y), (x, y + 8), (x - 8, y)], fill=gold, outline=dark)
+                rd.polygon([(x, y - 8), (x + 8, y), (x, y + 8), (x - 8, y)], fill=0)
         st[key] = (im, np.asarray(ring, np.float32) / 255, plain)
         return st[key]
 
@@ -193,67 +285,59 @@ def make(ctx):
         if plain:
             return im
         strip, sa, sh = foil_strip()
-        off = int((tt * 90 + phase * 300) % (HW * 2))
-        a_holo = sa[:, off:off + HW] * ring * 150
+        off = int((tt * 90 + phase * 300) % (CW * 2))
+        a_holo = sa[:, off:off + CW] * ring * holo_pattern() * 190
         sweep = ((tt + phase) % 2.2) / 2.2
-        so = int(HW * 1.5 - (sweep * (HW * 2.2) - HW * 0.6))
-        shear = (np.arange(HH)[:, None] * 0.45).astype(np.int32)
-        cols = np.clip(so + np.arange(HW)[None, :] + shear - HH // 4, 0, sh.shape[0] - 1)
+        so = int(CW * 1.5 - (sweep * (CW * 2.2) - CW * 0.6))
+        shear = (np.arange(CH)[:, None] * 0.45).astype(np.int32)
+        cols = np.clip(so + np.arange(CW)[None, :] + shear - CH // 4, 0, sh.shape[0] - 1)
         a_sh = sh[cols] * ring
         out = np.asarray(im, np.float32).copy()
-        ah = (a_holo / 255)[..., None]
-        out[..., :3] = out[..., :3] * (1 - ah) + strip[:, off:off + HW] * ah
+        ah_ = (a_holo / 255)[..., None]
+        out[..., :3] = out[..., :3] * (1 - ah_) + strip[:, off:off + CW] * ah_
         ash = (a_sh / 255)[..., None]
         out[..., :3] = out[..., :3] + (255 - out[..., :3]) * ash
         return Image.fromarray(out.astype(np.uint8))
 
-    def mini(p):
-        """Collection-row card for person p (p = 0 is A of link 0, p >= 1 is B of link p - 1); None = empty slot."""
-        key = ("mini", p)
+    def finished(i):
+        """Link i's card as it goes into the hand: revealed, with a still of the photo (both faces) as art."""
+        key = ("fin", i)
         if key not in st:
-            im = Image.new("RGBA", (MW, MH), (0, 0, 0, 0))
-            d = ImageDraw.Draw(im)
-            if p is None:
-                d.rounded_rectangle([2, 2, MW - 3, MH - 3], 10, outline=(110, 96, 150), width=3)
-                d.text((MW / 2, MH / 2), "?", font=font("Inter-Black.otf", 40), fill=(110, 96, 150), anchor="mm")
-            elif ctx.sensitive(ctx.link_names(0)[0] if p == 0 else ctx.link_names(p - 1)[1]):
-                # a dictator is never a collectible: a neutral marker instead of a card
-                nm = ctx.link_names(0)[0] if p == 0 else ctx.link_names(p - 1)[1]
-                d.rounded_rectangle([6, 22, MW - 7, MH - 23], 8, fill=(78, 76, 90))
-                if p == 0:
-                    d.text((MW / 2, MH / 2), "START", font=fit("Inter-Black.otf", "START", 22, MW - 20, 10),
-                           fill=(214, 212, 222), anchor="mm")
-                else:
-                    face = ctx.sharp[nm].convert("L").convert("RGBA").resize((MW - 28, MW - 28), Image.LANCZOS)
-                    im.alpha_composite(face, (14, (MH - (MW - 28)) // 2))
-            else:
-                nm = ctx.link_names(0)[0] if p == 0 else ctx.link_names(p - 1)[1]
-                plain = calm(0 if p == 0 else p - 1)
-                d.rounded_rectangle([0, 0, MW - 1, MH - 1], 10,
-                                    fill=(140, 142, 150) if plain else (236, 196, 80), outline=INKC, width=2)
-                face = ctx.sharp[nm].convert("RGBA").resize((MW - 16, MW - 16), Image.LANCZOS)
-                im.alpha_composite(face, (8, 8))
-                d.rectangle([8, 8, MW - 9, MW - 9], outline=INKC, width=2)
-                words = ctx.C.labels[nm].split()
-                short = (words[-2] if len(words) > 1 and set(words[-1]) <= set("IVX") else words[-1]).upper()
-                d.text((MW / 2, MW + 8 + (MH - MW - 8) / 2), short, font=fit("Inter-Black.otf", short, 18, MW - 10, 10),
-                       fill=INKC, anchor="mm")
+            im = card(i, True)[0].copy()
+            art = ctx.view(i, *ctx.both_cam(i, aw, ah, 0.75), aw, ah).convert("RGBA")
+            if calm(i):
+                art = art.convert("L").convert("RGBA")
+            im.alpha_composite(art, (ART_X, ART_Y))
             st[key] = im
         return st[key]
 
-    def slot_x(p):
-        return ctx.CX + (p - N / 2) * ROW_DX
+    def mini(i):
+        key = ("mini", i)
+        if key not in st:
+            f = finished(i)
+            st[key] = f.resize((int(CW * MINI), int(CH * MINI)), Image.LANCZOS)
+        return st[key]
+
+    def hand_pose(k, n):
+        """Card k of a fanned hand of n cards: (x, y, angle in degrees, PIL sense)."""
+        spread = min(9.0, 36.0 / max(1, n - 1)) if n > 1 else 0.0
+        ang = (k - (n - 1) / 2) * spread
+        a = math.radians(ang)
+        return ctx.CX + HAND_R * math.sin(a), PIVOT_Y - HAND_R * math.cos(a), -ang
 
     def background():
         if "bg" not in st:
-            yy, xx = np.mgrid[0:ctx.H, 0:ctx.W].astype(np.float32)
-            r = np.sqrt(((xx - ctx.CX) / ctx.W) ** 2 + ((yy - 860) / ctx.H) ** 2)
+            yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
+            r = np.sqrt(((xx - ctx.CX) / W) ** 2 + ((yy - 820) / H) ** 2)
             v = np.clip(1 - r * 1.4, 0, 1)[..., None]
             c = np.array([18, 16, 40]) * (1 - v) + np.array([58, 34, 96]) * v
             grid = (((xx + yy) % 90 < 3) | ((xx - yy) % 90 < 3))[..., None]
             c = np.where(grid, c * 1.25 + 6, c)
+            # a felt play mat where the hand lies
+            mat = np.clip((yy - 1330) / 60, 0, 1)[..., None]
+            c = c * (1 - mat * 0.45) + np.array([20, 60, 52]) * mat * 0.45
             st["bg"] = Image.fromarray(np.dstack([np.clip(c, 0, 255).astype(np.uint8),
-                                                  np.full((ctx.H, ctx.W), 255, np.uint8)]))
+                                                  np.full((H, W), 255, np.uint8)]))
             s = 900
             g = np.mgrid[0:s, 0:s].astype(np.float32)
             rr = np.sqrt((g[0] - s / 2) ** 2 + (g[1] - s / 2) ** 2) / (s / 2)
@@ -261,7 +345,7 @@ def make(ctx):
             st["spot"] = Image.fromarray(np.dstack([np.full((s, s), 150, np.uint8), np.full((s, s), 110, np.uint8),
                                                     np.full((s, s), 255, np.uint8), a]))
             rnd = random.Random(3)
-            st["sparks"] = [(rnd.uniform(0, ctx.W), rnd.uniform(240, 1900), rnd.uniform(0, 6.3), rnd.uniform(5, 13))
+            st["sparks"] = [(rnd.uniform(0, W), rnd.uniform(280, 1900), rnd.uniform(0, 6.3), rnd.uniform(5, 13))
                             for _ in range(40)]
         return st["bg"]
 
@@ -276,7 +360,14 @@ def make(ctx):
             im = im.resize((w, h), Image.BILINEAR)
         if abs(ang) > 0.05:
             im = im.rotate(ang, expand=True, resample=Image.BICUBIC)
-        ctx.paste(base, im, x, y, alpha=alpha)
+        ctx.paste(base, im, x, y, alpha=alpha, nearest=False)
+
+    def shadow(base, x, y, w, h, ang=0.0, a=110):
+        sh = Image.new("RGBA", (int(w) + 40, int(h) + 40), (0, 0, 0, 0))
+        ImageDraw.Draw(sh).rounded_rectangle([20, 20, int(w) + 19, int(h) + 19], 16, fill=(0, 0, 0, a))
+        if abs(ang) > 0.05:
+            sh = sh.rotate(ang, expand=True, resample=Image.BICUBIC)
+        ctx.paste(base, sh, x + 12, y + 16, nearest=False)
 
     def frame(seg, tt):
         i = seg["i"]
@@ -286,10 +377,9 @@ def make(ctx):
         sp, R = seg["speech"], seg.get("rv", ctx.REVEAL)
         rvt = R * sp + ctx.THROW
         revealed = local > rvt
-        last = i == N - 1
         base = background().copy()
         sx_ = ctx.CX + 260 * math.sin(tt * 0.7)
-        sy_ = 860 + 200 * math.cos(tt * 0.9)
+        sy_ = 820 + 200 * math.cos(tt * 0.9)
         base.alpha_composite(st["spot"], (int(sx_ - 450), int(sy_ - 450)))
         d = ImageDraw.Draw(base, "RGBA")
         for (x, y, ph, r) in st["sparks"]:
@@ -297,60 +387,63 @@ def make(ctx):
             if a > 0.05:
                 sparkle(d, x, y - (tt * 20 % 60), r * (0.6 + 0.4 * a), a * 0.8)
 
-        # ---- collection row: person 0 .. i are collected (person i arrives with the previous card's fly-up)
+        # ---- the hand: finished cards 0..i-1, fanned at the bottom; card i-1 is still flying in during the swap
         tr = ctx.ease(max(0.0, min(1.0, local / SWAP))) if i > 0 else 1.0
-        for p in range(N + 1):
-            x = slot_x(p)
-            have = p < i or (p == i and (i == 0 or tr >= 1)) or (last and revealed and p == N)
-            put(base, mini(p if have else None), x, ROW_Y + 3 * math.sin(tt * 2 + p), 1.0, 0)
-        # ---- the hero card of this link deals in from the right
-        wob = 1.0 * math.sin(tt * 1.6)
-        if i == 0:                             # straight after the hook: grows in place, no empty screen
+        done = [j for j in range(i) if not ctx.C.fj["links"][j].get("lineage")]
+        settled = done[:-1] if (done and done[-1] == i - 1 and tr < 1) else done
+        n_now = len(done)
+        for k, j in enumerate(settled):
+            hx, hy, ha = hand_pose(k, n_now)
+            if tr < 1 and len(settled) > 0:
+                ox, oy, oa = hand_pose(k, max(1, len(settled)))
+                hx, hy, ha = ox + (hx - ox) * tr, oy + (hy - oy) * tr, oa + (ha - oa) * tr
+            bob = 5 * math.sin(tt * 2.2 + k)
+            m = mini(j)
+            shadow(base, hx, hy + bob, m.width, m.height, ha + 0.8 * math.sin(tt * 1.6 + k), 90)
+            put(base, m, hx, hy + bob, 1.0, ha + 0.8 * math.sin(tt * 1.6 + k))
+
+        # ---- the big card of this link deals in from the right (link 0 grows in place after the hook)
+        if i == 0:
             k_in = 1.0
-            sc0 = 0.9 + 0.1 * ctx.ease(min(1.0, local / 0.25))
         else:
-            k_in = ctx.ease(max(0.0, min(1.0, local / SWAP)))
-            sc0 = 1.0
-        hx = ctx.CX + (1 - k_in) * 900
-        hy = HERO_CY + 6 * math.sin(tt * 1.9)
-        pop = 1.0
+            k_in = ctx.ease(max(0.0, min(1.0, (local - 0.08) / (SWAP - 0.08))))
+        cx0 = CX0 + (1 - k_in) * 980
+        cy0 = CARD_TOP + 4 * math.sin(tt * 1.9)
+        lay = card(i, revealed)
+
+        def mount(b, X0, Y0, w, h):
+            x, y = X0 - ART_X, Y0 - ART_Y
+            shadow(b, x + CW / 2, y + CH / 2, CW, CH, 0, 120)
+            b.alpha_composite(live(lay, tt, i * 0.37), (int(x), int(y)))
+
+        c = ctx.draw_core(base, seg, tt, cx0 + ART_X, cy0 + ART_Y, SC, frame=mount)
+        # B's name lands in the name bar: a small pop + a sparkle burst (not on a dictator's card)
         if revealed:
-            pop = 1 + 0.04 * math.sin(math.pi * min(1.0, (local - rvt) / 0.3))
-        lay = hero(i, revealed, fin=last and revealed)
-        put(base, live(lay, tt, i * 0.37), hx, hy, pop * sc0, wob * k_in,
-            alpha=min(1.0, 0.3 + local / 0.15) if i == 0 else 1.0)
-        if revealed and not calm(i):           # a sparkle burst when the name lands (not on a dictator's card)
-            bk = (local - rvt) / 0.6
-            if 0 < bk < 1:
+            rk = (local - rvt) / 0.6
+            X0, Y0 = c["rect"][0] - ART_X, c["rect"][1] - ART_Y
+            if 0 < rk < 1 and not calm(i):
                 for j in range(14):
                     ang = j * 2 * math.pi / 14
-                    rr = 300 + 200 * ctx.ease(bk)
-                    sparkle(d, hx + rr * math.cos(ang), hy - 330 + rr * 0.3 * math.sin(ang), 18 * (1 - bk) + 4, 1 - bk)
-        # ---- the previous card shrinks and flies up into its slot (above everything, away from the caption)
-        if i > 0 and tr < 1 and not ctx.C.fj["links"][i - 1].get("lineage"):
-            sc = 1 + (MW / HW - 1) * tr
-            x = ctx.CX + (slot_x(i) - ctx.CX) * tr
-            y = HERO_CY + (ROW_Y - HERO_CY) * tr
-            put(base, live(hero(i - 1, True), tt, (i - 1) * 0.37), x, y, sc, 0)
+                    rr = 120 + 300 * ctx.ease(rk)
+                    sparkle(d, X0 + CW / 2 + rr * math.cos(ang), Y0 + TOPBAR / 2 + rr * 0.25 * math.sin(ang),
+                            18 * (1 - rk) + 4, 1 - rk)
 
-        # ---- Buh peeks up from below, reacting at the reveal
-        rv = local - rvt
-        expr = "happy" if rv < 0 else "shock" if rv < 0.6 else "smug"
-        hop = 30 * math.sin(math.pi * min(1.0, rv / 0.35)) if 0 < rv < 0.35 else 0.0
-        ctx.paste_pin(base, ctx.pin_sprite(expr, 5 * math.sin(tt * 2.5), 0, 1, scale=7), 250,
-                      1770 - hop + 8 * math.sin(tt * 3))
-        ctx.header(base, i)
-        if last and revealed:
-            # CONNECTED! drawn on its own layer and shrunk so it fits the card's inner panel, never the foil rim
-            lay_c = Image.new("RGBA", (ctx.W, ctx.H), (0, 0, 0, 0))
-            cy_ = 960
-            ctx.connected(lay_c, seg, tt, y=cy_)
-            box = lay_c.crop((0, cy_ - 160, ctx.W, cy_ + 160))
-            k = 0.8
-            box = box.resize((int(box.width * k), int(box.height * k)), Image.BICUBIC)
-            ctx.paste(base, box, ctx.CX + (ctx.W / 2 - ctx.CX) * k, hy - HH / 2 + 742, nearest=False)
-        if i == 0 or local >= SWAP:                      # the caption waits until the cards have settled
-            seg["cap"].draw(base, tt, y=CAP_Y)
-        return base
+        # ---- the previous card shrinks and flies down into the hand (on top of everything but the chrome)
+        if i > 0 and tr < 1 and done and done[-1] == i - 1:
+            hx, hy, ha = hand_pose(n_now - 1, n_now)
+            sx0, sy0 = ctx.CX, CARD_TOP + CH / 2
+            x = sx0 + (hx - sx0) * tr - 180 * math.sin(math.pi * tr)
+            y = sy0 + (hy - sy0) * tr
+            sc = 1 + (MINI - 1) * tr
+            put(base, finished(i - 1), x, y, sc, ha * tr - 8 * math.sin(math.pi * tr))
+
+        X, Y, w_, h_ = c["rect"]                        # the credit sits inside the art's bottom edge (the bars are full)
+        cap = seg["cap"]
+
+        class _Low:                                     # captions just under the taller card (clear of it)
+            def draw(self, b, t, y=ctx.CAP_Y):
+                cap.draw(b, t, y + CAP_DY)
+        seg = dict(seg, cap=_Low())
+        return ctx.core_finish(base, seg, tt, c, connected_y=int(Y + h_ - 110), credit_xy=(X + w_ - 12, Y + h_ - 18))
 
     return frame

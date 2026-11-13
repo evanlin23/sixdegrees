@@ -1,7 +1,16 @@
-"""Museum: a gallery walk. Each link photo hangs in a gilt frame on a long red wall, with a plaque (names, year,
-fact) under it; picture lights pool on the wall over a wooden floor in perspective. A link with a sensitive person
-(dictators etc.) hangs in a plain dark archive frame with no picture light and a grey plaque: no honour framing. The camera dollies along
-the wall from frame to frame and slowly pushes in on the current one."""
+"""Museum: a gallery walk. The show's core photo window (draw_core: camera, Buh, string, name tags) hangs in a gilt
+frame on a red damask wall, under a picture light, with a wall label above it (names, year, fact; B stays "? ? ?"
+until the reveal, then a glint runs across the label). Between links the camera walks along the wall: the finished
+picture slides off to the left as a still in its frame and the next one comes in from the right. The wall is ONE
+long wall for the whole video (owner, 2026-11-13: continuity across slides): link j's picture hangs at its own fixed
+spot j * STEP along it, every finished picture stays hung there as a still, and the decorative paintings, plinths,
+ropes and benches between them are fixed to the wall too, so nothing reshuffles from link to link. A link with a
+sensitive person (dictators etc.) hangs in a plain dark archive frame with no picture light and a grey label: no
+honour framing, no gold.
+The room is furnished like a real gallery, all on the wall strip so it walks with the camera: neighbouring paintings
+(made-up landscapes, never people) peek in at both edges, a marble plinth with a vase and a small room plaque stands
+on the right, and on the floor a red velvet rope on brass stanchions and a gallery bench, all below the captions and
+the Subscribe button and never over the photo window."""
 from __future__ import annotations
 
 import math
@@ -12,43 +21,35 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 NAME = "museum"
 
+SC = 0.75                         # core window scale: 660 x 712
+MAT, T = 18, 40                   # passe-partout and moulding widths
+LBL_Y0, LBL_H = 1344, 142         # wall label (under the frame, left: clear of the captions and the credit)
+FRAME_TOP = 405                   # outer top of the frame
+STEP = 1120                       # distance between pictures along the wall (px)
+DOLLY = 0.6                       # walk time between pictures, s
+FLOOR = 1600                      # wall meets floor (screen y)
+WALL = np.array([96, 22, 32], np.float32)
+
 
 def make(ctx):
-    SP = 1150                               # distance between frames along the wall (world px)
-    X0 = 700                                # first frame's centre x
-    PW, PH = 790, 580                       # photo inside the frame
-    MAT, T = 16, 42                         # passe-partout and moulding widths
-    OW, OH = PW + 2 * (MAT + T), PH + 2 * (MAT + T)
-    FY = 302 + OH // 2                      # frame centre y (world == screen at zoom 1)
-    PLQ_W, PLQ_H = 800, 214                 # plaque size
-    PLQ_Y = FY + OH // 2 + 24 + PLQ_H // 2  # plaque centre y
-    FLOOR = 1392                            # wall meets floor (world y)
-    DADO = PLQ_Y + PLQ_H // 2 + 22          # dado rail (world y)
-    EYE = 760                               # camera pivot / horizon (screen y)
-    DOLLY = 0.6                             # walk time between frames, s (captions wait until it settles)
-    CAP_Y = 1346
-    WALL = np.array([96, 22, 32], np.float32)
+    W, H = ctx.W, ctx.H
     n = ctx.n_links
-    WW = 2 * X0 + (n - 1) * SP
+    PW, PH = int(880 * SC), int(950 * SC)
+    OW, OH = PW + 2 * (MAT + T), PH + 2 * (MAT + T)
+    LBL_W = 380
+    st = {}
 
     def font(name, size):
-        return ImageFont.truetype(str(ctx.FONTS / f"Inter-{name}.otf"), size)
+        key = ("f", name, size)
+        if key not in st:
+            st[key] = ImageFont.truetype(str(ctx.FONTS / f"Inter-{name}.otf"), size)
+        return st[key]
 
-    def fx(j):
-        return X0 + j * SP
-
-    # ---------- the gold frame (one sprite, reused for every picture)
-    def sensitive_link(j):
+    def sens(j):
         an, bn = ctx.link_names(j)
         return ctx.sensitive(an) or ctx.sensitive(bn)
 
-    def cover_cam(i, w, h, fill):
-        """both_cam, but scaled to cover so view()'s blurred fill never shows inside the frame."""
-        cx, cy, s = ctx.both_cam(i, w, h, fill)
-        ih, iw = ctx.C.imgs[i].shape[:2]
-        s = max(s, w / iw, h / ih) * 1.002
-        return min(max(cx, w / 2 / s), iw - w / 2 / s), min(max(cy, h / 2 / s), ih - h / 2 / s), s
-
+    # ---------- frames (one sprite each, empty window)
     def archive_frame():
         """A plain, flat dark-wood frame with a grey mat (sensitive links)."""
         yy, xx = np.mgrid[0:OH, 0:OW].astype(np.float32)
@@ -61,10 +62,9 @@ def make(ctx):
         out = np.zeros((OH, OW, 4), np.uint8)
         out[..., :3] = (np.array([34, 28, 24], np.float32) * v[..., None]).clip(0, 255)
         out[..., 3] = 255
-        m0 = T
-        out[m0:OH - m0, m0:OW - m0, :3] = (196, 194, 188)
-        out[m0:m0 + 3, m0:OW - m0, :3] = (70, 66, 60)
-        out[m0:OH - m0, m0:m0 + 3, :3] = (70, 66, 60)
+        out[T:OH - T, T:OW - T, :3] = (196, 194, 188)
+        out[T:T + 3, T:OW - T, :3] = (70, 66, 60)
+        out[T:OH - T, T:T + 3, :3] = (70, 66, 60)
         return out
 
     def gold_frame():
@@ -72,7 +72,7 @@ def make(ctx):
         dl, dr, dt, db = xx, OW - 1 - xx, yy, OH - 1 - yy
         d = np.minimum(np.minimum(dl, dr), np.minimum(dt, db))
         p = np.clip(d / T, 0, 1)
-        side = np.argmin(np.stack([dl, dr, dt, db]), 0)               # nearest outer edge: 0 L, 1 R, 2 T, 3 B
+        side = np.argmin(np.stack([dl, dr, dt, db]), 0)
         along = np.where(side < 2, yy, xx)
         h = 0.55 * np.clip(np.sin(np.pi * np.clip(p * 1.05, 0, 1)), 0, 1) ** 0.6 + 0.18 * np.sin(3 * np.pi * p) \
             + 0.22 * np.cos(2 * np.pi * along / 15) ** 2 * np.exp(-((p - 0.58) / 0.07) ** 2) \
@@ -89,15 +89,14 @@ def make(ctx):
         rgb = ramp[k0] + (ramp[k0 + 1] - ramp[k0]) * (k - k0)[..., None]
         rng = np.random.default_rng(7)
         wear = cv2.GaussianBlur(rng.normal(0, 1, (OH, OW)).astype(np.float32), (0, 0), 3)
-        recess = np.clip(0.5 - h, 0, 0.5)[..., None] * 2                     # red bole showing in the hollows
+        recess = np.clip(0.5 - h, 0, 0.5)[..., None] * 2
         rgb = rgb * (1 - 0.35 * recess) + np.array([120, 46, 26], np.float32) * 0.35 * recess
         rgb = rgb * (1 + 0.07 * wear[..., None])
-        rgb[(p > 0.97)] *= 0.55                                              # dark sight edge
-        rgb[(p < 0.03)] *= 0.6                                               # dark outer edge
+        rgb[(p > 0.97)] *= 0.55
+        rgb[(p < 0.03)] *= 0.6
         out = np.zeros((OH, OW, 4), np.uint8)
         out[..., :3] = rgb.clip(0, 255)
         out[..., 3] = 255
-        # mat with a bevelled inner window
         m0, m1 = T, T + MAT
         out[m0:OH - m0, m0:OW - m0, :3] = (234, 226, 206)
         out[m1 - 3:OH - m1 + 3, m1 - 3:OW - m1 + 3, :3] = (246, 240, 226)
@@ -105,297 +104,287 @@ def make(ctx):
         out[m0:OH - m0, m0:m0 + 3, :3] = (90, 70, 50)
         return out
 
-    def plaque(j, revealed):
-        an, bn = ctx.link_names(j)
-        im = Image.new("RGBA", (PLQ_W + 16, PLQ_H + 16), (0, 0, 0, 0))
-        d = ImageDraw.Draw(im)
-        d.rectangle([10, 12, PLQ_W + 14, PLQ_H + 14], fill=(0, 0, 0, 90))
-        sens = sensitive_link(j)
-        rim, rim2 = ((110, 108, 104), (150, 148, 142)) if sens else ((150, 116, 52), (196, 166, 108))
-        d.rectangle([0, 0, PLQ_W, PLQ_H], fill=(226, 224, 218) if sens else (238, 230, 212), outline=rim, width=4)
-        d.rectangle([9, 9, PLQ_W - 9, PLQ_H - 9], outline=rim2, width=1)
-        A = ctx.C.labels[an]
-        B = ctx.C.labels[bn] if revealed else "?  ?  ?"
-        y = 16
-        for k, txt in enumerate((A, f"& {B}")):
-            size = 44
-            while font("Black", size).getlength(txt) > PLQ_W - 50 and size > 24:
-                size -= 1
-            d.text((PLQ_W / 2, y), txt, font=font("Black", size), fill=(30, 22, 18) if k == 0 or revealed
-                   else (150, 120, 90), anchor="ma")
-            y += 50
-        y += 4
-        d.line([PLQ_W / 2 - 120, y, PLQ_W / 2 + 120, y], fill=rim, width=2)
-        y += 9
-        yr = ctx.year_of(j)
-        fact = ctx.fact_of(ctx.spec["links"][j], full=revealed)
-        if yr and fact.startswith(str(yr)):
-            fact = fact[len(str(yr)):].lstrip(": ,")
-        line = f"{yr}  ·  {fact}" if yr else fact
-        f = font("Bold", 30)
-        words, lines, cur = line.split(), [], ""
-        for w in words:
+    def frame_sprite(j):
+        key = "arch" if sens(j) else "gold"
+        if key not in st:
+            st[key] = Image.fromarray(archive_frame() if key == "arch" else gold_frame())
+        return st[key]
+
+    def hung(j):
+        """Link j's finished picture as it leaves: frame + a still of the photo (both faces)."""
+        key = ("hung", j)
+        if key not in st:
+            im = frame_sprite(j).copy()
+            im.alpha_composite(ctx.view(j, *ctx.both_cam(j, PW, PH, 0.75), PW, PH).convert("RGBA"), (T + MAT, T + MAT))
+            st[key] = im
+        return st[key]
+
+    # ---------- wall label
+    def wrap(text, f, width, maxl):
+        lines, cur = [], ""
+        for w in text.split():
             t = f"{cur} {w}".strip()
-            if f.getlength(t) > PLQ_W - 50 and cur:
+            if f.getlength(t) > width and cur:
                 lines.append(cur)
                 cur = w
             else:
                 cur = t
         lines.append(cur)
-        for ln in lines[:2]:
-            d.text((PLQ_W / 2, y), ln, font=f, fill=(84, 66, 52), anchor="ma")
-            y += 36
-        return np.asarray(im)
+        if len(lines) > maxl:
+            lines = lines[:maxl]
+            lines[-1] = lines[-1].rstrip(",;:…") + "…"
+        return lines
 
-    def cover():
-        im = Image.new("RGBA", (PW, PH), (44, 12, 20, 255))
-        a = np.asarray(im).copy()
-        yy, xx = np.mgrid[0:PH, 0:PW].astype(np.float32)
-        fold = 0.8 + 0.2 * np.sin(xx / 23 + np.sin(yy / 60) * 2) ** 2          # draped velvet
-        a[..., :3] = (a[..., :3] * fold[..., None]).astype(np.uint8)
-        im = Image.fromarray(a)
-        ImageDraw.Draw(im).text((PW / 2, PH / 2), "?", font=font("Black", 220), fill=(214, 168, 70), anchor="mm")
-        return np.asarray(im)
+    def label(j, revealed):
+        key = ("lbl", j, revealed)
+        if key in st:
+            return st[key]
+        an, bn = ctx.link_names(j)
+        s = sens(j)
+        im = Image.new("RGBA", (LBL_W + 12, LBL_H + 12), (0, 0, 0, 0))
+        d = ImageDraw.Draw(im)
+        d.rectangle([8, 10, LBL_W + 10, LBL_H + 10], fill=(0, 0, 0, 90))
+        rim = (110, 108, 104) if s else (150, 116, 52)
+        d.rectangle([0, 0, LBL_W, LBL_H], fill=(226, 224, 218) if s else (238, 230, 212), outline=rim, width=3)
+        A = ctx.C.labels[an]
+        B = ctx.C.labels[bn] if revealed else "?  ?  ?"
+        y = 10
+        for k, txt in enumerate((A, f"& {B}")):
+            size = 30
+            while font("Black", size).getlength(txt) > LBL_W - 36 and size > 16:
+                size -= 1
+            d.text((18, y), txt, font=font("Black", size), fill=(30, 22, 18) if k == 0 or revealed
+                   else (150, 120, 90), anchor="la")
+            y += 34
+        d.line([18, y + 2, 140, y + 2], fill=rim, width=2)
+        y += 10
+        yr = ctx.year_of(j)
+        fact = ctx.fact_of(ctx.spec["links"][j], full=revealed)
+        if yr and fact.startswith(str(yr)):
+            fact = fact[len(str(yr)):].lstrip(": ,")
+        line = f"{yr}  ·  {fact}" if yr else fact
+        for ln in wrap(line, font("SemiBold", 19), LBL_W - 36, 2):
+            d.text((18, y), ln, font=font("SemiBold", 19), fill=(84, 66, 52), anchor="la")
+            y += 23
+        st[key] = im
+        return im
 
-    _w = {}
+    # ---------- gallery furniture, drawn into the wall strip (it is dimmed x0.55 at frame time: colours run bright)
+    def neighbour(kind):
+        """A small made-up painting in a thin gilt frame (no people): 0 dusk landscape, 1 seascape, 2 still life."""
+        fw, fh, b = 300, 380, 22
+        im = Image.new("RGB", (fw, fh), (60, 40, 20))
+        d = ImageDraw.Draw(im)
+        for k, col in enumerate(((120, 80, 30), (230, 190, 110), (200, 156, 80), (150, 104, 44))):
+            d.rectangle([k * 5, k * 5, fw - 1 - k * 5, fh - 1 - k * 5], outline=col, width=5)
+        x0, y0, x1, y1 = b, b, fw - b, fh - b
+        cw, ch = x1 - x0, y1 - y0
+        cv = Image.new("RGB", (cw, ch))
+        cd = ImageDraw.Draw(cv)
+        if kind == 0:
+            for yy in range(ch):                       # dusk sky into hills
+                u = yy / ch
+                cd.line([(0, yy), (cw, yy)], fill=(int(250 - 90 * u), int(180 - 60 * u), int(120 + 40 * u)))
+            cd.ellipse([cw * 0.55, ch * 0.30, cw * 0.80, ch * 0.30 + cw * 0.25], fill=(255, 236, 170))
+            cd.polygon([(0, ch * 0.62), (cw * 0.35, ch * 0.48), (cw * 0.7, ch * 0.6), (cw, ch * 0.52), (cw, ch), (0, ch)], fill=(110, 130, 80))
+            cd.polygon([(0, ch * 0.78), (cw * 0.5, ch * 0.66), (cw, ch * 0.8), (cw, ch), (0, ch)], fill=(70, 96, 54))
+            for tx in (0.18, 0.26, 0.8):               # cypress trees
+                cd.ellipse([cw * tx - 9, ch * 0.52, cw * tx + 9, ch * 0.74], fill=(40, 64, 36))
+        elif kind == 1:
+            cd.rectangle([0, 0, cw, ch * 0.55], fill=(150, 190, 220))
+            cd.ellipse([cw * 0.1, ch * 0.12, cw * 0.5, ch * 0.24], fill=(236, 240, 244))
+            cd.rectangle([0, ch * 0.55, cw, ch], fill=(40, 90, 130))
+            for k in range(7):
+                yy = ch * (0.6 + 0.055 * k)
+                cd.arc([cw * (k % 3) * 0.3 - 20, yy - 8, cw * (k % 3) * 0.3 + 70, yy + 12], 200, 340, fill=(200, 226, 240), width=3)
+            cd.polygon([(cw * 0.55, ch * 0.54), (cw * 0.62, ch * 0.3), (cw * 0.62, ch * 0.54)], fill=(244, 236, 220))
+            cd.rectangle([cw * 0.5, ch * 0.54, cw * 0.72, ch * 0.58], fill=(110, 60, 30))
+        else:
+            cd.rectangle([0, 0, cw, ch], fill=(70, 46, 40))
+            cd.rectangle([0, ch * 0.66, cw, ch], fill=(140, 96, 60))
+            cd.polygon([(cw * 0.3, ch * 0.66), (cw * 0.36, ch * 0.4), (cw * 0.5, ch * 0.32), (cw * 0.64, ch * 0.4), (cw * 0.7, ch * 0.66)], fill=(70, 110, 150))
+            for fx_, fy_, col in ((0.42, 0.24, (230, 80, 60)), (0.56, 0.2, (250, 210, 90)), (0.5, 0.28, (240, 240, 230))):
+                cd.ellipse([cw * fx_ - 22, ch * fy_ - 22, cw * fx_ + 22, ch * fy_ + 22], fill=col)
+            for fx_ in (0.2, 0.8):
+                cd.ellipse([cw * fx_ - 26, ch * 0.62, cw * fx_ + 26, ch * 0.72], fill=(220, 150, 50))
+        im.paste(cv, (x0, y0))
+        return im
 
+    def furnish(arr):
+        """Neighbour paintings, a plinth with a vase + plaque, velvet rope on stanchions and a bench, every STEP.
+        Fixed to the wall: the painting between pictures k and k+1 is always the same one (kind (k + 1) % 3)."""
+        im = Image.fromarray(arr)
+        d = ImageDraw.Draw(im)
+        brass = [(140, 96, 30), (230, 180, 80), (255, 230, 150)]
+        for k in range(-1, n + 1):
+            bx = k * STEP + W // 2                     # where main picture k hangs on the wall
+            # neighbour painting between two main pictures: peeks in at the screen edges when the camera rests
+            npic = neighbour((k + 1) % 3)
+            nx = bx + STEP // 2 - npic.width // 2
+            d.rectangle([nx + 10, 470 + 14, nx + npic.width + 14, 470 + npic.height + 18], fill=(30, 8, 12))
+            im.paste(npic, (nx, 470))
+            # plinth + vase on the right, against the wall
+            px0, px1, pt = bx + 395, bx + 525, FLOOR - 170
+            d.rectangle([px0 + 10, pt + 10, px1 + 14, FLOOR + 8], fill=(30, 10, 14))
+            d.rectangle([px0, pt, px1, FLOOR], fill=(236, 230, 220))
+            d.rectangle([px0 - 8, pt - 14, px1 + 8, pt], fill=(250, 246, 238))
+            d.rectangle([px0 - 8, FLOOR - 14, px1 + 8, FLOOR], fill=(214, 206, 194))
+            d.line([px1 - 10, pt, px1 - 10, FLOOR - 14], fill=(200, 194, 184), width=6)        # shaded side
+            d.rectangle([px0 + 22, pt + 40, px1 - 22, pt + 72], fill=brass[0])                 # room plaque
+            d.rectangle([px0 + 25, pt + 43, px1 - 25, pt + 69], fill=brass[1])
+            d.text(((px0 + px1) / 2, pt + 56), "HALL OF LINKS", font=font("Bold", 11), fill=(70, 44, 10), anchor="mm")
+            vx, vb = (px0 + px1) / 2, pt - 14          # an amphora, terracotta with a black band
+            d.polygon([(vx - 16, vb), (vx - 34, vb - 40), (vx - 38, vb - 70), (vx - 24, vb - 100), (vx - 12, vb - 112),
+                       (vx - 16, vb - 124), (vx + 16, vb - 124), (vx + 12, vb - 112), (vx + 24, vb - 100), (vx + 38, vb - 70),
+                       (vx + 34, vb - 40), (vx + 16, vb)], fill=(214, 120, 64), outline=(60, 24, 10))
+            d.rectangle([vx - 37, vb - 74, vx + 37, vb - 58], fill=(40, 24, 20))
+            for hx in (-1, 1):
+                d.arc([vx + hx * 30 - 14, vb - 118, vx + hx * 30 + 14, vb - 86], 0, 360, fill=(60, 24, 10), width=4)
+            # velvet rope on brass stanchions, in front of the main picture
+            posts = (bx - 330, bx + 330)
+            top_y, base_y = FLOOR - 40, FLOOR + 110
+            for sx_ in posts:
+                d.ellipse([sx_ - 36, base_y - 10, sx_ + 36, base_y + 14], fill=(40, 20, 10))   # shadow
+                d.ellipse([sx_ - 30, base_y - 14, sx_ + 30, base_y + 6], fill=brass[1], outline=brass[0], width=3)
+                d.rectangle([sx_ - 7, top_y, sx_ + 7, base_y - 6], fill=brass[1], outline=brass[0], width=2)
+                d.line([sx_ - 2, top_y + 4, sx_ - 2, base_y - 10], fill=brass[2], width=3)
+                d.ellipse([sx_ - 13, top_y - 22, sx_ + 13, top_y + 4], fill=brass[1], outline=brass[0], width=2)
+                d.ellipse([sx_ - 6, top_y - 17, sx_ + 1, top_y - 10], fill=brass[2])
+            rope = [(posts[0] + (posts[1] - posts[0]) * q / 40,
+                     top_y + 4 + 70 * math.sin(math.pi * q / 40)) for q in range(41)]
+            d.line(rope, fill=(70, 6, 16), width=16, joint="curve")
+            d.line(rope, fill=(196, 30, 52), width=10, joint="curve")
+            d.line([(x, y - 3) for x, y in rope], fill=(240, 90, 100), width=2)
+            # a gallery bench, front centre (dark leather on a wooden frame)
+            bl, br, by = bx - 250, bx + 250, H - 150
+            d.rectangle([bl + 14, by + 20, br + 14, by + 64], fill=(40, 22, 12))
+            for lx_ in (bl + 26, br - 46):
+                d.rectangle([lx_, by + 30, lx_ + 20, by + 120], fill=(110, 66, 34), outline=(50, 28, 14), width=2)
+            d.rounded_rectangle([bl, by, br, by + 44], 14, fill=(64, 48, 40), outline=(26, 16, 12), width=3)
+            d.line([bl + 16, by + 10, br - 16, by + 10], fill=(120, 96, 82), width=4)
+            for tx_ in range(bl + 60, br - 40, 80):    # tufting buttons
+                d.ellipse([tx_ - 4, by + 22, tx_ + 4, by + 30], fill=(30, 20, 16))
+        return np.asarray(im.convert("RGB")).copy()
+
+    # ---------- wall + floor: one long strip for the whole video (picture j centred at x = j * STEP + W / 2)
     def wall():
-        if "w" in _w:
-            return _w["w"]
-        Hh = FLOOR + 10
-        yy, xx = np.mgrid[0:Hh, 0:WW].astype(np.float32)
+        if "wall" in st:
+            return st["wall"]
+        WW = W + STEP * max(1, n - 1)
+        yy, xx = np.mgrid[0:H, 0:WW].astype(np.float32)
         tex = 1 + 0.045 * (np.sin(xx / 9) * np.sin(yy / 9) > 0.35) + 0.02 * np.sin(xx / 3.1)   # faint damask
-        img = WALL[None, None] * tex[..., None]
-        # lower panel, dado rail, baseboard
+        img = WALL[None, None] * tex[..., None] * np.ones((H, WW, 1), np.float32)
+        DADO = FLOOR - 190
         img[DADO + 12:FLOOR] *= 0.72
         img[DADO:DADO + 16] = (120, 84, 40)
         img[DADO - 2:DADO] = (176, 140, 80)
-        img[FLOOR - 52:FLOOR] = (52, 30, 18)
-        img[FLOOR - 54:FLOOR - 50] = (90, 58, 34)
-        for k in range(-1, n + 1):                                  # panel mouldings under each frame
-            x0 = fx(k) - 380
+        img[FLOOR - 40:FLOOR] = (52, 30, 18)
+        img[FLOOR - 42:FLOOR - 38] = (90, 58, 34)
+        for k in range(-1, n + 1):                      # panel mouldings, repeating every STEP
+            x0 = k * STEP + W // 2 - 380
             for (a, b) in ((x0, x0 + 360), (x0 + 400, x0 + 760)):
                 a, b = max(0, a), min(WW - 1, b)
                 if b > a:
-                    p0, p1 = DADO + 34, FLOOR - 66
+                    p0, p1 = DADO + 30, FLOOR - 54
                     img[p0:p0 + 4, a:b] *= 1.25
                     img[p1 - 4:p1, a:b] *= 0.7
                     img[p0:p1, a:a + 4] *= 1.25
                     img[p0:p1, b - 4:b] *= 0.7
-        # frame shadows
-        sh = np.zeros((Hh, WW), np.float32)
-        for j in range(n):
-            sh[FY - OH // 2 + 22:FY + OH // 2 + 26, fx(j) - OW // 2 + 14:fx(j) + OW // 2 + 18] = 0.6
-            sh[PLQ_Y - PLQ_H // 2 + 8:PLQ_Y + PLQ_H // 2 + 12, fx(j) - PLQ_W // 2 + 8:fx(j) + PLQ_W // 2 + 12] = 0.4
-        sh = cv2.GaussianBlur(sh, (0, 0), 16)
-        img *= (1 - sh)[..., None]
-        # picture lights: a scalloped pool of light over every frame
-        gain = np.full((Hh, WW), 0.55, np.float32)
-        for j in range(-1, n + 1):
-            dx = (xx[0] - fx(j))[None, :]
-            dy = yy[:, :1] - 640
-            top = 250 + 0.0012 * dx ** 2
-            edge = np.clip((yy[:, :1] - top) / 60, 0, 1)
-            lamp = 0.45 if 0 <= j < n and sensitive_link(j) else 1.35          # no spotlight on a sensitive link
-            gain += lamp * np.exp(-(dx / 470) ** 2 - (dy / 620) ** 2) * edge
-        img *= gain[..., None]
-        img = img.clip(0, 255).astype(np.uint8)
-        gf, af = gold_frame(), archive_frame()
-        cv_ = cover()
-        for j in range(n):
-            x0, y0 = fx(j) - OW // 2, FY - OH // 2
-            g = (af if sensitive_link(j) else gf).copy()
-            ph = np.asarray(ctx.view(j, *cover_cam(j, PW, PH, 0.8), PW, PH))
-            g[T + MAT:T + MAT + PH, T + MAT:T + MAT + PW] = ph
-            lit = 0.85 + 0.3 * np.exp(-((np.arange(OH) - OH * 0.3) / (OH * 0.7)) ** 2)[:, None, None]
-            img[y0:y0 + OH, x0:x0 + OW] = (g[..., :3] * lit).clip(0, 255).astype(np.uint8)
-        # picture lights: a brass lamp on an arm over each frame
-        for j in range(n):
-            if sensitive_link(j):
-                continue
-            x, top = fx(j), FY - OH // 2
-            for dx in (-150, 150):
-                cv2.line(img, (x + dx, top + 4), (x + dx // 3, 262), (120, 84, 30), 7)
-                cv2.line(img, (x + dx, top + 4), (x + dx // 3, 262), (210, 170, 90), 2)
-            cv2.rectangle(img, (x - 120, 248), (x + 120, 270), (150, 108, 40), -1)
-            cv2.rectangle(img, (x - 120, 248), (x + 120, 254), (240, 210, 140), -1)
-            cv2.rectangle(img, (x - 114, 270), (x + 114, 276), (255, 246, 214), -1)
-        _w["w"] = img
-        _w["plq"] = {}
-        _w["cover"] = cv_
-        return img
+        # floor: polished boards parallel to the wall, darker near the wall
+        PL = 46
+        fy = np.arange(FLOOR, H)
+        rows = ((fy - FLOOR) // PL).astype(int)
+        tones = np.array([(128, 78, 44), (112, 66, 36), (138, 86, 48), (118, 72, 40)], np.float32)
+        fl = tones[rows % 4][:, None, :] * np.ones((1, WW, 1), np.float32)
+        joints = ((fy - FLOOR) % PL < 2)
+        fl[joints] = (60, 34, 18)
+        for r in range(rows.max() + 1):                 # butt joints, staggered per board
+            ys = slice(FLOOR + r * PL, min(H, FLOOR + (r + 1) * PL))
+            for x in range((r * 397) % 520, WW, 520):
+                fl[ys.start - FLOOR:ys.stop - FLOOR, x:x + 2] = (70, 40, 22)
+        shade = (0.55 + 0.45 * ((fy - FLOOR) / (H - FLOOR)) ** 0.7)[:, None, None]
+        img[FLOOR:] = fl * shade
+        st["wall"] = furnish(img.clip(0, 255).astype(np.uint8))
+        # picture light: a scalloped pool of light over a frame (gain map, centred, moves with the frame)
+        gy, gx = np.mgrid[0:H, -700:700].astype(np.float32)
+        top = 300 + 0.0012 * gx ** 2
+        edge = np.clip((gy - top) / 60, 0, 1)
+        g = 1.25 * np.exp(-(gx / 470) ** 2 - ((gy - 820) / 640) ** 2) * edge
+        g[FLOOR:] = 0.35 * np.exp(-(gx[FLOOR:] / 300) ** 2 - ((gy[FLOOR:] - FLOOR - 40) / 60) ** 2)  # sheen
+        st["light"] = g
+        return st["wall"]
 
-    def plq(j, rev):
-        wall()
-        if (j, rev) not in _w["plq"]:
-            _w["plq"][(j, rev)] = plaque(j, rev)
-        return _w["plq"][(j, rev)]
+    def drop():
+        """The soft shadow a hung frame casts on the wall (cached)."""
+        if "drop" not in st:
+            sh = Image.new("RGBA", (OW + 60, OH + 60), (0, 0, 0, 0))
+            ImageDraw.Draw(sh).rectangle([30, 30, OW + 30, OH + 30], fill=(0, 0, 0, 120))
+            st["drop"] = sh.filter(ImageFilter.GaussianBlur(14))
+        return st["drop"]
 
-    def blit(base, spr, x0, y0, z):
-        """Paste an RGBA sprite whose world top-left is (x0, y0) through the camera (affine, zoom z)."""
-        h, w = spr.shape[:2]
-        sx0, sy0 = scr(x0, y0)
-        sw, shh = w * z, h * z
-        a0, b0 = max(0, int(sx0)), max(0, int(sy0))
-        a1, b1 = min(ctx.W, int(math.ceil(sx0 + sw))), min(ctx.H, int(math.ceil(sy0 + shh)))
-        if a1 <= a0 or b1 <= b0:
-            return
-        M = np.float32([[z, 0, sx0 - a0], [0, z, sy0 - b0]])
-        out = cv2.warpAffine(spr, M, (a1 - a0, b1 - b0), flags=cv2.INTER_AREA if z < 1 else cv2.INTER_LINEAR,
-                             borderMode=cv2.BORDER_CONSTANT, borderValue=(0, 0, 0, 0))
-        al = out[..., 3:4].astype(np.float32) / 255
-        reg = base[b0:b1, a0:a1].astype(np.float32)
-        base[b0:b1, a0:a1] = (out[..., :3] * al + reg * (1 - al)).astype(np.uint8)
-
-    cam = {}
-
-    def scr(x, y):
-        return ctx.CX + (x - cam["x"]) * cam["z"], EYE + (y - EYE) * cam["z"]
-
-    def zoom_at(seg, local):
-        dur = seg["t1"] - seg["t0"]
-        u = ctx.ease(max(0.0, local - (DOLLY if seg["i"] else 0)) / max(0.5, dur - (DOLLY if seg["i"] else 0)))
-        return 0.98 + 0.13 * u
-
-    def camera(seg, local):
-        i = seg["i"]
-        if i == 0 or local >= DOLLY:
-            x, z = fx(i), zoom_at(seg, local)
-            x += 14 * math.sin(local * 0.8)
-            bob = 0.0
-        else:
-            prev = next(s for s in ctx.segs if s.get("i") == i - 1)
-            u = local / DOLLY
-            e = ctx.ease(u)
-            x = fx(i - 1) + (fx(i) - fx(i - 1)) * e
-            z0 = zoom_at(prev, prev["t1"] - prev["t0"])
-            z = z0 + (0.98 - z0) * e - 0.2 * math.sin(math.pi * u)              # step back while walking
-            bob = 7 * math.sin(u * math.pi * 4) * math.sin(math.pi * u)           # footsteps
-        return x, z, bob
-
-    # floor
-    PLANK = 92
-    tones = [np.array(c, np.float32) for c in ((128, 78, 44), (112, 66, 36), (138, 86, 48), (118, 72, 40))]
-    glow = None
-
-    def floor(base, ys):
-        nonlocal glow
-        ys = int(ys)
-        if ys >= ctx.H:
-            return
-        hgt = ctx.H - ys
-        z = cam["z"]
-        span = (ctx.H - EYE) / max(1.0, ys - EYE)                  # how much wider the near edge is
-        wl = cam["x"] - (ctx.CX / z)
-        wr = cam["x"] + ((ctx.W - ctx.CX) / z)
-        k0 = int(math.floor((cam["x"] - (ctx.CX + 50) / (z * 1.0)) / PLANK)) - 1
-        k1 = int(math.ceil((cam["x"] + (ctx.W - ctx.CX + 50) / (z * 1.0)) / PLANK)) + 1
-        sub = np.zeros((hgt, ctx.W, 3), np.uint8)
-        for k in range(k0, k1):
-            col = tuple(int(v) for v in tones[(k * 7 + 3) % 4])
-            xa, xb = k * PLANK, (k + 1) * PLANK
-            pa = ctx.CX + (xa - cam["x"]) * z
-            pb = ctx.CX + (xb - cam["x"]) * z
-            qa = ctx.CX + (xa - cam["x"]) * z * span
-            qb = ctx.CX + (xb - cam["x"]) * z * span
-            if max(pa, qa) < -50 and max(pb, qb) < -50 or min(pa, qa) > ctx.W + 50 and min(pb, qb) > ctx.W + 50:
-                continue
-            poly = np.array([[pa, 0], [pb, 0], [qb, hgt], [qa, hgt]], np.int32)
-            cv2.fillPoly(sub, [poly], col)
-            cv2.line(sub, (int(pa), 0), (int(qa), hgt), (60, 34, 18), 2)
-            dep = 0.55 + 0.4 * ((k * 0.37) % 1)                     # a butt joint somewhere along the board
-            yj = (ys - EYE) / dep + EYE - ys
-            if 0 < yj < hgt:
-                f = (yj + ys - EYE) / (ys - EYE)
-                cv2.line(sub, (int(ctx.CX + (xa - cam["x"]) * z * f), int(yj)),
-                         (int(ctx.CX + (xb - cam["x"]) * z * f), int(yj)), (70, 40, 22), 2)
-        shade = (0.55 + 0.45 * (np.arange(hgt, dtype=np.float32) / max(1, hgt)) ** 0.7)[:, None, None]
-        f = sub.astype(np.float32) * shade
-        if glow is None:
-            gy, gx = np.mgrid[-90:90, -260:260].astype(np.float32)
-            glow = np.exp(-(gx / 160) ** 2 - (gy / 45) ** 2)[..., None] * np.array([90, 60, 30], np.float32)
-        for j in range(n):                                          # the lamps' sheen on the polished floor
-            gx_ = int(ctx.CX + (fx(j) - cam["x"]) * z * 1.15)
-            gy_ = int(min(hgt - 91, 60 * z + 40))
-            x0, x1 = max(0, gx_ - 260), min(ctx.W, gx_ + 260)
-            if x1 > x0 and gy_ > 90:
-                f[gy_ - 90:gy_ + 90, x0:x1] += glow[:, x0 - (gx_ - 260):x1 - (gx_ - 260)]
-        f[:10] *= np.linspace(0.4, 1, 10, dtype=np.float32)[:, None, None]
-        base[ys:] = f.clip(0, 255).astype(np.uint8)
+    def walk(i, local):
+        """Camera position along the wall (in steps) and the walk progress (1 = settled)."""
+        if i == 0:
+            return 0.0, 1.0
+        u = min(1.0, local / DOLLY)
+        return i - 1 + ctx.ease(u), u
 
     def frame(seg, tt):
         i = seg["i"]
         if ctx.C.fj["links"][i].get("lineage"):
             return ctx.frame_lineage(seg, tt)
         local = tt - seg["t0"]
-        x, z, bob = camera(seg, local)
-        cam.update(x=x, z=z)
-        w = wall()
-        M = np.float32([[z, 0, ctx.CX - x * z], [0, z, EYE - EYE * z + bob]])
-        base = cv2.warpAffine(w, M, (ctx.W, ctx.H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE)
+        pos, u = walk(i, local)
+        bob = 6 * math.sin(u * math.pi * 4) * math.sin(math.pi * u) if u < 1 else 0.0   # footsteps
+        wl = wall()
+        off = max(0, min(wl.shape[1] - W, int(round(pos * STEP))))   # the one long wall: no wrap, no reshuffle
+        arr = wl[:, off:off + W].astype(np.float32) * 0.55
+        # picture lights on the frames in view (none on a sensitive link)
+        for j in (i - 1, i):
+            if 0 <= j < n and not sens(j):
+                fx = int(ctx.CX + (j - pos) * STEP)
+                a0, a1 = max(0, fx - 700), min(W, fx + 700)
+                if a1 > a0:
+                    arr[:, a0:a1] *= 1 + st["light"][:, a0 - (fx - 700):a1 - (fx - 700), None]
+        if bob:
+            arr = np.roll(arr, int(bob), axis=0)
+        base = Image.fromarray(arr.clip(0, 255).astype(np.uint8)).convert("RGBA")
         R = seg.get("rv", ctx.REVEAL) * seg["speech"] + ctx.THROW
-        for j in range(n):
-            sx, _ = scr(fx(j), FY)
-            if abs(sx - ctx.CX) > ctx.W:
+        revealed = local > R
+        # the pictures we already walked past stay hung at their own spots (stills), wherever they are in view
+        for j in range(i):
+            fx = ctx.CX + (j - pos) * STEP
+            if ctx.C.fj["links"][j].get("lineage") or not (-OW / 2 - 40 < fx < W + OW / 2 + 40):
                 continue
-            if j > i:                                                # pictures still to come: draped
-                blit(base, _w["cover"], fx(j) - PW // 2, FY - PH // 2 + bob / z, z)
-            p = plq(j, j < i or (j == i and local > R))
-            blit(base, p, fx(j) - PLQ_W // 2, PLQ_Y - PLQ_H // 2 + bob / z, z)
-        floor(base, EYE + (FLOOR - EYE) * z + bob)
-        out = Image.fromarray(base).convert("RGBA")
+            base.alpha_composite(drop(), (int(fx - OW / 2 - 16), FRAME_TOP - 10 + int(bob)))
+            base.alpha_composite(hung(j), (int(fx - OW / 2), FRAME_TOP + int(bob)))
+            base.alpha_composite(label(j, True), (int(fx - OW / 2 + 6), LBL_Y0 + int(bob)))
+        fx = ctx.CX + (i - pos) * STEP
+        lx = int(fx - OW / 2 + 6)
         since = local - R
-        if 0 < since < 0.5:                             # a glint across the plaque as B's name lands
-            gx = int(scr(fx(i) - PLQ_W / 2 + (PLQ_W + 200) * since / 0.5 - 100, PLQ_Y)[0])
-            py0, py1 = scr(0, PLQ_Y - PLQ_H / 2)[1], scr(0, PLQ_Y + PLQ_H / 2)[1]
-            hh = int(py1 - py0)
-            gl = Image.new("L", (160, hh), 0)
-            ImageDraw.Draw(gl).polygon([(70, 0), (110, 0), (60, hh), (20, hh)], fill=120)
+        lb = label(i, revealed)
+        if 0 < since < 0.5:                             # a glint across the label as B's name lands (on it only)
+            gl = Image.new("L", lb.size, 0)
+            gx = (LBL_W + 200) * since / 0.5 - 100
+            ImageDraw.Draw(gl).polygon([(gx + 70, 0), (gx + 110, 0), (gx + 60, LBL_H), (gx + 20, LBL_H)], fill=120)
             gl = gl.filter(ImageFilter.GaussianBlur(8))
-            layer = Image.new("RGBA", (160, hh), (255, 252, 235, 0))
-            layer.putalpha(gl)
-            if 0 <= gx < ctx.W - 160:
-                out.alpha_composite(layer, (gx, int(py0 + bob)))
-        # Buh, a small visitor on the floor: walks to each frame, stands left of it looking up, reacts at the reveal
-        sens = sensitive_link(i)
-        BUH_DX = -250                                    # where he stands, relative to the frame's centre (world x)
-        if i == 0:
-            wx0 = fx(0) - 760
-            uw = ctx.ease(local / 0.9)
-            walking = local < 0.9
-        else:
-            wx0 = fx(i - 1) + BUH_DX
-            uw = ctx.ease(local / DOLLY)                  # keeps pace with the camera (stays on screen)
-            walking = local < DOLLY + 0.1
-        wxb = wx0 + (fx(i) + BUH_DX - wx0) * uw
-        bsx = ctx.CX + (wxb - x) * z
-        btip = 1650 + bob
-        if sens:
-            expr, hop, ang = "shock", 0.0, 0.0                # neutral on a sensitive link: no grin, no jump
-        elif local >= R:
-            expr = "shock" if since < 0.45 else "happy"
-            hop = 60 * math.sin(math.pi * since / 0.4) if since < 0.4 else (
-                abs(math.sin(local * 7)) * 22 if i == n - 1 else 0.0)
-            ang = 0.0
-        else:
-            expr, hop, ang = "smug", 0.0, 0.0
-        if walking:
-            hop += abs(math.sin(local * 14)) * 12
-            ang = 8 * math.sin(local * 14)
-        sh = Image.new("RGBA", (150, 36), (0, 0, 0, 0))
-        ImageDraw.Draw(sh).ellipse([0, 0, 149, 35], fill=(0, 0, 0, 90))
-        out.alpha_composite(sh.filter(ImageFilter.GaussianBlur(4)), (int(bsx - 75), int(btip - 14)))
-        ctx.paste_pin(out, ctx.pin_sprite(expr, ang, 0, 1, scale=5), bsx, btip - hop)
-        ctx.header(out, i)
-        # CONNECTED! inside the picture, clear of the frame's mat (below the faces)
-        ctx.connected(out, seg, tt, y=int(scr(0, FY + PH / 2)[1] + bob - 78))
-        hold = (0.0 if i == 0 else DOLLY)                                   # no caption until the move has settled...
-        if local >= hold:
-            g = getattr(seg["cap"], "groups", None)
-            ct = tt
-            if g and local < hold + 0.45 and tt >= g[0][0][1]:   # ...then the first words still get ~0.45 s
-                ct = g[0][0][1]
-            seg["cap"].draw(out, ct, y=CAP_Y)
-        return out
+            card = Image.new("L", lb.size, 0)
+            ImageDraw.Draw(card).rectangle([0, 0, LBL_W, LBL_H], fill=255)
+            layer = Image.new("RGBA", lb.size, (255, 252, 235, 0))
+            layer.putalpha(Image.fromarray((np.asarray(gl, np.float32) * np.asarray(card, np.float32) / 255)
+                                           .astype(np.uint8)))
+            lb = lb.copy()
+            lb.alpha_composite(layer)
+        if not (i == n - 1 and since > 0.45):              # the Subscribe button takes this spot at the end
+            base.alpha_composite(lb, (lx, LBL_Y0 + int(bob)))
+        fs = frame_sprite(i)
+
+        def mount(b, X0, Y0, w, h):
+            b.alpha_composite(drop(), (int(X0 - MAT - T - 16), int(Y0 - MAT - T - 10)))
+            b.alpha_composite(fs, (int(X0 - MAT - T), int(Y0 - MAT - T)))
+
+        c = ctx.draw_core(base, seg, tt, fx - PW / 2, FRAME_TOP + T + MAT + bob, SC, frame=mount)
+        X0, Y0, w, h = c["rect"]
+        return ctx.core_finish(base, seg, tt, c, connected_y=int(Y0 + h - 150))
 
     return frame
