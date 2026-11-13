@@ -2,8 +2,11 @@
 (draw_core: the camera moves, Buh jumps head to head with the red string, the name tags ride the photo). The name
 bar reads "? ? ?" until the reveal, then B's name pops in. When the next link starts, the finished card shrinks and
 flies down into a fanned hand of mini cards at the bottom of the screen, which keeps growing through the episode.
-Foil sheen and a glare sweep run over the card frame only (never the art). A link with a dictator gets a plain grey
-archive card: no foil, no glare, no stars, no rarity, and its mini card in the hand stays grey."""
+Foil sheen and a glare sweep run over the card frame only (never the art). The card is dressed like a real collectible:
+an ornate double-keyline border with gold corner filigree, a holo lattice pattern in the frame ring, an embossed
+corner medallion (Buh's pin), a fact box under the name (the link's fact, cut before B until the reveal) and a set
+symbol. A link with a dictator gets a plain grey archive card: no foil, no glare, no stars, no rarity, no gold
+ornaments, and its mini card in the hand stays grey."""
 from __future__ import annotations
 
 import math
@@ -14,10 +17,11 @@ from PIL import Image, ImageDraw, ImageFont
 
 NAME = "tcg"
 
-SC = 0.75                      # core window scale: art = 660 x 712
-PAD = 24                       # card frame around the art (sides)
-TOPBAR = 60                    # type line above the art
-FOOT = 84                      # name bar under the art
+SC = 0.70                      # core window scale: art = 616 x 665 (the fact box needs the room)
+PAD = 30                       # card frame around the art (sides)
+TOPBAR = 66                    # type line above the art
+FOOT = 126                     # name bar + fact box under the art
+RING = 20                      # the foil frame ring
 CARD_TOP = 404
 SWAP = 0.45                    # seconds: the old card flies into the hand while the new one deals in
 MINI = 0.36                    # mini card scale in the hand
@@ -87,6 +91,67 @@ def make(ctx):
             st["shine"] = np.exp(-((xs - w / 2) / 60.0) ** 2) * 230 + np.exp(-((xs - w / 2 - 110) / 18.0) ** 2) * 120
         return st["strip"], st["strip_a"], st["shine"]
 
+    def emblem(plain):
+        """The embossed corner medallion: a raised gold disc with Buh's pin pressed into it."""
+        key = ("emb", plain)
+        if key in st:
+            return st[key]
+        r, S2 = 27, 4                                   # drawn 4x, downsampled (smooth emboss)
+        D = (2 * r + 6) * S2
+        im = Image.new("RGBA", (D, D), (0, 0, 0, 0))
+        d = ImageDraw.Draw(im)
+        c = D / 2
+        for k in range(r * S2, 0, -S2):                 # a domed gold gradient, lit from the top left
+            u = k / (r * S2)
+            col = tuple(int(a_ * (1 - u) + b_ * u) for a_, b_ in zip((255, 236, 160), (150, 96, 20)))
+            o = (1 - u) * 5 * S2
+            d.ellipse([c - k - o, c - k - o, c + k - o, c + k - o], fill=col)
+        d.ellipse([c - r * S2, c - r * S2, c + r * S2, c + r * S2], outline=INKC, width=3 * S2)
+        d.ellipse([c - (r - 6) * S2, c - (r - 6) * S2, c + (r - 6) * S2, c + (r - 6) * S2], outline=(120, 76, 14), width=S2)
+
+        def pin(dx, dy, col):                           # Buh's pin, pressed in
+            hx, hy = c + dx, c - 6 * S2 + dy
+            d.ellipse([hx - 9 * S2, hy - 9 * S2, hx + 9 * S2, hy + 9 * S2], fill=col)
+            d.rectangle([hx - 12 * S2, hy + 6 * S2, hx + 12 * S2, hy + 10 * S2], fill=col)
+            d.polygon([(hx - 2 * S2, hy + 10 * S2), (hx + 2 * S2, hy + 10 * S2), (hx, hy + 22 * S2)], fill=col)
+        pin(-S2 * 1.5, -S2 * 1.5, (255, 248, 210))      # light edge up-left, dark edge down-right: embossed
+        pin(S2 * 1.5, S2 * 1.5, (96, 56, 8))
+        pin(0, 0, (214, 160, 52))
+        st[key] = im.resize((D // S2, D // S2), Image.LANCZOS)
+        return st[key]
+
+    def set_symbol(d, cx, cy, plain):
+        """The set symbol: two linked rings (the show's chain) in a small black shield."""
+        d.rounded_rectangle([cx - 17, cy - 13, cx + 17, cy + 13], 8, fill=INKC)
+        col = (190, 190, 200) if plain else (255, 214, 90)
+        d.ellipse([cx - 13, cy - 7, cx + 3, cy + 7], outline=col, width=3)
+        d.ellipse([cx - 3, cy - 7, cx + 13, cy + 7], outline=col, width=3)
+
+    def filigree(d, x, y, sx, sy, col, dark):
+        """A gold corner rosette on the ring at (x, y), with beads running along the ring on both edges."""
+        for k in range(3):
+            r = 5 - k
+            ax = x + sx * (20 + 13 * k)
+            d.ellipse([ax - r, y - r, ax + r, y + r], fill=col, outline=dark)
+            by = y + sy * (20 + 13 * k)
+            d.ellipse([x - r, by - r, x + r, by + r], fill=col, outline=dark)
+        d.ellipse([x - 12, y - 12, x + 12, y + 12], fill=col, outline=dark, width=2)
+        for k in range(8):                              # petals
+            a = k * math.pi / 4
+            px, py = x + 7 * math.cos(a), y + 7 * math.sin(a)
+            d.ellipse([px - 2, py - 2, px + 2, py + 2], fill=dark)
+        d.ellipse([x - 3, y - 3, x + 3, y + 3], fill=dark)
+
+    def holo_pattern():
+        """Holo lattice for the frame ring: diamonds with little stars at the crossings (0.45 .. 1)."""
+        if "pat" not in st:
+            yy, xx = np.mgrid[0:CH, 0:CW].astype(np.float32)
+            u, v = (xx + yy) % 34, (xx - yy) % 34
+            lattice = ((np.abs(u - 17) < 2.2) | (np.abs(v - 17) < 2.2)).astype(np.float32)
+            starc = np.exp(-(np.minimum(u, 34 - u) ** 2 + np.minimum(v, 34 - v) ** 2) / 10.0)
+            st["pat"] = np.clip(0.45 + 0.35 * lattice + 0.6 * starc, 0, 1)
+        return st["pat"]
+
     def card(i, revealed):
         """The static card for link i with an empty art window, + its frame-ring mask (foil and glare go there)."""
         key = ("card", i, revealed)
@@ -109,38 +174,92 @@ def make(ctx):
         g = np.clip(np.broadcast_to(g, (CH, CW, 3)), 0, 255).astype(np.uint8)
         im.paste(Image.fromarray(np.dstack([g, np.full((CH, CW), 255, np.uint8)])), (0, 0), rmask(CW, CH, 30))
         d = ImageDraw.Draw(im)
-        d.rounded_rectangle([12, 12, CW - 13, CH - 13], 20, fill=(226, 226, 230) if plain else (214, 220, 232))
+        R0 = RING
+        # the inner panel: a soft gradient with a fine engraved cross-hatch (flat grey when plain)
+        if plain:
+            d.rounded_rectangle([R0, R0, CW - 1 - R0, CH - 1 - R0], 18, fill=(226, 226, 230))
+        else:
+            py, px = np.mgrid[0:CH, 0:CW].astype(np.float32)
+            hatch = ((((px + py) % 9) < 1) | (((px - py) % 9) < 1)).astype(np.float32)
+            top, bot = np.array([238, 240, 248], np.float32), np.array([202, 208, 226], np.float32)
+            pan = top * (1 - py[..., None] / CH) + bot * (py[..., None] / CH) - 12 * hatch[..., None]
+            pm = Image.new("L", (CW, CH), 0)
+            ImageDraw.Draw(pm).rounded_rectangle([R0, R0, CW - 1 - R0, CH - 1 - R0], 18, fill=255)
+            im.paste(Image.fromarray(np.clip(pan, 0, 255).astype(np.uint8)).convert("RGBA"), (0, 0), pm)
+        # double keyline: a dark engraved line just inside the ring and a fine coloured one inside that
+        d.rounded_rectangle([R0, R0, CW - 1 - R0, CH - 1 - R0], 18, outline=INKC, width=3)
+        d.rounded_rectangle([R0 + 6, R0 + 6, CW - 7 - R0, CH - 7 - R0], 13,
+                            outline=(170, 170, 178) if plain else (190, 150, 70), width=2)
         yr = next((ctx.year_of(j) for j in range(i, -1, -1) if ctx.year_of(j)), None)   # "that year"
-        # type line on top (Buh may stand in front of it): card number, kind, year, stars + rarity
-        my = (16 + TOPBAR - 8) / 2
-        d.rounded_rectangle([20, 16, CW - 21, TOPBAR - 8], 12, fill=(70, 72, 84) if plain else (60, 52, 80))
-        d.text((40, my), f"#{i + 1:02d}", font=font("Inter-Black.otf", 26),
+        # type line on top (Buh may stand in front of it): medallion, card number, kind, year, stars + rarity
+        my = (R0 + 4 + TOPBAR - 8) / 2
+        d.rounded_rectangle([28, R0 + 4, CW - 29, TOPBAR - 8], 12, fill=(70, 72, 84) if plain else (60, 52, 80),
+                            outline=None if plain else (190, 150, 70), width=2)
+        tx = 42
+        if not plain:
+            em = emblem(False)
+            im.alpha_composite(em, (6, int(my - em.height / 2)))
+            tx = 6 + em.width + 2
+        d.text((tx, my), f"#{i + 1:02d}", font=font("Inter-Black.otf", 26),
                fill=(200, 200, 210) if plain else (255, 120, 140), anchor="lm")
         if plain:
             note = f"ARCHIVE PHOTO  ·  {yr}  ·  HISTORICAL RECORD" if yr else "ARCHIVE PHOTO  ·  HISTORICAL RECORD"
             d.text((CW / 2 + 30, my), note, font=font("Inter-Bold.otf", 22), fill=(236, 234, 244), anchor="mm")
         else:
-            d.text((100, my), f"PHOTO CARD · {yr}" if yr else "PHOTO CARD", font=font("Inter-Bold.otf", 22),
+            d.text((tx + 56, my), f"PHOTO CARD · {yr}" if yr else "PHOTO CARD", font=font("Inter-Bold.otf", 20),
                    fill=(236, 234, 244), anchor="lm")
             for k in range(5):
-                star(d, CW / 2 + 40 + k * 32, my, 13, (255, 200, 40) if k < n_st else (120, 120, 140), outline=INKC)
-            d.text((CW - 40, my), RARITY[n_st - 1], font=font("Inter-Black.otf", 22),
+                star(d, CW / 2 + 52 + k * 27, my, 11, (255, 200, 40) if k < n_st else (120, 120, 140), outline=INKC)
+            d.text((CW - 42, my), RARITY[n_st - 1], font=fit("Inter-Black.otf", RARITY[n_st - 1], 20, 112, 13),
                    fill=(255, 120, 140) if n_st >= 4 else (236, 234, 244), anchor="rm")
-        d.rectangle([ART_X - 4, ART_Y - 4, ART_X + aw + 3, ART_Y + ah + 3], fill=INKC)
-        # name bar at the bottom: B (or ? ? ?) until the reveal, then the name; "with A" on the right
+        # the art window: an inset bevel (gold / grey keyline, then ink)
+        d.rectangle([ART_X - 6, ART_Y - 6, ART_X + aw + 5, ART_Y + ah + 5], fill=(170, 172, 180) if plain else (196, 156, 72))
+        d.rectangle([ART_X - 3, ART_Y - 3, ART_X + aw + 2, ART_Y + ah + 2], fill=INKC)
+        # name bar: B (or ? ? ?) until the reveal, then the name; "with A" on the right
         fy = ART_Y + ah + 10
-        d.rounded_rectangle([20, fy, CW - 21, CH - 16], 14, fill=(250, 246, 232), outline=INKC, width=3)
-        ny = (fy + CH - 16) / 2
+        nb = fy + 46
+        d.rounded_rectangle([28, fy, CW - 29, nb], 12, fill=(250, 246, 232), outline=INKC, width=3)
+        ny = (fy + nb) / 2
         nm = ctx.C.labels[bn] if revealed else "? ? ?"
         wa = "WITH " + ctx.C.labels[an].upper()
-        fw_ = fit("Inter-Bold.otf", wa, 20, 230, 12)
-        d.text((CW - 40, ny), wa, font=fw_, fill=(140, 120, 80), anchor="rm")
-        d.text((40, ny), nm, font=fit("Inter-ExtraBold.otf", nm, 44, CW - 120 - fw_.getlength(wa)), fill=INKC,
+        fw_ = fit("Inter-Bold.otf", wa, 19, 230, 12)
+        d.text((CW - 44, ny), wa, font=fw_, fill=(140, 120, 80), anchor="rm")
+        d.text((44, ny), nm, font=fit("Inter-ExtraBold.otf", nm, 36, CW - 120 - fw_.getlength(wa)), fill=INKC,
                anchor="lm")
+        # fact box (the card's "move"): an energy dot, LINK, the fact (cut before B until the reveal), set symbol
+        bt, bb = nb + 6, CH - R0 - 8
+        by_ = (bt + bb) / 2
+        d.rounded_rectangle([28, bt, CW - 29, bb], 10, fill=(236, 236, 240) if plain else (255, 250, 236),
+                            outline=(150, 150, 160) if plain else (190, 150, 70), width=2)
+        d.ellipse([40, by_ - 11, 62, by_ + 11], fill=(130, 130, 140) if plain else (226, 46, 58), outline=INKC, width=2)
+        d.ellipse([45, by_ - 7, 52, by_], fill=(190, 190, 196) if plain else (255, 255, 255))
+        word = "RECORD" if plain else "LINK"
+        d.text((70, by_), word, font=font("Inter-Black.otf", 18), fill=INKC, anchor="lm")
+        fact = ctx.fact_of(ctx.spec["links"][i], full=revealed)
+        fx0 = 70 + font("Inter-Black.otf", 18).getlength(word) + 12
+        fmax = CW - 29 - 56 - fx0
+        ff = font("Inter-SemiBold.otf", 18)
+        if ff.getlength(fact) > fmax:
+            while fact and ff.getlength(fact + "…") > fmax:
+                fact = fact[:-1]
+            fact = fact.rstrip(" ,;:…") + "…"
+        d.text((fx0, by_), fact, font=ff, fill=(70, 62, 56), anchor="lm")
+        set_symbol(d, CW - 54, by_, plain)
         ring = Image.new("L", (CW, CH), 0)
         rd = ImageDraw.Draw(ring)
         rd.rounded_rectangle([0, 0, CW - 1, CH - 1], 30, fill=255)
-        rd.rounded_rectangle([12, 12, CW - 13, CH - 13], 20, fill=0)
+        rd.rounded_rectangle([R0, R0, CW - 1 - R0, CH - 1 - R0], 18, fill=0)
+        if not plain:                                   # gold filigree on the ring's inner corners + side studs
+            gold, dark = (255, 214, 110), (110, 70, 10)
+            em = emblem(False)                          # the medallion owns the top-left corner
+            rd.ellipse([6, int(my - em.height / 2), 6 + em.width, int(my + em.height / 2)], fill=0)
+            h_ = R0 // 2 + 3
+            for (x, y, sx, sy) in ((CW - 1 - h_, h_, -1, 1), (h_, CH - 1 - h_, 1, -1), (CW - 1 - h_, CH - 1 - h_, -1, -1)):
+                filigree(d, x, y, sx, sy, gold, dark)
+                filigree(rd, x, y, sx, sy, 0, 0)        # keep the foil off the ornaments
+            for (x, y) in ((CW / 2, R0 / 2), (CW / 2, CH - R0 / 2), (R0 / 2, CH / 2), (CW - R0 / 2, CH / 2)):
+                d.polygon([(x, y - 8), (x + 8, y), (x, y + 8), (x - 8, y)], fill=gold, outline=dark)
+                rd.polygon([(x, y - 8), (x + 8, y), (x, y + 8), (x - 8, y)], fill=0)
         st[key] = (im, np.asarray(ring, np.float32) / 255, plain)
         return st[key]
 
@@ -151,7 +270,7 @@ def make(ctx):
             return im
         strip, sa, sh = foil_strip()
         off = int((tt * 90 + phase * 300) % (CW * 2))
-        a_holo = sa[:, off:off + CW] * ring * 150
+        a_holo = sa[:, off:off + CW] * ring * holo_pattern() * 190
         sweep = ((tt + phase) % 2.2) / 2.2
         so = int(CW * 1.5 - (sweep * (CW * 2.2) - CW * 0.6))
         shear = (np.arange(CH)[:, None] * 0.45).astype(np.int32)
@@ -302,6 +421,7 @@ def make(ctx):
             sc = 1 + (MINI - 1) * tr
             put(base, finished(i - 1), x, y, sc, ha * tr - 8 * math.sin(math.pi * tr))
 
-        return ctx.core_finish(base, seg, tt, c, connected_y=int(c["rect"][1] + c["rect"][3] - 110))
+        X, Y, w_, h_ = c["rect"]                        # the credit sits inside the art's bottom edge (the bars are full)
+        return ctx.core_finish(base, seg, tt, c, connected_y=int(Y + h_ - 110), credit_xy=(X + w_ - 12, Y + h_ - 18))
 
     return frame

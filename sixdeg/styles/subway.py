@@ -1,10 +1,12 @@
 """Subway: a skin around the core. The backdrop is a transit map (paper, grid, a river, faded other lines); the core
 photo window is the "station" (a navy platform frame with the line's red stripe). Under it runs the Buh line: one
 roundel per person reached so far (their face), a "?" stop ahead, and a little train that pulls out while the camera
-pans to both faces and pulls into the next stop as Buh lands on B. The line only ever shows one stop ahead, so it
-never gives away how long the chain is."""
+pans to both faces and pulls into the next stop as Buh lands on B. Like a real transit map the line is not straight:
+stations sit on short level runs joined by 45-degree bends, and the train tilts to follow the track. The line only
+ever shows one stop ahead, so it never gives away how long the chain is."""
 from __future__ import annotations
 
+import itertools
 import math
 import random
 
@@ -16,9 +18,11 @@ PAPER = (241, 236, 224)
 GRID = (231, 225, 211)
 LINE = (226, 46, 58)                     # the Buh line
 NAVY = (28, 34, 66)
-S = 0.76                                 # core window scale (880x950 -> 669x722)
+S = 0.72                                 # core window scale (880x950 -> 633x684)
 Y0 = 425                                 # window top
-LY = 1212                                # the line, between the window and the captions
+LY = 1200                                # the line's centre height, between the window and the captions
+AMP = 26                                 # stations sit this far above / below LY (45-degree bends between)
+LVL = (-1, 1, 1, -1)                     # station heights, repeating: a bend, a level run, a bend back, a level run
 SP = 300                                 # px between stations on screen
 RR = 25                                  # roundel radius
 
@@ -96,6 +100,31 @@ def make(ctx):
             _c[key] = im
         return _c[key]
 
+    def ty(sv):
+        """Track height (screen y) at track position sv (in stations): level at each station, a 45-degree bend
+        halfway between two stations at different heights."""
+        j = math.floor(sv)
+        y0, y1 = LY + AMP * LVL[j % 4], LY + AMP * LVL[(j + 1) % 4]
+        if y0 == y1:
+            return y0
+        half = abs(y1 - y0) / 2 / SP                         # half the bend's length, in stations (45 degrees)
+        u = (sv - j - (0.5 - half)) / (2 * half)
+        return y0 + (y1 - y0) * max(0.0, min(1.0, u))
+
+    def track_pts(s0, s1, sx):
+        """Screen points of the track from s0 to s1 (bend corners included, so the 45s stay crisp)."""
+        pts, j = [], math.floor(s0)
+        knots = [s0]
+        while j <= s1:
+            for f in (0.0, 0.5 - AMP / SP, 0.5 + AMP / SP):
+                if s0 < j + f < s1:
+                    knots.append(j + f)
+            j += 1
+        knots.append(s1)
+        for kv in sorted(knots):
+            pts.append((sx(kv), ty(kv)))
+        return pts
+
     def line(base, i, c):
         """The Buh line under the window: stations up to the next stop, the train between them."""
         sp_, k, R = c.get("speech", 1.0), c["k"], c["R"]
@@ -104,18 +133,36 @@ def make(ctx):
         p = i + ctx.ease(max(0.0, min(1.0, u)))
         landed = c["land"] >= 0
         sx = lambda j: CX + 85 + (j - p) * SP            # noqa: E731  (the train sits just left of its stop)
+        sv_of = lambda x: (x - CX - 85) / SP + p         # noqa: E731
         d = ImageDraw.Draw(base)
-        d.rectangle([0, LY - 9, sx(i + 1), LY + 9], fill=INK)
-        d.rectangle([0, LY - 6, sx(i + 1), LY + 6], fill=LINE)
-        x = sx(i + 1) + 40                                   # beyond the next stop: unknown track, fading dashes
-        while x < W:
-            d.rectangle([x, LY - 4, x + 18, LY + 4], fill=(205, 170, 160))
-            x += 36
+        known = track_pts(sv_of(-40), i + 1, sx)
+        d.line(known, fill=INK, width=20, joint="curve")
+        d.line(known, fill=LINE, width=13, joint="curve")
+        # beyond the next stop: unknown track, fading dashes that still follow the bends
+        ahead = track_pts(i + 1, sv_of(W + 40), sx)
+        dense = []                                           # dashes by arc length: 18 on, 18 off
+        for (ax, ay), (bx, by) in itertools.pairwise(ahead):
+            n = max(1, int(math.hypot(bx - ax, by - ay) / 3))
+            dense += [(ax + (bx - ax) * q / n, ay + (by - ay) * q / n) for q in range(n)]
+        dist, prev = 0.0, None
+        for pt in dense:
+            if prev is not None:
+                dist += math.hypot(pt[0] - prev[0], pt[1] - prev[1])
+            prev = pt
+            if dist > 40 and (dist - 40) % 36 < 18:
+                d.ellipse([pt[0] - 4, pt[1] - 4, pt[0] + 4, pt[1] + 4], fill=(205, 170, 160))
         for j in range(max(0, i - 3), min(len(people), i + 2)):
-            ctx.paste(base, roundel(j, j <= i or (j == i + 1 and landed)), sx(j) + 3, LY + 3)
+            ctx.paste(base, roundel(j, j <= i or (j == i + 1 and landed)), sx(j) + 3, ty(j) + 3)
         tr = train()
-        bob = 2 * math.sin(k * sp_ * 40) if 0 < u < 1 else 0          # rattles while moving
-        base.alpha_composite(tr, (int(CX - tr.width / 2 - 8), int(LY - tr.height / 2 - 4 + bob)))
+        moving = 0 < u < 1
+        bob = 2 * math.sin(k * sp_ * 40) if moving else 0          # rattles while moving
+        tx = CX - 8                                                  # the train's centre on screen
+        e = 40 / SP
+        sv = sv_of(tx)
+        ang = math.degrees(math.atan2(-(ty(sv + e) - ty(sv - e)), 2 * e * SP))   # tilts with the track
+        if abs(ang) > 0.5:
+            tr = tr.rotate(ang, resample=Image.BICUBIC, expand=True)
+        base.alpha_composite(tr, (int(tx - tr.width / 2), int(ty(sv) - tr.height / 2 - 4 + bob)))
 
     def frame(seg, tt):
         i = seg["i"]
@@ -125,6 +172,7 @@ def make(ctx):
         c = ctx.draw_core(base, seg, tt, X0, Y0, S, frame=station)
         c["speech"] = seg["speech"]
         line(base, i, c)
-        return ctx.core_finish(base, seg, tt, c)
+        X, Y, ww, hh = c["rect"]                         # the credit goes inside the photo's bottom edge: the line
+        return ctx.core_finish(base, seg, tt, c, credit_xy=(X + ww - 12, Y + hh - 18))   # needs the strip below
 
     return frame

@@ -7,6 +7,7 @@ pixelate-dissolve cuts; 8-bit SFX; CONNECTED! on the final reveal.
 """
 from __future__ import annotations
 
+import itertools
 import json
 import math
 import re
@@ -1370,15 +1371,80 @@ def render(slug: str, log=print) -> Path:
             keep = [_G_ABBR.get(keep[0].upper().replace(".", ""), keep[0])]
         return ", ".join(keep)
 
+    def g_drift(tt, z):
+        """The globe never sits still: a slow turn (longitude) and a gentle nod (latitude), a fixed few screen px
+        whatever the zoom, so it reads as a slowly turning planet when far out and a soft drift when close in."""
+        k = 1.0 / (G_R1 * z)                                    # radians per screen px at this zoom
+        return (math.degrees(18 * k * math.sin(tt * 0.31 + 0.7)),
+                math.degrees(46 * k * math.sin(tt * 0.23)) + math.degrees(10 * k) * tt / 6)
+
+    def g_stars_at(tt):
+        """The starfield, panning slowly sideways (wraps), so space drifts too."""
+        st = g_stars()
+        off = int(tt * 7) % W
+        if off == 0:
+            return st.copy()
+        out = Image.new("RGBA", (W, H))
+        out.paste(st.crop((off, 0, W, H)), (0, 0))
+        out.paste(st.crop((0, 0, off, H)), (W - off, 0))
+        return out
+
+    def g_route(dr, a, b, vc, z, fx, fy, upto, on_map, r=4, fill=WHITE, dim=None):
+        """A dotted great-circle route a -> b: dots up to fraction `upto` in `fill`, the rest in `dim` (None: skip).
+        Returns the screen points of the dots drawn."""
+        nd = max(3, min(220, int(G_R1 * z * math.radians(ang_deg(a, b)) / 26)))
+        pts = []
+        for d_ in range(nd + 1):
+            u = d_ / nd
+            col = fill if u <= upto + 1e-6 else dim
+            if col is None:
+                break
+            q = g_xy(slerp_ll(a, b, u), vc, z)
+            if on_map(q):
+                x, y = q[0] + fx, q[1] + fy
+                dr.rectangle([x - r, y - r, x + r, y + r], fill=col, outline=INK, width=1)
+                pts.append((x, y))
+        return pts
+
+    def g_label_spot(i, tw, th):
+        """Where link i's place label goes relative to its dot: the side (right, left, below, above) that covers the
+        fewest route dots and visited places in the settled view. Chosen once per link so it never flips."""
+        key = ("lbl", i)
+        if key in _gst:
+            return _gst[key]
+        cur, p = ll(i), prev_ll(i)
+        vc, z, _, _ = g_state(i, G_FLY)
+        dq = g_xy(cur, vc, z)
+        obst = []
+        if p is not None and ang_deg(p, cur) > 0.05:
+            nd = max(3, min(220, int(G_R1 * z * math.radians(ang_deg(p, cur)) / 26)))
+            obst += [g_xy(slerp_ll(p, cur, d_ / nd), vc, z) for d_ in range(nd)]
+        obst += [g_xy(ll(j), vc, z) for j in range(i) if ll(j)]
+        obst = [q for q in obst if q is not None]
+        cands = [(24 + tw / 2, -8), (-24 - tw / 2, -8), (0, 34), (0, -44)]
+        best, spot = None, cands[0]
+        for k, (ox, oy) in enumerate(cands):
+            x = max(SAFE[0] + tw / 2, min(SAFE[2] - tw / 2, dq[0] + ox)) if dq else ox
+            y = (dq[1] if dq else 0) + oy
+            hits = sum(1 for q in obst if abs(q[0] - x) < tw / 2 + 10 and abs(q[1] - y) < th / 2 + 10)
+            pushed = abs(x - ((dq[0] if dq else 0) + ox)) > 40          # clamped far off its dot
+            score = hits * 10 + (25 if pushed else 0) + k
+            if best is None or score < best:
+                best, spot = score, (ox, oy)
+        _gst[key] = spot
+        return spot
+
     def frame_globe(seg, tt):
         i = seg["i"]
         if C.fj["links"][i].get("lineage"):
             return frame_lineage(seg, tt)
         local = tt - seg["t0"]
-        base = g_stars().copy()
+        base = g_stars_at(tt)
         if ll(i) is not None:
             cur, p = ll(i), prev_ll(i)
             vc, z, travel, fly = g_state(i, local)
+            dla, dlo = g_drift(tt, z)                    # slow turn + nod of the planet
+            vc = (max(-85.0, min(85.0, vc[0] + dla)), vc[1] + dlo)
             fx, fy = int(10 * math.sin(tt * 0.8)), int(12 * math.sin(tt * 0.6 + 1))   # gentle float
             layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
             layer.alpha_composite(g_map(vc, z), (-G_M + fx, G_Y0 - G_M + fy))
@@ -1387,31 +1453,37 @@ def render(slug: str, log=print) -> Path:
             def on_map(q):
                 return q is not None and -20 < q[0] < W + 20 and G_Y0 + 30 < q[1] < H + 20
 
+            # the journey so far: earlier hops stay on the globe as faint small dots
+            placed = [j for j in range(i) if ll(j)]
+            for j0, j1 in itertools.pairwise(placed):
+                if ang_deg(ll(j0), ll(j1)) > 0.05:
+                    g_route(dr, ll(j0), ll(j1), vc, z, fx, fy, 1.0, on_map, r=2, fill=(150, 150, 190))
+            # this hop's dotted route: the whole way is there from the first frame of the link (dim ahead of the
+            # plane-dot, white behind it) and stays for the whole link
+            moved = p is not None and ang_deg(p, cur) > 0.05
+            if moved:
+                g_route(dr, p, cur, vc, z, fx, fy, fly, on_map, fill=WHITE, dim=(110, 110, 150))
             for j in range(i + 1):                      # places visited so far (the current one only on arrival)
                 if ll(j) and (j < i or fly > 0.96 or p is None):
                     q = g_xy(ll(j), vc, z)
                     if on_map(q):
                         r = 9 if j == i else 6
                         dr.rectangle([q[0] + fx - r, q[1] + fy - r, q[0] + fx + r, q[1] + fy + r], fill=RED, outline=INK, width=3)
-            if p is not None and ang_deg(p, cur) > 0.05:    # this hop's dotted route, as far as the flight has got
-                nd = max(3, min(220, int(G_R1 * z * math.radians(ang_deg(p, cur)) / 26)))
-                for d_ in range(int(nd * fly) + 1):
-                    q = g_xy(slerp_ll(p, cur, d_ / nd), vc, z)
-                    if on_map(q):
-                        dr.rectangle([q[0] + fx - 4, q[1] + fy - 4, q[0] + fx + 4, q[1] + fy + 4], fill=WHITE, outline=INK, width=1)
-                if fly < 1:                                 # the travelling marker: a little red plane-dot with a hop
-                    q = g_xy(travel, vc, z)
-                    if on_map(q):
-                        hop = math.sin(math.pi * fly) * 40
-                        x, y = q[0] + fx, q[1] + fy - hop
-                        dr.ellipse([x - 12, y - 12, x + 12, y + 12], fill=RED, outline=INK, width=4)
+            if moved and fly < 1:                    # the travelling marker: a little red plane-dot with a hop
+                q = g_xy(travel, vc, z)
+                if on_map(q):
+                    hop = math.sin(math.pi * fly) * 40
+                    x, y = q[0] + fx, q[1] + fy - hop
+                    dr.ellipse([x - 12, y - 12, x + 12, y + 12], fill=RED, outline=INK, width=4)
             dest = g_xy(cur, vc, z)
             place = before_b(g_place((spec["links"][i].get("where") or {}).get("place", "")), spec["links"][i])
             if fly >= 1 and dest and place.strip("…"):
                 tg = pixel_tag(place.upper(), WHITE, 20)
-                side = -1 if dest[0] > CX + 120 else 1
-                lx = max(SAFE[0] + tg.width / 2, min(SAFE[2] - tg.width / 2, dest[0] + fx + side * (24 + tg.width / 2)))
-                paste(layer, tg, lx, dest[1] + fy - 8)
+                dx_, dy_ = dest[0] + fx, dest[1] + fy
+                ox, oy = g_label_spot(i, tg.width, tg.height)
+                lx = max(SAFE[0] + tg.width / 2, min(SAFE[2] - tg.width / 2, dx_ + ox))
+                ly = dy_ + oy
+                paste(layer, tg, lx, ly)
             base.alpha_composite(layer)
         c = draw_core(base, seg, tt, G_X0, G_WY0, G_S, frame=g_frame)
         return core_finish(base, seg, tt, c)
