@@ -37,7 +37,7 @@
         "file": "File:Miklós Horthy and Adolf Hitler 1938.jpg"
       },
       "fact": "Kiel, August 1938",
-      "line": "In 1938, Hitler hosted Hungary's regent, Admiral Miklós Horthy, for a warship launch in Kiel.",
+      "line": "In 1938, Hitler hosted Hungary's ruler, Miklós Horthy, at a warship launch.",
       "a_face": 1,
       "b_face": 0,
       "where": {
@@ -53,7 +53,7 @@
         "file": "File:Horthy Miklós és Eugenio Pacelli a Keleti pályaudvaron (Képes Pesti Hírlap, 1938).jpg"
       },
       "fact": "Budapest station, 1938",
-      "line": "In 1938, Horthy greeted Cardinal Pacelli, the future Pope Pius XII, at a Budapest train station.",
+      "line": "That year, Horthy greeted the future Pope Pius XII at a Budapest station.",
       "a_face": 1,
       "b_face": 2,
       "where": {
@@ -69,7 +69,7 @@
         "file": "File:Pius XII with Harry and Bess Truman, in the Vatican, 1956.jpg"
       },
       "fact": "Vatican, 1956",
-      "line": "In 1956, Pope Pius XII received former president Harry Truman and his wife Bess at the Vatican.",
+      "line": "In 1956, the Pope welcomed former president Harry Truman to the Vatican.",
       "a_face": 1,
       "b_face": 0,
       "where": {
@@ -85,7 +85,7 @@
         "file": "File:President Richard Nixon plays the piano at the Truman Library.jpg"
       },
       "fact": "Truman Library, 1969",
-      "line": "In 1969, Truman and first lady Pat Nixon watched President Nixon play piano at the Truman Library.",
+      "line": "In 1969, Truman watched President Nixon play piano beside first lady Pat Nixon.",
       "a_face": 2,
       "b_face": 1,
       "where": {
@@ -101,7 +101,7 @@
         "file": "File:Pat Nixon and Big Bird.jpg"
       },
       "fact": "White House, 1970",
-      "line": "And in 1970, at a White House Christmas party, Pat Nixon met Big Bird.",
+      "line": "And in 1970, Pat Nixon's Christmas party had a guest: Big Bird.",
       "a_face": 0,
       "b_face": [
         190,
