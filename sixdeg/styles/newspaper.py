@@ -4,7 +4,11 @@ the picture caption + columns below. The column text is lorem-like nonsense with
 through it (SUBSCRIBE TO BUH CONNECTS, THE PIN KNOWS ...) for viewers who pause. The headline reads "... ???" until
 the reveal (B is never named early), then the page is reprinted as an EXTRA with the full headline. Each new page
 slides in from a different side while the previous paper drops away underneath.
-A sensitive link gets a sober "ARCHIVE / FROM THE PICTURE DESK" sidebar."""
+A sensitive link gets a sober "ARCHIVE / FROM THE PICTURE DESK" sidebar.
+It reads as real paper (owner, 2026-11-13): off-white newsprint with fibres, mottling and grain, ink that sits IN the
+paper (multiplied, slightly uneven), a fold crease under the photo and soft darkened edges. The whole page drifts,
+tilts and sways gently as if held over a desk, with the core window riding along (the page and the core are drawn on
+one layer that is rotated together), and the wooden desk behind it slides slowly under a moving lamp light."""
 from __future__ import annotations
 
 import math
@@ -147,6 +151,44 @@ def make(ctx):
             y += lh
             gap -= 1
 
+    FOLD = WY + fh + 92                                      # the horizontal fold, between the photo and its caption
+
+    def newsprint():
+        """The paper itself (float RGB, PH x PW, built once): off-white newsprint with fibres, cloudy mottling, grain,
+        aged edges and a fold crease; plus the ink-unevenness map (0.74 .. 1)."""
+        if "paper" in st:
+            return st["paper"], st["inkvar"]
+        r = np.random.default_rng(11)
+        yy, xx = np.mgrid[0:PH, 0:PW].astype(np.float32)
+        mottle = cv2.GaussianBlur(r.normal(0, 1, (PH, PW)).astype(np.float32), (0, 0), 28)
+        mottle /= max(1e-6, float(np.abs(mottle).max()))
+        fib = Image.new("L", (PW, PH), 0)
+        fd = ImageDraw.Draw(fib)
+        for _ in range(PW * PH // 260):                      # short wiggly fibres
+            x, y = r.uniform(0, PW), r.uniform(0, PH)
+            a, ln = r.uniform(0, math.pi), r.uniform(4, 16)
+            bend = r.uniform(-0.5, 0.5)
+            pts = [(x + ln * q / 4 * math.cos(a + bend * q / 4), y + ln * q / 4 * math.sin(a + bend * q / 4))
+                   for q in range(5)]
+            fd.line(pts, fill=int(r.choice((60, 90, 140, 200))), width=1)
+        fib = cv2.GaussianBlur(np.asarray(fib, np.float32) / 255, (0, 0), 0.7)
+        sign = np.where(cv2.GaussianBlur(r.normal(0, 1, (PH, PW)).astype(np.float32), (0, 0), 3) > 0.15, -1.0, 0.6)
+        grain = r.normal(0, 3.2, (PH, PW)).astype(np.float32)
+        edge = np.minimum(np.minimum(xx, PW - 1 - xx), np.minimum(yy, PH - 1 - yy))
+        age = 1 - 0.10 * np.exp(-edge / 26) - 0.05 * np.exp(-edge / 90)
+        base_c = np.array([236, 230, 212], np.float32)
+        lum = age * (1 + 0.028 * mottle) + 0.05 * fib * sign + grain / 255
+        # the fold: a bright ridge right above a soft dark valley, and the lower half a touch shaded (it bends away)
+        dy_ = yy - FOLD
+        lum += 0.07 * np.exp(-((dy_ + 2) / 2.0) ** 2) - 0.11 * np.exp(-((dy_ - 3) / 3.5) ** 2) \
+            - 0.045 * np.exp(-np.clip(dy_, 0, None) / 300) * (dy_ > 0) + 0.015 * np.exp(np.clip(dy_, None, 0) / 200)
+        tint = np.dstack([np.ones_like(lum), 1 - 0.006 * mottle, 1 - 0.08 * (1 - age)])   # yellower where aged
+        st["paper"] = np.clip(base_c[None, None] * lum[..., None] * tint, 0, 255).astype(np.float32)
+        inkn = cv2.GaussianBlur(r.normal(0, 1, (PH, PW)).astype(np.float32), (0, 0), 9)
+        inkn /= max(1e-6, float(np.abs(inkn).max()))
+        st["inkvar"] = np.clip(0.9 + 0.12 * inkn + 0.04 * r.normal(0, 1, (PH, PW)).astype(np.float32), 0.74, 1.0)
+        return st["paper"], st["inkvar"]
+
     def page(i, revealed):
         """The front page of link i (RGBA, PW x PH) with an empty hole where the core photo goes."""
         key = ("page", i, revealed)
@@ -155,13 +197,7 @@ def make(ctx):
         an, bn = ctx.link_names(i)
         link = ctx.spec["links"][i]
         sens = ctx.sensitive(an) or ctx.sensitive(bn)
-        r = np.random.default_rng(i)
-        yy, xx = np.mgrid[0:PH, 0:PW].astype(np.float32)
-        edge = np.minimum(np.minimum(xx, PW - 1 - xx), np.minimum(yy, PH - 1 - yy))
-        age = 1 - 0.13 * np.exp(-edge / 30)
-        grain = r.normal(0, 5, (PH, PW)).astype(np.float32)
-        paper = np.array([238, 230, 210], np.float32)[None, None] * age[..., None] + grain[..., None]
-        pim = Image.fromarray(np.clip(paper, 0, 255).astype(np.uint8)).convert("RGBA")
+        pim = Image.new("RGB", (PW, PH), (255, 255, 255))      # the ink, typeset on white, then printed on the paper
         d = ImageDraw.Draw(pim)
         M = 14
         # masthead
@@ -230,6 +266,10 @@ def make(ctx):
             if k:
                 d.rectangle([x - 10, y, x - 9, PH - 22], fill=(150, 140, 126))
         d.rectangle([WX - 2, WY - 2, WX + fw + 1, WY + fh + 1], fill=INKC)
+        paper, inkvar = newsprint()
+        ink = 1 - np.asarray(pim, np.float32) / 255                 # ink coverage per channel
+        out = paper * (1 - ink * inkvar[..., None])                  # multiplied into the paper, slightly uneven
+        pim = Image.fromarray(np.clip(out, 0, 255).astype(np.uint8)).convert("RGBA")
         st[key] = pim
         return pim
 
@@ -237,8 +277,8 @@ def make(ctx):
         if "sh" not in st:
             pad = 40
             sh = np.zeros((PH + 2 * pad, PW + 2 * pad), np.float32)
-            sh[pad + 12:pad + PH + 12, pad + 8:pad + PW + 8] = 150
-            sh = cv2.GaussianBlur(sh, (0, 0), 14)
+            sh[pad + 14:pad + PH + 14, pad + 10:pad + PW + 10] = 170
+            sh = cv2.GaussianBlur(sh, (0, 0), 16)
             a = np.zeros((*sh.shape, 4), np.uint8)
             a[..., 3] = sh.astype(np.uint8)
             st["sh"] = Image.fromarray(a)
@@ -260,20 +300,55 @@ def make(ctx):
             st[key] = im
         return st[key]
 
-    # background: dark sepia rays turning slowly behind the page
-    BW, BH = W // 2, H // 2
-    yy, xx = np.mgrid[0:BH, 0:BW].astype(np.float32)
-    ang_map = np.arctan2(yy - 1000 / 2, xx - ctx.CX / 2)
-    rad = np.hypot(yy - 1000 / 2, xx - ctx.CX / 2) / (BH * 0.75)
-    vign = np.clip(1.15 - rad, 0.25, 1.0)[..., None]
-    c1, c2 = np.array([70, 50, 32], np.float32), np.array([38, 27, 18], np.float32)
+    # background: a dark wooden desk, larger than the screen, sliding slowly under a lamp whose light wanders
+    DM = 260                                                  # desk margin around the screen (how far it can slide)
 
-    def backdrop(phase):
-        s_ = np.sin(ang_map * 16 + phase)
-        m = np.clip(s_ * 3, -1, 1)[..., None] * 0.5 + 0.5
-        bg = (c2 + (c1 - c2) * m) * vign
-        bg = cv2.resize(bg.astype(np.uint8), (W, H), interpolation=cv2.INTER_LINEAR)
-        return Image.fromarray(np.dstack([bg, np.full((H, W), 255, np.uint8)]))
+    def desk():
+        if "desk" not in st:
+            r = np.random.default_rng(5)
+            dh, dw = H + 2 * DM, W + 2 * DM
+            yy, xx = np.mgrid[0:dh, 0:dw].astype(np.float32)
+            warp = cv2.GaussianBlur(r.normal(0, 1, (dh // 8, dw // 8)).astype(np.float32), (0, 0), 6)
+            warp = cv2.resize(warp / max(1e-6, float(np.abs(warp).max())), (dw, dh))
+            along = yy * 0.9 + xx * 0.12                     # long grain, slightly diagonal
+            g = np.sin((along + 60 * warp) / 7.0) * 0.5 + 0.5
+            fine = cv2.GaussianBlur(r.normal(0, 1, (dh, dw)).astype(np.float32), (0, 0), sigmaX=9, sigmaY=0.8)
+            plank = (along // 310).astype(int) % 3
+            tone = np.array([1.0, 0.86, 0.93], np.float32)[plank]
+            lum = (0.75 + 0.25 * g + 0.08 * fine) * tone
+            lum = np.where((along % 310) < 3, 0.45, lum)    # seams between the planks
+            col = np.array([92, 58, 34], np.float32)
+            st["desk"] = np.clip(col[None, None] * lum[..., None], 0, 255).astype(np.uint8)
+            st["lamp"] = np.mgrid[0:H:8, 0:W:8].astype(np.float32)
+        return st["desk"]
+
+    def backdrop(tt, i):
+        dk = desk()
+        ox = int(DM + DM * 0.85 * math.sin(tt * 0.23 + i * 1.7))
+        oy = int(DM + DM * 0.85 * math.sin(tt * 0.17 + 0.6 + i))
+        arr = dk[oy:oy + H, ox:ox + W].astype(np.float32)
+        lx_, ly_ = ctx.CX + 380 * math.sin(tt * 0.31), 900 + 500 * math.sin(tt * 0.21 + 1)
+        ly, lx = st["lamp"]
+        small = np.exp(-(((lx - lx_) / 700) ** 2 + ((ly - ly_) / 900) ** 2))
+        gain = cv2.resize((0.45 + 0.85 * small).astype(np.float32), (W, H), interpolation=cv2.INTER_LINEAR)
+        arr *= gain[..., None]
+        return Image.fromarray(np.dstack([np.clip(arr, 0, 255).astype(np.uint8), np.full((H, W), 255, np.uint8)]))
+
+    def tilt(im, ang, center):
+        """Rotate an RGBA image by ang degrees (counter-clockwise) about center, same size (cv2: fast)."""
+        if abs(ang) < 0.02:
+            return im
+        M = cv2.getRotationMatrix2D((float(center[0]), float(center[1])), ang, 1.0)
+        out = cv2.warpAffine(np.asarray(im), M, im.size, flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT,
+                             borderValue=(0, 0, 0, 0))
+        return Image.fromarray(out)
+
+    def held(tt):
+        """The page's gentle drift (dx, dy) and sway (degrees): someone holding it over the desk."""
+        dx = 16 * math.sin(tt * 0.47) + 5 * math.sin(tt * 1.13 + 0.4)
+        dy = 6 + 7 * math.sin(tt * 0.61 + 1.2) + 3 * math.sin(tt * 1.7)
+        ang = 1.3 * math.sin(tt * 0.53 + 0.3) + 0.45 * math.sin(tt * 1.21 + 2.0)
+        return dx, dy, ang
 
     ENTRIES = [(-1.0, 0.15), (1.0, -0.1), (0.0, 0.6), (-1.0, -0.2), (1.0, 0.25), (0.0, 0.6)]
 
@@ -282,7 +357,7 @@ def make(ctx):
         if ctx.C.fj["links"][i].get("lineage"):
             return ctx.frame_lineage(seg, tt)
         local = tt - seg["t0"]
-        base = backdrop(tt * 0.35 + i * 3.0)
+        base = backdrop(tt, i)
         # the previous paper drops away underneath
         DROP = SPIN + 0.25
         if i > 0 and not ctx.C.fj["links"][i - 1].get("lineage") and local < DROP:
@@ -301,14 +376,31 @@ def make(ctx):
         if 0 < local - SPIN < 0.2:                               # a soft thump on landing
             oy += 6 * math.sin(math.pi * (local - SPIN) / 0.2)
         pg = page_at(i, local, seg)
+        hx, hy, ang = held(tt)
+        ox, oy = ox + hx, oy + hy
+        spot = {}
 
         def mount(b, X0, Y0, w, h):
             px, py = X0 - WX, Y0 - WY
-            b.alpha_composite(shadow(), (int(px - 40), int(py - 40)))
+            spot["sh"] = (int(px - 40), int(py - 40))
             b.alpha_composite(pg, (int(px), int(py)))
 
-        c = ctx.draw_core(base, seg, tt, PX0 + WX + ox, WIN_Y + oy, SC, frame=mount)
+        # the page and the core (photo window + Buh) go on one layer, which is then tilted as a whole, so the window
+        # rides the page exactly; its shadow falls on the desk, a little further out when the page sways more
+        L0 = 120                                             # the layer starts here (Buh can jump above the page)
+        layer = Image.new("RGBA", (W, H - L0), (0, 0, 0, 0))
+        c = ctx.draw_core(layer, seg, tt, PX0 + WX + ox, WIN_Y + oy - L0, SC, frame=mount)
         X0, Y0, w, h = c["rect"]
-        return ctx.core_finish(base, seg, tt, c, connected_y=int(Y0 + h - 130))
+        pcx, pcy = X0 + w / 2, Y0 + h / 2                    # tilt about the photo's centre (layer coords)
+        sx_, sy_ = spot["sh"]
+        so = 1 + abs(ang) * 3
+        base.alpha_composite(tilt(shadow(), ang, (pcx - sx_, pcy - sy_)), (int(sx_ + so), int(sy_ + L0 + so)))
+        base.alpha_composite(tilt(layer, ang, (pcx, pcy)), (0, L0))
+        a = math.radians(ang)
+        ddx, ddy = w / 2, h / 2 + 32                         # the credit's spot under the photo, tilted with it
+        cr = (pcx + ddx * math.cos(a) + ddy * math.sin(a), pcy - ddx * math.sin(a) + ddy * math.cos(a) + L0)
+        c["rect"] = (X0, Y0 + L0, w, h)
+        return ctx.core_finish(base, seg, tt, c, connected_y=int(Y0 + L0 + h - 130),
+                               credit_xy=(int(cr[0]), int(cr[1])))
 
     return frame
