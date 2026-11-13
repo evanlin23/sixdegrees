@@ -1,0 +1,139 @@
+{
+  "from": "Adolf Hitler",
+  "to": "Lionel Messi",
+  "title": "How is Hitler connected to Lionel Messi?",
+  "description": "Six real photos connect Adolf Hitler to Lionel Messi, through his foreign minister, Stalin, Khrushchev, Fidel Castro and Argentina's president.",
+  "hook": "How is Adolf Hitler connected to Lionel Messi?",
+  "fun_fact": "When Khrushchev first met Fidel Castro in 1960, he drove up to Harlem's Hotel Theresa, where Castro had moved after a row with his Midtown hotel.",
+  "research_note": "No free photo shows Ribbentrop with anyone who lived into Messi's era, so the chain leaves through his 1939 Kremlin handshake with Stalin; a Castro to Maradona to Messi ending would have needed two press photos, while Argentina's presidency photographed Cristina Kirchner with both Castro and Messi.",
+  "people": {
+    "Adolf Hitler": {
+      "label": "Hitler"
+    },
+    "Joachim von Ribbentrop": {
+      "label": "Ribbentrop"
+    },
+    "Joseph Stalin": {
+      "label": "Stalin"
+    },
+    "Nikita Khrushchev": {
+      "label": "Khrushchev"
+    },
+    "Fidel Castro": {
+      "label": "Castro"
+    },
+    "Cristina Fernández de Kirchner": {
+      "label": "Kirchner"
+    },
+    "Lionel Messi": {
+      "label": "Messi"
+    }
+  },
+  "links": [
+    {
+      "a": "Adolf Hitler",
+      "b": "Joachim von Ribbentrop",
+      "image": {
+        "file": "File:Podróż inspekcyjna Adolfa Hitlera w czasie kampanii wrześniowej (2-3).jpg"
+      },
+      "line": "In 1939, during the invasion of Poland, foreign minister Joachim von Ribbentrop joined Hitler at his headquarters train.",
+      "fact": "Polish campaign, 1939",
+      "a_face": 1,
+      "b_face": 0,
+      "where": {
+        "place": "Poland",
+        "lat": 52.0,
+        "lon": 19.0
+      }
+    },
+    {
+      "a": "Joachim von Ribbentrop",
+      "b": "Joseph Stalin",
+      "image": {
+        "file": "File:Bundesarchiv Bild 183-H27337, Moskau, Stalin und Ribbentrop im Kreml.jpg"
+      },
+      "line": "In 1939, Ribbentrop flew to Moscow and shook hands with Joseph Stalin at the Nazi-Soviet pact signing.",
+      "fact": "Kremlin, August 1939",
+      "a_face": [
+        625,
+        85,
+        200,
+        235
+      ],
+      "b_face": 0,
+      "where": {
+        "place": "Kremlin, Moscow",
+        "lat": 55.752,
+        "lon": 37.617
+      }
+    },
+    {
+      "a": "Joseph Stalin",
+      "b": "Nikita Khrushchev",
+      "image": {
+        "file": "File:Joseph Stalin and Nikita Khrushchev 1930s.jpg"
+      },
+      "line": "In the 1930s, Stalin's Moscow party boss was a rising star named Nikita Khrushchev.",
+      "fact": "Moscow, 1930s",
+      "a_face": 4,
+      "b_face": 3,
+      "where": {
+        "place": "Moscow",
+        "lat": 55.756,
+        "lon": 37.617
+      }
+    },
+    {
+      "a": "Nikita Khrushchev",
+      "b": "Fidel Castro",
+      "image": {
+        "url": "https://tile.loc.gov/storage-services/service/pnp/cph/3c20000/3c27000/3c27200/3c27233v.jpg",
+        "credit": "Herman Hiller, New York World-Telegram & Sun / Library of Congress",
+        "license": "No known restrictions (NYWT&S staff photograph)",
+        "source": "https://www.loc.gov/item/00652628/",
+        "free": true
+      },
+      "line": "In 1960, Khrushchev and Fidel Castro met in New York during the United Nations General Assembly.",
+      "fact": "New York, 1960",
+      "a_face": 4,
+      "b_face": 5,
+      "where": {
+        "place": "New York City",
+        "lat": 40.713,
+        "lon": -74.006
+      }
+    },
+    {
+      "a": "Fidel Castro",
+      "b": "Cristina Fernández de Kirchner",
+      "image": {
+        "file": "File:Cristina Fernández de Kircher y Fidel Castro - 2009.jpg"
+      },
+      "line": "In 2009, Argentina's president, Cristina Kirchner, flew to Havana and met privately with Fidel Castro.",
+      "fact": "Havana, January 2009",
+      "a_face": 1,
+      "b_face": 2,
+      "where": {
+        "place": "Havana",
+        "lat": 23.113,
+        "lon": -82.366
+      }
+    },
+    {
+      "a": "Cristina Fernández de Kirchner",
+      "b": "Lionel Messi",
+      "image": {
+        "file": "File:Cristina Fernández y la Selección Argentina de fútbol 2014 ,2.jpg"
+      },
+      "line": "And in 2014, Cristina Kirchner welcomed home Argentina's World Cup captain, Lionel Messi.",
+      "fact": "Ezeiza, July 2014",
+      "a_face": 4,
+      "b_face": 1,
+      "where": {
+        "place": "AFA training ground, Ezeiza",
+        "lat": -34.833,
+        "lon": -58.522
+      }
+    }
+  ]
+}

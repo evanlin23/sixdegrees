@@ -1,0 +1,106 @@
+{
+  "from": "Adolf Hitler",
+  "to": "Michael Jackson",
+  "title": "How is Adolf Hitler connected to Michael Jackson?",
+  "description": "Four real photos connect Adolf Hitler to Michael Jackson, through Vichy France's Marshal Pétain, a young François Mitterrand and Ronald Reagan.",
+  "hook": "How is Adolf Hitler connected to Michael Jackson?",
+  "fun_fact": "Pétain stood beside President Hoover at Yorktown's 150th anniversary in October 1931. Exactly 50 years later, on 19 October 1981, Mitterrand stood there with Reagan for the 200th.",
+  "research_note": "The 1942 photo of Pétain receiving Mitterrand stayed out of sight for 52 years until it appeared on the cover of a 1994 book, and it links Vichy straight to a president who later stood beside Reagan.",
+  "people": {
+    "Adolf Hitler": {
+      "label": "Adolf Hitler",
+      "short": "Hitler"
+    },
+    "Philippe Pétain": {
+      "label": "Marshal Pétain",
+      "short": "Pétain"
+    },
+    "François Mitterrand": {
+      "label": "François Mitterrand",
+      "short": "Mitterrand"
+    },
+    "Ronald Reagan": {
+      "label": "Ronald Reagan",
+      "short": "Reagan"
+    },
+    "Michael Jackson": {
+      "label": "Michael Jackson"
+    }
+  },
+  "links": [
+    {
+      "a": "Adolf Hitler",
+      "b": "Philippe Pétain",
+      "image": {
+        "file": "File:Bundesarchiv Bild 183-H25217, Henry Philippe Petain und Adolf Hitler.jpg"
+      },
+      "line": "In 1940, Hitler shook hands with Vichy France's leader, Marshal Pétain, at Montoire's train station.",
+      "fact": "Montoire, October 1940",
+      "a_face": [
+        259,
+        68,
+        68,
+        72
+      ],
+      "b_face": [
+        43,
+        95,
+        77,
+        66
+      ],
+      "where": {
+        "place": "Montoire-sur-le-Loir",
+        "lat": 47.753,
+        "lon": 0.865
+      }
+    },
+    {
+      "a": "Philippe Pétain",
+      "b": "François Mitterrand",
+      "image": {
+        "file": "File:François Mitterrand 1942.jpg"
+      },
+      "line": "In 1942, Pétain received young François Mitterrand, a future president of France, at Vichy.",
+      "fact": "Vichy, October 1942",
+      "a_face": 1,
+      "b_face": 3,
+      "where": {
+        "place": "Hôtel du Parc, Vichy",
+        "lat": 46.128,
+        "lon": 3.425
+      }
+    },
+    {
+      "a": "François Mitterrand",
+      "b": "Ronald Reagan",
+      "image": {
+        "file": "File:Reagan Mitterrand 1981.jpg"
+      },
+      "line": "In 1981, Mitterrand, now president of France, joined Ronald Reagan at the Yorktown bicentennial in Virginia.",
+      "fact": "Yorktown, Virginia, 1981",
+      "a_face": 1,
+      "b_face": 4,
+      "where": {
+        "place": "Yorktown, Virginia",
+        "lat": 37.239,
+        "lon": -76.51
+      }
+    },
+    {
+      "a": "Ronald Reagan",
+      "b": "Michael Jackson",
+      "image": {
+        "file": "File:Michael Jackson with the Reagans.jpg"
+      },
+      "line": "And in 1984, at the White House, Ronald Reagan honored Michael Jackson himself.",
+      "fact": "White House, 1984",
+      "a_face": 1,
+      "b_face": 3,
+      "where": {
+        "place": "White House",
+        "lat": 38.897,
+        "lon": -77.037
+      }
+    }
+  ]
+}
