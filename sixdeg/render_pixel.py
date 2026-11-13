@@ -965,22 +965,38 @@ def render(slug: str, log=print) -> Path:
         return int(m.group(1)) if m else None
 
     # --- zoom: the core, bigger. The photo window runs (almost) edge to edge at ~1.1x with only a thin keyline, over a
-    # dark blurred copy of the same photo; everything else (camera, Buh, string, tags, payoff) is the shared core.
+    # dark blurred copy of the same photo that slowly pans and breathes; everything else (camera, Buh, string, tags, payoff) is the shared core.
     Z_S = 1.08                                       # core window scale: 950 x 1026 (ends above the Subscribe button)
     Z_X0, Z_Y0 = (W - int((CARD[2] - CARD[0]) * Z_S)) // 2, 404
     _zbg = {}
 
+    Z_OVER = 1.30                                    # the backdrop is this much bigger than the frame (room to pan)
+
     def z_bg(i):
-        """A dark, heavily blurred full-frame copy of photo i (the backdrop around the window)."""
+        """A dark, heavily blurred, oversized copy of photo i (the backdrop around the window), kept at half
+        resolution: it is blurred anyway, and the per-frame pan/zoom resamples it up to full frame."""
         if i not in _zbg:
             img = rgb(i)
             ih, iw = img.shape[:2]
-            cs = max(W / iw, H / ih)
-            b = cv2.resize(img, (int(iw * cs) + 2, int(ih * cs) + 2))
-            y0, x0 = (b.shape[0] - H) // 2, (b.shape[1] - W) // 2
-            b = (cv2.GaussianBlur(b[y0:y0 + H, x0:x0 + W], (0, 0), 30) * 0.32).astype(np.uint8)
+            ow, oh = int(W * Z_OVER / 2), int(H * Z_OVER / 2)
+            cs = max(ow / iw, oh / ih)
+            b = cv2.resize(img, (int(iw * cs) + 2, int(ih * cs) + 2), interpolation=cv2.INTER_AREA)
+            y0, x0 = (b.shape[0] - oh) // 2, (b.shape[1] - ow) // 2
+            b = (cv2.GaussianBlur(b[y0:y0 + oh, x0:x0 + ow], (0, 0), 10) * 0.36).astype(np.uint8)
             _zbg[i] = Image.fromarray(b).convert("RGBA")
         return _zbg[i]
+
+    def z_backdrop(i, tt):
+        """The blurred copy never stands still: a slow Ken Burns drift across it plus a gentle breathing zoom
+        (a few % over ~7 s). One bilinear resample of a half-res crop per frame."""
+        bg = z_bg(i)
+        bw, bh = bg.size
+        s = 1.0 - 0.05 * (0.5 + 0.5 * math.sin(tt * 2 * math.pi / 7.0))        # breathe: up to 5 % closer
+        vw, vh = W / 2 * s, H / 2 * s
+        rx, ry = (bw - vw) / 2 * 0.92, (bh - vh) / 2 * 0.92                     # room left to pan
+        cx = bw / 2 + rx * math.sin(tt * 0.31 + i * 1.7)
+        cy = bh / 2 + ry * math.sin(tt * 0.23 + 0.8 + i * 2.3)
+        return bg.resize((W, H), Image.BILINEAR, box=(cx - vw / 2, cy - vh / 2, cx + vw / 2, cy + vh / 2))
 
     def z_frame(b, X0, Y0, w, h):
         dr = ImageDraw.Draw(b)
@@ -991,7 +1007,7 @@ def render(slug: str, log=print) -> Path:
         i = seg["i"]
         if C.fj["links"][i].get("lineage"):
             return frame_lineage(seg, tt)
-        base = z_bg(i).copy()
+        base = z_backdrop(i, tt)
         c = draw_core(base, seg, tt, Z_X0, Z_Y0, Z_S, frame=z_frame)
         return core_finish(base, seg, tt, c)
 

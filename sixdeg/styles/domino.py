@@ -12,7 +12,10 @@ row, that topple one into the next as Buh flies to B, just before CONNECTED!.
 
 Sensitive links (dictators etc.) get the plain treatment: a steel spinner and grey engraving, no gold, and no
 toppling chain if the payoff link is one. Lineage links use the shared
-lineage frame (and the tile after one simply stands, nothing falls)."""
+lineage frame (and the tile after one simply stands, nothing falls).
+
+The table is never still: the felt's nap drifts slowly, a warm lamp pool swings gently across it and the tile's
+shadow leans away from the lamp."""
 from __future__ import annotations
 
 import math
@@ -76,22 +79,45 @@ def make(ctx):
         since = (k - seg.get("rv", ctx.REVEAL)) * seg["speech"]
         return since, since - ctx.THROW
 
-    # ---------- table
-    def felt():
+    # ---------- table: the felt drifts slowly under a softly swinging lamp, and the tile's shadow follows the lamp
+    DR = 64                                                              # felt overscan for the drift, px
+
+    def table_layers():
         if "felt" not in _c:
             rng = np.random.default_rng(4)
-            n = rng.normal(0, 7, (H // 4, W // 4, 1))
+            fw_, fh_ = (W + 2 * DR) // 4, (H + 2 * DR) // 4
+            n = rng.normal(0, 7, (fh_, fw_, 1))
             a = np.clip(np.array(FELT, np.float32)[None, None] + n, 0, 255).astype(np.uint8)
-            im = Image.fromarray(a).resize((W, H), Image.NEAREST)
+            _c["felt"] = Image.fromarray(a).resize((fw_ * 4, fh_ * 4), Image.NEAREST).convert("RGBA")
             yy, xx = np.mgrid[0:H, 0:W]
             v = 1 - 0.5 * np.clip(((xx - W / 2) / W) ** 2 * 2.2 + ((yy - H * 0.55) / H) ** 2 * 2.2, 0, 1)
-            arr = (np.array(im, np.float32) * v[..., None]).astype(np.uint8)
-            im = Image.fromarray(arr).convert("RGBA")
-            sh = Image.new("RGBA", (W, H), (0, 0, 0, 0))                  # the tile's shadow on the felt
-            ImageDraw.Draw(sh).rounded_rectangle([TX0 + 10, TY0 + 30, TX1 + 34, TY1 + 26], 46, fill=(0, 0, 0, 130))
-            im.alpha_composite(sh.filter(ImageFilter.GaussianBlur(14)))
-            _c["felt"] = im
-        return _c["felt"].copy()
+            vig = np.zeros((H, W, 4), np.uint8)
+            vig[..., 3] = ((1 - v) * 255).astype(np.uint8)
+            _c["vig"] = Image.fromarray(vig)                              # the table's edges fall off into dark
+            sh = Image.new("RGBA", (TX1 - TX0 + 120, TY1 - TY0 + 120), (0, 0, 0, 0))    # the tile's shadow
+            ImageDraw.Draw(sh).rounded_rectangle([50, 50, TX1 - TX0 + 74, TY1 - TY0 + 46], 46, fill=(0, 0, 0, 130))
+            _c["shadow"] = sh.filter(ImageFilter.GaussianBlur(14))
+            r = 620                                                       # warm lamp pool (soft radial)
+            yy, xx = np.mgrid[0:2 * r, 0:2 * r]
+            q = np.clip(1 - np.hypot(xx - r, yy - r) / r, 0, 1) ** 2
+            lamp = np.zeros((2 * r, 2 * r, 4), np.uint8)
+            lamp[..., :3] = (255, 226, 160)
+            lamp[..., 3] = (q * 56).astype(np.uint8)
+            _c["lamp"] = Image.fromarray(lamp)
+        return _c["felt"], _c["vig"], _c["shadow"], _c["lamp"]
+
+    def felt(tt):
+        tex, vig, shadow, lamp = table_layers()
+        ox = DR + DR * 0.85 * math.sin(tt * 0.21)
+        oy = DR + DR * 0.85 * math.sin(tt * 0.16 + 1.3)
+        im = tex.crop((int(ox), int(oy), int(ox) + W, int(oy) + H))
+        lx = CX + 330 * math.sin(tt * 0.45)                                # the lamp swings slowly over the table
+        ly = 1060 + 140 * math.sin(tt * 0.31 + 0.6)
+        im.alpha_composite(lamp, (int(lx - lamp.width / 2), int(ly - lamp.height / 2)))
+        im.alpha_composite(vig)
+        sdx, sdy = -(lx - CX) * 0.05, -(ly - 1060) * 0.05                  # the shadow falls away from the lamp
+        im.alpha_composite(shadow, (int(TX0 + 10 - 50 + sdx), int(TY0 + 30 - 50 + sdy)))
+        return im
 
     # ---------- the big tile (static per link; the core window is laid into its recess)
     def engraving(i):
@@ -216,7 +242,7 @@ def make(ctx):
         i = seg["i"]
         if lineage(i):
             return ctx.frame_lineage(seg, tt)
-        base = felt()
+        base = felt(tt)
         incut = tt - seg["t0"]
         fell = i > 0 and not lineage(i - 1)
         jolt = 0

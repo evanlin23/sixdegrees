@@ -2,13 +2,16 @@
 strip of 35 mm film running down the screen: sprocket holes, frame lines, orange edge markings (frame number, year)
 and a warm projector beam. At each new link the strip pulls the next frame into the gate; the frame that just
 played slides up out of the gate as a still, the frames still to come wait below as dark unexposed leader (never a
-spoiler of the next photo)."""
+spoiler of the next photo).
+
+Around the strip the booth is alive: the projector beam sways slowly, dust motes drift up through it, a warm light
+leak breathes along one film edge every few seconds and film grain flickers on the margins (never over the picture)."""
 from __future__ import annotations
 
 import math
 
 import numpy as np
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 NAME = "filmreel"
 
@@ -35,16 +38,90 @@ def make(ctx):
             st[key] = ImageFont.truetype(str(ctx.FONTS / f"Inter-{name}.otf"), size)
         return st[key]
 
-    def backdrop():
-        """Projection-booth dark with a warm beam behind the strip (static, cached)."""
+    SW = 70                                             # backdrop overscan each way (room for the beam to sway)
+
+    def backdrop(tt):
+        """Projection-booth dark with a warm beam behind the strip. The big gradient is cached once; per frame it
+        is cropped at a slowly swaying offset (the beam drifts and the booth air never stands still)."""
         if "bg" not in st:
-            yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
-            r = np.hypot((xx - ctx.CX) / W, (yy - 820) / H)
+            BW_, BH_ = W + 2 * SW, H + 2 * SW
+            yy, xx = np.mgrid[0:BH_, 0:BW_].astype(np.float32)
+            r = np.hypot((xx - BW_ / 2) / W, (yy - 820 - SW) / H)
             v = np.clip(1 - r * 1.6, 0, 1)[..., None] ** 1.5
             c = np.array([10, 8, 14], np.float32) * (1 - v) + np.array([70, 48, 30], np.float32) * v
-            c += np.random.default_rng(1).normal(0, 2.0, (H, W, 1)).astype(np.float32)
-            st["bg"] = Image.fromarray(np.dstack([c.clip(0, 255).astype(np.uint8), np.full((H, W), 255, np.uint8)]))
-        return st["bg"]
+            st["bg"] = Image.fromarray(np.dstack([c.clip(0, 255).astype(np.uint8), np.full((BH_, BW_), 255, np.uint8)]))
+        ox = SW + SW * 0.8 * math.sin(tt * 0.37) + 3 * math.sin(tt * 2.1)
+        oy = SW + SW * 0.6 * math.sin(tt * 0.27 + 1.1)
+        return st["bg"].crop((int(ox), int(oy), int(ox) + W, int(oy) + H))
+
+    def grain(k):
+        """One of a few cycling film-grain layers for the side (booth + film edge) strips: speckles, no picture."""
+        key = ("grain", k)
+        if key not in st:
+            rng = np.random.default_rng(100 + k)
+            gw, gh = X0 // 2, H // 2
+            n = rng.normal(0, 1, (gh, gw))
+            a = np.zeros((gh, gw, 4), np.uint8)
+            a[..., :3] = np.where(n[..., None] > 0, 255, 0).astype(np.uint8)
+            a[..., 3] = (np.clip(np.abs(n) - 1.0, 0, 2) * 13).astype(np.uint8)
+            for _ in range(3):                                           # the odd hair / scratch
+                x, y, l = int(rng.integers(4, gw - 4)), int(rng.integers(0, gh)), int(rng.integers(20, 120))
+                a[y:y + l, x, :3] = 230 if rng.random() < 0.5 else 0
+                a[y:y + l, x, 3] = 50
+            st[key] = Image.fromarray(a).resize((gw * 2, gh * 2), Image.NEAREST)
+        return st[key]
+
+    def leak():
+        """A soft warm light leak (orange-red, fading out from its middle)."""
+        if "leak" not in st:
+            lw, lh = 460, 980
+            yy, xx = np.mgrid[0:lh, 0:lw].astype(np.float32)
+            q = np.clip(1 - np.hypot((xx - lw / 2) / (lw / 2), (yy - lh / 2) / (lh / 2)), 0, 1) ** 1.6
+            a = np.zeros((lh, lw, 4), np.uint8)
+            a[..., 0] = 255
+            a[..., 1] = (90 + 90 * q).astype(np.uint8)
+            a[..., 2] = 30
+            a[..., 3] = (q * 255).astype(np.uint8)
+            st["leak"] = Image.fromarray(a)
+        return st["leak"]
+
+    MOTES = [(float(m[0]), float(m[1]), float(m[2]), float(m[3]), int(m[4]))
+             for m in np.random.default_rng(9).uniform((0, 0, 0, 0, 3), (W, H, 6.283, 1, 7), (46, 5))]
+
+    def mote_im(r):
+        key = ("mote", r)
+        if key not in st:
+            m = Image.new("RGBA", (r * 4, r * 4), (255, 226, 180, 0))
+            a = Image.new("L", (r * 4, r * 4), 0)
+            ImageDraw.Draw(a).ellipse([r, r, r * 3, r * 3], fill=210)
+            m.putalpha(a.filter(ImageFilter.GaussianBlur(r * 0.6)))
+            st[key] = m
+        return st[key]
+
+    def booth_air(base, tt):
+        """Dust motes floating up through the beam, a light leak breathing along one film edge, and film grain on
+        the strips either side of the picture. Drawn under the core, so never over the photo window."""
+        for x0, y0, ph, sp, r in MOTES:
+            y = (y0 - tt * (10 + 14 * sp)) % (H + 40) - 20
+            x = x0 + 26 * math.sin(tt * (0.4 + 0.5 * sp) + ph)
+            if X0 - 4 < x < X0 + fw + 4 and GATE_Y - 60 < y < GATE_Y + fh + 60:
+                continue                                                  # not over the gate
+            al = 0.55 + 0.45 * math.sin(tt * 1.3 + ph * 3)
+            if al > 0.15:
+                ctx.paste(base, mote_im(r), x, y, alpha=al, nearest=False)
+        per = 5.2                                                         # light leak: one every few seconds
+        k, u = int(tt // per), (tt % per) / per
+        a = math.sin(math.pi * u) ** 2
+        if a > 0.02:
+            lk = leak()
+            lk = Image.fromarray((np.asarray(lk) * np.array([1, 1, 1, 0.34 * a])).astype(np.uint8))
+            side = k % 2
+            lx = (SX0 - lk.width * 0.55) if side == 0 else (SX1 - lk.width * 0.45)
+            ly = 520 + ((k * 397) % 520) + 140 * (u - 0.5)
+            base.alpha_composite(lk, (int(lx), int(ly)))
+        g = grain(int(tt * 24) % 4)
+        base.alpha_composite(g, (0, 0))
+        base.alpha_composite(g.transpose(Image.FLIP_LEFT_RIGHT), (W - g.width, 0))
 
     def leader(j):
         """An unexposed frame for a link still to come: dark amber with a countdown-style mark (no photo)."""
@@ -122,7 +199,7 @@ def make(ctx):
         pos = (i - 1 + ctx.ease(u) + 0.03 * math.sin(math.pi * u)) if i else 0.0
         if u >= 1:
             pos = float(i)
-        base = backdrop().copy()
+        base = backdrop(tt)
         strip(base, pos, i, tt)
         # neighbours: the played frame above (still), unexposed leader below
         for j in range(max(0, i - 1), min(ctx.n_links, i + 2)):
@@ -133,6 +210,7 @@ def make(ctx):
                 im = still(j) if j < i else leader(j)
                 base.alpha_composite(im, (X0, int(y)))
                 frame_lines(base, int(y), fw, fh)
+        booth_air(base, tt)
         gy = GATE_Y + (i - pos) * PITCH
 
         def mount(b, x, y, w, h):
