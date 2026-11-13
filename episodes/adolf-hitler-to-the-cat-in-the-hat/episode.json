@@ -1,0 +1,168 @@
+{
+  "from": "Adolf Hitler",
+  "to": "The Cat in the Hat",
+  "title": "Hitler to the Cat in the Hat?",
+  "description": "Six real photos connect Adolf Hitler to the Cat in the Hat, through Hermann Göring, Charles Lindbergh, John F. Kennedy, Carol Burnett and Bill Hader.",
+  "hook": "How is Hitler connected to the Cat in the Hat?",
+  "people": {
+    "Adolf Hitler": {
+      "label": "Adolf Hitler",
+      "short": "Hitler",
+      "hook_photo": "File:Hitler portrait crop.jpg"
+    },
+    "Hermann Göring": {
+      "label": "Hermann Göring",
+      "short": "Göring"
+    },
+    "Charles Lindbergh": {
+      "label": "Charles Lindbergh",
+      "short": "Lindbergh"
+    },
+    "John F. Kennedy": {
+      "label": "John F. Kennedy",
+      "short": "JFK"
+    },
+    "Carol Burnett": {
+      "label": "Carol Burnett"
+    },
+    "Bill Hader": {
+      "label": "Bill Hader"
+    },
+    "The Cat in the Hat": {
+      "label": "The Cat in the Hat",
+      "short": "Cat in the Hat",
+      "hook_photo": "http://www.impawards.com/2026/posters/cat_in_the_hat_ver5_xlg.jpg",
+      "hook_box": [
+        440,
+        560,
+        520,
+        470
+      ]
+    }
+  },
+  "links": [
+    {
+      "a": "Adolf Hitler",
+      "b": "Hermann Göring",
+      "image": {
+        "file": "File:Bundesarchiv Bild 183-2004-1202-504, Berlin, Adolf Hitler und Hermann Göring.jpg"
+      },
+      "line": "In 1938, Hitler saluted Berlin beside his air force chief, Hermann Göring.",
+      "fact": "Reich Chancellery balcony, 1938",
+      "where": {
+        "place": "Reich Chancellery, Berlin",
+        "lat": 52.511,
+        "lon": 13.383
+      },
+      "a_face": 0,
+      "b_face": 1
+    },
+    {
+      "a": "Hermann Göring",
+      "b": "Charles Lindbergh",
+      "image": {
+        "file": "File:Hermann Goering gives Charles Lindbergh a Nazi medal.jpg"
+      },
+      "line": "Back in 1936, Göring showed his sword collection to famous flier Charles Lindbergh.",
+      "fact": "Berlin, 1936",
+      "where": {
+        "place": "Berlin",
+        "lat": 52.516,
+        "lon": 13.377
+      },
+      "a_face": 3,
+      "b_face": [
+        925,
+        240,
+        210,
+        240
+      ]
+    },
+    {
+      "a": "Charles Lindbergh",
+      "b": "John F. Kennedy",
+      "image": {
+        "file": "File:President John F. Kennedy with Aviator Charles A. Lindbergh and Anne Morrow Lindbergh.jpg"
+      },
+      "line": "In 1962, Lindbergh visited President John F. Kennedy at the White House.",
+      "fact": "White House, 1962",
+      "where": {
+        "place": "White House",
+        "lat": 38.897,
+        "lon": -77.037
+      },
+      "a_face": 2,
+      "b_face": 0
+    },
+    {
+      "a": "John F. Kennedy",
+      "b": "Carol Burnett",
+      "image": {
+        "url": "https://i0.wp.com/judygarlandnews.com/wp-content/uploads/2018/11/November-28-1962-White-House-w-JFK-and-Carol-Burnett-Danny-Kaye.jpg",
+        "credit": "Cecil Stoughton, White House Photographs, John F. Kennedy Presidential Library (ST-505-12-62)",
+        "license": "Public domain",
+        "source": "https://judygarlandnews.com/2018/11/28/on-this-day-in-judy-garlands-life-and-career-november-28/"
+      },
+      "line": "Later that year, Kennedy welcomed a young Carol Burnett to the Oval Office.",
+      "fact": "Oval Office, 1962",
+      "where": {
+        "place": "Oval Office, White House",
+        "lat": 38.897,
+        "lon": -77.037
+      },
+      "b_face": 3,
+      "a_face": 2
+    },
+    {
+      "a": "Carol Burnett",
+      "b": "Bill Hader",
+      "image": {
+        "url": "https://i.abcnewsfe.com/a/3a18abc4-a932-4f8c-8dfd-8a9acd28b62b/Carol-Burnett-4-rt-jm-240620_1718913695987_hpEmbed_3x2.jpg?w=1600",
+        "credit": "Mike Blake/Reuters",
+        "license": "Fair use (commentary)",
+        "source": "https://www.goodmorningamerica.com/culture/story/dick-van-dyke-jimmy-kimmel-support-carol-burnett-photos-111288914"
+      },
+      "line": "In 2024, Burnett posed in Hollywood with her distant cousin, Bill Hader.",
+      "fact": "TCL Chinese Theatre, 2024",
+      "where": {
+        "place": "TCL Chinese Theatre, Hollywood",
+        "lat": 34.102,
+        "lon": -118.341
+      },
+      "a_face": 2,
+      "b_face": 0
+    },
+    {
+      "a": "Bill Hader",
+      "b": "The Cat in the Hat",
+      "image": {
+        "pair": [
+          {
+            "file": "File:Bill Hader (29419489470) (cropped).jpg"
+          },
+          {
+            "url": "http://www.impawards.com/2026/posters/cat_in_the_hat_ver5_xlg.jpg",
+            "credit": "Warner Bros. Pictures Animation (via IMP Awards)",
+            "license": "Fair use (commentary)",
+            "source": "http://www.impawards.com/2026/cat_in_the_hat_ver5.html"
+          }
+        ]
+      },
+      "line": "And in 2026, Hader became the voice of the Cat in the Hat.",
+      "where": {
+        "place": "Warner Bros., Burbank",
+        "lat": 34.151,
+        "lon": -118.338
+      },
+      "b_face": [
+        1430,
+        540,
+        490,
+        400
+      ],
+      "a_face": 0
+    }
+  ],
+  "fun_fact": "Carol Burnett learned on PBS's Finding Your Roots that she and Bill Hader are distant cousins, then emailed him to tell him.",
+  "research_note": "King Leopold III's 1940 Berghof visit left no clear photo, Admiral Darlan's shows Hitler from behind and Tiso's line dead-ends, so the chain leaves through Göring and Lindbergh; Bill Hader comes in through his distant cousin Carol Burnett."
+}

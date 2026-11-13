@@ -298,6 +298,14 @@
   "slug": "adolf-hitler-to-lionel-messi"
  },
  {
+  "from": "Adolf Hitler",
+  "to": "The Cat in the Hat",
+  "status": "done",
+  "source": "[#2] Hitler pairs (Nov 2026)",
+  "hint": "Göring (1938 Berlin balcony) -> Charles Lindbergh (1936 Berlin) -> JFK (1962 White House) -> Carol Burnett (1962 Oval Office) -> her cousin Bill Hader (2024 Hollywood) -> the Cat (2026 film)",
+  "slug": "adolf-hitler-to-the-cat-in-the-hat"
+ },
+ {
   "from": "Joseph Stalin",
   "to": "MrBeast",
   "status": "todo"
