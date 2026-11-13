@@ -1,0 +1,185 @@
+{
+  "from": "Adolf Hitler",
+  "to": "Agamemnon",
+  "title": "How is Hitler connected to Agamemnon?",
+  "description": "Seven real pictures connect Adolf Hitler to Agamemnon, through an explorer, two Swedish kings, King Charles, Christopher Nolan and Benny Safdie.",
+  "hook": "How is Hitler connected to Agamemnon?",
+  "people": {
+    "Adolf Hitler": {
+      "label": "Adolf Hitler",
+      "short": "Hitler"
+    },
+    "Sven Hedin": {
+      "label": "Sven Hedin"
+    },
+    "Gustaf VI Adolf": {
+      "label": "Gustaf VI Adolf"
+    },
+    "Carl XVI Gustaf": {
+      "label": "Carl XVI Gustaf"
+    },
+    "Charles III": {
+      "label": "King Charles"
+    },
+    "Christopher Nolan": {
+      "label": "Christopher Nolan",
+      "short": "Nolan"
+    },
+    "Benny Safdie": {
+      "label": "Benny Safdie"
+    },
+    "Agamemnon": {
+      "label": "Agamemnon",
+      "hook_photo": "https://cdn.mos.cms.futurecdn.net/HKuxityqr6JaExtTpLc2kg-1920-80.jpg"
+    }
+  },
+  "links": [
+    {
+      "a": "Adolf Hitler",
+      "b": "Sven Hedin",
+      "image": {
+        "file": "File:Hedin och Hitler.jpg"
+      },
+      "line": "In 1936, Hitler shook hands with Swedish explorer Sven Hedin.",
+      "fact": "Berlin Olympics, 1936",
+      "a_face": [
+        1375,
+        390,
+        290,
+        300
+      ],
+      "b_face": 0,
+      "where": {
+        "place": "Olympic Stadium, Berlin",
+        "lat": 52.515,
+        "lon": 13.239
+      }
+    },
+    {
+      "a": "Sven Hedin",
+      "b": "Gustaf VI Adolf",
+      "image": {
+        "url": "https://collections.smvk.se/carlotta-em/web/image/zoom/2432729/1021.110_01.jpg",
+        "credit": "Etnografiska museet / Statens museer för världskultur (CC0)",
+        "license": "CC0",
+        "source": "https://collections.smvk.se/carlotta-em/web/object/2432725",
+        "free": true
+      },
+      "line": "Back in 1926, Hedin posed in Stockholm with Sweden's future king, Gustaf Adolf.",
+      "fact": "Stockholm, 1926",
+      "a_face": 0,
+      "b_face": 3,
+      "where": {
+        "place": "Stockholm",
+        "lat": 59.344,
+        "lon": 18.068
+      }
+    },
+    {
+      "a": "Gustaf VI Adolf",
+      "b": "Carl XVI Gustaf",
+      "image": {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/29/King-Gustaf-Adolf-Crown-Prince-Carl-Gustaf-and-Princess-Sibylla-391753676320.jpg/960px-King-Gustaf-Adolf-Crown-Prince-Carl-Gustaf-and-Princess-Sibylla-391753676320.jpg",
+        "credit": "Svenskt Pressfoto, unknown photographer (public domain in Sweden)",
+        "license": "Public domain",
+        "source": "https://commons.wikimedia.org/wiki/File:King-Gustaf-Adolf-Crown-Prince-Carl-Gustaf-and-Princess-Sibylla-391753676320.jpg",
+        "free": true
+      },
+      "line": "In 1962, King Gustaf Adolf stood beside his teenage grandson, Carl Gustaf.",
+      "fact": "Borgholm, 1962",
+      "a_face": [
+        90,
+        110,
+        210,
+        215
+      ],
+      "b_face": 0,
+      "where": {
+        "place": "Borgholm, Öland",
+        "lat": 56.879,
+        "lon": 16.656
+      }
+    },
+    {
+      "a": "Carl XVI Gustaf",
+      "b": "Charles III",
+      "image": {
+        "file": "File:Buckingham Palace reception (52873651553).jpg"
+      },
+      "line": "In 2023, Carl Gustaf, now Sweden's king, met King Charles before his coronation.",
+      "fact": "Buckingham Palace, 2023",
+      "a_face": 0,
+      "b_face": 5,
+      "where": {
+        "place": "Buckingham Palace",
+        "lat": 51.501,
+        "lon": -0.142
+      }
+    },
+    {
+      "a": "Charles III",
+      "b": "Christopher Nolan",
+      "image": {
+        "url": "https://pbs.twimg.com/media/GfF932wWgAIV0bu.jpg?name=orig",
+        "credit": "The Royal Family on X",
+        "license": "Fair use (commentary)",
+        "source": "https://x.com/RoyalFamily/status/1869414467483926947"
+      },
+      "line": "In 2024, Charles knighted the film director Christopher Nolan at Buckingham Palace.",
+      "fact": "Buckingham Palace, 2024",
+      "a_face": 2,
+      "b_face": 5,
+      "where": {
+        "place": "Buckingham Palace",
+        "lat": 51.501,
+        "lon": -0.142
+      }
+    },
+    {
+      "a": "Christopher Nolan",
+      "b": "Benny Safdie",
+      "image": {
+        "url": "https://edge.sitecorecloud.io/directorsguf4d4-dga2c79-dgaprod1615-f6e3/media/Images/Landscape-Images/Events-Images/2025/011-Nov2025/REPix002/SmashingMachine-002LA.jpg",
+        "credit": "Elisa Haber / Directors Guild of America",
+        "license": "Fair use (commentary)",
+        "source": "https://www.dga.org/events/2025/november2025/smashingmachine_qna_1025"
+      },
+      "line": "In 2025, Nolan interviewed his Oppenheimer actor, Benny Safdie, on stage.",
+      "fact": "DGA Theater, 2025",
+      "a_face": 0,
+      "b_face": 1,
+      "where": {
+        "place": "DGA Theater, Los Angeles",
+        "lat": 34.098,
+        "lon": -118.364
+      }
+    },
+    {
+      "a": "Benny Safdie",
+      "b": "Agamemnon",
+      "image": {
+        "pair": [
+          {
+            "file": "File:Benny Safdie-1868 (cropped).jpg"
+          },
+          {
+            "url": "https://cdn.mos.cms.futurecdn.net/HKuxityqr6JaExtTpLc2kg-1920-80.jpg",
+            "credit": "Universal Pictures (via GamesRadar+)",
+            "license": "Fair use (commentary)",
+            "source": "https://www.gamesradar.com/entertainment/action-movies/christopher-nolan-fans-have-a-theory-on-why-the-odyssey-chooses-not-to-show-agamemnons-face/"
+          }
+        ]
+      },
+      "line": "And in 2026, Safdie put on the helmet of King Agamemnon.",
+      "a_face": 0,
+      "b_face": 2,
+      "where": {
+        "place": "Hollywood",
+        "lat": 34.098,
+        "lon": -118.327
+      }
+    }
+  ],
+  "fun_fact": "Benny Safdie is on screen as Agamemnon for only about four minutes, yet fans crowned his helmeted king the champion of aura farming.",
+  "research_note": "A 1926 museum photo of Sven Hedin with Sweden's crown prince opened the Swedish royal line down to King Charles, who knighted Christopher Nolan; Nolan then interviewed Benny Safdie at the Directors Guild in 2025."
+}

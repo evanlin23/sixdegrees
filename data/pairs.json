@@ -846,6 +846,14 @@
  },
  {
   "from": "Adolf Hitler",
+  "to": "Agamemnon",
+  "status": "done",
+  "source": "[#2] Hitler pairs (Nov 2026)",
+  "hint": "Sven Hedin (1936 Olympics), crown prince Gustaf Adolf, Carl XVI Gustaf, King Charles, Christopher Nolan, Benny Safdie (Agamemnon in The Odyssey)",
+  "slug": "adolf-hitler-to-agamemnon"
+ },
+ {
+  "from": "Adolf Hitler",
   "to": "Albert Einstein",
   "status": "done",
   "source": "operator",
