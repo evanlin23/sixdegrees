@@ -86,6 +86,10 @@ episode.json: the hook shows the viewer's request bubble and the first comment c
     soccer with SpongeBob himself."). No 3-word sprint lines like "Who voices Shrek." mid-chain. The LAST line
     explains less, because the link itself is the payoff: short and on the meeting ("At Late Night with Seth Meyers,
     Ash Carter met Kevin Hart.", "Jon Favreau created Baby Yoda."), never a paragraph after B's name.
+  - **The opening shows the most recognisable photo of A and of B (owner, 2026-11-13).** Not a crop from a chain
+    photo: set `people.<name>.hook_photo` to an iconic, frontal, instantly recognisable image (a famous portrait, a
+    character's official still). For characters and puppets without a human face, the renderer uses the hook photo
+    centred; add `people.<name>.hook_box: [x, y, w, h]` (pixels in that photo) to frame the face exactly.
   - **No dead air, ever (owner, 2026-11-13).** The question starts on frame 0, the voice never stops for more
     than ~2 s, and the video ends ~0.5 s after the last word. No pause after the opening question, and no music-only
     tail after the payoff ("it says 'opening night' and then pop, pop, pop for 3 seconds"). The renderer enforces the
