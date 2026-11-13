@@ -2,12 +2,24 @@
   "from": "Magnus Carlsen",
   "to": "Bill Cipher",
   "requested_by": "@rip_bosco",
-  "title": "How is Magnus Carlsen connected to Bill Cipher?",
+  "title": "Magnus Carlsen to Bill Cipher: how?",
   "description": "A world chess final, two presidents, a comedy show for troops and a Gravity Falls film-festival panel link Magnus Carlsen to Bill Cipher.",
-  "hook": "How is Magnus Carlsen connected to Bill Cipher?",
+  "hook": "How's Magnus Carlsen linked to Bill Cipher?",
+  "hook_variant": "A",
+  "text_variant": "T0",
   "people": {
     "Magnus Carlsen": {
-      "label": "Magnus Carlsen"
+      "label": "Magnus Carlsen",
+      "hook_photo": "File:Magnus Carlsen in 2025.jpg"
+    },
+    "Bill Cipher": {
+      "hook_photo": "https://static.wikia.nocookie.net/gravityfalls/images/e/ea/S1e19_bill_snap.png/revision/latest?cb=20130905173319&format=original",
+      "hook_box": [
+        565,
+        205,
+        325,
+        340
+      ]
     }
   },
   "links": [
@@ -17,7 +29,7 @@
       "image": {
         "file": "File:Closing ceremony World Chess Championship 2014.jpeg"
       },
-      "line": "In 2014, Magnus Carlsen lifted the world chess trophy in Sochi while Vladimir Putin applauded beside him.",
+      "line": "In 2014, Magnus Carlsen lifted the world chess trophy as Vladimir Putin applauded.",
       "a_face": 2,
       "b_face": 0
     },
@@ -27,7 +39,7 @@
       "image": {
         "file": "File:Vladimir Putin and Barack Obama (2015-09-29) 01.jpg"
       },
-      "line": "In 2015, Putin met Barack Obama at the United Nations in New York."
+      "line": "In 2015, Putin met Barack Obama at the United Nations."
     },
     {
       "a": "Barack Obama",
@@ -35,7 +47,7 @@
       "image": {
         "file": "File:Stewart, Obamas (26240104033).jpg"
       },
-      "line": "In 2016, Obama and Michelle joined Jon Stewart at a comedy show for troops near Washington.",
+      "line": "In 2016, Obama joined Jon Stewart at a comedy show for troops.",
       "a_face": 1,
       "b_face": 0
     },
@@ -62,7 +74,7 @@
         "license": "Fair use (commentary)",
         "source": "https://www.gettyimages.com/detail/450624820"
       },
-      "line": "In 2014, Schaal, the voice of Mabel, posed with Gravity Falls creator Alex Hirsch in Los Angeles."
+      "line": "Back in 2014, Schaal posed with Gravity Falls creator Alex Hirsch."
     },
     {
       "a": "Alex Hirsch",
@@ -77,7 +89,7 @@
           }
         ]
       },
-      "line": "And Hirsch created Bill Cipher and voices him himself.",
+      "line": "And in 2013, Hirsch voiced his own creation, Bill Cipher.",
       "b_face": [
         346,
         100,
