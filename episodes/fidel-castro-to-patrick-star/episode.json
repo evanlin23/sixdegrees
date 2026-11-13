@@ -1,12 +1,21 @@
 {
   "from": "Fidel Castro",
   "to": "Patrick Star",
-  "title": "From Fidel Castro to Patrick Star in five photos",
+  "title": "Fidel Castro to Patrick Star: how?",
   "description": "Two presidents, a Star Wars legend and a Hollywood ceremony connect Fidel Castro to Patrick Star, through the voice of Patrick, Bill Fagerbakke.",
-  "hook": "How is Fidel Castro connected to Patrick Star?",
+  "hook": "What links Fidel Castro to Patrick Star?",
+  "hook_variant": "B",
+  "text_variant": "T1",
   "people": {
     "Patrick Star": {
-      "label": "Patrick Star"
+      "label": "Patrick Star",
+      "hook_photo": "https://static.wikia.nocookie.net/spongebob/images/5/5f/Patrick_stock_art_%28oil_painted%29.png/revision/latest?cb=20220801050245",
+      "hook_box": [
+        700,
+        300,
+        750,
+        850
+      ]
     },
     "Bill Fagerbakke": {
       "refs": [
@@ -36,7 +45,7 @@
       "image": {
         "file": "File:Joe Biden with Enrique Peña Nieto in Mexico City.jpg"
       },
-      "line": "In 2016, Vice President Joe Biden flew to Mexico City for talks with Peña Nieto.",
+      "line": "In 2016, Peña Nieto hosted Vice President Joe Biden in Mexico City.",
       "a_face": 4,
       "b_face": 3
     },
@@ -46,7 +55,7 @@
       "image": {
         "file": "File:P20240503AS-0590 (53783780087).jpg"
       },
-      "line": "In 2024, Star Wars legend Mark Hamill visited President Biden in the Oval Office."
+      "line": "In 2024, Biden welcomed Star Wars legend Mark Hamill to the Oval Office."
     },
     {
       "a": "Mark Hamill",
@@ -57,7 +66,7 @@
         "license": "Fair use (commentary)",
         "source": "https://mulderville.net/en/events/2990/the-spongebob-movie-search-for-squarepants-hollywood-honors-spongebob-squarepants-with-a-hand-footprint-ceremony"
       },
-      "line": "In 2025, Hamill joined the SpongeBob cast, including Bill Fagerbakke, at a Hollywood handprint ceremony.",
+      "line": "In 2025, Hamill joined Bill Fagerbakke at a SpongeBob handprint ceremony.",
       "a_face": 6,
       "b_face": 7
     },
@@ -74,7 +83,7 @@
           }
         ]
       },
-      "line": "And Bill Fagerbakke has been the voice of Patrick Star since 1999.",
+      "line": "And since 1999, Fagerbakke has been the voice of Patrick Star.",
       "a_face": 0,
       "b_face": [
         478,
