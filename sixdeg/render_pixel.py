@@ -344,6 +344,7 @@ def render(slug: str, log=print) -> Path:
     n_lin = sum(1 for l in spec["links"] if l.get("lineage"))
     mid_n = max(1, n_links - n_fast - n_lin)
     mid_pace = max(3.3, (18.0 - 3.0 - 2.2 * n_fast - 4.0 * n_lin) / mid_n)
+    _durs = []
     for i, link in enumerate(spec["links"]):
         a, words = audio.say(link["line"], voice)
         last = i == n_links - 1
@@ -364,6 +365,10 @@ def render(slug: str, log=print) -> Path:
                 rv = min(rv, (speech - THROW - 0.1) / speech) if not last else min(rv, max(REVEAL, (speech - THROW - 0.3) / speech))
         d = max(speech + 0.05, rv * speech + THROW + 1.2) if last else speech + PAD   # hold the payoff ~1 s (owner: "cutting too fast")
         d = max(d, MIN_LINK)        # owner: the pace never speeds up; a short line still gets a full beat on screen
+        if last and narration and _durs:   # owner (Mario, twice): "still too fast at the end" -> the payoff link is
+            d = max(d, min(6.0, sum(_durs) / len(_durs)))   # never shorter than the links before it (capped)
+        if not link.get("lineage"):
+            _durs.append(d)
         if last and STYLE == "board":
             d += 1.1                                     # time to zoom out to the whole evidence board
         reveal = t + (speech * 0.9 - THROW if link.get("lineage") else rv * speech)
