@@ -92,7 +92,7 @@ def music(track: dict, seconds: float) -> np.ndarray:
     p = Path(track["path"]) if track.get("path") else DIR / f"music_{track['id']}.mp3"
     if not p.exists():
         ensure()
-    a = _decode(p)
+    a = track["_audio"] if track.get("_audio") is not None else _decode(p)
     n = int(seconds * SR)
     if track.get("start") is not None:          # a trending song: start where the recognisable part begins
         s0 = int(float(track["start"]) * SR)
@@ -112,7 +112,27 @@ def music(track: dict, seconds: float) -> np.ndarray:
     limit = max(1, len(e) - win)
     cs = np.concatenate([[0.0], np.cumsum(e)])
     scores = (cs[win:win + limit] - cs[:limit]) / win
-    start = int(np.argmax(scores[: max(1, int(len(scores) * 0.7))])) * hop  # stay out of the outro
+    # owner: "Albert Einstein has a few seconds of deadspace at the end": the loudest-on-average window can still
+    # hold a break in the song. Only accept windows with no near-silent 0.5 s block (< 30 % of the loud level).
+    m = len(scores[: max(1, int(len(scores) * 0.7))])               # stay out of the outro
+    floor = 0.3 * float(np.percentile(e, 80))       # "quiet" relative to the loud parts, not a half-quiet median
+    quiet = (e < floor).astype(np.int64)
+    qc = np.concatenate([[0], np.cumsum(quiet)])
+    ok = (qc[win:win + m] - qc[:m]) == 0
+    if not ok.any() and not track.get("_spliced"):
+        # every long-enough window crosses a break in the song: splice the quiet blocks out (short crossfades)
+        keep = [a[i * hop:(i + 1) * hop] for i in range(len(e)) if e[i] >= floor]
+        if keep:
+            xf = int(0.02 * SR)
+            out = keep[0].astype(np.float32).copy()
+            for blk in keep[1:]:
+                blk = blk.astype(np.float32)
+                ramp = np.linspace(0, 1, xf, dtype=np.float32)
+                out[-xf:] = out[-xf:] * (1 - ramp) + blk[:xf] * ramp
+                out = np.concatenate([out, blk[xf:]])
+            return music({**track, "_spliced": True, "_audio": out}, seconds)
+    cand = np.where(ok, scores[:m], -1.0)
+    start = int(np.argmax(cand if ok.any() else scores[:m])) * hop
     seg = a[start:start + n].copy()
     fi, fo = int(0.05 * SR), int(0.8 * SR)
     seg[:fi] *= np.linspace(0, 1, fi)
