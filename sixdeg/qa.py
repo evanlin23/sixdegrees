@@ -2,7 +2,7 @@
 
 Hard gates (fail):
   - chain is consistent and every person in every photo is verified (sface or manual)
-  - 1080x1920, 30 fps, 15-60 s
+  - 1080x1920, 30 fps, 10-180 s
   - loudness -14 LUFS +/- 1.5, true peak <= -1 dBTP
   - every name the script says is heard in the Whisper transcript of the final audio
   - every photo has a source + license record
@@ -99,8 +99,8 @@ def qa(slug: str) -> dict:
             fails.append(f"resolution {w}x{h}")
         if abs(fps - 30) > 0.01:
             fails.append(f"fps {fps}")
-        if not 15 <= dur <= 180:
-            fails.append(f"duration {dur:.1f}s outside 15-180s (Shorts max is 3 min)")
+        if not 10 <= dur <= 180:   # Shorts have no minimum; a 2-link chain (Diddy -> presidents) is ~13 s
+            fails.append(f"duration {dur:.1f}s outside 10-180s (Shorts max is 3 min)")
         if vj.exists() and json.loads(vj.read_text()).get("trending") and dur >= 59.5:
             fails.append(f"duration {dur:.1f}s with a trending (claimed) song: Shorts over 60 s with a claim are "
                          "blocked; shorten the chain or set \"music\" to a Mixkit track")

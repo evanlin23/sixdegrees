@@ -352,6 +352,8 @@ def render(slug: str, log=print) -> Path:
         a, words = audio.say(link["line"], voice)
         last = i == n_links - 1
         speech = len(a) / audio.SR + 0.08
+        if link.get("lineage") and narration:   # a long line (45 presidents) gets a real beat, not just its sentence:
+            speech = max(speech, min(7.0, 0.12 * len(link["lineage"]["people"]) + 0.6))   # ~0.12 s a portrait, cap 7 s
         if not narration:   # music-only: the reference hits' pace, ~3.3 s a link, a sprint at the end, fast lineages
             speech = 4.0 if link.get("lineage") else (2.2 if i >= n_links - 2 and n_links > 3 else mid_pace)
         # last photo: cut hard right after the final word / the CONNECTED! slam, for a seamless loop
