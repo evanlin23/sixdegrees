@@ -5,7 +5,7 @@
   "hook": "How is Adolf Hitler connected to Jensen Huang?",
   "description": "Six real photos connect Adolf Hitler to Jensen Huang: Molotov in Berlin, Truman at Potsdam, Nixon, Reagan, and Donald Trump at the White House.",
   "fun_fact": "Before he founded Nvidia, Jensen Huang worked at Denny's as a teenager, washing dishes and busing tables.",
-  "research_note": "Germany's chancellors are too short a list for a scroll, so Hitler leaves through his 1940 Berlin talks with Molotov; the best-known copy of that photo carries a Getty watermark, so this uses a clean 1940 newspaper print.",
+  "research_note": "Germany's chancellors are too short a list for a scroll, so Hitler leaves through his 1940 Berlin talks with Molotov; the best-known copy of that meeting carries a Getty watermark, so this uses a public-domain photo from the same day.",
   "people": {
     "Adolf Hitler": {
       "label": "Adolf Hitler"
@@ -33,13 +33,15 @@
       "image": {
         "file": "File:Встреча Молотова и Гитлера в Берлине. Кадр 1 (полная версия).jpg"
       },
-      "fact": "Berlin, 1940",
+      "fact": "Reich Chancellery, 1940",
       "where": {
         "place": "Berlin",
         "lat": 52.512,
         "lon": 13.383
       },
-      "line": "In 1940, Hitler shook hands with the Soviet foreign minister, Molotov, during talks in Berlin."
+      "line": "In 1940, Hitler welcomed the Soviet foreign minister, Molotov, to the Reich Chancellery in Berlin.",
+      "a_face": 4,
+      "b_face": 1
     },
     {
       "a": "Vyacheslav Molotov",
@@ -53,7 +55,9 @@
         "lat": 52.392,
         "lon": 13.071
       },
-      "line": "In 1945, Molotov posed beside President Harry Truman at the Potsdam Conference."
+      "line": "In 1945, Molotov posed beside President Harry Truman at the Potsdam Conference.",
+      "a_face": 5,
+      "b_face": 2
     },
     {
       "a": "Harry S. Truman",
@@ -61,13 +65,15 @@
       "image": {
         "file": "File:Nixon meeting with former President Harry S.Truman - NARA - 194615.tif"
       },
-      "fact": "Nixon meets Truman",
+      "fact": "Missouri, 1969",
       "where": {
         "place": "Independence, Missouri",
         "lat": 39.092,
         "lon": -94.415
       },
-      "line": "Years later, President Richard Nixon sat down with the former president, Harry Truman."
+      "line": "In 1969, President Richard Nixon visited the former president, Harry Truman, in Missouri.",
+      "a_face": 1,
+      "b_face": 0
     },
     {
       "a": "Richard Nixon",
@@ -81,7 +87,9 @@
         "lat": 33.427,
         "lon": -117.612
       },
-      "line": "In 1970, Nixon hosted California's governor, Ronald Reagan, and Nancy Reagan at his home."
+      "line": "In 1970, Nixon hosted California's governor, Ronald Reagan, and Nancy Reagan at his home.",
+      "a_face": 5,
+      "b_face": 0
     },
     {
       "a": "Ronald Reagan",
@@ -95,7 +103,9 @@
         "lat": 38.897,
         "lon": -77.036
       },
-      "line": "In 1987, President Reagan shook hands with a young Donald Trump at a White House reception."
+      "line": "In 1987, President Reagan shook hands with a young Donald Trump at a White House reception.",
+      "a_face": 0,
+      "b_face": 5
     },
     {
       "a": "Donald Trump",
@@ -109,7 +119,9 @@
         "lat": 38.897,
         "lon": -77.036
       },
-      "line": "In 2025, Jensen Huang joined Trump at the White House."
+      "line": "In 2025, Jensen Huang joined Trump at the White House.",
+      "a_face": 0,
+      "b_face": 1
     }
   ]
 }
