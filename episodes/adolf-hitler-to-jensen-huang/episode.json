@@ -1,0 +1,127 @@
+{
+  "from": "Adolf Hitler",
+  "to": "Jensen Huang",
+  "title": "How is Adolf Hitler connected to Jensen Huang?",
+  "hook": "How is Adolf Hitler connected to Jensen Huang?",
+  "description": "Six real photos connect Adolf Hitler to Jensen Huang: Molotov in Berlin, Truman at Potsdam, Nixon, Reagan, and Donald Trump at the White House.",
+  "fun_fact": "Before he founded Nvidia, Jensen Huang worked at Denny's as a teenager, washing dishes and busing tables.",
+  "research_note": "Germany's chancellors are too short a list for a scroll, so Hitler leaves through his 1940 Berlin talks with Molotov; the best-known copy of that meeting carries a Getty watermark, so this uses a public-domain photo from the same day.",
+  "people": {
+    "Adolf Hitler": {
+      "label": "Adolf Hitler"
+    },
+    "Vyacheslav Molotov": {
+      "label": "Molotov"
+    },
+    "Harry S. Truman": {
+      "label": "Harry Truman"
+    },
+    "Richard Nixon": {
+      "label": "Richard Nixon"
+    },
+    "Ronald Reagan": {
+      "label": "Ronald Reagan"
+    },
+    "Donald Trump": {
+      "label": "Donald Trump"
+    }
+  },
+  "links": [
+    {
+      "a": "Adolf Hitler",
+      "b": "Vyacheslav Molotov",
+      "image": {
+        "file": "File:Встреча Молотова и Гитлера в Берлине. Кадр 1 (полная версия).jpg"
+      },
+      "fact": "Reich Chancellery, 1940",
+      "where": {
+        "place": "Berlin",
+        "lat": 52.512,
+        "lon": 13.383
+      },
+      "line": "In 1940, Hitler welcomed the Soviet foreign minister, Molotov, to the Reich Chancellery in Berlin.",
+      "a_face": 4,
+      "b_face": 1
+    },
+    {
+      "a": "Vyacheslav Molotov",
+      "b": "Harry S. Truman",
+      "image": {
+        "file": "File:Potsdam Stalin Truman Gromyko Byrnes Molotov 1945 Jul 18.png"
+      },
+      "fact": "Potsdam Conference, 1945",
+      "where": {
+        "place": "Potsdam",
+        "lat": 52.392,
+        "lon": 13.071
+      },
+      "line": "In 1945, Molotov posed beside President Harry Truman at the Potsdam Conference.",
+      "a_face": 5,
+      "b_face": 2
+    },
+    {
+      "a": "Harry S. Truman",
+      "b": "Richard Nixon",
+      "image": {
+        "file": "File:Nixon meeting with former President Harry S.Truman - NARA - 194615.tif"
+      },
+      "fact": "Missouri, 1969",
+      "where": {
+        "place": "Independence, Missouri",
+        "lat": 39.092,
+        "lon": -94.415
+      },
+      "line": "In 1969, President Richard Nixon visited the former president, Harry Truman, in Missouri.",
+      "a_face": 1,
+      "b_face": 0
+    },
+    {
+      "a": "Richard Nixon",
+      "b": "Ronald Reagan",
+      "image": {
+        "file": "File:Ronald Reagan, Nancy Reagan, Pat Nixon, and Richard Nixon in 1970.jpg"
+      },
+      "fact": "San Clemente, 1970",
+      "where": {
+        "place": "San Clemente, California",
+        "lat": 33.427,
+        "lon": -117.612
+      },
+      "line": "In 1970, Nixon hosted California's governor, Ronald Reagan, and Nancy Reagan at his home.",
+      "a_face": 5,
+      "b_face": 0
+    },
+    {
+      "a": "Ronald Reagan",
+      "b": "Donald Trump",
+      "image": {
+        "file": "File:President Ronald Reagan Shaking Hands with Donald Trump at a Reception for Members of The \"Friends of Art and Preservation in Embassies\" Foundation in The Blue Room - DPLA - 3c82cdc73bac5205a60dcc8834e9c8de.jpg"
+      },
+      "fact": "White House, 1987",
+      "where": {
+        "place": "White House",
+        "lat": 38.897,
+        "lon": -77.036
+      },
+      "line": "In 1987, President Reagan shook hands with a young Donald Trump at a White House reception.",
+      "a_face": 0,
+      "b_face": 5
+    },
+    {
+      "a": "Donald Trump",
+      "b": "Jensen Huang",
+      "image": {
+        "file": "File:P20250430JB-0891.jpg"
+      },
+      "fact": "White House, 2025",
+      "where": {
+        "place": "White House",
+        "lat": 38.897,
+        "lon": -77.036
+      },
+      "line": "And in 2025, at the White House, Trump stood beside Jensen Huang.",
+      "a_face": 0,
+      "b_face": 1
+    }
+  ]
+}
