@@ -21,8 +21,9 @@ Follow `.claude/skills/six-degrees-episode/SKILL.md`. The owner's standing direc
 - **Lineage scrolls only for long lines of 40 or more holders** (popes, emperors, US presidents). Never short ones like German chancellors or one dynasty.
 
 **The script**
-- **Year first on every line** ("In 1938, …", "In the 1930s, …" when unsure; never invent a year). Name people instead of using pronouns that could mean someone else.
-- **Every link but the last gets a context line.** The last line is a short payoff that ends on B's name (e.g. "And in 2023, Chris Pratt became the voice of Mario himself.").
+- **Write like Steve and Miku** (owner's favourites; full model scripts in the skill, "Write like Steve and Miku"): 9-13 words a line, ONE fact per line, plain descriptors ("Britain's former king", "the new Queen") over stacked titles and places, full name the first time then the short name, and each line hands off to the next person.
+- **The year leads every line**, and natural connectors count ("In 1938, …", "That year, …", "Back in 2012, …"; "In the 1930s, …" when unsure; never invent a year). Avoid pronouns that could mean someone else.
+- **Every link but the last gets a context line.** The last line is a short payoff that ends on B and varies its wording, not "…himself." every time (e.g. "And in 2025, Jack Black became Steve in A Minecraft Movie.").
 - **The pace stays even to the end:** each link is at least 3.4 s, and the ending is never rushed.
 - **No dead air:** the question starts on frame 0, the voice never stops for more than ~2 s, and the video ends ~0.5 s after the last word. QA fails renders that break this (first word > 0.25 s, a gap > 2 s, > 1 s of silence at the end).
 - **Every episode is narrated** (Gemini, Achird voice), with no trending song.
