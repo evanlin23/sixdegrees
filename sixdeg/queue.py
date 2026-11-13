@@ -164,9 +164,17 @@ def pick(wt: Path, log: list[dict], n: int) -> list[Path]:
 
 
 def _people(title: str) -> set[str]:
-    """{'joseph stalin', 'elmo'} from 'How is Joseph Stalin connected to Elmo?'."""
+    """{'stalin', 'elmo'} from 'How is Joseph Stalin connected to Elmo?': each name by its last word, so 'Hitler'
+    and 'Adolf Hitler' are the same person (2026-11-13: a 'How is Hitler connected to Messi?' title slipped past
+    'Adolf Hitler' Shorts and jumped the owner-approved order). The series subject (hold.json "only", e.g. hitler)
+    is left out: every Short in the series shares it, so only the other person counts."""
     m = re.match(r"How is (.+?) connected to (.+?)\?$", title or "")
-    return {m.group(1).lower(), m.group(2).lower()} if m else set()
+    if not m:
+        return set()
+    names = {n.lower().split()[-1].strip(".,!?'\"") for n in (m.group(1), m.group(2)) if n.split()}
+    hf = ROOT / "data" / "hold.json"
+    only = [w.lower() for w in (json.loads(hf.read_text()).get("only", []) if hf.exists() else [])]
+    return {n for n in names if n not in only}
 
 
 def consume(max_items: int = 2, dry_run: bool = False) -> list[dict]:
