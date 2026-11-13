@@ -21,11 +21,15 @@ Follow `.claude/skills/six-degrees-episode/SKILL.md`. The owner's standing direc
 - **Lineage scrolls only for long lines of 40 or more holders** (popes, emperors, US presidents). Never short ones like German chancellors or one dynasty.
 
 **The script**
-- **Year first on every line** ("In 1938, …", "In the 1930s, …" when unsure; never invent a year). Name people instead of using pronouns that could mean someone else.
-- **Every link but the last gets a context line.** The last line is a short payoff that ends on B's name (e.g. "And in 2023, Chris Pratt became the voice of Mario himself.").
+- **Write like Steve and Miku** (owner's favourites; full model scripts in the skill, "Write like Steve and Miku"): 9-13 words a line, ONE fact per line, plain descriptors ("Britain's former king", "the new Queen") over stacked titles and places, full name the first time then the short name, and each line hands off to the next person.
+- **The year leads every line**, and natural connectors count ("In 1938, …", "That year, …", "Back in 2012, …"; "In the 1930s, …" when unsure; never invent a year). Avoid pronouns that could mean someone else.
+- **Every link but the last gets a context line.** The last line is a short payoff that ends on B and varies its wording, not "…himself." every time (e.g. "And in 2025, Jack Black became Steve in A Minecraft Movie.").
 - **The pace stays even to the end:** each link is at least 3.4 s, and the ending is never rushed.
 - **No dead air:** the question starts on frame 0, the voice never stops for more than ~2 s, and the video ends ~0.5 s after the last word. QA fails renders that break this (first word > 0.25 s, a gap > 2 s, > 1 s of silence at the end).
 - **Every episode is narrated** (Gemini, Achird voice), with no trending song.
+
+**The opening**
+- **The two opening pictures are the most recognisable photo of A and of B (owner, 2026-11-13), not crops from the chain photos.** Set `people.<name>.hook_photo` to an iconic, frontal photo. Characters and puppets need a solo image of the character with no human face in frame (renderer support for faceless characters: ASK on #200).
 
 **Formats**
 - The renderer picks the format from `data/style.json`; don't set `style` in episode.json unless [#1] asks.
@@ -39,15 +43,12 @@ Gemini TTS has a daily limit shared by both teams (it resets 08:00 UTC). Every P
 - **Hitler pair in PR:** Jensen Huang (#161, waiting on voice quota).
 
 ## In progress (claim before starting: one line per pair, with owner and date)
-- Adolf Hitler → Thomas the Tank Engine: [#2], 2026-11-13, PR #206 (moving two photos off finna.fi, which GitHub's runners can't reach)
-- Adolf Hitler → Michael Jackson: [#2], 2026-11-13, PR #207 (render green)
-- Adolf Hitler → Lionel Messi: [#2], 2026-11-13, PR #208 (render green)
-- Adolf Hitler → Mr. Bean: [#2], 2026-11-13, PR #209 (render green)
-- Adolf Hitler → Big Bird: [#2], 2026-11-13, branch ready, PR after the Nov 14 voice reset
-- Adolf Hitler → Mr. Rogers: [#2], 2026-11-13, branch ready, PR after the Nov 14 voice reset
-- Adolf Hitler → Barney: [#2], 2026-11-13, in progress (Cookie Monster or Peppa Pig if Barney has no honest path)
-- Adolf Hitler → Taylor Swift: [#2], 2026-11-13, in progress
-- Adolf Hitler → Dolly Parton: [#2], 2026-11-13, finished but held: she died on 25 Aug 2026 (ASK on #200)
+- Adolf Hitler → Thomas the Tank Engine: [#2], 2026-11-13, PR #206 (main merged in for the no-dead-air rules; voice already cached)
+- Adolf Hitler → Big Bird: [#2], 2026-11-13, branch ready (main merged), PR after the Nov 14 voice reset
+- Adolf Hitler → Mr. Rogers: [#2], 2026-11-13, branch ready (main merged), PR after the Nov 14 voice reset
+- Adolf Hitler → Cookie Monster (replaces Barney, which has no real photo with a famous adult): [#2], 2026-11-13, branch ready (main merged), PR after the Nov 14 voice reset
+- Adolf Hitler → Taylor Swift: [#2], 2026-11-13, branch ready (main merged), PR after the Nov 14 voice reset
+- Adolf Hitler → Dolly Parton: [#2], 2026-11-13, dropped for now (owner, Nov 13); kept on branch `claude/ep-adolf-hitler-to-dolly-parton`, no PR
 
 ## Requests from [#1]
 - _(posted as `ASK: make <A> → <B>` in the channel)_

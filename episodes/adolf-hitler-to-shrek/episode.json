@@ -38,7 +38,7 @@
       "image": {
         "file": "File:Bundesarchiv Bild 183-S38324, Tag von Potsdam, Adolf Hitler, Paul v. Hindenburg.jpg"
       },
-      "line": "In 1933, Hitler shook hands with President Hindenburg, who had just made him chancellor.",
+      "line": "In 1933, Hitler shook hands with President Hindenburg, who made him chancellor.",
       "a_face": 3,
       "b_face": [
         1426,
@@ -58,7 +58,7 @@
       "image": {
         "file": "File:Hindenburg, Kaiser, Ludendorff HD-SN-99-02150.JPG"
       },
-      "line": "In 1917, Hindenburg studied war maps with Kaiser Wilhelm II, Germany's last emperor.",
+      "line": "In 1917, Hindenburg planned the war with Kaiser Wilhelm II.",
       "a_face": 0,
       "b_face": 1,
       "where": {
@@ -73,7 +73,7 @@
       "image": {
         "file": "File:The Nine Sovereigns at Windsor for the funeral of King Edward VII.jpg"
       },
-      "line": "In 1910, at a royal funeral at Windsor, the Kaiser posed with cousin King George V.",
+      "line": "In 1910, the Kaiser posed at Windsor with his cousin, King George V.",
       "fact": "Windsor Castle, 1910",
       "where": {
         "place": "Windsor Castle",
@@ -89,7 +89,7 @@
       "image": {
         "file": "File:3-5 (i.e. 6)-33, anniversaire du roi George V (la famille royale au balcon de Buckingham Palace) - btv1b532749892.jpg"
       },
-      "line": "In 1933, on his birthday, King George V stood on the palace balcony with granddaughter Princess Elizabeth.",
+      "line": "In 1933, George V stood on the palace balcony with little Princess Elizabeth.",
       "fact": "Buckingham Palace, 1933",
       "where": {
         "place": "Buckingham Palace",
@@ -105,7 +105,7 @@
       "image": {
         "file": "File:Prime Minister Boris Johnson G7 Summit Day One - 51242021245.jpg"
       },
-      "line": "In 2021, Queen Elizabeth II welcomed Justin Trudeau and the other G7 leaders in Cornwall.",
+      "line": "In 2021, the Queen hosted Justin Trudeau at the G7 in Cornwall.",
       "fact": "Eden Project, 2021",
       "where": {
         "place": "Eden Project, Cornwall",
@@ -124,7 +124,7 @@
         "license": "Fair use (commentary)",
         "source": "https://www.thequint.com/news/world/when-trudeau-tangoed-his-way-to-washington-and-into-our-hearts"
       },
-      "line": "In 2016, at the White House state dinner, Trudeau greeted fellow Canadian Mike Myers.",
+      "line": "In 2016, Trudeau greeted fellow Canadian Mike Myers at the White House.",
       "fact": "White House, 2016",
       "where": {
         "place": "White House",
@@ -151,7 +151,7 @@
         ]
       },
       "a_face": 1,
-      "line": "And in 2001, Mike Myers became the voice of Shrek himself.",
+      "line": "And in 2001, Mike Myers became the voice of Shrek.",
       "b_face": 3,
       "where": {
         "place": "Hollywood",
