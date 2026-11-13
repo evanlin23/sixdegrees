@@ -29,11 +29,12 @@
     "Josh Hutcherson": {
       "label": "Josh Hutcherson"
     },
-    "Piper Rubio": {
-      "label": "Piper Rubio"
+    "Emma Tammi": {
+      "label": "Emma Tammi"
     },
-    "Kellen Goff": {
-      "label": "Kellen Goff"
+    "JonnyBlox": {
+      "label": "JonnyBlox",
+      "hook_photo": "https://pbs.twimg.com/media/G7NUyERbgAEDMuJ.jpg?name=orig"
     },
     "Marta Svetek": {
       "label": "Marta Svetek"
@@ -162,42 +163,72 @@
     },
     {
       "a": "Josh Hutcherson",
-      "b": "Piper Rubio",
+      "b": "Emma Tammi",
       "image": {
-        "url": "https://media.gettyimages.com/id/2226875812/photo/san-diego-california-josh-hutcherson-and-piper-rubio-speak-onstage-at-blumhouses-five-nights.jpg?s=612x612&w=0&k=20&c=Z3V0QAcyXgUn73GGqOsTyS0CSzQoXLueH7u2q25FLj8=",
-        "credit": "Amy Sussman/Getty Images",
+        "url": "https://static.wikia.nocookie.net/freddy-fazbears-pizza/images/6/6b/FNaF2Film_JoshandEmma_BTSPhoto.png/revision/latest?cb=20250724133256&format=original",
+        "credit": "Universal Pictures / Blumhouse, behind-the-scenes still (via Five Nights at Freddy's Wiki)",
         "license": "Fair use (commentary)",
-        "source": "https://www.gettyimages.com.au/detail/news-photo/josh-hutcherson-and-piper-rubio-speak-onstage-at-blumhouses-news-photo/2226875812"
+        "source": "https://freddy-fazbears-pizza.fandom.com/wiki/File:FNaF2Film_JoshandEmma_BTSPhoto.png"
       },
-      "line": "In 2025, Hutcherson took the Comic-Con stage with his co-star Piper Rubio.",
-      "a_face": 0,
-      "b_face": 1
+      "line": "In 2025, Hutcherson took direction from Emma Tammi on his horror sequel.",
+      "a_face": [
+        1170,
+        740,
+        224,
+        293
+      ],
+      "b_face": [
+        1950,
+        450,
+        190,
+        270
+      ]
     },
     {
-      "a": "Piper Rubio",
-      "b": "Kellen Goff",
+      "a": "Emma Tammi",
+      "b": "JonnyBlox",
       "image": {
-        "url": "https://media.gettyimages.com/id/2233776464/photo/universal-city-california-kellen-goff-and-piper-rubio-attend-halloween-horror-nights-opening.jpg?s=612x612&w=0&k=20&c=VPIy0lLK_UzpSHw-VxHq9UTNVKDzzwyqgynaVPAVkzQ=",
-        "credit": "Rich Polk/Getty Images for Universal Studios Hollywood",
+        "url": "https://static.wikia.nocookie.net/freddy-fazbears-pizza/images/3/3a/FNaF2Premiere_Jonny-Emma.jpg/revision/latest?cb=20251204033933&format=original",
+        "credit": "JonnyBlox (via Five Nights at Freddy's Wiki)",
         "license": "Fair use (commentary)",
-        "source": "https://www.gettyimages.com.au/detail/news-photo/kellen-goff-and-piper-rubio-attend-halloween-horror-nights-news-photo/2233776464"
+        "source": "https://freddy-fazbears-pizza.fandom.com/wiki/File:FNaF2Premiere_Jonny-Emma.jpg"
       },
-      "line": "Weeks later, Rubio posed with Kellen Goff, the voice of Freddy Fazbear.",
-      "a_face": 1,
-      "b_face": 0
+      "line": "That December, Tammi posed with YouTuber JonnyBlox at her film's premiere.",
+      "a_face": [
+        422,
+        358,
+        346,
+        486
+      ],
+      "b_face": [
+        870,
+        384,
+        384,
+        499
+      ]
     },
     {
-      "a": "Kellen Goff",
+      "a": "JonnyBlox",
       "b": "Marta Svetek",
       "image": {
-        "url": "https://media.gettyimages.com/id/2249678216/photo/hollywood-california-marta-svetek-and-kellen-goff-attend-the-five-nights-at-freddys-2.jpg?s=612x612&w=0&k=20&c=E7I9-tGT-rayY0KN1UnLBpQ-5S8Kz8LhW1xkQhYm6R0=",
-        "credit": "Savion Washington/Getty Images for Universal Pictures and Blumhouse",
+        "url": "https://static.wikia.nocookie.net/freddy-fazbears-pizza/images/1/13/FNaF2Premiere_Jonny-Marta-Kellen.jpg/revision/latest?cb=20251204033933&format=original",
+        "credit": "JonnyBlox (via Five Nights at Freddy's Wiki)",
         "license": "Fair use (commentary)",
-        "source": "https://www.gettyimages.com.au/detail/news-photo/marta-svetek-and-kellen-goff-attend-the-five-nights-at-news-photo/2249678216"
+        "source": "https://freddy-fazbears-pizza.fandom.com/wiki/File:FNaF2Premiere_Jonny-Marta-Kellen.jpg"
       },
-      "line": "That December, Goff walked a Five Nights at Freddy's premiere with Marta Svetek.",
-      "a_face": 1,
-      "b_face": 0
+      "line": "That same night, JonnyBlox also met voice actress Marta Svetek.",
+      "a_face": [
+        128,
+        294,
+        474,
+        550
+      ],
+      "b_face": [
+        934,
+        384,
+        256,
+        358
+      ]
     },
     {
       "a": "Marta Svetek",
