@@ -57,10 +57,13 @@ def _push(msg: str):
     if _git("diff", "--cached", "--quiet", cwd=WT, check=False).returncode == 0:
         return
     _git("commit", "-m", msg, cwd=WT)
-    for _ in range(4):
+    import random
+    import time
+    for k in range(10):   # 2026-11-13: 9 parallel re-renders raced and 2 enqueues were silently lost with 4 quick tries
         r = _git("push", "-u", "origin", BRANCH, cwd=WT, check=False)
         if r.returncode == 0:
             return
+        time.sleep(random.uniform(2, 6) * (1 + k / 3))
         _git("pull", "--rebase", "origin", BRANCH, cwd=WT, check=False)   # producer and consumer raced
     raise RuntimeError("could not push the queue branch: " + r.stderr)
 
