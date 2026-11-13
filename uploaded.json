@@ -264,5 +264,23 @@
   "style": "tcg",
   "trending": false,
   "n": 61
+ },
+ {
+  "slug": "adolf-hitler-to-lionel-messi",
+  "title": "How is Hitler connected to Messi?",
+  "publish_at": "2026-11-13T21:11:00Z",
+  "video_id": "oze_b1it4PQ",
+  "privacy": "scheduled",
+  "url": "https://youtube.com/shorts/oze_b1it4PQ",
+  "thumbnail": "not set: <HttpError 403 when requesting https://youtube.googleapis.com/upload/youtube/v3/thumbnails/set?videoId=oze_b1it4PQ&alt=json&uploadType=media returned \"The authe",
+  "first_comment": "Fun fact from the research: When Khrushchev first met Fidel Castro in 1960, he drove up to Harlem's Hotel Theresa, where Castro had moved after a row with his Midtown hotel.\n\nWho should Hitler connect to next? Name anyone (a character works too) and I'll find the photos.",
+  "kind": "formula",
+  "outro": true,
+  "narration": true,
+  "links": 6,
+  "music": "Keeping Fit",
+  "style": "museum",
+  "trending": false,
+  "n": 62
  }
 ]
