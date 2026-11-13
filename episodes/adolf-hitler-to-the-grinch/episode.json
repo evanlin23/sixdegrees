@@ -1,0 +1,143 @@
+{
+  "from": "Adolf Hitler",
+  "to": "The Grinch",
+  "title": "How is Hitler connected to the Grinch?",
+  "description": "Five real photos connect Adolf Hitler to the Grinch, through filmmaker Leni Riefenstahl, Mick Jagger, Jimmy Fallon and Jim Carrey.",
+  "hook": "How is Hitler connected to the Grinch?",
+  "fun_fact": "Jim Carrey found the Grinch makeup so unbearable that the studio brought in an expert who trained soldiers to endure torture, as Carrey told Graham Norton in 2014.",
+  "research_note": "Riefenstahl lived until 2003, and Mick Jagger reportedly agreed to a 1974 Sunday Times story only if she would photograph him; no photo of Jagger with Jim Carrey or with a costumed Grinch turned up, so the chain crosses through Jimmy Fallon's Tonight Show, and the Grinch comes in through Carrey's 2000 film.",
+  "people": {
+    "Adolf Hitler": {
+      "label": "Adolf Hitler",
+      "short": "Hitler",
+      "hook_photo": "File:Hitler portrait crop.jpg"
+    },
+    "Leni Riefenstahl": {
+      "label": "Riefenstahl"
+    },
+    "Mick Jagger": {
+      "label": "Mick Jagger"
+    },
+    "Jimmy Fallon": {
+      "label": "Jimmy Fallon"
+    },
+    "Jim Carrey": {
+      "label": "Jim Carrey"
+    },
+    "The Grinch": {
+      "label": "The Grinch",
+      "wiki": "Grinch",
+      "hook_photo": "http://www.impawards.com/2000/posters/dr_seuss_how_the_grinch_stole_christmas_ver2_xlg.jpg",
+      "hook_box": [
+        300,
+        340,
+        420,
+        460
+      ]
+    }
+  },
+  "links": [
+    {
+      "a": "Adolf Hitler",
+      "b": "Leni Riefenstahl",
+      "image": {
+        "url": "https://iiif.archive.org/image/iiif/3/hinterdenkulisse00rief%2fhinterdenkulisse00rief_jp2.zip%2fhinterdenkulisse00rief_jp2%2fhinterdenkulisse00rief_0034.jp2/906,1892,1888,650/max/0/default.jpg",
+        "credit": "Hinter den Kulissen des Reichsparteitag-Films (Munich, 1935), p. 32, via Internet Archive",
+        "license": "Fair use (commentary)",
+        "source": "https://archive.org/details/hinterdenkulisse00rief"
+      },
+      "line": "In 1934, Hitler toured the Nuremberg film set of director Leni Riefenstahl.",
+      "fact": "Nuremberg, 1934",
+      "where": {
+        "place": "Nuremberg",
+        "lat": 49.452,
+        "lon": 11.077
+      },
+      "a_face": 0,
+      "b_face": 1
+    },
+    {
+      "a": "Leni Riefenstahl",
+      "b": "Mick Jagger",
+      "image": {
+        "url": "https://pbs.twimg.com/media/FmtKnpVXgAEbXqR.jpg?name=orig",
+        "credit": "Leni Riefenstahl Produktion archive (via Classic Rock In Pics on X)",
+        "license": "Fair use (commentary)",
+        "source": "https://twitter.com/crockpics/status/1615620134760058881"
+      },
+      "line": "In 1974, Riefenstahl flew to London to photograph the Rolling Stones' Mick Jagger.",
+      "fact": "London, 1974",
+      "where": {
+        "place": "London",
+        "lat": 51.507,
+        "lon": -0.128
+      },
+      "a_face": 1,
+      "b_face": 0
+    },
+    {
+      "a": "Mick Jagger",
+      "b": "Jimmy Fallon",
+      "image": {
+        "url": "https://www.nbc.com/sites/nbcblog/files/2023/10/the-tonight-show-starring-jimmy-fallon-1860-mick-jagger.jpg",
+        "credit": "Todd Owyoung/NBC",
+        "license": "Fair use (commentary)",
+        "source": "https://www.nbc.com/nbc-insider/mick-jagger-told-jimmy-fallon-his-real-name-when-they-got-trapped-in-a-walk-in-freezer"
+      },
+      "line": "In 2023, Jagger turned up in a Tonight Show freezer with Jimmy Fallon.",
+      "fact": "Tonight Show freezer, 2023",
+      "where": {
+        "place": "Studio 6B, Rockefeller Center, New York",
+        "lat": 40.7587,
+        "lon": -73.9787
+      },
+      "a_face": 1,
+      "b_face": 0
+    },
+    {
+      "a": "Jimmy Fallon",
+      "b": "Jim Carrey",
+      "image": {
+        "url": "https://i.ytimg.com/vi/apK2KLGWmB8/maxres1.jpg",
+        "credit": "The Tonight Show Starring Jimmy Fallon / NBC (YouTube)",
+        "license": "Fair use (commentary)",
+        "source": "https://www.youtube.com/watch?v=apK2KLGWmB8"
+      },
+      "line": "Back in 2014, Fallon hosted Jim Carrey for Dumb and Dumber To.",
+      "fact": "Tonight Show couch, 2014",
+      "where": {
+        "place": "Studio 6B, Rockefeller Center, New York",
+        "lat": 40.7587,
+        "lon": -73.9787
+      },
+      "a_face": 2,
+      "b_face": 1
+    },
+    {
+      "a": "Jim Carrey",
+      "b": "The Grinch",
+      "image": {
+        "pair": [
+          {
+            "file": "File:Jim Carrey 2008.jpg"
+          },
+          {
+            "url": "http://www.impawards.com/2000/posters/dr_seuss_how_the_grinch_stole_christmas_ver2_xlg.jpg",
+            "credit": "Universal Pictures / Imagine Entertainment (via IMP Awards)",
+            "license": "Fair use (commentary)",
+            "source": "http://www.impawards.com/2000/dr_seuss_how_the_grinch_stole_christmas_ver2.html"
+          }
+        ]
+      },
+      "line": "And in 2000, Carrey turned green to become the Grinch.",
+      "fact": "The Grinch, 2000",
+      "where": {
+        "place": "Universal Studios Hollywood",
+        "lat": 34.138,
+        "lon": -118.353
+      },
+      "a_face": 1,
+      "b_face": 2
+    }
+  ]
+}

@@ -830,6 +830,14 @@
  },
  {
   "from": "Adolf Hitler",
+  "to": "The Grinch",
+  "status": "done",
+  "source": "[#2] Hitler pairs (Nov 2026)",
+  "hint": "Leni Riefenstahl (Nuremberg 1934), Mick Jagger (London 1974), Jimmy Fallon (Tonight Show freezer 2023), Jim Carrey (Tonight Show 2014), then Carrey as the Grinch (2000)",
+  "slug": "adolf-hitler-to-the-grinch"
+ },
+ {
+  "from": "Adolf Hitler",
   "to": "Mario",
   "status": "done",
   "source": "viral formula",
