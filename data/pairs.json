@@ -90,6 +90,14 @@
   "slug": "hitler-to-grug"
  },
  {
+  "from": "Adolf Hitler",
+  "to": "Mr. Bean",
+  "status": "done",
+  "source": "[#2] Hitler pairs (Nov 2026)",
+  "hint": "Munich 1938 (Daladier) > 1936 Popular Front rally (Léon Blum) > Blum lunches with Churchill 1939 > VE Day balcony (Princess Elizabeth) > 2012 Dickens reception (Rowan Atkinson) > Mr. Bean",
+  "slug": "adolf-hitler-to-mr-bean"
+ },
+ {
   "from": "Zeus",
   "to": "One Piece",
   "status": "done",
@@ -282,6 +290,14 @@
   "slug": "hitler-to-neil-armstrong"
  },
  {
+  "from": "Adolf Hitler",
+  "to": "Lionel Messi",
+  "status": "done",
+  "source": "[#2] Hitler pairs (Nov 2026)",
+  "hint": "Ribbentrop (1939 train) -> Stalin (1939 pact handshake) -> Khrushchev (1930s) -> Castro (1960 New York) -> Cristina Kirchner (2009 Havana) -> Messi (2014 Ezeiza)",
+  "slug": "adolf-hitler-to-lionel-messi"
+ },
+ {
   "from": "Joseph Stalin",
   "to": "MrBeast",
   "status": "todo"
@@ -467,6 +483,14 @@
   "source": "old upload on this channel (May 2025)",
   "video_id": "aAemiEK4qAI",
   "views_nov2026": 2190
+ },
+ {
+  "from": "Adolf Hitler",
+  "to": "Michael Jackson",
+  "status": "done",
+  "source": "[#2] Hitler pairs (Nov 2026)",
+  "hint": "Hitler > Petain (Montoire 1940) > Mitterrand (Vichy 1942) > Reagan (Yorktown 1981) > Michael Jackson (White House 1984)",
+  "slug": "adolf-hitler-to-michael-jackson"
  },
  {
   "from": "Joseph Stalin",

@@ -120,3 +120,9 @@ A on top and B below as big full-width photos from frame 0, the spoken question 
 
 - Custom thumbnails need the channel phone-verified (youtube.com/verify); until then YouTube picks a frame.
 - Retention numbers lag 24–48 h behind an upload.
+
+## No dead air (owner, 2026-11-13)
+Every Short: the question starts on frame 0, the voice never stops for more than ~2 s, and the video ends ~0.5 s after
+the last word (renderer: hook ends as the question ends, the last link ends 0.5 s after the voice). `sixdeg/qa.py`
+fails a render with dead air (first word > 0.25 s, a word gap > 2 s, or > 1 s after the last word), so nothing with
+silence reaches the queue. Music windows never contain a break in the song (`assets.music`).

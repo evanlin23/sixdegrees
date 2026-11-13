@@ -70,7 +70,7 @@ jobs:
           for s in $SLUGS; do
             echo "::group::$s"
             if python -m sixdeg make "$s"; then
-              if [ "$ENQUEUE" = "true" ]; then python -m sixdeg enqueue "$s" || true; fi
+              if [ "$ENQUEUE" = "true" ]; then python -m sixdeg enqueue "$s" || { fail=1; echo "- ❌ $s: rendered but NOT queued (queue push failed)" >> "$GITHUB_STEP_SUMMARY"; }; fi
               echo "- ✅ $s: QA passed$( [ "$ENQUEUE" = "true" ] && echo ', queued')" >> "$GITHUB_STEP_SUMMARY"
             else
               fail=1; echo "- ❌ $s: QA failed (see episodes/$s/out/qa.json in the artifact)" >> "$GITHUB_STEP_SUMMARY"
