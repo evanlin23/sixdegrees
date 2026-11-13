@@ -5,6 +5,7 @@
   "description": "Six real photos connect Adolf Hitler to the Cat in the Hat, through Hermann Göring, Charles Lindbergh, John F. Kennedy, Carol Burnett and Bill Hader.",
   "hook": "What links Hitler to the Cat in the Hat?",
   "hook_variant": "B",
+  "text_variant": "T0",
   "people": {
     "Adolf Hitler": {
       "label": "Adolf Hitler",
