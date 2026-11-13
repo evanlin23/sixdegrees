@@ -1,0 +1,99 @@
+{
+  "from": "Adolf Hitler",
+  "to": "Fred Rogers",
+  "title": "How is Hitler connected to Mr. Rogers?",
+  "description": "Four real photos connect Adolf Hitler to Mr. Rogers, through a Bulgarian tsar, his boy-king son and a president.",
+  "hook": "How is Hitler connected to Mr. Rogers?",
+  "fun_fact": "Simeon became Bulgaria's tsar at six in 1943. He and the Dalai Lama are the last two living people who were heads of state during World War II.",
+  "research_note": "Boris III's son Simeon, Bulgaria's boy king in 1943, came home from exile to be elected prime minister in 2001, which carries the line from Hitler's wartime ally to the Oval Office; the National Archives print of Hitler and Boris was used because the free 1941 photo cuts Hitler's face off at the edge.",
+  "people": {
+    "Adolf Hitler": {
+      "label": "Adolf Hitler",
+      "short": "Hitler"
+    },
+    "Boris III of Bulgaria": {
+      "label": "Tsar Boris III",
+      "short": "Tsar Boris"
+    },
+    "Simeon II": {
+      "label": "Simeon II"
+    },
+    "George W. Bush": {
+      "label": "George W. Bush",
+      "short": "Bush"
+    },
+    "Fred Rogers": {
+      "label": "Mr. Rogers"
+    }
+  },
+  "links": [
+    {
+      "a": "Adolf Hitler",
+      "b": "Boris III of Bulgaria",
+      "image": {
+        "url": "https://collections.ushmm.org/iiif-b/assets/735060",
+        "credit": "Heinrich Hoffmann; US National Archives (NARA 242-HB-48400-100), via US Holocaust Memorial Museum",
+        "license": "Public domain",
+        "source": "https://collections.ushmm.org/search/catalog/pa1051319",
+        "free": true
+      },
+      "line": "In the early 1940s, Hitler welcomed his wartime ally, Bulgaria's Tsar Boris III, to Germany.",
+      "fact": "Wartime visit, early 1940s",
+      "a_face": 3,
+      "b_face": 1,
+      "where": {
+        "place": "Germany",
+        "lat": 52.52,
+        "lon": 13.405
+      }
+    },
+    {
+      "a": "Boris III of Bulgaria",
+      "b": "Simeon II",
+      "image": {
+        "file": "File:Car Boris III. s rodinou (1938).jpg"
+      },
+      "line": "In 1938, Tsar Boris posed with his baby son Simeon, who became Bulgaria's boy king in 1943.",
+      "fact": "Royal portrait, 1938",
+      "a_face": 1,
+      "b_face": 3,
+      "where": {
+        "place": "Bulgaria",
+        "lat": 42.698,
+        "lon": 23.322
+      }
+    },
+    {
+      "a": "Simeon II",
+      "b": "George W. Bush",
+      "image": {
+        "file": "File:President George W. Bush welcomes Simeon Saxe-Coburg Gotha, Prime Minister of the Republic of Bulgaria.jpg"
+      },
+      "line": "In 2003, Simeon, by then Bulgaria's elected prime minister, met George W. Bush in the Oval Office.",
+      "fact": "Oval Office, 2003",
+      "a_face": 0,
+      "b_face": 1,
+      "where": {
+        "place": "White House",
+        "lat": 38.897,
+        "lon": -77.037
+      }
+    },
+    {
+      "a": "George W. Bush",
+      "b": "Fred Rogers",
+      "image": {
+        "file": "File:President George W. Bush Presents the Presidential Medal of Freedom Award to Fred Rogers.jpg"
+      },
+      "line": "And in 2002, George W. Bush gave the Presidential Medal of Freedom to Mister Rogers.",
+      "fact": "East Room, 2002",
+      "a_face": 2,
+      "b_face": 1,
+      "where": {
+        "place": "White House",
+        "lat": 38.897,
+        "lon": -77.037
+      }
+    }
+  ]
+}
