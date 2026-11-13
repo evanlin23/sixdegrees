@@ -3,9 +3,14 @@
   "to": "Rin Itoshi",
   "requested_by": "@Zorito-y4v",
   "hook": "How is Charlemagne connected to Rin Itoshi?",
-  "title": "How is Charlemagne connected to Rin Itoshi?",
+  "hook_variant": "F",
+  "text_variant": "T0",
+  "title": "Charlemagne to Rin Itoshi: how?",
   "description": "A Raphael fresco, 170 popes, a Vatican audience and Expo 2025 link the first Holy Roman Emperor to Blue Lock's Rin Itoshi.",
   "people": {
+    "Charlemagne": {
+      "hook_photo": "File:Duerer Karl der Grosse.jpg"
+    },
     "Pope Leo III": {
       "label": "Pope Leo III"
     },
@@ -20,14 +25,14 @@
       "image": {
         "file": "File:Raphael - Coronation of Charlemagne (cropped).jpg"
       },
-      "line": "Raphael's workshop painted Pope Leo the Third crowning Charlemagne emperor in Rome in 800.",
+      "line": "In 800, Pope Leo the Third crowned Charlemagne, a scene Raphael's workshop painted.",
       "a_face": 5,
       "b_face": 6
     },
     {
       "a": "Pope Leo III",
       "b": "Pope Francis",
-      "line": "Leo the Third was the 96th pope, and the line runs 170 more popes to Pope Francis.",
+      "line": "Over 12 centuries, 170 more popes followed Leo, down to Pope Francis.",
       "lineage": {
         "label": "LINE OF POPES",
         "people": [
@@ -99,7 +104,7 @@
         "license": "Fair use (commentary)",
         "source": "https://www.keidanren.or.jp/journal/times/2022/0804_11.html"
       },
-      "line": "That July in Tokyo, Kishida counted down 1000 days to Expo 2025 with Expo chairman Masakazu Tokura.",
+      "line": "That July, Kishida counted down to Expo 2025 with its chairman, Masakazu Tokura.",
       "b_face": 3
     },
     {
@@ -111,7 +116,7 @@
         "license": "Fair use (commentary)",
         "source": "https://kyodonewsprwire.jp/release/202312053857"
       },
-      "line": "In 2023, Tokura launched Expo ticket sales with the band Fantastics, including singer Yusei Yagi.",
+      "line": "In 2023, Tokura launched Expo ticket sales with Fantastics singer Yusei Yagi.",
       "a_face": 7,
       "b_face": 6
     },
@@ -134,7 +139,7 @@
           }
         ]
       },
-      "line": "And in 2026, Yagi played Rin Itoshi in the live-action Blue Lock movie.",
+      "line": "And in 2026, Yagi starred as Blue Lock's Rin Itoshi.",
       "a_face": 1,
       "b_face": 3
     }
