@@ -1,12 +1,21 @@
 {
   "from": "Julius Caesar",
   "to": "Sonic the Hedgehog",
-  "title": "Julius Caesar to Sonic through 266 popes",
+  "title": "How is Julius Caesar linked to Sonic?",
   "description": "Rome's first emperors, a Renaissance fresco, the line of popes, a Vatican audience and The Tonight Show connect Julius Caesar to Sonic the Hedgehog.",
-  "hook": "How is Julius Caesar connected to Sonic the Hedgehog?",
+  "hook": "What links Julius Caesar to Sonic?",
+  "hook_variant": "B",
+  "text_variant": "T1",
   "people": {
     "Julius Caesar": {
-      "label": "Julius Caesar"
+      "label": "Julius Caesar",
+      "hook_photo": "File:Retrato de Julio César (26724093101) (cropped).jpg",
+      "hook_box": [
+        220,
+        300,
+        520,
+        540
+      ]
     },
     "Saint Peter": {
       "label": "Saint Peter"
@@ -21,7 +30,14 @@
       "label": "Ben Schwartz"
     },
     "Sonic the Hedgehog": {
-      "label": "Sonic"
+      "label": "Sonic",
+      "hook_photo": "https://static.wikia.nocookie.net/sonic/images/1/10/SRCSonic.png/revision/latest?cb=20251202132714&format=original",
+      "hook_box": [
+        140,
+        0,
+        900,
+        660
+      ]
     }
   },
   "links": [
@@ -63,7 +79,7 @@
           }
         ]
       },
-      "line": "Julius Caesar's heir Augustus became Rome's first emperor, and the dynasty ran four more emperors to Nero."
+      "line": "In 27 BC, Caesar's heir Augustus founded a dynasty that ended with Nero."
     },
     {
       "a": "Nero",
@@ -71,7 +87,7 @@
       "image": {
         "file": "File:Cappella brancacci, Disputa di Simon Mago (restaurato), Filippino Lippi.jpg"
       },
-      "line": "Around 1482, Filippino Lippi painted Nero putting the apostle Peter, the first pope, on trial.",
+      "line": "Around 1482, Filippino Lippi painted Nero putting the apostle Peter on trial.",
       "a_face": 6,
       "b_face": 2
     },
@@ -133,7 +149,7 @@
           }
         ]
       },
-      "line": "From Peter, the line of popes runs unbroken to the 266th, Pope Francis."
+      "line": "In 2013, Peter's line of popes reached its 266th, Pope Francis."
     },
     {
       "a": "Pope Francis",
@@ -144,7 +160,7 @@
         "license": "Fair use (commentary)",
         "source": "https://usccb.org/news/2024/pope-swaps-jokes-comedy-stars-vatican"
       },
-      "line": "In 2024, Pope Francis invited over a hundred comedians to the Vatican, and shook hands with Jimmy Fallon.",
+      "line": "In 2024, the pope hosted over a hundred comedians, including Jimmy Fallon.",
       "a_face": 8,
       "b_face": 1
     },
@@ -175,7 +191,7 @@
           }
         ]
       },
-      "line": "And since 2020, Ben Schwartz has been the voice of Sonic in the Sonic the Hedgehog movies.",
+      "line": "And since 2020, Schwartz has been the movie voice of Sonic.",
       "b_face": [
         1402,
         280,
