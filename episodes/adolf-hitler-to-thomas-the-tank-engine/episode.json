@@ -1,0 +1,146 @@
+{
+  "from": "Adolf Hitler",
+  "to": "Thomas the Tank Engine",
+  "title": "How is Adolf Hitler connected to Thomas the Tank Engine?",
+  "description": "Six real photos connect Adolf Hitler to Thomas the Tank Engine, through Finland's wartime marshal, a future Finnish president, John F. Kennedy, a British prime minister and a Beatle.",
+  "hook": "How is Adolf Hitler connected to Thomas the Tank Engine?",
+  "fun_fact": "During Hitler's 1942 visit, a Finnish radio sound engineer secretly recorded the first 11 minutes of his talk with Mannerheim, the only known recording of Hitler speaking in an unofficial, everyday voice.",
+  "research_note": "Instead of the usual Chamberlain or Franco exit, this chain leaves Hitler through Finland: a 1940 photo shows Mannerheim beside Kekkonen at a Helsinki athletics match, and the JFK Library has Kekkonen's 1961 state visit; a Finnish archive photo of Kekkonen with Harold Wilson exists, but its host blocks automated downloads, so the route runs through Kennedy.",
+  "people": {
+    "Adolf Hitler": {
+      "label": "Adolf Hitler",
+      "short": "Hitler"
+    },
+    "Carl Gustaf Emil Mannerheim": {
+      "label": "Mannerheim"
+    },
+    "Urho Kekkonen": {
+      "label": "Urho Kekkonen",
+      "short": "Kekkonen"
+    },
+    "John F. Kennedy": {
+      "label": "John F. Kennedy",
+      "short": "JFK"
+    },
+    "Harold Wilson": {
+      "label": "Harold Wilson"
+    },
+    "Ringo Starr": {
+      "label": "Ringo Starr"
+    },
+    "Thomas the Tank Engine": {
+      "label": "Thomas the Tank Engine",
+      "short": "Thomas",
+      "hook_photo": "https://static.wikia.nocookie.net/ttte/images/2/2f/ThomasandtheCircusphotographicstill4.png/revision/latest?cb=20170218002438&format=original"
+    }
+  },
+  "links": [
+    {
+      "a": "Adolf Hitler",
+      "b": "Carl Gustaf Emil Mannerheim",
+      "image": {
+        "file": "File:Hitler visit Finland 1942.jpg"
+      },
+      "line": "In 1942, Hitler flew to Finland for the 75th birthday of its wartime commander, Marshal Mannerheim.",
+      "fact": "Imatra, Finland, 1942",
+      "a_face": 2,
+      "b_face": 1,
+      "where": {
+        "place": "Imatra, Finland",
+        "lat": 61.19,
+        "lon": 28.78
+      }
+    },
+    {
+      "a": "Carl Gustaf Emil Mannerheim",
+      "b": "Urho Kekkonen",
+      "image": {
+        "file": "File:Famous spectators of athletics game Finland-Sweden-Germany, September 1940 in Helsinki.jpg"
+      },
+      "line": "In 1940, Marshal Mannerheim watched athletics in Helsinki beside Urho Kekkonen, a future president of Finland.",
+      "fact": "Helsinki stadium, 1940",
+      "a_face": 0,
+      "b_face": [
+        145,
+        210,
+        135,
+        140
+      ],
+      "where": {
+        "place": "Helsinki",
+        "lat": 60.187,
+        "lon": 24.927
+      }
+    },
+    {
+      "a": "Urho Kekkonen",
+      "b": "John F. Kennedy",
+      "image": {
+        "file": "File:Kekkonen valtiovierailulla Yhdysvalloissa.jpg"
+      },
+      "line": "In 1961, John F. Kennedy welcomed Finland's president, Urho Kekkonen, on a state visit to America.",
+      "fact": "Washington arrival, 1961",
+      "a_face": 0,
+      "b_face": 4,
+      "where": {
+        "place": "Washington, D.C.",
+        "lat": 38.907,
+        "lon": -77.037
+      }
+    },
+    {
+      "a": "John F. Kennedy",
+      "b": "Harold Wilson",
+      "image": {
+        "file": "File:President John F. Kennedy with Leader of the Labour Party of Great Britain, Harold Wilson.jpg"
+      },
+      "line": "In 1963, John F. Kennedy met British Labour leader Harold Wilson at the White House.",
+      "fact": "White House, 1963",
+      "a_face": 0,
+      "b_face": 1,
+      "where": {
+        "place": "White House",
+        "lat": 38.897,
+        "lon": -77.037
+      }
+    },
+    {
+      "a": "Harold Wilson",
+      "b": "Ringo Starr",
+      "image": {
+        "url": "https://i2-prod.examinerlive.co.uk/incoming/article7944812.ece/ALTERNATES/s1227b/WA1168031.jpg",
+        "credit": "Mirrorpix (via YorkshireLive)",
+        "license": "Fair use (commentary)",
+        "source": "https://www.examinerlive.co.uk/news/west-yorkshire-news/gallery/harold-wilson-7944879"
+      },
+      "line": "In 1964, Harold Wilson handed Ringo Starr and the Beatles a showbiz award in London.",
+      "fact": "Dorchester Hotel, 1964",
+      "a_face": 2,
+      "b_face": 0,
+      "where": {
+        "place": "Dorchester Hotel, London",
+        "lat": 51.507,
+        "lon": -0.152
+      }
+    },
+    {
+      "a": "Ringo Starr",
+      "b": "Thomas the Tank Engine",
+      "image": {
+        "url": "https://static.wikia.nocookie.net/ttte/images/1/19/RingoStarrwithThomas1984.jpg/revision/latest?cb=20091005144357&format=original",
+        "credit": "Thomas the Tank Engine & Friends publicity photo (via Thomas & Friends Wiki)",
+        "license": "Fair use (commentary)",
+        "source": "https://ttte.fandom.com/wiki/File:RingoStarrwithThomas1984.jpg"
+      },
+      "line": "And in 1984, Ringo Starr became the first TV voice of Thomas the Tank Engine.",
+      "fact": "Thomas narrator, 1984",
+      "a_face": 0,
+      "b_face": 1,
+      "where": {
+        "place": "London",
+        "lat": 51.507,
+        "lon": -0.128
+      }
+    }
+  ]
+}
