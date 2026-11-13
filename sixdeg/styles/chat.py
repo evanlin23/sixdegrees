@@ -1,11 +1,13 @@
 """Group chat skin around the show's core: a dark messaging thread ("Six Degrees Group") where Buh posts the link's
 fact and then a photo, and that sent photo IS the core window (camera, Buh, red string, name tags). Someone is typing
-until Buh lands on B; then a neutral system line says B was added to the group (no words put in anyone's mouth). B is never named before the reveal."""
+until Buh lands on B; then a neutral system line says B was added to the group (no words put in anyone's mouth). B is never named before the reveal.
+The thread's wallpaper is never still: its pattern scrolls slowly and two faint coloured glows drift across it."""
 from __future__ import annotations
 
 import math
+import random
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 NAME = "chat"
 
@@ -70,18 +72,62 @@ def make(ctx):
             _cache[k] = av
         return _cache[k]
 
+    PER = 256                                   # wallpaper repeat (a 256 px tile of staggered dots)
+
+    def wall_tile():
+        """The thread wallpaper, one repeat bigger than the frame each way so it can scroll by cropping."""
+        if "wall" not in _cache:
+            t = Image.new("RGBA", (PER, PER), BG + (255,))
+            d = ImageDraw.Draw(t)
+            rnd = random.Random(5)
+            for r in range(PER // 32):
+                for x in range(10 + (r % 2) * 32, PER, 64):
+                    y = 10 + r * 32
+                    if rnd.random() < 0.14:                                         # the odd tiny chat bubble
+                        d.rounded_rectangle([x - 5, y - 3, x + 9, y + 6], 3, fill=(24, 33, 45))
+                        d.polygon([(x - 2, y + 6), (x + 2, y + 6), (x - 4, y + 10)], fill=(24, 33, 45))
+                    else:
+                        d.ellipse([x, y, x + 5, y + 5], fill=(24, 33, 45))
+            im = Image.new("RGBA", (ctx.W + PER, ctx.H + PER))
+            for y in range(0, im.height, PER):
+                for x in range(0, im.width, PER):
+                    im.paste(t, (x, y))
+            _cache["wall"] = im
+        return _cache["wall"]
+
+    def glow(rgb, r):
+        k = ("glow", rgb, r)
+        if k not in _cache:
+            m = Image.new("L", (r * 2, r * 2), 0)
+            ImageDraw.Draw(m).ellipse([r * 0.3, r * 0.3, r * 1.7, r * 1.7], fill=34)
+            m = m.filter(ImageFilter.GaussianBlur(r * 0.28))
+            g = Image.new("RGBA", (r * 2, r * 2), rgb + (0,))
+            g.putalpha(m)
+            _cache[k] = g
+        return _cache[k]
+
+    def wallpaper(tt):
+        """The wallpaper scrolls slowly up and across under the thread, with two faint coloured glows drifting
+        about like light on a phone screen."""
+        ox, oy = int(tt * 7) % PER, int(tt * 18) % PER
+        im = wall_tile().crop((ox, oy, ox + ctx.W, oy + ctx.H))
+        for rgb, r, ax, ay, fx, fy, ph in (((40, 110, 255), 360, 380, 360, 0.21, 0.16, 0.0),
+                                           ((60, 210, 140), 300, 400, 300, 0.17, 0.23, 2.1)):
+            gx = ctx.W / 2 + ax * math.sin(tt * fx + ph) - r
+            gy = 1000 + ay * math.sin(tt * fy + ph * 1.3) - r
+            im.alpha_composite(glow(rgb, r), (int(gx), int(gy)))
+        return im
+
     def thread(i, revealed):
-        """Everything static for link i: wallpaper, header, Buh's fact bubble, the reply / system line."""
+        """Everything static for link i (on a transparent layer over the wallpaper): header, Buh's fact bubble, the reply / system line."""
         key = (i, revealed)
         if key in _cache:
             return _cache[key]
         an, bn = ctx.link_names(i)
         link = ctx.spec["links"][i]
-        im = Image.new("RGBA", (ctx.W, ctx.H), BG + (255,))
+        im = Image.new("RGBA", (ctx.W, ctx.H), (0, 0, 0, 0))          # transparent: the wallpaper moves under it
         d = ImageDraw.Draw(im)
-        for y in range(HEAD[1] + 30, ctx.H, 64):                                  # faint wallpaper dots
-            for x in range(20 + (y // 64 % 2) * 32, ctx.W, 64):
-                d.ellipse([x, y, x + 5, y + 5], fill=(22, 30, 40))
+        d.rectangle([0, 0, ctx.W, HEAD[0]], fill=BG)
         # header: back chevron, group avatar (faces met so far), name, status, menu
         d.rectangle([0, HEAD[0], ctx.W, HEAD[1]], fill=PANEL)
         cy = (HEAD[0] + HEAD[1]) / 2
@@ -128,7 +174,8 @@ def make(ctx):
         local = tt - seg["t0"]
         trev = seg.get("rv", ctx.REVEAL) * seg["speech"] + ctx.THROW     # Buh lands on B
         revealed = local >= trev
-        base = thread(i, revealed).copy()
+        base = wallpaper(tt)
+        base.alpha_composite(thread(i, revealed))
         if not revealed and local > 0.6:                 # someone is typing: three bouncing dots
             d = ImageDraw.Draw(base)
             d.rounded_rectangle([WX, 1396, WX + 110, 1440], 22, fill=BUBBLE)

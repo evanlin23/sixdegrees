@@ -1,5 +1,5 @@
 """Game: a skin around the core. The core photo window is the play screen of an original pixel handheld (grey bezel,
-power LED, D-pad and A/B buttons below), over a night sky with scrolling pixel hills. The bezel's lower lip carries
+power LED, D-pad and A/B buttons below), over a night sky with drifting, twinkling pixel stars (an odd shooting star) and scrolling pixel hills. The bezel's lower lip carries
 the HUD: LEVEL n, and on links without a dictator a coin score that ticks up when Buh lands, plus a small CLEAR!.
 On a sensitive link the HUD shows only the level and the year: no coins, no score, no celebration. When a viewer
 requested the episode ("requested_by": "@handle") they are the player: "P1 @HANDLE" under LEVEL n on the lip, and a
@@ -36,18 +36,53 @@ def make(ctx):
         return ctx.sensitive(a) or ctx.sensitive(b)
 
     def sky():
+        """Banded pixel gradient (cached); the stars are drawn per frame on top of it."""
         if "sky" not in _c:
             im = Image.new("RGBA", (W, H), SKY[0] + (255,))
             d = ImageDraw.Draw(im)
             for y in range(0, H, 8):                         # banded pixel gradient
                 u = y / H
                 d.rectangle([0, y, W, y + 8], fill=tuple(int(a + (b - a) * u) for a, b in zip(*SKY)))
-            rnd = random.Random(11)
-            for _ in range(160):
-                x, y = rnd.randrange(0, W, 6), rnd.randrange(0, H, 6)
-                d.rectangle([x, y, x + 5, y + 5], fill=(220, 220, 255) if rnd.random() < 0.85 else YELLOW)
             _c["sky"] = im
         return _c["sky"].copy()
+
+    # stars: three parallax layers drifting left (slower than the hills), each one twinkling on its own clock
+    rnd = random.Random(11)
+    STARS = []
+    for layer, (n, size, spd) in enumerate(((150, 4, 5.0), (80, 6, 11.0), (26, 6, 19.0))):
+        for _ in range(n):
+            STARS.append((rnd.uniform(0, W + 24), rnd.randrange(0, 1560, 6), size, spd, layer,
+                          rnd.uniform(0, 6.283), rnd.uniform(1.2, 3.4), rnd.random() < 0.12))
+
+    def stars(base, tt):
+        d = ImageDraw.Draw(base)
+        for x0, y, size, spd, layer, ph, fr, gold in STARS:
+            x = int((x0 - tt * spd) % (W + 24) - 12) // 2 * 2
+            tw = 0.5 + 0.5 * math.sin(tt * fr + ph)                         # 0..1 twinkle
+            v = 0.35 + 0.65 * tw if layer else 0.25 + 0.55 * tw
+            col = (255, 214, 60) if gold else (220, 220, 255)
+            col = tuple(int(c * v + s_ * (1 - v)) for c, s_ in zip(col, SKY[1]))
+            d.rectangle([x, y, x + size - 1, y + size - 1], fill=col)
+            if layer == 2 and tw > 0.82:                                    # the near ones flash a little cross
+                arm = 6 if tw > 0.93 else 3
+                d.rectangle([x - arm, y + size // 2 - 1, x + size - 1 + arm, y + size // 2], fill=col)
+                d.rectangle([x + size // 2 - 1, y - arm, x + size // 2, y + size - 1 + arm], fill=col)
+        # a shooting star now and then, down one side of the handheld (never across the screen)
+        per = 6.5
+        k, u = int(tt // per), (tt % per) / 0.7
+        if u < 1:
+            side = k % 2
+            sx = (60 + 50 * (k % 3)) if side == 0 else (W - 40 - 50 * (k % 3))
+            sy = 520 + 230 * (k % 4)
+            dx = -1 if side else 1
+            for j in range(6):
+                q = u - j * 0.05
+                if 0 <= q <= 1:
+                    px, py = int(sx + dx * q * 150) // 3 * 3, int(sy + q * 260) // 3 * 3
+                    a = (1 - j / 6) * (1 - max(0.0, u - 0.7) / 0.3)
+                    col = tuple(int(255 * a + s_ * (1 - a)) for s_ in SKY[1])
+                    sz = 6 if j == 0 else 3
+                    d.rectangle([px, py, px + sz, py + sz], fill=col)
 
     def hills(base, tt):
         """Two parallax rows of stepped pixel hills along the bottom, scrolling left."""
@@ -164,6 +199,7 @@ def make(ctx):
         if ctx.C.fj["links"][i].get("lineage"):
             return ctx.frame_lineage(seg, tt)
         base = sky()
+        stars(base, tt)
         hills(base, tt)
         c = ctx.draw_core(base, seg, tt, X0, Y0, S, frame=bezel)
         if PLAYER and i == 0:

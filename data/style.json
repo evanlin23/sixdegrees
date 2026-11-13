@@ -5,7 +5,10 @@
   "cards",
   "museum",
   "filmreel",
-  "zoom"
+  "zoom",
+  "chat",
+  "domino",
+  "globe"
  ],
- "_rotation": "Owner-approved formats only (2026-11-13: museum 'ok', film reel 'ok fine', big photo/zoom 'sure that's fine'). Every style keeps the core: Buh jumping with pin + red string, name tags under the chins, zoom-out / move / zoom-in camera. Add others only after the owner OKs them in the Review Room."
+ "_rotation": "Owner-approved formats only (2026-11-13 Review Room: museum, film reel, big photo/zoom, chat, domino, globe). Every style keeps the core: Buh jumping with pin + red string, name tags under the chins, zoom-out / move / zoom-in camera. Globe is skipped automatically for episodes without a place on every link. Add others only after the owner OKs them."
 }
