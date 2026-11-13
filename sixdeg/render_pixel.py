@@ -784,7 +784,8 @@ def render(slug: str, log=print) -> Path:
         d.text((112, 64), text, font=ft, fill=(15, 15, 15))
         return im
 
-    comment_im = make_comment_card() if spec.get("requested_by") else None
+    # owner: never "a viewer": the request card only appears with the real @handle (and their profile picture)
+    comment_im = make_comment_card() if str(spec.get("requested_by", "")).startswith("@") else None
 
     def frame_hook(seg, tt):
         k = tt - seg["t0"]
@@ -840,7 +841,7 @@ def render(slug: str, log=print) -> Path:
             dr.rectangle([0, HERO_A[1], W, HERO_B[0]], fill=INK)               # the seam carries the question
             dr.rectangle([0, HERO_A[1] - 6, W, HERO_A[1]], fill=CYAN)
             dr.rectangle([0, HERO_B[0], W, HERO_B[0] + 6], fill=YELLOW)
-            if spec.get("requested_by"):   # the viewer's comment IS the hook (every reference hit opens on one)
+            if comment_im is not None:   # the viewer's comment IS the hook (every reference hit opens on one)
                 pop = ease_out_back(min(1.0, kk / 0.25))
                 paste(base, comment_im, CX, (HERO_A[1] + HERO_B[0]) // 2 + 10, scale=0.6 + 0.4 * pop, nearest=False)
                 dr = ImageDraw.Draw(base)
@@ -869,7 +870,7 @@ def render(slug: str, log=print) -> Path:
                     sq = 0.8 * math.exp(-land * 10) * math.cos(land * 30)
                     hop = abs(math.sin(land * 7)) * 18
                     paste_pin(base, pin_sprite("smug" if int(land * 2) % 2 else "happy", 0, sq), b_spot[0], b_spot[1] - hop)
-            if spec.get("requested_by"):
+            if comment_im is not None:
                 return base               # Buh jumps OVER the comment card; the card is the question
         seg["cap"].draw(base, tt, y=(HERO_A[1] + HERO_B[0]) // 2)
         return base

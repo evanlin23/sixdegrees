@@ -63,8 +63,8 @@ def kit(slug: str) -> str:
     ask = ("Who should Hitler connect to next? Name anyone (a character works too) and I'll find the photos."
            if "hitler" in slug.lower() else "Who should I connect next? Two names, the weirder the better.")
     first = spec.get("first_comment") or spec.get("pinned_comment") or fun + (
-        f"{spec['requested_by'] if spec['requested_by'].startswith('@') else 'A viewer'} asked for this one. " + ask
-        if spec.get("requested_by") else ask)
+        f"{spec['requested_by']} asked for this one. " + ask
+        if str(spec.get("requested_by", "")).startswith("@") else ask)        # never "a viewer" (owner)
     meta = {"title": title, "description": desc, "tags": tags[:30], "categoryId": "27",  # Education
             "first_comment": first,
             "madeForKids": False,
