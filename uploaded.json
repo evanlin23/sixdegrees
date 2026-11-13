@@ -300,5 +300,23 @@
   "style": "chat",
   "trending": false,
   "n": 52
+ },
+ {
+  "slug": "adolf-hitler-to-albert-einstein",
+  "title": "How is Adolf Hitler connected to Albert Einstein?",
+  "publish_at": "2026-11-14T03:44:00Z",
+  "video_id": "-hSVOjbS2RE",
+  "privacy": "scheduled",
+  "url": "https://youtube.com/shorts/-hSVOjbS2RE",
+  "thumbnail": "not set: <HttpError 403 when requesting https://youtube.googleapis.com/upload/youtube/v3/thumbnails/set?videoId=-hSVOjbS2RE&alt=json&uploadType=media returned \"The authe",
+  "first_comment": "Fun fact from the research: After his 1936 visit, Lloyd George wrote in the Daily Express that Hitler was 'the George Washington of Germany'.\n\nWho should Hitler connect to next? Name anyone (a character works too) and I'll find the photos.",
+  "kind": "formula",
+  "outro": false,
+  "narration": true,
+  "links": 4,
+  "music": "Hip Hop Astrology Beat",
+  "style": "game",
+  "trending": false,
+  "n": 58
  }
 ]
