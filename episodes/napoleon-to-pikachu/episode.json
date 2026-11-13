@@ -1,9 +1,11 @@
 {
   "from": "Napoleon",
   "to": "Pikachu",
-  "title": "Napoleon to Pikachu in four links",
+  "title": "How is Napoleon connected to Pikachu?",
   "description": "France's line of rulers, a state dinner at Versailles and a royal visit to Wrexham connect Napoleon to Pikachu.",
-  "hook": "How is Napoleon connected to Pikachu?",
+  "hook": "What links Napoleon to Pikachu?",
+  "hook_variant": "B",
+  "text_variant": "T1",
   "people": {
     "Napoleon": {
       "label": "Napoleon"
@@ -18,14 +20,21 @@
       "label": "Ryan Reynolds"
     },
     "Pikachu": {
-      "label": "Pikachu"
+      "label": "Pikachu",
+      "hook_photo": "https://static.wikia.nocookie.net/pokemon/images/4/4a/0025Pikachu.png/revision/latest?cb=20260203145744&format=original",
+      "hook_box": [
+        107,
+        140,
+        483,
+        470
+      ]
     }
   },
   "links": [
     {
       "a": "Napoleon",
       "b": "Emmanuel Macron",
-      "line": "In 1804, Napoleon crowned himself emperor, and France's line of rulers runs from him to Emmanuel Macron.",
+      "line": "Since 1804, France's line of rulers has run from Napoleon to Emmanuel Macron.",
       "lineage": {
         "label": "RULERS OF FRANCE",
         "people": [
@@ -88,7 +97,7 @@
       "image": {
         "file": "File:King Charles III and Emmanuel Macron State Dinner 2023.jpg"
       },
-      "line": "In 2023, Macron hosted King Charles the Third at a state dinner in the Palace of Versailles."
+      "line": "In 2023, Macron hosted Britain's King Charles at a Versailles state dinner."
     },
     {
       "a": "Charles III",
@@ -99,7 +108,7 @@
         "license": "Fair use (commentary)",
         "source": "https://www.etonline.com/ryan-reynolds-meets-king-charles-iii-and-camilla-at-wrexham-soccer-club-with-rob-mcelhenney-195752"
       },
-      "line": "In 2022, Ryan Reynolds showed the King around Wrexham, the Welsh football club he co-owns."
+      "line": "Back in 2022, Charles toured Wrexham's football club with co-owner Ryan Reynolds."
     },
     {
       "a": "Ryan Reynolds",
@@ -117,7 +126,7 @@
           }
         ]
       },
-      "line": "And in 2019, Reynolds became the voice of Pikachu in the movie Detective Pikachu.",
+      "line": "And in 2019, Reynolds became the voice of Detective Pikachu.",
       "b_face": 2
     }
   ]
