@@ -2,9 +2,11 @@
   "from": "Augustus",
   "to": "Tom Cruise",
   "requested_by": "@bluescreenperson",
-  "title": "Augustus to Tom Cruise through a fresco and 264 popes",
+  "title": "How is Augustus linked to Tom Cruise?",
   "description": "Rome's first emperors, a Renaissance fresco, the line of popes and two Reagan-era photos connect Augustus to Tom Cruise.",
-  "hook": "How is Augustus connected to Tom Cruise?",
+  "hook": "What links Augustus to Tom Cruise?",
+  "hook_variant": "B",
+  "text_variant": "T0",
   "people": {},
   "links": [
     {
@@ -40,7 +42,7 @@
           }
         ]
       },
-      "line": "Augustus was Rome's first emperor, and his family dynasty ended four emperors later with Nero."
+      "line": "In 27 BC, Augustus became Rome's first emperor; his dynasty ended with Nero."
     },
     {
       "a": "Nero",
@@ -48,7 +50,7 @@
       "image": {
         "file": "File:Cappella brancacci, Disputa di Simon Mago (restaurato), Filippino Lippi.jpg"
       },
-      "line": "Around 1482, Filippino Lippi painted Nero putting the apostle Peter, the first pope, on trial.",
+      "line": "Around 1482, Filippino Lippi painted Nero putting the apostle Peter on trial.",
       "a_face": 6,
       "b_face": 2
     },
@@ -105,7 +107,7 @@
           }
         ]
       },
-      "line": "From Peter, the line of popes runs unbroken to the 264th, John Paul II."
+      "line": "In 1978, Peter's line of popes reached its 264th, John Paul II."
     },
     {
       "a": "Pope John Paul II",
@@ -113,7 +115,7 @@
       "image": {
         "file": "File:Nancy Reagan and Pope John Paul Ii During a Visit to Immaculate Conception School in Los Angeles California - DPLA - 1c4dce229274a1411eaeb464d9ff37e1.jpg"
       },
-      "line": "In 1987, Nancy Reagan joined John Paul II at a Los Angeles school during his American tour.",
+      "line": "In 1987, the pope visited a Los Angeles school with Nancy Reagan.",
       "a_face": 1,
       "b_face": 0
     },
@@ -123,7 +125,7 @@
       "image": {
         "file": "File:Nancy Reagan Photo Op. with Lab School Honorees Cher Tom Cruise Bruce Jenner Robert Rauchenberg in The State Dining Room - DPLA - 08ba0ffd80a1acb205f349e9ff6e9f60.jpg"
       },
-      "line": "And in 1985, Nancy hosted Tom Cruise at the White House, honored by a school for students with dyslexia.",
+      "line": "And in 1985, at the White House, Nancy hosted Tom Cruise.",
       "a_face": 3,
       "b_face": 1
     }
