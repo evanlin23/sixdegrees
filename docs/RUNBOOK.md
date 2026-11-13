@@ -2,7 +2,7 @@
 
 Buh Connects (@buhconnects, channel `UCE3KAucU-r7Jp3BRGbreQoQ`): YouTube Shorts that connect two famous people
 through real pictures. Producer/consumer: Claude sessions make episodes, GitHub renders and queues them, a cron
-job uploads three a day.
+job uploads four a day (`upload.PER_DAY`).
 
 The episode procedure is the skill **`.claude/skills/six-degrees-episode/SKILL.md`**, the single source of truth
 for producer sessions. What goes viral and the pair formula are in **`docs/STYLE.md`**.
@@ -16,7 +16,7 @@ for producer sessions. What goes viral and the pair formula are in **`docs/STYLE
 | on each episode PR | `render.yml` | voices (Gemini Achird), renders and runs QA as a check; nothing is queued |
 | operator check-ins | operator session | merges PRs whose check passed; archives finished workers |
 | on merge to main | `render.yml` | renders again and appends the video to the `queue` branch |
-| 8:07 AM daily | cron-job.org, one job "sixdegrees upload (morning)" → `upload.yml` with `{"max":"3","privacy":"scheduled"}` | uploads the next 3 ready videos as private, each scheduled public at ~11:30 AM, 6:30 PM and 9:30 PM (+0–20 min jitter, `upload.SLOTS`); posts first comments on videos that went public since the last run (so a day late); thumbnails once the channel is phone-verified |
+| 8:07 AM daily | cron-job.org, one job "sixdegrees upload (morning)" → `upload.yml` with `{"max":"3","privacy":"scheduled"}` | uploads the next 4 ready videos (`upload.PER_DAY`, whatever max the job sends) as private, each scheduled public at ~11:30 AM, 3:00 PM, 6:30 PM and 9:30 PM (+0–20 min jitter, `upload.SLOTS`); posts first comments on videos that went public since the last run (so a day late); thumbnails once the channel is phone-verified |
 | Fri 9:37 PM weekly | "Six Degrees: weekly performance review" scheduled task → operator session | stats, compares opening/kind/outro groups, proposes up to 3 changes, waits for the creator's go-ahead; re-schedules itself for next Friday |
 | on demand | `stats.yml` | views/likes/comments + retention (yt-analytics scope) into `stats.json` on `queue` |
 | on demand | `voice.yml` | voices several episodes per Gemini request into the `tts-cache` branch |
