@@ -2,9 +2,11 @@
   "from": "Zeus",
   "to": "Monkey D. Luffy",
   "requested_by": "@Sealswowzazer",
-  "title": "How is Zeus connected to Luffy from One Piece?",
+  "title": "How is Zeus connected to Luffy?",
   "description": "A Rubens painting, the line of French rulers, two presidents, the MythBusters and a cast of voice actors link Zeus to Luffy.",
-  "hook": "How is Zeus connected to Luffy from One Piece?",
+  "hook": "How is Zeus connected to Luffy?",
+  "hook_variant": "F",
+  "text_variant": "T0",
   "people": {
     "Monkey D. Luffy": {
       "label": "Luffy"
@@ -23,7 +25,7 @@
       "image": {
         "file": "File:Peter Paul Rubens 036.jpg"
       },
-      "line": "Around 1622, Rubens painted Jupiter, the Roman Zeus, lifting King Henry the Fourth of France into heaven.",
+      "line": "Around 1622, Rubens painted Jupiter, the Roman Zeus, lifting Henry IV into heaven.",
       "a_face": 0,
       "b_face": [
         252,
@@ -110,7 +112,7 @@
           }
         ]
       },
-      "line": "From Henry the Fourth, the line of French rulers runs through kings, emperors and presidents to Emmanuel Macron."
+      "line": "In 2017, France's line of rulers after Henry IV reached Emmanuel Macron."
     },
     {
       "a": "Emmanuel Macron",
@@ -126,7 +128,7 @@
       "image": {
         "file": "File:Vladimir Putin and Barack Obama (2015-09-29) 01.jpg"
       },
-      "line": "Back in 2015, Putin met Barack Obama at the United Nations in New York."
+      "line": "Back in 2015, Putin met Barack Obama at the United Nations."
     },
     {
       "a": "Barack Obama",
@@ -134,7 +136,7 @@
       "image": {
         "file": "File:Obama Hyneman Savage - Oct 2010.jpg"
       },
-      "line": "In 2010, Obama filmed a MythBusters episode at the White House with Adam Savage.",
+      "line": "In 2010, Obama filmed a MythBusters episode with Adam Savage.",
       "b_face": 2
     },
     {
@@ -151,7 +153,7 @@
       "image": {
         "file": "File:Chris Doohan & Grant Imahara (8852930823).jpg"
       },
-      "line": "In 2013, Imahara posed at Phoenix Comicon with actor Chris, son of the original Star Trek's Scotty."
+      "line": "In 2013, Imahara posed with Chris Doohan, son of Star Trek's original Scotty."
     },
     {
       "a": "Chris Doohan",
@@ -159,7 +161,7 @@
       "image": {
         "file": "File:Michele Specht, Vic Mignogna, Chuck Huber, Todd Haberkorn & Chris Doohan (18092409509).jpg"
       },
-      "line": "In 2015, Chris sat on a Phoenix Comicon panel next to voice actor Todd Haberkorn."
+      "line": "In 2015, Doohan shared a Phoenix Comicon panel with voice actor Todd Haberkorn."
     },
     {
       "a": "Todd Haberkorn",
@@ -167,7 +169,7 @@
       "image": {
         "file": "File:10.16.1FairyTailCastByLuigiNovi1.jpg"
       },
-      "line": "In 2011, Haberkorn signed autographs at New York Comic Con with fellow Fairy Tail voice actor Colleen Clinkenbeard."
+      "line": "Back in 2011, Haberkorn signed autographs with his Fairy Tail co-star Colleen Clinkenbeard."
     },
     {
       "a": "Colleen Clinkenbeard",
@@ -182,7 +184,7 @@
           }
         ]
       },
-      "line": "And Clinkenbeard is the English voice of Luffy, the hero of One Piece.",
+      "line": "And since 2007, Clinkenbeard has voiced One Piece's hero, Luffy.",
       "b_face": 2
     }
   ],
