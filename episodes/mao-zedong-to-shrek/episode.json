@@ -1,12 +1,15 @@
 {
   "from": "Mao Zedong",
   "to": "Shrek",
-  "title": "Mao Zedong to Shrek in four links",
+  "title": "How is Mao connected to Shrek?",
   "description": "A 1975 handshake in Beijing, an Oval Office meeting and a White House concert connect Mao Zedong to Shrek.",
-  "hook": "How is Mao Zedong connected to Shrek?",
+  "hook": "What links Mao to Shrek?",
+  "hook_variant": "B",
+  "text_variant": "T1",
   "people": {
     "Mao Zedong": {
-      "label": "Mao Zedong"
+      "label": "Mao Zedong",
+      "hook_photo": "File:Mao Zedong sitting.jpg"
     },
     "Henry Kissinger": {
       "label": "Henry Kissinger"
@@ -18,7 +21,14 @@
       "label": "Mike Myers"
     },
     "Shrek": {
-      "label": "Shrek"
+      "label": "Shrek",
+      "hook_photo": "https://static.wikia.nocookie.net/shrek/images/9/9b/GoodShrekImage.png/revision/latest?cb=20201220080410&format=original",
+      "hook_box": [
+        505,
+        70,
+        395,
+        500
+      ]
     }
   },
   "links": [
@@ -28,7 +38,7 @@
       "image": {
         "file": "File:Kissinger, Ford and Mao, 1975 A7912.jpg"
       },
-      "line": "In 1975, Mao Zedong shook hands with Henry Kissinger in Beijing, as President Gerald Ford looked on.",
+      "line": "In 1975, Mao Zedong shook hands with Henry Kissinger in Beijing.",
       "a_face": 0,
       "b_face": 2
     },
@@ -38,7 +48,7 @@
       "image": {
         "file": "File:P051909PS-0435 (3582763391).jpg"
       },
-      "line": "In 2009, Kissinger came to the Oval Office to advise President Barack Obama on nuclear weapons.",
+      "line": "In 2009, Kissinger advised Barack Obama on nuclear weapons in the Oval Office.",
       "a_face": 7,
       "b_face": 5
     },
@@ -64,7 +74,7 @@
         92,
         100
       ],
-      "line": "In 2012, Mike Myers performed for Obama at a White House concert honoring Burt Bacharach."
+      "line": "In 2012, Obama watched Mike Myers perform at a White House concert."
     },
     {
       "a": "Mike Myers",
@@ -83,7 +93,7 @@
         ]
       },
       "a_face": 1,
-      "line": "And since 2001, Mike Myers has been the voice of Shrek.",
+      "line": "And since 2001, Myers has been the voice of Shrek.",
       "b_face": 3
     }
   ]
