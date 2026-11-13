@@ -31,7 +31,7 @@
       "image": {
         "file": "File:Matsuoka and Hitler (cropped).jpg"
       },
-      "line": "In March 1941, Hitler hosted Japan's foreign minister, Yosuke Matsuoka, in Berlin."
+      "line": "In 1941, Hitler hosted Japan's foreign minister, Yosuke Matsuoka, in Berlin."
     },
     {
       "a": "Yōsuke Matsuoka",
@@ -39,7 +39,7 @@
       "image": {
         "file": "File:Matsuoka signs the Soviet–Japanese Neutrality Pact-1.jpg"
       },
-      "line": "In April 1941, Matsuoka was in Moscow, signing a neutrality pact as Joseph Stalin looked on.",
+      "line": "Weeks later, Matsuoka signed a pact in Moscow as Joseph Stalin watched.",
       "a_face": 4
     },
     {
@@ -56,7 +56,7 @@
       "image": {
         "file": "File:President Richard Nixon and Mao Zedong.jpg"
       },
-      "line": "In 1972, Richard Nixon became the first American president to visit Mao in China.",
+      "line": "In 1972, Richard Nixon flew to China to meet Mao.",
       "a_face": 0,
       "b_face": 1
     },
@@ -66,7 +66,7 @@
       "image": {
         "file": "File:President Nixon welcomes the Apollo 11 astronauts aboard the U.S.S. Hornet.jpg"
       },
-      "line": "And back in 1969, Nixon greeted Neil Armstrong through a quarantine window, days after he walked on the Moon.",
+      "line": "Back in 1969, Nixon welcomed home the first man on the Moon, Neil Armstrong.",
       "a_face": 4,
       "b_face": 0
     }

@@ -525,6 +525,14 @@
   "slug": "adolf-hitler-to-kermit-the-frog"
  },
  {
+  "from": "Adolf Hitler",
+  "to": "Thomas the Tank Engine",
+  "status": "done",
+  "source": "[#2] Hitler pairs (Nov 2026)",
+  "hint": "Mannerheim (Finland 1942) -> Kekkonen (Helsinki 1940) -> JFK (1961 state visit) -> Harold Wilson (White House 1963) -> Ringo Starr (1964 award) -> Thomas (Ringo was the first TV narrator, 1984)",
+  "slug": "adolf-hitler-to-thomas-the-tank-engine"
+ },
+ {
   "from": "Kim Jong Un",
   "to": "Mickey Mouse",
   "status": "done",
