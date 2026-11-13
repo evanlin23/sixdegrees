@@ -1,7 +1,9 @@
 """Game: a skin around the core. The core photo window is the play screen of an original pixel handheld (grey bezel,
 power LED, D-pad and A/B buttons below), over a night sky with scrolling pixel hills. The bezel's lower lip carries
 the HUD: LEVEL n, and on links without a dictator a coin score that ticks up when Buh lands, plus a small CLEAR!.
-On a sensitive link the HUD shows only the level and the year: no coins, no score, no celebration."""
+On a sensitive link the HUD shows only the level and the year: no coins, no score, no celebration. When a viewer
+requested the episode ("requested_by": "@handle") they are the player: "P1 @HANDLE" under LEVEL n on the lip, and a
+"PLAYER @HANDLE" level-start banner along the bottom of the screen as link 1 opens. No handle: nothing extra."""
 from __future__ import annotations
 
 import math
@@ -24,6 +26,9 @@ def make(ctx):
     w, h = int(880 * S), int(950 * S)
     X0 = int(CX - w / 2)
     LIP = 74                                 # bezel lip under the screen (the HUD lives here)
+    rq = str(ctx.spec.get("requested_by") or "").strip()
+    PLAYER = rq.upper() if rq.startswith("@") and len(rq) > 1 else ""     # the viewer who asked for this episode
+    BANNER = 1.8                             # level-start banner on link 1, s
     _c = {}
 
     def sens(i):
@@ -85,8 +90,14 @@ def make(ctx):
 
     def hud(base, i, c, tt):
         yy = Y0 + h + 14 + (LIP - 14) / 2
-        lv = ctx.pixel_text(f"LEVEL {i + 1}", 26, fill=INK, outline=SHELL, shadow=False)
-        base.alpha_composite(lv, (X0 - 6, int(yy - lv.height / 2)))
+        if PLAYER:                                           # two rows: LEVEL n over P1 @HANDLE
+            lv = ctx.pixel_text(f"LEVEL {i + 1}", 22, fill=INK, outline=SHELL, shadow=False)
+            base.alpha_composite(lv, (X0 - 6, int(yy - lv.height + 4)))
+            p1 = player_tag()
+            base.alpha_composite(p1, (X0 - 6, int(yy - 2)))
+        else:
+            lv = ctx.pixel_text(f"LEVEL {i + 1}", 26, fill=INK, outline=SHELL, shadow=False)
+            base.alpha_composite(lv, (X0 - 6, int(yy - lv.height / 2)))
         d = ImageDraw.Draw(base)
         led = (230, 40, 60) if int(tt * 2) % 2 else (120, 30, 40)
         d.rectangle([X0 + w + 4, yy - 8, X0 + w + 20, yy + 8], fill=led, outline=INK, width=3)   # power LED
@@ -111,6 +122,37 @@ def make(ctx):
             cl = ctx.pixel_text("CLEAR!", 26, fill=YELLOW, outline=INK, shadow=False)
             ctx.paste(base, cl, X0 + w / 2, yy, scale=ctx.ease_out_back(min(1.0, (land - 0.3) / 0.15)))
 
+    def player_tag():
+        if "p1" not in _c:
+            name, size = f"P1 {PLAYER}", 18
+            im = ctx.pixel_text(name, size, fill=(170, 20, 50), outline=SHELL, shadow=False)
+            while im.width > 300 and len(name) > 6:              # a long handle is cut to fit the lip
+                name = name[:-1]
+                im = ctx.pixel_text(name.rstrip(".") + "..", size, fill=(170, 20, 50), outline=SHELL, shadow=False)
+            _c["p1"] = im
+        return _c["p1"]
+
+    def banner(base, local, quiet):
+        """Level-start banner along the bottom of the screen on link 1 (clear of the faces and of Buh up top):
+        PLAYER @HANDLE / LEVEL 1 START. It rises out of the bezel lip, holds, and sinks back."""
+        if local >= BANNER:
+            return
+        if "ban" not in _c:
+            l1 = ctx.pixel_text(f"PLAYER {PLAYER}", 34, fill=YELLOW)
+            if l1.width > w - 40:
+                l1 = l1.resize((w - 40, int(l1.height * (w - 40) / l1.width)), Image.NEAREST)
+            l2 = ctx.pixel_text("LEVEL 1  START" + ("" if quiet else "!"), 24, fill=WHITE)
+            bh = l1.height + l2.height + 18
+            im = Image.new("RGBA", (w, bh), (12, 10, 30, 210))
+            im.alpha_composite(l1, ((w - l1.width) // 2, 8))
+            im.alpha_composite(l2, ((w - l2.width) // 2, 8 + l1.height + 2))
+            _c["ban"] = im
+        im = _c["ban"]
+        u = max(0.0, min(1.0, local / 0.25, (BANNER - local) / 0.25))
+        shown = int(im.height * ctx.ease(u))                   # rows visible above the screen's bottom edge
+        if shown > 0:
+            base.alpha_composite(im.crop((0, 0, w, shown)), (X0, Y0 + h - shown))
+
     def coin(base, x, y, tt):
         sq = abs(math.cos(tt * 4))                           # spinning
         cw = max(4, int(26 * sq))
@@ -124,6 +166,8 @@ def make(ctx):
         base = sky()
         hills(base, tt)
         c = ctx.draw_core(base, seg, tt, X0, Y0, S, frame=bezel)
+        if PLAYER and i == 0:
+            banner(base, tt - seg["t0"], sens(i))
         hud(base, i, c, tt)
         controls(base, tt, {"press": 0 <= c["since"] < 0.25})
         return ctx.core_finish(base, seg, tt, c)

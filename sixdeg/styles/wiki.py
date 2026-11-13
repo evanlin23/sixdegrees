@@ -1,7 +1,7 @@
-"""Encyclopedia skin around the show's core: each link is a fictional encyclopedia article ("Openpedia") on A, and its
-infobox photo IS the core window (camera, Buh, red string, name tags). Beside it the infobox lists the date and who
-is pictured: B is "???" until Buh lands, then becomes a blue link. The image caption under it is the link's fact,
-cut before B's name until the reveal."""
+"""Encyclopedia skin around the show's core: each link is an article on A in "Buhpedia" (the show's own
+encyclopedia, a tiny Buh pin as its logo), and its infobox photo IS the core window (camera, Buh, red string, name
+tags). Beside it the infobox lists the date and who is pictured: B is "???" until Buh lands, then becomes a blue link.
+The image caption under it is the link's fact, cut before B's name until the reveal."""
 from __future__ import annotations
 
 from PIL import Image, ImageDraw, ImageFont
@@ -16,7 +16,7 @@ BLUE = (51, 102, 204)
 INKT = (32, 33, 34)
 GREY = (84, 89, 93)
 RULE = (162, 169, 177)
-SITE = "Openpedia"
+SITE = "Buhpedia"
 
 
 def make(ctx):
@@ -81,7 +81,10 @@ def make(ctx):
                 d.rectangle([x, 456, x + f.getlength(tab), 459], fill=INKT)
             x -= 26
         d.line([44, 466, 1038, 466], fill=RULE, width=2)
-        d.text((60, 492), f"From {SITE}, the free encyclopedia", font=F(21, "Medium"), fill=GREY, anchor="ls")
+        logo = ctx.pin_sprite("smug", scale=1)                       # Buhpedia's logo: a tiny Buh pin
+        im.alpha_composite(logo, (58, 467))
+        d.text((58 + logo.width + 8, 492), f"From {SITE}, the free encyclopedia", font=F(21, "Medium"), fill=GREY,
+               anchor="ls")
         # infobox panel + header strip
         d.rectangle(PANEL, fill=(248, 249, 250), outline=RULE, width=2)
         d.rectangle([PANEL[0] + 2, PANEL[1] + 2, PANEL[2] - 2, 562], fill=(222, 230, 245))

@@ -1,8 +1,10 @@
 """Newspaper: each link is a front page and the show's core photo window (draw_core: camera, Buh, string, name
 tags) is its front-page photo, with the masthead, dateline and headline above it, narrow news columns beside it and
-the picture caption + columns below. The headline reads "... ???" until the reveal (B is never named early), then
-the page is reprinted as an EXTRA with the full headline. Each new page slides in from a different side while the
-previous paper drops away underneath. A sensitive link gets a sober "ARCHIVE / FROM THE PICTURE DESK" sidebar."""
+the picture caption + columns below. The column text is lorem-like nonsense with hidden Buh messages running
+through it (SUBSCRIBE TO BUH CONNECTS, THE PIN KNOWS ...) for viewers who pause. The headline reads "... ???" until
+the reveal (B is never named early), then the page is reprinted as an EXTRA with the full headline. Each new page
+slides in from a different side while the previous paper drops away underneath.
+A sensitive link gets a sober "ARCHIVE / FROM THE PICTURE DESK" sidebar."""
 from __future__ import annotations
 
 import math
@@ -18,17 +20,12 @@ PAPERS = ["THE DAILY BUH", "THE BUH HERALD", "BUH EVENING POST", "THE MORNING BU
           "THE BUH TRIBUNE", "BUH WEEKLY NEWS", "THE BUH GAZETTE"]
 SIDEBARS = [("BUH SAYS", "IT'S ALL CONNECTED"), ("WEATHER", "CLOUDY, CHANCE OF LINKS"), ("SPORTS", "PIN WINS AGAIN"),
             ("CLASSIFIEDS", "LOST: ONE DEGREE"), ("OPINION", "SIX IS PLENTY"), ("PUZZLES", "CONNECT THE DOTS")]
-SENTENCES = [   # filler about our own method only: never invented claims about the real events pictured
-    "Every photo in this chain is real and its source is listed below the video.",
-    "Each link was checked against the original photo credit.",
-    "The pictures are shown as they were taken, without edits.",
-    "Viewers suggest the two names in the comments.",
-    "Our pin detective follows one photograph to the next.",
-    "Dates come from the photo archives that hold each picture.",
-    "Some links took hours of searching through old archives.",
-    "Six photographs, one chain, no shortcuts.",
-    "The full research notes are in the description.",
-    "Tomorrow's edition: another two names, another chain.",
+SYL = ["lo", "rem", "ip", "sum", "do", "lor", "sit", "a", "met", "con", "sec", "te", "tur", "ad", "pi", "sci",
+       "el", "it", "sed", "di", "am", "non", "u", "mi", "ra", "ve", "na", "pul", "vi", "nar", "quis", "ta", "bu"]
+SECRETS = [      # the column text is nonsense with a hidden message for the eagle-eyed (friendly, never hateful)
+    "SUBSCRIBE TO BUH CONNECTS", "COMMENT WHO {FROM} SHOULD CONNECT TO NEXT", "BUH WAS HERE", "THE PIN KNOWS",
+    "IF YOU CAN READ THIS YOU ARE TOO CLOSE", "HI MOM", "PAUSE MORE OFTEN", "SIX DEGREES OR LESS",
+    "READ THE DESCRIPTION", "BUH SEES ALL", "TELL A FRIEND ABOUT BUH", "THE RED STRING NEVER LIES",
 ]
 
 SC = 0.75                       # core window scale: 660 x 712
@@ -108,20 +105,47 @@ def make(ctx):
         lines = wrap(text, f, width)[:3]
         return f, lines
 
-    def column(d, x, y0, y1, width, seed, lead="", size=13):
+    def nonsense(r, n):
+        out = []
+        for k in range(n):
+            w = "".join(r.choice(SYL) for _ in range(r.choice((1, 2, 2, 3))))
+            out.append(w.capitalize() if k == 0 or out[-1].endswith(".") else w)
+            if r.random() < 0.12:
+                out[-1] += "."
+            elif r.random() < 0.08:
+                out[-1] += ","
+        return out
+
+    def secrets(seed):
+        frm = ctx.C.labels.get(ctx.spec.get("from", ""), ctx.spec.get("from", "")).upper() or "BUH"
+        order = random.Random(seed // 31).sample(SECRETS, len(SECRETS))       # one order per page,
+        k = (seed % 31) * 5 % len(SECRETS)                                      # each column starts elsewhere
+        return [m.replace("{FROM}", frm) for m in order[k:] + order[:k]]
+
+    def column(d, x, y0, y1, width, seed, size=13):
+        """Lorem-like nonsense in grey, every few lines broken by one line of a hidden message (slightly darker)."""
         r = random.Random(seed)
         f = font("Medium", size)
-        words = (lead + " " + " ".join(r.sample(SENTENCES, len(SENTENCES)) * 2)).split()
-        y, line = y0, ""
-        while words and y + size <= y1:
-            w = words[0]
-            if f.getlength(f"{line} {w}".strip()) > width and line:
-                d.text((x, y), line, font=f, fill=GREY)
-                y += int(size * 1.35)
-                line = ""
-                continue
-            line = f"{line} {w}".strip()
-            words.pop(0)
+        msgs = secrets(seed)
+        y, k, gap = y0, 0, r.randint(2, 4)
+        lh = int(size * 1.35)
+        while y + size <= y1:
+            if gap <= 0 and msgs:
+                lines = wrap(msgs.pop(0), f, width)
+                if y + lh * (len(lines) - 1) + size <= y1:          # a message is printed whole or not at all
+                    for ln in lines:
+                        d.text((x, y), ln, font=f, fill=(66, 58, 50))
+                        y += lh
+                    gap = r.randint(5, 9)
+                    continue
+            words, line = nonsense(r, 12), ""
+            for w in words:
+                if f.getlength(f"{line} {w}".strip()) > width:
+                    break
+                line = f"{line} {w}".strip()
+            d.text((x, y), line, font=f, fill=GREY)
+            y += lh
+            gap -= 1
 
     def page(i, revealed):
         """The front page of link i (RGBA, PW x PH) with an empty hole where the core photo goes."""
@@ -177,8 +201,7 @@ def make(ctx):
         if sens:                                               # no jokey voice next to a sensitive story
             side = ("ARCHIVE", "FROM THE PICTURE DESK")
         d.text((M, WY), "NATION", font=font("Black", 13), fill=INKC)
-        lead = link["line"] if revealed else masked(link["line"], link)
-        column(d, M, WY + 20, WY + fh, lw, i * 31, lead, 12)
+        column(d, M, WY + 20, WY + fh, lw, i * 31, 12)
         rx = WX + fw + 12
         d.text((rx, WY), side[0], font=font("Black", 13 if len(side[0]) < 9 else 11), fill=INKC)
         sf = font("Bold", 11)
@@ -186,7 +209,7 @@ def make(ctx):
         for ln in wrap(side[1], sf, lw):
             d.text((rx, sy), ln, font=sf, fill=(70, 62, 54))
             sy += 14
-        column(d, rx, sy + 6, WY + fh, lw, i * 31 + 2, "", 12)
+        column(d, rx, sy + 6, WY + fh, lw, i * 31 + 2, 12)
         d.rectangle([WX - 7, WY, WX - 6, WY + fh], fill=(150, 140, 126))
         d.rectangle([WX + fw + 5, WY, WX + fw + 6, WY + fh], fill=(150, 140, 126))
         # under the photo (below the captions' band): picture caption, rule, three columns
@@ -203,7 +226,7 @@ def make(ctx):
         for k in range(3):
             x = M + k * (cw + 18)
             d.text((x, y), ["WORLD", "CITY", "LETTERS"][k], font=font("Black", 17), fill=INKC)
-            column(d, x, y + 24, PH - 20, cw, i * 31 + 5 + k, "", 13)
+            column(d, x, y + 24, PH - 20, cw, i * 31 + 5 + k, 13)
             if k:
                 d.rectangle([x - 10, y, x - 9, PH - 22], fill=(150, 140, 126))
         d.rectangle([WX - 2, WY - 2, WX + fw + 1, WY + fh + 1], fill=INKC)
