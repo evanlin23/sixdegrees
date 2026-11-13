@@ -40,7 +40,11 @@
       "a": "Adolf Hitler",
       "b": "Édouard Daladier",
       "image": {
-        "file": "File:Bundesarchiv Bild 146-1971-041-31, Münchener Abkommen, Mussolini, Hitler, Daladier.jpg"
+        "url": "https://upload.wikimedia.org/wikipedia/commons/9/9c/Bundesarchiv_Bild_183-R69173%2C_M%C3%BCnchener_Abkommen%2C_Staatschefs.jpg",
+        "credit": "Bundesarchiv, Bild 183-R69173 / CC-BY-SA 3.0",
+        "license": "CC BY-SA 3.0 de",
+        "source": "https://commons.wikimedia.org/wiki/File:Bundesarchiv_Bild_183-R69173,_M%C3%BCnchener_Abkommen,_Staatschefs.jpg",
+        "free": true
       },
       "line": "In 1938, French prime minister Édouard Daladier met Hitler in Munich to sign the Munich Agreement.",
       "fact": "Munich, September 1938",
@@ -49,13 +53,8 @@
         "lat": 48.1455,
         "lon": 11.5658
       },
-      "a_face": 1,
-      "b_face": [
-        306,
-        138,
-        78,
-        130
-      ]
+      "a_face": 4,
+      "b_face": 3
     },
     {
       "a": "Édouard Daladier",
@@ -153,7 +152,12 @@
         "lon": 151.2093
       },
       "a_face": 0,
-      "b_face": 2
+      "b_face": [
+        1300,
+        120,
+        400,
+        330
+      ]
     }
   ]
 }
