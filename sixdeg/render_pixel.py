@@ -368,10 +368,11 @@ def render(slug: str, log=print) -> Path:
             if hit:
                 rv = max(REVEAL, (hit[0] + 0.08 - THROW + 0.15) / speech)
                 rv = min(rv, (speech - THROW - 0.1) / speech) if not last else min(rv, max(REVEAL, (speech - THROW - 0.3) / speech))
-        d = max(speech + 0.05, rv * speech + THROW + 1.2) if last else speech + PAD   # hold the payoff ~1 s (owner: "cutting too fast")
-        d = max(d, MIN_LINK)        # owner: the pace never speeds up; a short line still gets a full beat on screen
-        if last and narration and _durs:   # owner (Mario, twice): "still too fast at the end" -> the payoff link is
-            d = max(d, min(6.0, sum(_durs) / len(_durs)))   # never shorter than the links before it (capped)
+        # last link: cut ~0.5 s after the voice ends (owner: "we should just cut as soon as the voice is done"), but
+        # never before Buh has landed and CONNECTED! has stamped (~0.9 s after the landing)
+        d = max(speech + 0.5, rv * speech + THROW + 0.9) if last else speech + PAD
+        d = d if last else max(d, MIN_LINK)        # owner: the pace never speeds up; a short line still gets a full beat on screen
+        # (the "payoff link as long as the average" hold was removed: it left ~3 s of music with no voice at the end)
         if not link.get("lineage"):
             _durs.append(d)
         if last and STYLE == "board":
