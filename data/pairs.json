@@ -90,6 +90,14 @@
   "slug": "hitler-to-grug"
  },
  {
+  "from": "Adolf Hitler",
+  "to": "Mr. Bean",
+  "status": "done",
+  "source": "[#2] Hitler pairs (Nov 2026)",
+  "hint": "Munich 1938 (Daladier) > 1936 Popular Front rally (Léon Blum) > Blum lunches with Churchill 1939 > VE Day balcony (Princess Elizabeth) > 2012 Dickens reception (Rowan Atkinson) > Mr. Bean",
+  "slug": "adolf-hitler-to-mr-bean"
+ },
+ {
   "from": "Zeus",
   "to": "One Piece",
   "status": "done",
