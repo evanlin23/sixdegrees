@@ -38,7 +38,15 @@ Gemini TTS has a daily limit shared by both teams (it resets 08:00 UTC). Every P
 - **Hitler pair in PR:** Jensen Huang (#161, waiting on voice quota).
 
 ## In progress (claim before starting: one line per pair, with owner and date)
-- _(none yet)_
+- Adolf Hitler → Thomas the Tank Engine: [#2], 2026-11-13, PR #206 (moving two photos off finna.fi, which GitHub's runners can't reach)
+- Adolf Hitler → Michael Jackson: [#2], 2026-11-13, PR #207 (render green)
+- Adolf Hitler → Lionel Messi: [#2], 2026-11-13, PR #208 (render green)
+- Adolf Hitler → Mr. Bean: [#2], 2026-11-13, PR #209 (render green)
+- Adolf Hitler → Big Bird: [#2], 2026-11-13, branch ready, PR after the Nov 14 voice reset
+- Adolf Hitler → Mr. Rogers: [#2], 2026-11-13, branch ready, PR after the Nov 14 voice reset
+- Adolf Hitler → Barney: [#2], 2026-11-13, in progress (Cookie Monster or Peppa Pig if Barney has no honest path)
+- Adolf Hitler → Taylor Swift: [#2], 2026-11-13, in progress
+- Adolf Hitler → Dolly Parton: [#2], 2026-11-13, finished but held: she died on 25 Aug 2026 (ASK on #200)
 
 ## Requests from [#1]
 - _(posted as `ASK: make <A> → <B>` in the channel)_
