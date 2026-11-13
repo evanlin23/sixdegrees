@@ -49,7 +49,7 @@
         "lat": 51.165,
         "lon": 10.452
       },
-      "line": "In the 1940s, Romania's dictator, Ion Antonescu, visited Hitler in Germany as his wartime ally.",
+      "line": "In the 1940s, Hitler hosted his ally, Romania's dictator Ion Antonescu.",
       "a_face": 4,
       "b_face": 0
     },
@@ -65,7 +65,7 @@
         "lat": 47.2,
         "lon": 27.8
       },
-      "line": "In 1941, Antonescu stood beside Romania's young King Michael on the banks of the Prut River.",
+      "line": "In 1941, Antonescu stood at the front beside Romania's young King Michael.",
       "a_face": 3,
       "b_face": 2
     },
@@ -81,7 +81,7 @@
         "lat": 55.752,
         "lon": 37.617
       },
-      "line": "In 2010, Russian President Dmitry Medvedev welcomed the elderly King Michael to the Kremlin on Victory Day.",
+      "line": "In 2010, an elderly King Michael visited Russia's Dmitry Medvedev at the Kremlin.",
       "a_face": 4,
       "b_face": 3
     },
@@ -97,7 +97,7 @@
         "lat": 38.894,
         "lon": -77.079
       },
-      "line": "In 2010, President Barack Obama took Medvedev out for cheeseburgers at Ray's Hell Burger in Virginia.",
+      "line": "That year, Barack Obama took Medvedev out for cheeseburgers in Virginia.",
       "a_face": 4,
       "b_face": 2
     },
@@ -113,7 +113,7 @@
         "lat": 38.897,
         "lon": -77.036
       },
-      "line": "In 2014, President Obama awarded Meryl Streep the Presidential Medal of Freedom at the White House.",
+      "line": "In 2014, Obama gave Meryl Streep the Presidential Medal of Freedom.",
       "a_face": 9,
       "b_face": 8
     },
@@ -129,7 +129,7 @@
         "lat": 40.763,
         "lon": -73.979
       },
-      "line": "And in 2014, at The Giver's premiere, Meryl Streep shared the stage with her co-star Taylor Swift.",
+      "line": "And in 2014, Streep's co-star at The Giver's premiere was Taylor Swift.",
       "a_face": 0,
       "b_face": 6
     }
