@@ -1,0 +1,195 @@
+{
+  "from": "Adolf Hitler",
+  "to": "Verity",
+  "title": "How is Hitler connected to Verity?",
+  "description": "Eight real pictures connect Adolf Hitler to Verity, the smiley from the viral Minecraft horror series, through Yugoslavia's regent, George VI, the Queen, Reagan, Arnold, Chris Pratt and YouTuber Rubius.",
+  "hook": "How is Hitler connected to Verity?",
+  "fun_fact": "In 1923, a year after their Romanian photo, the future George VI was the best man at Prince Paul's wedding in Belgrade.",
+  "research_note": "Verity's creator ThatMob has never shown his face, so the chain ends on a YouTuber who played the Verity mod on camera: in Rubius's 2026 video his facecam and Verity share the same frame.",
+  "people": {
+    "Adolf Hitler": {
+      "label": "Adolf Hitler",
+      "short": "Hitler"
+    },
+    "Prince Paul of Yugoslavia": {
+      "label": "Prince Paul"
+    },
+    "George VI": {
+      "label": "King George VI",
+      "short": "George VI"
+    },
+    "Elizabeth II": {
+      "label": "Queen Elizabeth II",
+      "short": "Queen Elizabeth"
+    },
+    "Ronald Reagan": {
+      "label": "Ronald Reagan",
+      "short": "Reagan"
+    },
+    "Arnold Schwarzenegger": {
+      "label": "Arnold Schwarzenegger",
+      "short": "Arnold"
+    },
+    "Chris Pratt": {
+      "label": "Chris Pratt"
+    },
+    "El Rubius": {
+      "label": "Rubius"
+    },
+    "Verity": {
+      "label": "Verity",
+      "wiki": "Verity (web series)",
+      "hook_photo": "https://i.ytimg.com/vi/f6f3PhauXyg/maxresdefault.jpg",
+      "hook_box": [
+        530,
+        410,
+        195,
+        219
+      ]
+    }
+  },
+  "links": [
+    {
+      "a": "Adolf Hitler",
+      "b": "Prince Paul of Yugoslavia",
+      "image": {
+        "file": "File:Hitler and Paul of Yugoslavia.jpg"
+      },
+      "line": "In 1939, Hitler hosted Yugoslavia's ruler, Prince Paul, in Berlin.",
+      "fact": "Berlin, June 1939",
+      "a_face": 1,
+      "b_face": 0,
+      "where": {
+        "place": "Berlin",
+        "lat": 52.52,
+        "lon": 13.405
+      }
+    },
+    {
+      "a": "Prince Paul of Yugoslavia",
+      "b": "George VI",
+      "image": {
+        "file": "File:(De droite à gauche) prince Carol de Roumanie, prince Paul de Serbie, duc de Gènes, duc d'York (au couronnement du souverain de Roumanie, le 15 octobre 1922, à Bucarest) - btv1b530960076.jpg"
+      },
+      "line": "Back in 1922, Prince Paul joined Britain's future king, George VI, in Romania.",
+      "fact": "Romanian coronation, 1922",
+      "a_face": 7,
+      "b_face": 4,
+      "where": {
+        "place": "Alba Iulia, Romania",
+        "lat": 46.067,
+        "lon": 23.57
+      }
+    },
+    {
+      "a": "George VI",
+      "b": "Elizabeth II",
+      "image": {
+        "file": "File:Royal Air Force Bomber Command, 1942-1945. CH20901.jpg"
+      },
+      "line": "In the 1940s, George VI met airmen with his daughter, Princess Elizabeth.",
+      "fact": "RAF Mildenhall, 1940s",
+      "a_face": 8,
+      "b_face": 12,
+      "where": {
+        "place": "RAF Mildenhall",
+        "lat": 52.362,
+        "lon": 0.486
+      }
+    },
+    {
+      "a": "Elizabeth II",
+      "b": "Ronald Reagan",
+      "image": {
+        "file": "File:Ronald Reagan with Queen Elizabeth II.jpg"
+      },
+      "line": "In 1983, Queen Elizabeth toured California as Ronald Reagan's guest.",
+      "fact": "Santa Barbara, 1983",
+      "a_face": 4,
+      "b_face": 9,
+      "where": {
+        "place": "Santa Barbara",
+        "lat": 34.426,
+        "lon": -119.84
+      }
+    },
+    {
+      "a": "Ronald Reagan",
+      "b": "Arnold Schwarzenegger",
+      "image": {
+        "file": "File:President Ronald Reagan with Arnold Schwarzenegger Retouched (cropped).jpg"
+      },
+      "line": "In 1984, Reagan shook hands with a young Arnold Schwarzenegger in Dallas.",
+      "fact": "Dallas, 1984",
+      "a_face": 4,
+      "b_face": 1,
+      "where": {
+        "place": "Dallas",
+        "lat": 32.777,
+        "lon": -96.797
+      }
+    },
+    {
+      "a": "Arnold Schwarzenegger",
+      "b": "Chris Pratt",
+      "image": {
+        "url": "https://i.abcnewsfe.com/a/8bc75bcd-175a-4012-b614-81a94f41b5c8/fubar-1-gty-gmh-250612_1749748355376_hpMain.jpg?w=1600",
+        "credit": "Charley Gallay/Getty Images",
+        "license": "Fair use (commentary)",
+        "source": "https://www.goodmorningamerica.com/culture/story/arnold-schwarzeneggers-family-supports-fubar-premiere-122790066"
+      },
+      "line": "In 2025, Arnold posed at his premiere with his son-in-law, Chris Pratt.",
+      "fact": "Los Angeles, 2025",
+      "a_face": 2,
+      "b_face": 5,
+      "where": {
+        "place": "Los Angeles",
+        "lat": 34.052,
+        "lon": -118.244
+      }
+    },
+    {
+      "a": "Chris Pratt",
+      "b": "El Rubius",
+      "image": {
+        "url": "https://i.ytimg.com/vi/QZ1kxjW7gTo/maxres1.jpg",
+        "credit": "elrubiusOMG (YouTube), \"RETOS CON JENNIFER LAWRENCE Y CHRIS PRATT\"",
+        "license": "Fair use (commentary)",
+        "source": "https://www.youtube.com/watch?v=QZ1kxjW7gTo"
+      },
+      "line": "Back in 2016, Pratt took on internet challenges with Spanish YouTuber Rubius.",
+      "fact": "Passengers press tour, 2016",
+      "a_face": 1,
+      "b_face": 2,
+      "where": {
+        "place": "Madrid",
+        "lat": 40.417,
+        "lon": -3.704
+      }
+    },
+    {
+      "a": "El Rubius",
+      "b": "Verity",
+      "image": {
+        "url": "https://i.ytimg.com/vi/4GgNE-qsvkY/maxres3.jpg",
+        "credit": "Rubius (YouTube), \"Instalé el Mod Más TURBIO de Minecraft (Verity)\"",
+        "license": "Fair use (commentary)",
+        "source": "https://www.youtube.com/watch?v=4GgNE-qsvkY"
+      },
+      "line": "And in 2026, Rubius came face to face with Verity.",
+      "fact": "Rubius's Verity video, 2026",
+      "a_face": 0,
+      "b_face": [
+        795,
+        415,
+        232,
+        218
+      ],
+      "where": {
+        "place": "Andorra",
+        "lat": 42.506,
+        "lon": 1.522
+      }
+    }
+  ]
+}
