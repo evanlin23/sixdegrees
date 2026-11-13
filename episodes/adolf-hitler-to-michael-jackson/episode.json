@@ -34,7 +34,7 @@
       "image": {
         "file": "File:Bundesarchiv Bild 183-H25217, Henry Philippe Petain und Adolf Hitler.jpg"
       },
-      "line": "In 1940, Hitler shook hands with Vichy France's leader, Marshal Pétain, at Montoire's train station.",
+      "line": "In 1940, Hitler shook hands with France's Marshal Pétain.",
       "fact": "Montoire, October 1940",
       "a_face": [
         259,
@@ -60,7 +60,7 @@
       "image": {
         "file": "File:François Mitterrand 1942.jpg"
       },
-      "line": "In 1942, Pétain received young François Mitterrand, a future president of France, at Vichy.",
+      "line": "In 1942, Pétain met a young François Mitterrand, a future president.",
       "fact": "Vichy, October 1942",
       "a_face": 1,
       "b_face": 3,
@@ -76,7 +76,7 @@
       "image": {
         "file": "File:Reagan Mitterrand 1981.jpg"
       },
-      "line": "In 1981, Mitterrand, now president of France, joined Ronald Reagan at the Yorktown bicentennial in Virginia.",
+      "line": "In 1981, President Mitterrand joined Ronald Reagan at Yorktown.",
       "fact": "Yorktown, Virginia, 1981",
       "a_face": 1,
       "b_face": 4,
@@ -92,7 +92,7 @@
       "image": {
         "file": "File:Michael Jackson with the Reagans.jpg"
       },
-      "line": "And in 1984, at the White House, Ronald Reagan honored Michael Jackson himself.",
+      "line": "And in 1984, at the White House, Reagan honored Michael Jackson.",
       "fact": "White House, 1984",
       "a_face": 1,
       "b_face": 3,
