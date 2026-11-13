@@ -1,9 +1,11 @@
 {
   "from": "Queen Victoria",
   "to": "Big Bird",
-  "title": "Queen Victoria to Big Bird in four real photos",
+  "title": "Queen Victoria to Big Bird: how?",
   "description": "Four real photos connect Queen Victoria to Big Bird from Sesame Street, through a king who gave up his throne, a president and a first lady.",
   "hook": "How is Queen Victoria connected to Big Bird?",
+  "hook_variant": "F",
+  "text_variant": "T1",
   "people": {
     "Queen Victoria": {
       "label": "Queen Victoria"
@@ -18,7 +20,14 @@
       "label": "Pat Nixon"
     },
     "Big Bird": {
-      "label": "Big Bird"
+      "label": "Big Bird",
+      "hook_photo": "https://static.wikia.nocookie.net/muppet/images/9/92/Bigbirdnewversion.png/revision/latest?cb=20260623215130&format=original",
+      "hook_box": [
+        255,
+        45,
+        225,
+        260
+      ]
     }
   },
   "links": [
@@ -28,7 +37,7 @@
       "image": {
         "file": "File:Queen Victoria with family members.jpg"
       },
-      "line": "In 1895 at Balmoral, Queen Victoria posed with her baby great-grandson, the future King Edward the Eighth.",
+      "line": "In 1895, Queen Victoria posed with her baby great-grandson Edward, a future king.",
       "a_face": 3,
       "b_face": 5
     },
@@ -38,7 +47,7 @@
       "image": {
         "file": "File:President Nixon greets the Duke and Duchess of Windsor - NARA - 194310.tif"
       },
-      "line": "In 1970, Edward, who gave up the throne to become Duke of Windsor, dined at Richard Nixon's White House.",
+      "line": "In 1970, Edward, who gave up his throne, dined with Richard Nixon.",
       "a_face": 4,
       "b_face": 3
     },
@@ -48,7 +57,7 @@
       "image": {
         "file": "File:President Richard Nixon and First Lady Pat Nixon.jpg"
       },
-      "line": "From 1969 to 1974, Pat Nixon served beside him as first lady.",
+      "line": "From 1969 to 1974, Nixon's wife, Pat Nixon, served as first lady.",
       "a_face": 1,
       "b_face": 0
     },
@@ -58,7 +67,7 @@
       "image": {
         "file": "File:Pat Nixon and Big Bird.jpg"
       },
-      "line": "And in December 1970, Big Bird visited Pat Nixon at the White House with a Christmas gift feather.",
+      "line": "And in 1970, Pat's White House Christmas guest was Big Bird.",
       "a_face": 0,
       "b_face": [
         200,
