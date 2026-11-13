@@ -1,0 +1,151 @@
+{
+  "from": "Adolf Hitler",
+  "to": "Buddy the Unicorn",
+  "title": "How is Hitler connected to Buddy?",
+  "description": "Six real photos connect Adolf Hitler to Buddy the Unicorn, through Subhas Chandra Bose, Jawaharlal Nehru, the Dalai Lama, Barack Obama and Buddy's own voice, Keegan-Michael Key.",
+  "hook": "How is Adolf Hitler connected to Buddy the Unicorn?",
+  "fun_fact": "At their only meeting in 1942, Hitler agreed to arrange a submarine for Subhas Chandra Bose, and in 1943 Bose sailed on a German U-boat, switching to a Japanese submarine off Madagascar.",
+  "research_note": "King Carol II's 1938 visit to Hitler survives only in watermarked agency prints, so the chain leaves Hitler through Subhas Chandra Bose, and the Dalai Lama carries Nehru's India to Obama's White House without the usual Queen Elizabeth hop.",
+  "people": {
+    "Adolf Hitler": {
+      "label": "Adolf Hitler",
+      "short": "Hitler"
+    },
+    "Subhas Chandra Bose": {
+      "label": "Subhas Chandra Bose",
+      "short": "Bose"
+    },
+    "Jawaharlal Nehru": {
+      "label": "Jawaharlal Nehru",
+      "short": "Nehru"
+    },
+    "14th Dalai Lama": {
+      "label": "Dalai Lama"
+    },
+    "Barack Obama": {
+      "label": "Barack Obama"
+    },
+    "Keegan-Michael Key": {
+      "label": "Keegan-Michael Key",
+      "short": "Key"
+    },
+    "Buddy the Unicorn": {
+      "label": "Buddy the Unicorn",
+      "short": "Buddy",
+      "wiki": "Buddy (2026 film)",
+      "hook_photo": "http://www.impawards.com/2026/posters/buddy_xlg.jpg",
+      "hook_box": [
+        200,
+        170,
+        600,
+        680
+      ]
+    }
+  },
+  "links": [
+    {
+      "a": "Adolf Hitler",
+      "b": "Subhas Chandra Bose",
+      "image": {
+        "file": "File:Subhas Chandra Bose meeting Adolf Hitler.jpg"
+      },
+      "line": "In 1942, Hitler shook hands with Indian nationalist Subhas Chandra Bose.",
+      "fact": "Wolf's Lair, May 1942",
+      "where": {
+        "place": "Wolf's Lair, East Prussia",
+        "lat": 54.0797,
+        "lon": 21.495
+      },
+      "a_face": 2,
+      "b_face": 1
+    },
+    {
+      "a": "Subhas Chandra Bose",
+      "b": "Jawaharlal Nehru",
+      "image": {
+        "file": "File:Subhas Chandra Bose, Jawaharlal Nehru and others proceeding to the AICC meeting on October 1937.jpg"
+      },
+      "line": "In 1937, Bose walked to a Congress meeting with Jawaharlal Nehru.",
+      "fact": "Calcutta, October 1937",
+      "where": {
+        "place": "Woodburn Park, Calcutta",
+        "lat": 22.5395,
+        "lon": 88.35
+      },
+      "a_face": 1,
+      "b_face": 3
+    },
+    {
+      "a": "Jawaharlal Nehru",
+      "b": "14th Dalai Lama",
+      "image": {
+        "file": "File:The Dalai Lama, Nehru and Zhou Enlai in 1956 in India.jpg"
+      },
+      "line": "In 1956, Nehru, now prime minister, welcomed a young Dalai Lama to Delhi.",
+      "fact": "New Delhi, 1956",
+      "where": {
+        "place": "Ashok Hotel, New Delhi",
+        "lat": 28.5977,
+        "lon": 77.1882
+      },
+      "a_face": 2,
+      "b_face": 0
+    },
+    {
+      "a": "14th Dalai Lama",
+      "b": "Barack Obama",
+      "image": {
+        "file": "File:Barack Obama and the Dalai Lama in 2014.jpg"
+      },
+      "line": "In 2014, the Dalai Lama visited Barack Obama at the White House.",
+      "fact": "Map Room, February 2014",
+      "where": {
+        "place": "White House, Washington, D.C.",
+        "lat": 38.8977,
+        "lon": -77.0365
+      },
+      "a_face": 0,
+      "b_face": 3
+    },
+    {
+      "a": "Barack Obama",
+      "b": "Keegan-Michael Key",
+      "image": {
+        "file": "File:Barack Obama and Keegan-Michael Key at White House Correspondents' Association Dinner 2015.jpg"
+      },
+      "line": "In 2015, Obama brought out Keegan-Michael Key as his anger translator, Luther.",
+      "fact": "Correspondents' Dinner, 2015",
+      "where": {
+        "place": "Washington Hilton, Washington, D.C.",
+        "lat": 38.9163,
+        "lon": -77.0457
+      },
+      "a_face": 1,
+      "b_face": 2
+    },
+    {
+      "a": "Keegan-Michael Key",
+      "b": "Buddy the Unicorn",
+      "image": {
+        "url": "https://i0.wp.com/www.sundance.org/wp-content/uploads/2026/01/2257714402-scaled-e1769203888110-2048x1367.jpg?crop=960px,0px,1088px,1367px",
+        "credit": "Dia Dipasupil / Getty Images (via Sundance Institute)",
+        "license": "Fair use (commentary)",
+        "source": "https://www.sundance.org/blogs/buddy-turns-childhood-comfort-into-midnight-terror/"
+      },
+      "line": "And in 2026, Key posed at Sundance beside the unicorn he voices, Buddy.",
+      "fact": "Sundance premiere, January 2026",
+      "where": {
+        "place": "Library Center Theatre, Park City, Utah",
+        "lat": 40.6583,
+        "lon": -111.5013
+      },
+      "b_face": [
+        100,
+        130,
+        380,
+        540
+      ],
+      "a_face": 2
+    }
+  ]
+}

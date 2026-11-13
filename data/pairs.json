@@ -98,6 +98,14 @@
   "slug": "adolf-hitler-to-mr-bean"
  },
  {
+  "from": "Adolf Hitler",
+  "to": "Buddy the Unicorn",
+  "status": "done",
+  "source": "[#2] Hitler pairs (Nov 2026)",
+  "hint": "Wolf's Lair 1942 (Subhas Chandra Bose) > Calcutta 1937 (Nehru) > New Delhi 1956 (Dalai Lama) > White House 2014 (Obama) > 2015 Correspondents' Dinner (Keegan-Michael Key) > Sundance 2026 (Buddy)",
+  "slug": "adolf-hitler-to-buddy-the-unicorn"
+ },
+ {
   "from": "Zeus",
   "to": "One Piece",
   "status": "done",
