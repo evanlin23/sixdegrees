@@ -56,6 +56,29 @@ MIN_LINK = 3.4                        # seconds on screen per link, at least (ev
 CAP_Y = 1300                          # captions
 HERO_A = (0, 790, 470)                # hook: face A photo spans y0..y1 (full bleed), face centred at y=fy within it
 HERO_B = (900, H, 340)                # face B photo; the 790..900 seam between them carries the spoken question
+# A/B test "text_variant": "T1" (research 2026-11-13, owner-approved direction): the whole match-up as ONE static bold
+# line ("HITLER → BIG BIRD?") from frame 0, in a light band between the faces; no chin tags; B's face bigger than A's;
+# a brighter grade that keeps the blacks. Layout measured on the owner's Android app (video px): top icons to y ≈ 97,
+# the like column at x ≥ 927 from y ≈ 1050, the viewer's channel row from y ≈ 1533. "T0" (default) is the opening above.
+T1_A = (0, 780, 430)                  # A photo spans y 0..780, face centred at y 430
+T1_BAND = (780, 1020)                 # the caption band ends above the like column
+T1_B = (1020, H, 230)                 # B photo from y 1020, face centred at y ≈ 1250 (chin above ≈ 1450)
+T1_FACE = (340, 400)                  # face heights (A, B): B reads bigger than A
+T1_INK = (16, 16, 20)                 # near-black band text (≈ 13:1 on the yellow band)
+
+
+def t1_grade(bgr: np.ndarray) -> np.ndarray:
+    """T1 grade: brighter, never faded. Lifts the mid-tones on a gamma curve (black stays black, white stays white),
+    then adds vibrance (muted colours gain the most; black-and-white photos stay black and white)."""
+    lut = np.clip(255 * (np.arange(256) / 255) ** 0.78, 0, 255).astype(np.uint8)
+    lab = cv2.cvtColor(bgr, cv2.COLOR_BGR2LAB)
+    lab[..., 0] = cv2.LUT(lab[..., 0], lut)
+    out = cv2.cvtColor(lab, cv2.COLOR_LAB2BGR)
+    hsv = cv2.cvtColor(out, cv2.COLOR_BGR2HSV).astype(np.float32)
+    s = hsv[..., 1]
+    if s.mean() > 18:                 # a colour photo
+        hsv[..., 1] = np.clip(s + 0.6 * s * (1 - s / 255), 0, 255)
+    return cv2.cvtColor(hsv.astype(np.uint8), cv2.COLOR_HSV2BGR)
 
 
 def pf(size):  # pixel font
@@ -322,11 +345,18 @@ def render(slug: str, log=print) -> Path:
         _placed = all(l.get("lineage") or (l.get("where") or {}).get("lat") is not None for l in spec["links"])
         _rot = [x for x in _rot if x != "globe" or _placed] or ["cards"]
         STYLE = _rot[int(hashlib.sha1((slug + ":style").encode()).hexdigest(), 16) % len(_rot)]
+    # opening text A/B test (T0 = today's opening, T1 = the static match-up band); set per episode. A requested pair
+    # keeps T0: there the viewer's comment card is the opening.
+    TEXT_VARIANT = _os.environ.get("SIXDEG_TEXT") or spec.get("text_variant") or "T0"
+    if TEXT_VARIANT == "T1" and (str(spec.get("requested_by", "")).startswith("@") or not narration):
+        TEXT_VARIANT = "T0"
+    T1 = TEXT_VARIANT == "T1"
     script = [hook] + [l["line"] for l in spec["links"]] + ([OUTRO] if use_outro else [])
     audio.prefetch(script, voice, log)                                       # Gemini: one request per episode
     vinfo = {"engine": audio.narrator(script, voice), "outro": use_outro, "rev": audio.VOICE_REV,
              "narration": narration, "links": len(spec["links"]), "style": STYLE,
-             "lineage": sum(len(l["lineage"]["people"]) for l in spec["links"] if l.get("lineage"))}
+             "lineage": sum(len(l["lineage"]["people"]) for l in spec["links"] if l.get("lineage")),
+             "hook_variant": spec.get("hook_variant"), "text_variant": TEXT_VARIANT}   # A/B arms, copied to uploads
     vinfo["clipped"] = [t[:60] for t in script if audio.clipped_end(audio.say(t, voice)[0])]
     (out_dir / "voice.json").write_text(json.dumps(vinfo))
     a, words = audio.say(hook, voice)
@@ -345,7 +375,8 @@ def render(slug: str, log=print) -> Path:
     d = max(len(a) / audio.SR - 0.06 + HOOK_VO, FF + RW + 1.3)
     if not narration:
         d = 3.0                     # the reference hits all hold the intro card for about 3 s
-    segs.append({"kind": "hook", "t0": t, "t1": t + d, "cap": PixelCaptions(words, t + HOOK_VO)})
+    segs.append({"kind": "hook", "t0": t, "t1": t + d, "cap": PixelCaptions(words, t + HOOK_VO),
+                 "words": [(w, s0 + HOOK_VO, e0 + HOOK_VO) for w, s0, e0 in words]})
     voice_clips.append((t + HOOK_VO, a))
     sfx += [(0.0, assets.sfx("impact", 0.4)),                              # A slams in on frame 0
             (0.18, assets.sfx("bass_hit", 0.4)),                            # B lands
@@ -742,16 +773,17 @@ def render(slug: str, log=print) -> Path:
 
     _hero = {}
 
-    def hero(nm, h, fy):
-        """A full-width rectangular photo of nm's face (face ~340 px tall, centred at (CX, fy)); gaps are a blur."""
-        key = (nm, h, fy)
+    def hero(nm, h, fy, face=340, lift=False):
+        """A full-width rectangular photo of nm's face (face ~`face` px tall, centred at (CX, fy)); gaps are a blur.
+        lift=True applies the T1 grade."""
+        key = (nm, h, fy, face, lift)
         if key not in _hero:
             img, box = C.hero_src[nm]
             ih, iw = img.shape[:2]
             if box is None:
                 box = (iw * 0.3, ih * 0.15, iw * 0.4, iw * 0.4)
             x, y, bw, bh = box
-            s_ = max(340 / max(bh, bw * 1.1), W / iw, h / ih)       # cover: the photo always fills the band
+            s_ = max(face / max(bh, bw * 1.1), W / iw, h / ih)      # cover: the photo always fills the band
             fx, fyy = x + bw / 2, y + bh * 0.45
             tx = min(0.0, max(W - iw * s_, CX - fx * s_))             # no gaps at the edges
             ty = min(0.0, max(h - ih * s_, fy - fyy * s_))
@@ -764,6 +796,8 @@ def render(slug: str, log=print) -> Path:
             bg = cv2.GaussianBlur(bg[by0:by0 + h, bx0:bx0 + W], (0, 0), 25) * 0.55
             m = (mask.astype(np.float32) / 255)[..., None]
             out = (crop * m + bg * (1 - m)).astype(np.uint8)
+            if lift:
+                out = t1_grade(out)
             _hero[key] = Image.fromarray(cv2.cvtColor(out, cv2.COLOR_BGR2RGB)).convert("RGBA")
             # where the head really is on screen (the cover/no-gap clamps can push the face off (CX, fy))
             _hero_head[key] = (fx * s_ + tx, y * s_ + ty - 0.12 * bh * s_)
@@ -802,7 +836,93 @@ def render(slug: str, log=print) -> Path:
     # owner: never "a viewer": the request card only appears with the real @handle (and their profile picture)
     comment_im = make_comment_card() if str(spec.get("requested_by", "")).startswith("@") else None
 
+    # ---------- T1 opening: the static match-up band
+    def _names(n, drop=()):
+        stop = {"the", "and", "von", "van", "der", "mr.", "mrs."}
+        toks = {w.lower() for w in re.findall(r"[A-Za-z][\w'.-]{2,}", f"{n} {C.labels.get(n, '')}")}
+        return {w.rstrip(".") for w in toks - stop} - set(drop)
+
+    def _spoken(words, names):
+        for w, s0, _e in words:
+            if re.sub(r"[^\w'-]", "", w).lower() in names:
+                return s0
+        return None
+
+    _t1 = {}
+
+    def t1_layout():
+        """The band's text as parts: one line "HITLER → BIG BIRD?" if it fits at >= 92 px, else two lines
+        ("HITLER →" / "COOKIE MONSTER?"), as big as fits (x 60..1020: the band sits above the like column)."""
+        if "parts" in _t1:
+            return _t1
+        a_txt = (spec.get("people", {}).get(spec["from"], {}).get("short")
+                 or short_name(spec["from"]).split()[-1]).upper()
+        b_txt = C.labels[spec["to"]].upper() + "?"
+        font = lambda s: ImageFont.truetype(str(FONTS / "Inter-Black.otf"), s)   # noqa: E731
+        span = 960
+        one = f"{a_txt} → {b_txt}"
+        s1 = min(112, int(112 * span / font(112).getlength(one)))
+        if s1 >= 92:
+            lines, size = [[(a_txt, "a"), (" → ", None), (b_txt, "b")]], s1
+        else:
+            size = min(104, int(104 * span / max(font(104).getlength(f"{a_txt} →"), font(104).getlength(b_txt))))
+            lines = [[(a_txt, "a"), (" →", None)], [(b_txt, "b")]]
+        f = font(size)
+        asc, desc = f.getmetrics()
+        parts, n = [], len(lines)
+        band_mid = (T1_BAND[0] + T1_BAND[1]) / 2
+        for li, ln in enumerate(lines):
+            widths = [f.getlength(s) for s, _ in ln]
+            x = W / 2 - sum(widths) / 2
+            cy = band_mid + (li - (n - 1) / 2) * size * 1.0 + size * 0.04
+            for (s, role), w in zip(ln, widths):
+                im = Image.new("RGBA", (int(w) + 8, asc + desc), (0, 0, 0, 0))
+                ImageDraw.Draw(im).text((4, 0), s, font=f, fill=T1_INK)
+                parts.append((im, x + w / 2, cy, role))     # Inter's cap centre ≈ the image centre
+                x += w
+        # band colour: yellow, or cyan when B's photo is mostly yellow (Big Bird); never red/black/white by Hitler
+        bim = np.asarray(hero(spec["to"], T1_B[1] - T1_B[0], T1_B[2], T1_FACE[1], True).convert("RGB"))
+        hsv = cv2.cvtColor(bim, cv2.COLOR_RGB2HSV)
+        yellow = ((hsv[..., 0] >= 18) & (hsv[..., 0] <= 38) & (hsv[..., 1] > 110) & (hsv[..., 2] > 110)).mean()
+        _t1.update(parts=parts, size=size, band=CYAN if yellow > 0.25 else YELLOW)
+        return _t1
+
+    def frame_hook_t1(seg, tt):
+        kk = tt - seg["t0"]
+        lay = t1_layout()
+        base = Image.new("RGBA", (W, H), INK + (255,))
+        # three elements only (A, the band, B): no Buh and no red string here. Every placement tried covered a face
+        # or the band text, and the research says keep frame 0 to three elements and keep red away from Hitler.
+        # Buh takes over from link 1 as usual.
+        for nm, (y0, y1, fy), face, role in ((spec["from"], T1_A, T1_FACE[0], "a"),
+                                             (spec["to"], T1_B, T1_FACE[1], "b")):
+            im = hero(nm, y1 - y0, fy, face, True)          # frame 0 is complete: no slide-in, no shake
+            if role == "b":     # one fast scale-in on B at 0.15-0.3 s, then still; a slow push-in after 0.7 s
+                z = 1.0 + 0.06 * ease((kk - 0.15) / 0.15) + 0.04 * min(1.0, max(0.0, kk - 0.7) / 3.0)
+            else:
+                z = 1.0 + 0.04 * min(1.0, max(0.0, kk - 0.7) / 3.0)
+            if z > 1.001:
+                im = im.resize((int(W * z), int((y1 - y0) * z)), Image.BICUBIC)
+                ox, oy = int(CX * (z - 1)), int(fy * (z - 1))
+                im = im.crop((ox, oy, ox + W, oy + (y1 - y0)))
+            base.alpha_composite(im, (0, y0))
+        dr = ImageDraw.Draw(base)
+        dr.rectangle([0, T1_BAND[0], W, T1_BAND[1]], fill=lay["band"])
+        dr.rectangle([0, T1_BAND[0] - 5, W, T1_BAND[0]], fill=INK)
+        dr.rectangle([0, T1_BAND[1], W, T1_BAND[1] + 5], fill=INK)
+        words = seg.get("words") or []
+        a_names = _names(spec["from"])
+        t_a = _spoken(words, a_names)
+        t_b = _spoken(words, _names(spec["to"], a_names))
+        for im, cx, cy, role in lay["parts"]:        # the spoken name gets a small scale pop, never a colour change
+            tw = t_a if role == "a" else t_b if role == "b" else None
+            u = (kk - tw) / 0.22 if tw is not None else -1
+            paste(base, im, cx, cy, scale=1.0 + 0.09 * math.sin(math.pi * u) if 0 <= u <= 1 else 1.0, nearest=False)
+        return base
+
     def frame_hook(seg, tt):
+        if T1:
+            return frame_hook_t1(seg, tt)
         k = tt - seg["t0"]
         last = n_links - 1
         if k < FF:                                   # 1) flash-forward: the payoff first
@@ -845,7 +965,7 @@ def render(slug: str, log=print) -> Path:
                 paste(base, tag, CX + int(sx), ty + int(sy))
                 # hero() puts the face box (brows..chin, ~340 px) centred at fy: its top is ~fy-150, the hair ~fy-300
                 # Buh's pin tip goes into the hair at the top of the real face box (after the push-in zoom)
-                hx, hy = _hero_head[(nm, y1 - y0, fy)]
+                hx, hy = _hero_head[(nm, y1 - y0, fy, 340, False)]
                 hx, hy = hx * z - CX * (z - 1), hy * z - fy * (z - 1)
                 spot = (int(hx) + slide + int(sx), int(max(y0 + (150 if sgn < 0 else 240), y0 + hy)) + int(sy))
                 if sgn < 0:   # Buh starts on top of A's head...
@@ -1558,8 +1678,9 @@ def render(slug: str, log=print) -> Path:
             th = frame_hook({**hs, "cap": _NoCap()}, hs["t0"] + 1.1)
         finally:
             g["CX"] = saved
-        q = pixel_text("?", 170, fill=YELLOW)                       # on the seam, between the two faces
-        th.alpha_composite(q, (int(W / 2 - q.width / 2), int((HERO_A[1] + HERO_B[0]) / 2 - q.height / 2)))
+        if not T1:                       # T1's band already asks the question
+            q = pixel_text("?", 170, fill=YELLOW)                   # on the seam, between the two faces
+            th.alpha_composite(q, (int(W / 2 - q.width / 2), int((HERO_A[1] + HERO_B[0]) / 2 - q.height / 2)))
         th.convert("RGB").save(out_dir / "thumb.jpg", quality=92)
     except Exception as e:  # noqa: BLE001 - kit falls back to a video frame
         log(f"thumbnail skipped: {e}")
