@@ -5,6 +5,7 @@
   "description": "Seven real pictures connect Adolf Hitler to Agamemnon, through an explorer, two Swedish kings, King Charles, Christopher Nolan and Benny Safdie.",
   "hook": "How is Hitler connected to Agamemnon?",
   "hook_variant": "F",
+  "text_variant": "T0",
   "people": {
     "Adolf Hitler": {
       "label": "Adolf Hitler",
