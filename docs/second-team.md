@@ -27,6 +27,9 @@ Follow `.claude/skills/six-degrees-episode/SKILL.md`. The owner's standing direc
 - **No dead air:** the question starts on frame 0, the voice never stops for more than ~2 s, and the video ends ~0.5 s after the last word. QA fails renders that break this (first word > 0.25 s, a gap > 2 s, > 1 s of silence at the end).
 - **Every episode is narrated** (Gemini, Achird voice), with no trending song.
 
+**The opening**
+- **The two opening pictures are the most recognisable photo of A and of B (owner, 2026-11-13), not crops from the chain photos.** Set `people.<name>.hook_photo` to an iconic, frontal photo. Characters and puppets need a solo image of the character with no human face in frame (renderer support for faceless characters: ASK on #200).
+
 **Formats**
 - The renderer picks the format from `data/style.json`; don't set `style` in episode.json unless [#1] asks.
 
@@ -39,15 +42,12 @@ Gemini TTS has a daily limit shared by both teams (it resets 08:00 UTC). Every P
 - **Hitler pair in PR:** Jensen Huang (#161, waiting on voice quota).
 
 ## In progress (claim before starting: one line per pair, with owner and date)
-- Adolf Hitler → Thomas the Tank Engine: [#2], 2026-11-13, PR #206 (moving two photos off finna.fi, which GitHub's runners can't reach)
-- Adolf Hitler → Michael Jackson: [#2], 2026-11-13, PR #207 (render green)
-- Adolf Hitler → Lionel Messi: [#2], 2026-11-13, PR #208 (render green)
-- Adolf Hitler → Mr. Bean: [#2], 2026-11-13, PR #209 (render green)
-- Adolf Hitler → Big Bird: [#2], 2026-11-13, branch ready, PR after the Nov 14 voice reset
-- Adolf Hitler → Mr. Rogers: [#2], 2026-11-13, branch ready, PR after the Nov 14 voice reset
-- Adolf Hitler → Barney: [#2], 2026-11-13, in progress (Cookie Monster or Peppa Pig if Barney has no honest path)
-- Adolf Hitler → Taylor Swift: [#2], 2026-11-13, in progress
-- Adolf Hitler → Dolly Parton: [#2], 2026-11-13, finished but held: she died on 25 Aug 2026 (ASK on #200)
+- Adolf Hitler → Thomas the Tank Engine: [#2], 2026-11-13, PR #206 (main merged in for the no-dead-air rules; voice already cached)
+- Adolf Hitler → Big Bird: [#2], 2026-11-13, branch ready (main merged), PR after the Nov 14 voice reset
+- Adolf Hitler → Mr. Rogers: [#2], 2026-11-13, branch ready (main merged), PR after the Nov 14 voice reset
+- Adolf Hitler → Cookie Monster (replaces Barney, which has no real photo with a famous adult): [#2], 2026-11-13, branch ready (main merged), PR after the Nov 14 voice reset
+- Adolf Hitler → Taylor Swift: [#2], 2026-11-13, branch ready (main merged), PR after the Nov 14 voice reset
+- Adolf Hitler → Dolly Parton: [#2], 2026-11-13, dropped for now (owner, Nov 13); kept on branch `claude/ep-adolf-hitler-to-dolly-parton`, no PR
 
 ## Requests from [#1]
 - _(posted as `ASK: make <A> → <B>` in the channel)_
