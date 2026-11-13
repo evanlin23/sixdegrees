@@ -3,15 +3,24 @@
   "to": "Jensen Huang",
   "title": "How is Adolf Hitler connected to Jensen Huang?",
   "hook": "How is Adolf Hitler connected to Jensen Huang?",
-  "description": "Three real pictures connect Adolf Hitler to Jensen Huang: every German chancellor from Hitler to Angela Merkel, Merkel with Donald Trump, and Trump with Jensen Huang.",
+  "description": "Six real photos connect Adolf Hitler to Jensen Huang: Molotov in Berlin, Truman at Potsdam, Nixon, Reagan, and Donald Trump at the White House.",
   "fun_fact": "Before he founded Nvidia, Jensen Huang worked at Denny's as a teenager, washing dishes and busing tables.",
-  "research_note": "Wikidata splits Germany's chancellors into the Reich and Federal offices, so the scroll joins both lists (Walter Scheel's nine days as acting chancellor are left out, as they usually are).",
+  "research_note": "Germany's chancellors are too short a list for a scroll, so Hitler leaves through his 1940 Berlin talks with Molotov; the best-known copy of that photo carries a Getty watermark, so this uses a clean 1940 newspaper print.",
   "people": {
     "Adolf Hitler": {
       "label": "Adolf Hitler"
     },
-    "Angela Merkel": {
-      "label": "Angela Merkel"
+    "Vyacheslav Molotov": {
+      "label": "Molotov"
+    },
+    "Harry S. Truman": {
+      "label": "Harry Truman"
+    },
+    "Richard Nixon": {
+      "label": "Richard Nixon"
+    },
+    "Ronald Reagan": {
+      "label": "Ronald Reagan"
     },
     "Donald Trump": {
       "label": "Donald Trump"
@@ -20,78 +29,73 @@
   "links": [
     {
       "a": "Adolf Hitler",
-      "b": "Angela Merkel",
-      "fact": "Every chancellor, 1933 to 2005",
-      "line": "Hitler was Germany's chancellor, and after the war the line of chancellors runs all the way to Angela Merkel.",
-      "lineage": {
-        "label": "LINE OF CHANCELLORS",
-        "people": [
-          {
-            "name": "Adolf Hitler",
-            "file": "File:Adolf Hitler cropped restored 3x4.jpg",
-            "label": "1933"
-          },
-          {
-            "name": "Joseph Goebbels",
-            "file": "File:Bundesarchiv Bild 146-1968-101-20A, Joseph Goebbels.jpg",
-            "label": "1945"
-          },
-          {
-            "name": "Lutz Graf Schwerin von Krosigk",
-            "file": "File:Ludwig Schwerin von Krosigk.jpg",
-            "label": "1945"
-          },
-          {
-            "name": "Konrad Adenauer",
-            "file": "File:Konrad Adenauer 1951 Portrait (3x4 cropped).jpg",
-            "label": "1949"
-          },
-          {
-            "name": "Ludwig Erhard",
-            "file": "File:Bundesarchiv B 145 Bild-F004204-0003, Ludwig Erhard mit seinem Buch.jpg",
-            "label": "1963"
-          },
-          {
-            "name": "Kurt Georg Kiesinger",
-            "file": "File:Bundesarchiv B 145 Bild-F029561-0008, Essen, CDU-Bundestagswahlkongress (cropped).jpg",
-            "label": "1966"
-          },
-          {
-            "name": "Willy Brandt",
-            "file": "File:Bundesarchiv B 145 Bild-F057884-0009, Willy Brandt.jpg",
-            "label": "1969"
-          },
-          {
-            "name": "Helmut Schmidt",
-            "file": "File:Bundeskanzler Helmut Schmidt.jpg",
-            "label": "1974"
-          },
-          {
-            "name": "Helmut Kohl",
-            "file": "File:Helmut Kohl (1996).jpg",
-            "label": "1982"
-          },
-          {
-            "name": "Gerhard Schröder",
-            "file": "File:Герхард Шредер (05-12-2019) (cropped).jpg",
-            "label": "1998"
-          },
-          {
-            "name": "Angela Merkel",
-            "file": "File:Angela Merkel. Tallinn Digital Summit.jpg",
-            "label": "2005"
-          }
-        ]
-      }
+      "b": "Vyacheslav Molotov",
+      "image": {
+        "file": "File:Встреча Молотова и Гитлера в Берлине. Кадр 1 (полная версия).jpg"
+      },
+      "fact": "Berlin, 1940",
+      "where": {
+        "place": "Berlin",
+        "lat": 52.512,
+        "lon": 13.383
+      },
+      "line": "In 1940, Hitler shook hands with the Soviet foreign minister, Molotov, during talks in Berlin."
     },
     {
-      "a": "Angela Merkel",
+      "a": "Vyacheslav Molotov",
+      "b": "Harry S. Truman",
+      "image": {
+        "file": "File:Potsdam Stalin Truman Gromyko Byrnes Molotov 1945 Jul 18.png"
+      },
+      "fact": "Potsdam Conference, 1945",
+      "where": {
+        "place": "Potsdam",
+        "lat": 52.392,
+        "lon": 13.071
+      },
+      "line": "In 1945, Molotov posed beside President Harry Truman at the Potsdam Conference."
+    },
+    {
+      "a": "Harry S. Truman",
+      "b": "Richard Nixon",
+      "image": {
+        "file": "File:Nixon meeting with former President Harry S.Truman - NARA - 194615.tif"
+      },
+      "fact": "Nixon meets Truman",
+      "where": {
+        "place": "Independence, Missouri",
+        "lat": 39.092,
+        "lon": -94.415
+      },
+      "line": "Years later, President Richard Nixon sat down with the former president, Harry Truman."
+    },
+    {
+      "a": "Richard Nixon",
+      "b": "Ronald Reagan",
+      "image": {
+        "file": "File:Ronald Reagan, Nancy Reagan, Pat Nixon, and Richard Nixon in 1970.jpg"
+      },
+      "fact": "San Clemente, 1970",
+      "where": {
+        "place": "San Clemente, California",
+        "lat": 33.427,
+        "lon": -117.612
+      },
+      "line": "In 1970, Nixon hosted California's governor, Ronald Reagan, and Nancy Reagan at his home."
+    },
+    {
+      "a": "Ronald Reagan",
       "b": "Donald Trump",
       "image": {
-        "file": "File:Angela Merkel and Donald Trump in the Oval Office, March 2017.jpg"
+        "file": "File:President Ronald Reagan Shaking Hands with Donald Trump at a Reception for Members of The \"Friends of Art and Preservation in Embassies\" Foundation in The Blue Room - DPLA - 3c82cdc73bac5205a60dcc8834e9c8de.jpg"
       },
-      "fact": "Oval Office, 2017",
-      "line": "In 2017, Merkel visited Donald Trump in the Oval Office, under a portrait of George Washington."
+      "fact": "White House, 1987",
+      "where": {
+        "place": "White House",
+        "lat": 38.897,
+        "lon": -77.036
+      },
+      "line": "In 1987, President Reagan shook hands with a young Donald Trump at a White House reception."
     },
     {
       "a": "Donald Trump",
@@ -100,6 +104,11 @@
         "file": "File:P20250430JB-0891.jpg"
       },
       "fact": "White House, 2025",
+      "where": {
+        "place": "White House",
+        "lat": 38.897,
+        "lon": -77.036
+      },
       "line": "In 2025, Jensen Huang joined Trump at the White House."
     }
   ]
