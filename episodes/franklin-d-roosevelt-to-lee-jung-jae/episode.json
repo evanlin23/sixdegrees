@@ -2,9 +2,11 @@
  "from": "Franklin D. Roosevelt",
  "to": "Lee Jung-jae",
  "requested_by": "@jamiewyatt8140",
- "title": "How is FDR connected to the star of Squid Game?",
+ "title": "How is FDR connected to Lee Jung-jae?",
  "description": "Four real photos connect Franklin D. Roosevelt to Squid Game star Lee Jung-jae.",
- "hook": "How is Franklin D. Roosevelt connected to Lee Jung-jae?",
+ "hook": "What links FDR to Lee Jung-jae?",
+ "hook_variant": "B",
+ "text_variant": "T0",
  "people": {
   "Lee Jung-jae": {
    "label": "Lee Jung-jae"
@@ -20,7 +22,7 @@
    "image": {
     "file": "File:The Roosevelts with the King and Queen of England sailing on the USS Potomac, June 9, 1939 (cropped).jpg"
    },
-   "line": "In 1939, Roosevelt took King George the Sixth sailing, on the first American visit by a reigning British king."
+   "line": "In 1939, Roosevelt took Britain's King George the Sixth out sailing."
   },
   {
    "a": "George VI",
@@ -28,7 +30,7 @@
    "image": {
     "file": "File:Royal Air Force Bomber Command, 1942-1945. CH20901.jpg"
    },
-   "line": "During World War Two, the King met RAF bomber crews with his daughter, Princess Elizabeth."
+   "line": "In the 1940s, the King and his daughter, Princess Elizabeth, visited bomber crews."
   },
   {
    "a": "Elizabeth II",
@@ -36,7 +38,7 @@
    "image": {
     "file": "File:Prime Minister Boris Johnson G7 Summit Day One - 51242021245.jpg"
    },
-   "line": "As Queen, in 2021 she hosted Emmanuel Macron and the other G7 leaders in Cornwall.",
+   "line": "In 2021, Queen Elizabeth hosted Emmanuel Macron and other G7 leaders in Cornwall.",
    "a_face": 4
   },
   {
@@ -48,7 +50,7 @@
     "license": "Fair use (commentary)",
     "source": "https://www.hankyung.com/article/2025013040447"
    },
-   "line": "And in 2025, Macron posed with Squid Game star Lee Jung-jae at a charity gala in Paris."
+   "line": "And in 2025, Macron posed with Squid Game star Lee Jung-jae."
   }
  ]
 }
