@@ -24,6 +24,7 @@ Follow `.claude/skills/six-degrees-episode/SKILL.md`. The owner's standing direc
 - **Year first on every line** ("In 1938, …", "In the 1930s, …" when unsure; never invent a year). Name people instead of using pronouns that could mean someone else.
 - **Every link but the last gets a context line.** The last line is a short payoff that ends on B's name (e.g. "And in 2023, Chris Pratt became the voice of Mario himself.").
 - **The pace stays even to the end:** each link is at least 3.4 s, and the ending is never rushed.
+- **No dead air:** the question starts on frame 0, the voice never stops for more than ~2 s, and the video ends ~0.5 s after the last word. QA fails renders that break this (first word > 0.25 s, a gap > 2 s, > 1 s of silence at the end).
 - **Every episode is narrated** (Gemini, Achird voice), with no trending song.
 
 **Formats**
@@ -38,7 +39,15 @@ Gemini TTS has a daily limit shared by both teams (it resets 08:00 UTC). Every P
 - **Hitler pair in PR:** Jensen Huang (#161, waiting on voice quota).
 
 ## In progress (claim before starting: one line per pair, with owner and date)
-- _(none yet)_
+- Adolf Hitler → Thomas the Tank Engine: [#2], 2026-11-13, PR #206 (moving two photos off finna.fi, which GitHub's runners can't reach)
+- Adolf Hitler → Michael Jackson: [#2], 2026-11-13, PR #207 (render green)
+- Adolf Hitler → Lionel Messi: [#2], 2026-11-13, PR #208 (render green)
+- Adolf Hitler → Mr. Bean: [#2], 2026-11-13, PR #209 (render green)
+- Adolf Hitler → Big Bird: [#2], 2026-11-13, branch ready, PR after the Nov 14 voice reset
+- Adolf Hitler → Mr. Rogers: [#2], 2026-11-13, branch ready, PR after the Nov 14 voice reset
+- Adolf Hitler → Barney: [#2], 2026-11-13, in progress (Cookie Monster or Peppa Pig if Barney has no honest path)
+- Adolf Hitler → Taylor Swift: [#2], 2026-11-13, in progress
+- Adolf Hitler → Dolly Parton: [#2], 2026-11-13, finished but held: she died on 25 Aug 2026 (ASK on #200)
 
 ## Requests from [#1]
 - _(posted as `ASK: make <A> → <B>` in the channel)_

@@ -22,7 +22,10 @@ from zoneinfo import ZoneInfo
 from .common import DATA
 
 TZ = ZoneInfo("America/Chicago")
-SLOTS = [(11, 30), (18, 30), (21, 30)]  # Central time, three a day; each gets 0-20 min jitter so it never looks like clockwork
+# Central time; each gets 0-20 min jitter so it never looks like clockwork. Owner 2026-11-13: 4 a day ("lets go to 4").
+# Keep slots >= 2 h apart (a slot counts as taken if an upload sits within 2 h of it).
+SLOTS = [(11, 30), (15, 0), (18, 30), (21, 30)]
+PER_DAY = len(SLOTS)   # the 8:07 CT scheduled run uploads this many, whatever max the external cron asks for
 UPLOADS = DATA / "uploads.json"
 
 

@@ -331,6 +331,15 @@ def render(slug: str, log=print) -> Path:
     (out_dir / "voice.json").write_text(json.dumps(vinfo))
     a, words = audio.say(hook, voice)
     HOOK_VO = 0.0    # the question starts on the very first frame
+    # owner: "the first word should always start the moment the video is scrolled to": trim any leading silence the
+    # TTS clip carries (keep 10 ms so the attack isn't clipped) and shift the caption word times to match
+    _a = np.abs(np.asarray(a, dtype=np.float32))
+    _on = np.flatnonzero(_a > max(1e-4, 0.03 * float(_a.max() or 1.0)))
+    _lead = max(0, int(_on[0]) - int(0.01 * audio.SR)) if len(_on) else 0
+    if _lead:
+        a = a[_lead:]
+        _sh = _lead / audio.SR
+        words = [(w, max(0.0, s0 - _sh), max(0.0, e0 - _sh)) for w, s0, e0 in words]
     # owner: "in the hook there cannot be any pauses, no dead space": link 1's voice follows the question at once
     # (the clip's own ~0.1 s tail + link 1's 0.08 s lead-in is the only breath; this used to hold +0.3 s of silence)
     d = max(len(a) / audio.SR - 0.06 + HOOK_VO, FF + RW + 1.3)
@@ -352,6 +361,8 @@ def render(slug: str, log=print) -> Path:
         a, words = audio.say(link["line"], voice)
         last = i == n_links - 1
         speech = len(a) / audio.SR + 0.08
+        if link.get("lineage") and narration:   # a long line (45 presidents) gets a real beat, not just its sentence:
+            speech = max(speech, min(7.0, 0.12 * len(link["lineage"]["people"]) + 0.6))   # ~0.12 s a portrait, cap 7 s
         if not narration:   # music-only: the reference hits' pace, ~3.3 s a link, a sprint at the end, fast lineages
             speech = 4.0 if link.get("lineage") else (2.2 if i >= n_links - 2 and n_links > 3 else mid_pace)
         # last photo: cut hard right after the final word / the CONNECTED! slam, for a seamless loop
@@ -366,10 +377,11 @@ def render(slug: str, log=print) -> Path:
             if hit:
                 rv = max(REVEAL, (hit[0] + 0.08 - THROW + 0.15) / speech)
                 rv = min(rv, (speech - THROW - 0.1) / speech) if not last else min(rv, max(REVEAL, (speech - THROW - 0.3) / speech))
-        d = max(speech + 0.05, rv * speech + THROW + 1.2) if last else speech + PAD   # hold the payoff ~1 s (owner: "cutting too fast")
-        d = max(d, MIN_LINK)        # owner: the pace never speeds up; a short line still gets a full beat on screen
-        if last and narration and _durs:   # owner (Mario, twice): "still too fast at the end" -> the payoff link is
-            d = max(d, min(6.0, sum(_durs) / len(_durs)))   # never shorter than the links before it (capped)
+        # last link: cut ~0.5 s after the voice ends (owner: "we should just cut as soon as the voice is done"), but
+        # never before Buh has landed and CONNECTED! has stamped (~0.9 s after the landing)
+        d = max(speech + 0.5, rv * speech + THROW + 0.9) if last else speech + PAD
+        d = d if last else max(d, MIN_LINK)        # owner: the pace never speeds up; a short line still gets a full beat on screen
+        # (the "payoff link as long as the average" hold was removed: it left ~3 s of music with no voice at the end)
         if not link.get("lineage"):
             _durs.append(d)
         if last and STYLE == "board":
@@ -634,7 +646,7 @@ def render(slug: str, log=print) -> Path:
             ImageDraw.Draw(sh_).rectangle([8, 8, tag.width + 7, tag.height + 7], fill=(0, 0, 0, 140))
             paste(flat, sh_, tx + 4, ty + 4, scale=pop)                     # drop shadow: a printed sticker
             paste(flat, tag, tx, ty, scale=pop)
-        return {"img": flat, "pa": pa, "pb": pb, "since": since, "land": land, "k": k, "R": R, "last": last,
+        return {"img": flat, "full": ph, "pa": pa, "pb": pb, "since": since, "land": land, "k": k, "R": R, "last": last,
                 "shake": (sx, sy), "incut": incut, "i": i, "size": (cw, ch)}
 
     def draw_core(base, seg, tt, x0, y0, scale=1.0, frame=None):
@@ -1003,12 +1015,29 @@ def render(slug: str, log=print) -> Path:
         dr.rectangle([X0 - 6 + 10, Y0 - 6 + 10, X0 + w + 6 + 10, Y0 + h + 6 + 10], fill=INK)
         dr.rectangle([X0 - 6, Y0 - 6, X0 + w + 6, Y0 + h + 6], fill=WHITE)
 
+    def z_follow(c):
+        """Owner: "the background should move too when the image moves". The backdrop is the SAME camera frame as
+        the window (link_core's full warp), mapped to where the window sits, then blurred and darkened, so it pans
+        and zooms in lockstep with the photo, as if the window were a lens over one big picture."""
+        full = c["full"]
+        sw, sh = W // 4, H // 4                               # blur at quarter resolution (cheap, it's blurred anyway)
+        # screen = (p - CARD.xy) * Z_S + (Z_X0, Z_Y0)  ->  sample full-frame point p for each backdrop pixel
+        a = 1.0 / Z_S
+        cx0 = CARD[0] - Z_X0 * a
+        cy0 = CARD[1] - Z_Y0 * a
+        src = full.convert("RGB").transform((sw, sh), Image.AFFINE, (a * 4, 0, cx0, 0, a * 4, cy0), Image.BILINEAR)
+        src = src.filter(ImageFilter.GaussianBlur(6))
+        src = Image.eval(src, lambda v: int(v * 0.42))
+        return src.resize((W, H), Image.BILINEAR).convert("RGBA")
+
     def frame_zoom(seg, tt):
         i = seg["i"]
         if C.fj["links"][i].get("lineage"):
             return frame_lineage(seg, tt)
-        base = z_backdrop(i, tt)
-        c = draw_core(base, seg, tt, Z_X0, Z_Y0, Z_S, frame=z_frame)
+        layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        c = draw_core(layer, seg, tt, Z_X0, Z_Y0, Z_S, frame=z_frame)
+        base = z_follow(c)
+        base.alpha_composite(layer)
         return core_finish(base, seg, tt, c)
 
     # --- board: Buh pins each photo to a corkboard; red string from photo to photo; zoom out at the end
