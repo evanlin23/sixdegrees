@@ -1,9 +1,11 @@
 {
   "from": "Benito Mussolini",
   "to": "Mario",
-  "title": "Mussolini to Mario in five links",
+  "title": "How is Mussolini connected to Mario?",
   "description": "Two dictators, a future president, the Terminator and Star-Lord connect Benito Mussolini to Mario.",
-  "hook": "How is Benito Mussolini connected to Mario?",
+  "hook": "How's Mussolini linked to Mario?",
+  "hook_variant": "A",
+  "text_variant": "T0",
   "people": {
     "Benito Mussolini": {
       "label": "Benito Mussolini"
@@ -31,7 +33,7 @@
       "image": {
         "file": "File:Entrevista de Bordighera (Franco y Mussolini).jpg"
       },
-      "line": "In 1941, Mussolini met Spain's dictator Francisco Franco on the Italian Riviera, pressing him to join the war.",
+      "line": "In 1941, Mussolini met Spain's leader, Francisco Franco, on the Italian Riviera.",
       "a_face": 2,
       "b_face": 0
     },
@@ -41,7 +43,7 @@
       "image": {
         "file": "File:Francisco Franco Ronald Reagan 1972.jpg"
       },
-      "line": "Spain stayed out, and in 1972 Franco received California's governor, Ronald Reagan, in Madrid.",
+      "line": "In 1972, Franco received California's governor, Ronald Reagan, in Madrid.",
       "a_face": [
         60,
         82,
@@ -56,7 +58,7 @@
       "image": {
         "file": "File:President Ronald Reagan with Arnold Schwarzenegger Retouched (cropped).jpg"
       },
-      "line": "In 1984, President Reagan met Arnold Schwarzenegger, fresh from The Terminator, at the Republican convention."
+      "line": "In 1984, President Reagan met Arnold Schwarzenegger at the Republican convention."
     },
     {
       "a": "Arnold Schwarzenegger",
@@ -67,7 +69,7 @@
         "license": "Fair use (commentary)",
         "source": "https://www.goodmorningamerica.com/culture/story/arnold-schwarzeneggers-family-supports-fubar-premiere-122790066"
       },
-      "line": "In 2025, Arnold brought his son-in-law, Chris Pratt, to the premiere of his show FUBAR."
+      "line": "In 2025, Arnold brought his son-in-law, Chris Pratt, to his FUBAR premiere."
     },
     {
       "a": "Chris Pratt",
@@ -85,7 +87,7 @@
           }
         ]
       },
-      "line": "And in 2023, Chris Pratt became the voice of Mario in the Super Mario Bros Movie.",
+      "line": "And in 2023, Pratt became the big-screen voice of Mario.",
       "b_face": 1
     }
   ]
