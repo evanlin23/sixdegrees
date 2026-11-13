@@ -206,6 +206,8 @@ def consume(max_items: int = 2, dry_run: bool = False) -> list[dict]:
         rec["music"] = meta.get("music")
         rec["style"] = meta.get("style", "cards")
         rec["trending"] = meta.get("trending", False)
+        rec["hook_variant"] = meta.get("hook_variant")      # A/B arms, compared in the stats review
+        rec["text_variant"] = meta.get("text_variant", "T0")
         rec["n"] = int(it.name.split("-", 1)[0])
         done.append(rec)
         if dry_run:
