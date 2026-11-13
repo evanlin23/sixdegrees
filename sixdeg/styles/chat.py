@@ -1,7 +1,6 @@
 """Group chat skin around the show's core: a dark messaging thread ("Six Degrees Group") where Buh posts the link's
 fact and then a photo, and that sent photo IS the core window (camera, Buh, red string, name tags). Someone is typing
-until Buh lands on B; then B replies "that's me!" with their avatar, or, on a link with a dictator (no first-person
-posts there), a neutral system line says B was added to the group. B is never named before the reveal."""
+until Buh lands on B; then a neutral system line says B was added to the group (no words put in anyone's mouth). B is never named before the reveal."""
 from __future__ import annotations
 
 import math
@@ -78,7 +77,6 @@ def make(ctx):
             return _cache[key]
         an, bn = ctx.link_names(i)
         link = ctx.spec["links"][i]
-        calm = ctx.sensitive(an) or ctx.sensitive(bn)
         im = Image.new("RGBA", (ctx.W, ctx.H), BG + (255,))
         d = ImageDraw.Draw(im)
         for y in range(HEAD[1] + 30, ctx.H, 64):                                  # faint wallpaper dots
@@ -113,21 +111,13 @@ def make(ctx):
         # after the reveal: B's reply, or a neutral system line on a link with a dictator
         if revealed:
             room = credit_left(i) - WX - 24
-            if calm:
-                pf = F(21, "Medium")
-                txt = clip(f"{label(bn)} was added to the group", pf, room - 40)
-                pw = pf.getlength(txt) + 40
-                d.rounded_rectangle([WX, 1398, WX + pw, 1436], 19, fill=PANEL)
-                d.text((WX + pw / 2, 1417), txt, font=pf, fill=DIM, anchor="mm")
-            else:
-                im.alpha_composite(circle(ctx.sharp[bn], 46), (54, 1396))
-                rf = F(24, "Medium")
-                nf = F(17, "Bold")
-                who = clip(label(bn), nf, room - 40)
-                rw = int(max(nf.getlength(who), rf.getlength("that's me!"))) + 36
-                d.rounded_rectangle([WX, 1390, WX + rw, 1446], 18, fill=BUBBLE)
-                d.text((WX + 18, 1405), who, font=nf, fill=(120, 200, 255), anchor="lm")
-                d.text((WX + 18, 1429), "that's me!", font=rf, fill=TXT, anchor="lm")
+            # owner: no "that's me!" reply: never put words in a real person's mouth. A neutral system line
+            # for everyone.
+            pf = F(21, "Medium")
+            txt = clip(f"{label(bn)} was added to the group", pf, room - 40)
+            pw = pf.getlength(txt) + 40
+            d.rounded_rectangle([WX, 1398, WX + pw, 1436], 19, fill=PANEL)
+            d.text((WX + pw / 2, 1417), txt, font=pf, fill=DIM, anchor="mm")
         _cache[key] = im
         return im
 

@@ -33,7 +33,7 @@
       "a": "Winston Churchill",
       "b": "Elizabeth II",
       "image": {"file": "File:Special Film Project 186 - Buckingham Palace 2.jpg"},
-      "line": "On Victory in Europe Day, 1945, Churchill stood beside young Princess Elizabeth.",
+      "line": "In 1945, on Victory in Europe Day, Churchill stood beside young Princess Elizabeth.",
       "a_face": 2,
       "b_face": 0
     },
@@ -54,7 +54,7 @@
         "license": "Fair use (commentary)",
         "source": "https://www.cbsnews.com/pictures/michelle-obama-at-the-olympics"
       },
-      "line": "At Let's Move London in 2012, Michelle Obama played soccer with SpongeBob himself.",
+      "line": "In 2012, at Let's Move London, Michelle Obama played soccer with SpongeBob himself.",
       "a_face": [3497, 431, 217, 303],
       "b_face": [1400, 454, 1438, 1400]
     }
