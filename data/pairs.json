@@ -91,6 +91,14 @@
  },
  {
   "from": "Adolf Hitler",
+  "to": "Bob Ross",
+  "status": "done",
+  "source": "[#2] Hitler pairs (Nov 2026)",
+  "hint": "Iron Cross 1941 (Hanna Reitsch) > Whirly-Girls at the White House 1961 (JFK) > Boys Nation handshake 1963 (teenage Bill Clinton) > family leave anniversary 2023 (Joe Biden) > Medal of Freedom 2024 (Phil Donahue) > Donahue show 1994 (Bob Ross)",
+  "slug": "adolf-hitler-to-bob-ross"
+ },
+ {
+  "from": "Adolf Hitler",
   "to": "Mr. Bean",
   "status": "done",
   "source": "[#2] Hitler pairs (Nov 2026)",

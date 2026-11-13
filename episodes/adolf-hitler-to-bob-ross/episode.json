@@ -1,0 +1,157 @@
+{
+  "from": "Adolf Hitler",
+  "to": "Bob Ross",
+  "title": "How is Hitler connected to Bob Ross?",
+  "description": "Six real photos connect Adolf Hitler to Bob Ross, through test pilot Hanna Reitsch, John F. Kennedy, a teenage Bill Clinton, Joe Biden and Phil Donahue.",
+  "hook": "How is Hitler connected to Bob Ross?",
+  "fun_fact": "On his 1994 show, Phil Donahue asked Bob Ross to admit his paintings would never hang in a museum. \"Maybe it will,\" Ross said, \"but probably not the Smithsonian.\" In 2019 the Smithsonian's National Museum of American History acquired four of his paintings.",
+  "research_note": "Bob Ross almost never did talk shows (Joan Rivers in 1989, Regis and Kathie Lee in 1991-92, Donahue in 1994), and only the Donahue clip survives online, so the chain heads for Phil Donahue: Hitler's Iron Cross for Hanna Reitsch, her 1961 White House visit with the Whirly-Girls, JFK's 1963 handshake with a teenage Bill Clinton, then Clinton and Biden in 2023 and Biden's 2024 Medal of Freedom for Donahue. The 1992 AP photo of Clinton on Donahue's show only shows the back of Donahue's head, so the route goes through Biden's ceremony, where his face is clear.",
+  "people": {
+    "Adolf Hitler": {
+      "label": "Adolf Hitler",
+      "short": "Hitler",
+      "hook_photo": "File:Hitler portrait crop.jpg"
+    },
+    "Hanna Reitsch": {
+      "label": "Hanna Reitsch",
+      "short": "Reitsch"
+    },
+    "John F. Kennedy": {
+      "label": "John F. Kennedy",
+      "short": "JFK"
+    },
+    "Bill Clinton": {
+      "label": "Bill Clinton",
+      "short": "Clinton"
+    },
+    "Joe Biden": {
+      "label": "Joe Biden",
+      "short": "Biden"
+    },
+    "Phil Donahue": {
+      "label": "Phil Donahue",
+      "short": "Donahue"
+    },
+    "Bob Ross": {
+      "label": "Bob Ross",
+      "hook_photo": "https://i.ytimg.com/vi/IiLU4Ox-cqc/maxres3.jpg"
+    }
+  },
+  "links": [
+    {
+      "a": "Adolf Hitler",
+      "b": "Hanna Reitsch",
+      "image": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/1/17/Bundesarchiv_B_145_Bild-F051625-0295%2C_Verleihung_des_EK_an_Hanna_Reitsch_durch_Hitler.jpg",
+        "credit": "Bundesarchiv, B 145 Bild-F051625-0295 / CC-BY-SA 3.0",
+        "license": "CC BY-SA 3.0 de",
+        "source": "https://commons.wikimedia.org/wiki/File:Bundesarchiv_B_145_Bild-F051625-0295,_Verleihung_des_EK_an_Hanna_Reitsch_durch_Hitler.jpg",
+        "free": true
+      },
+      "line": "In 1941, Hitler gave the Iron Cross to test pilot Hanna Reitsch.",
+      "fact": "Iron Cross, March 1941",
+      "where": {
+        "place": "Berlin",
+        "lat": 52.52,
+        "lon": 13.405
+      },
+      "a_face": 1,
+      "b_face": 3
+    },
+    {
+      "a": "Hanna Reitsch",
+      "b": "John F. Kennedy",
+      "image": {
+        "url": "https://jfk.blogs.archives.gov/wp-content/uploads/sites/12/2021/04/JFKWHP-KN-C17738_lowres-700x697-1.jpg",
+        "credit": "Robert Knudsen, White House Photographs, John F. Kennedy Presidential Library (JFKWHP-KN-C17738)",
+        "license": "Public domain",
+        "source": "https://jfk.blogs.archives.gov/2021/03/05/finding-inspiration-in-the-archives-honoring-women-at-the-john-f-kennedy-presidential-library/",
+        "free": true
+      },
+      "line": "In 1961, Reitsch visited John F. Kennedy with women helicopter pilots.",
+      "fact": "White House, May 1961",
+      "where": {
+        "place": "White House, Washington, D.C.",
+        "lat": 38.8977,
+        "lon": -77.0365
+      },
+      "a_face": 3,
+      "b_face": 7
+    },
+    {
+      "a": "John F. Kennedy",
+      "b": "Bill Clinton",
+      "image": {
+        "url": "https://media-cldnry.s-nbcnews.com/image/upload/streams/2013/July/130724/6C8378586-DWF15-596163.jpg",
+        "credit": "Arnie Sachs/CNP/Corbis (via NBC News)",
+        "license": "Fair use (commentary)",
+        "source": "https://www.nbcnews.com/news/other/five-decades-ago-bill-clinton-meets-jfk-f6C10736784"
+      },
+      "line": "In 1963, Kennedy shook hands with a teenage Bill Clinton.",
+      "fact": "Rose Garden, July 1963",
+      "where": {
+        "place": "White House Rose Garden, Washington, D.C.",
+        "lat": 38.8975,
+        "lon": -77.0372
+      },
+      "a_face": 6,
+      "b_face": 1
+    },
+    {
+      "a": "Bill Clinton",
+      "b": "Joe Biden",
+      "image": {
+        "file": "File:President Joe Biden and former President Bill Clinton attend an event marking the 30th anniversary of the Family and Medical Leave Act, Thursday, February 2, 2023, in the East Room of the White House.jpg"
+      },
+      "line": "In 2023, Clinton and President Joe Biden celebrated 30 years of family leave.",
+      "fact": "East Room, February 2023",
+      "where": {
+        "place": "East Room, White House, Washington, D.C.",
+        "lat": 38.8975,
+        "lon": -77.0366
+      },
+      "a_face": 0,
+      "b_face": 1
+    },
+    {
+      "a": "Joe Biden",
+      "b": "Phil Donahue",
+      "image": {
+        "file": "File:President Joe Biden presents the Medal of Freedom to Phil Donahue.jpg"
+      },
+      "line": "In 2024, Biden gave talk-show host Phil Donahue the Medal of Freedom.",
+      "fact": "Medal of Freedom, May 2024",
+      "where": {
+        "place": "East Room, White House, Washington, D.C.",
+        "lat": 38.8975,
+        "lon": -77.0366
+      },
+      "a_face": 4,
+      "b_face": 2
+    },
+    {
+      "a": "Phil Donahue",
+      "b": "Bob Ross",
+      "image": {
+        "url": "https://i.ytimg.com/vi/ZdEO_8qSZL8/maxres3.jpg",
+        "credit": "The Phil Donahue Show, 1994 (via YouTube)",
+        "license": "Fair use (commentary)",
+        "source": "https://www.youtube.com/watch?v=ZdEO_8qSZL8"
+      },
+      "line": "And back in 1994, Donahue's talk show got a visit from Bob Ross.",
+      "fact": "Donahue show, 1994",
+      "where": {
+        "place": "New York City",
+        "lat": 40.7587,
+        "lon": -73.9787
+      },
+      "a_face": [
+        1095,
+        40,
+        185,
+        300
+      ],
+      "b_face": 0
+    }
+  ]
+}
