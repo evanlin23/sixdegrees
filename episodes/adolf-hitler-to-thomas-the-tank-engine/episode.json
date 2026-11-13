@@ -41,7 +41,7 @@
       "image": {
         "file": "File:Hitler visit Finland 1942.jpg"
       },
-      "line": "In 1942, Hitler flew to Finland for the 75th birthday of its wartime commander, Marshal Mannerheim.",
+      "line": "In 1942, Hitler flew to Finland for Marshal Mannerheim's birthday.",
       "fact": "Imatra, Finland, 1942",
       "a_face": 2,
       "b_face": 1,
@@ -57,7 +57,7 @@
       "image": {
         "file": "File:Famous spectators of athletics game Finland-Sweden-Germany, September 1940 in Helsinki.jpg"
       },
-      "line": "In 1940, Marshal Mannerheim watched athletics in Helsinki beside Urho Kekkonen, a future president of Finland.",
+      "line": "In 1940, Mannerheim watched sports beside Urho Kekkonen, a future president.",
       "fact": "Helsinki stadium, 1940",
       "a_face": 0,
       "b_face": [
@@ -78,7 +78,7 @@
       "image": {
         "file": "File:Kekkonen valtiovierailulla Yhdysvalloissa.jpg"
       },
-      "line": "In 1961, John F. Kennedy welcomed Finland's president, Urho Kekkonen, on a state visit to America.",
+      "line": "In 1961, John F. Kennedy welcomed President Kekkonen to America.",
       "fact": "Washington arrival, 1961",
       "a_face": 0,
       "b_face": 4,
@@ -94,7 +94,7 @@
       "image": {
         "file": "File:President John F. Kennedy with Leader of the Labour Party of Great Britain, Harold Wilson.jpg"
       },
-      "line": "In 1963, John F. Kennedy met British Labour leader Harold Wilson at the White House.",
+      "line": "In 1963, Kennedy met Britain's Harold Wilson at the White House.",
       "fact": "White House, 1963",
       "a_face": 0,
       "b_face": 1,
@@ -113,7 +113,7 @@
         "license": "Fair use (commentary)",
         "source": "https://www.examinerlive.co.uk/news/west-yorkshire-news/gallery/harold-wilson-7944879"
       },
-      "line": "In 1964, Harold Wilson handed Ringo Starr and the Beatles a showbiz award in London.",
+      "line": "In 1964, Wilson gave Ringo Starr and the Beatles an award.",
       "fact": "Dorchester Hotel, 1964",
       "a_face": 2,
       "b_face": 0,
@@ -132,7 +132,7 @@
         "license": "Fair use (commentary)",
         "source": "https://ttte.fandom.com/wiki/File:RingoStarrwithThomas1984.jpg"
       },
-      "line": "And in 1984, Ringo Starr became the first TV voice of Thomas the Tank Engine.",
+      "line": "And in 1984, Ringo Starr became the voice of Thomas the Tank Engine.",
       "fact": "Thomas narrator, 1984",
       "a_face": 0,
       "b_face": 1,

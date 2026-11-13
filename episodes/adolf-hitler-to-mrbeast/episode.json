@@ -42,7 +42,7 @@
       "image": {
         "file": "File:Hitler and Mussolini June 1940.jpg"
       },
-      "line": "In 1940, Hitler rode through Munich with his ally, Benito Mussolini, the dictator of Italy.",
+      "line": "In 1940, Hitler rode through Munich with his ally, Benito Mussolini.",
       "fact": "Munich, June 1940",
       "a_face": 15,
       "b_face": 2,
@@ -58,7 +58,7 @@
       "image": {
         "file": "File:Ismet pacha, ministre des affaires étrangères de Turquie, Mussolini, Ruscdy Bey - btv1b9051855q.jpg"
       },
-      "line": "In 1932, Turkey's prime minister, Ismet Inonu, came to Rome for talks with Mussolini.",
+      "line": "In 1932, Turkey's prime minister, Ismet Inonu, came to Rome to meet Mussolini.",
       "fact": "Rome, 1932",
       "a_face": 7,
       "b_face": 5,
@@ -74,7 +74,7 @@
       "image": {
         "file": "File:Roosevelt Inönü and Churchill in Cairo cph.3b15312.jpg"
       },
-      "line": "In 1943, Inonu flew to Cairo, where Winston Churchill begged Turkey to join the war.",
+      "line": "In 1943, Inonu met Winston Churchill in Cairo to talk about the war.",
       "fact": "Cairo conference, 1943",
       "a_face": 5,
       "b_face": 10,
@@ -90,7 +90,7 @@
       "image": {
         "file": "File:Churchill queen Elizabeth 1953.jpg"
       },
-      "line": "In 1953, Churchill was prime minister to the newly crowned Queen Elizabeth.",
+      "line": "In 1953, Churchill served the newly crowned Queen Elizabeth.",
       "fact": "London, 1953",
       "a_face": 3,
       "b_face": 2,
@@ -122,7 +122,7 @@
       "image": {
         "file": "File:President Donald Trump meets with Cristiano Ronaldo in the Oval Office (54934459299).jpg"
       },
-      "line": "In 2025, Trump hosted Cristiano Ronaldo in the Oval Office.",
+      "line": "In 2025, Trump hosted Cristiano Ronaldo at the White House.",
       "fact": "Oval Office, 2025",
       "a_face": 2,
       "b_face": 1,
@@ -141,7 +141,7 @@
         "license": "Fair use (commentary)",
         "source": "https://jang.com.pk/en/26212-mrbeast-and-cristiano-ronaldo-spark-excitement-with-big-announcement-news"
       },
-      "line": "And in 2024, Ronaldo filmed a video with MrBeast.",
+      "line": "And in 2024, Ronaldo made a video with MrBeast.",
       "fact": "Riyadh, 2024",
       "a_face": 2,
       "b_face": 0,
