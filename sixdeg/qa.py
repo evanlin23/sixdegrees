@@ -5,7 +5,7 @@ Hard gates (fail):
   - 1080x1920, 30 fps, 10-180 s
   - loudness -14 LUFS +/- 1.5, true peak <= -1 dBTP
   - every name the script says is heard in the Whisper transcript of the final audio
-  - no dead air: first word within 0.6 s, no gap between words over 2 s, video ends <= 1 s after the last word
+  - no dead air: first word within 0.25 s, no gap between words over 2 s, video ends <= 1 s after the last word
   - every photo has a source + license record
 Warnings: non-free (fair use) photos, low face-match scores, long labels.
 """
@@ -135,8 +135,8 @@ def qa(slug: str) -> dict:
             first, last_end = words[0][1], max(e for _, _, e in words)
             gaps = [(round(b[1] - a[2], 1), a[0]) for a, b in zip(words, words[1:]) if b[1] - a[2] > 2.0]
             res["dead_air"] = {"first_word": round(first, 2), "tail": round(dur - last_end, 2), "gaps": gaps}
-            if first > 0.6:
-                fails.append(f"dead air at the start: first word at {first:.1f}s (the question must start on frame 0)")
+            if first > 0.25:   # owner: the first word starts the moment the video is scrolled to
+                fails.append(f"dead air at the start: first word at {first:.2f}s (the question must start on frame 0)")
             if dur - last_end > 1.0:
                 fails.append(f"dead air at the end: {dur - last_end:.1f}s after the last word (cut ~0.5 s after the voice)")
             for g, after in gaps:

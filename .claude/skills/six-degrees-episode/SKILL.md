@@ -89,7 +89,7 @@ episode.json: the hook shows the viewer's request bubble and the first comment c
   - **No dead air, ever (owner, 2026-11-13).** The question starts on frame 0, the voice never stops for more
     than ~2 s, and the video ends ~0.5 s after the last word. No pause after the opening question, and no music-only
     tail after the payoff ("it says 'opening night' and then pop, pop, pop for 3 seconds"). The renderer enforces the
-    timing; QA fails a render with dead air (first word > 0.6 s, a gap > 2 s, or > 1 s after the last word). Write
+    timing; QA fails a render with dead air (first word > 0.25 s, a gap > 2 s, or > 1 s after the last word). Write
     lines so this holds: year first ("In 1931, …"), the final line ends on B's name, and keep lines long enough to
     fill their link (a lineage scroll's line should run about as long as the scroll).
   - **Real people first.** A mythical or ancient start (Zeus, Jesus) links through a real photo, e.g. the actor who
