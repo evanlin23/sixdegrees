@@ -2,7 +2,7 @@
   "from": "Adolf Hitler",
   "to": "Shrek",
   "title": "How is Adolf Hitler connected to Shrek?",
-  "description": "Ten real pictures connect Adolf Hitler to Shrek, through Hindenburg, the Kaiser, Teddy Roosevelt, every president to Reagan, Arnold, Obama, King Charles, Mark Carney and Mike Myers.",
+  "description": "Seven real pictures connect Adolf Hitler to Shrek, through Hindenburg, Kaiser Wilhelm II, King George V, Queen Elizabeth II, Justin Trudeau and Mike Myers.",
   "hook": "How is Adolf Hitler connected to Shrek?",
   "people": {
     "Adolf Hitler": {
@@ -15,19 +15,11 @@
       "label": "Kaiser Wilhelm II",
       "short": "Kaiser Wilhelm"
     },
-    "Theodore Roosevelt": {
-      "label": "Teddy Roosevelt",
-      "short": "Teddy Roosevelt"
+    "George V": {
+      "label": "King George V"
     },
-    "Ronald Reagan": {
-      "label": "Ronald Reagan"
-    },
-    "Arnold Schwarzenegger": {
-      "label": "Arnold Schwarzenegger",
-      "short": "Schwarzenegger"
-    },
-    "Barack Obama": {
-      "label": "Barack Obama"
+    "Elizabeth II": {
+      "label": "Queen Elizabeth"
     },
     "Mike Myers": {
       "label": "Mike Myers"
@@ -35,11 +27,8 @@
     "Shrek": {
       "label": "Shrek"
     },
-    "Charles III": {
-      "label": "King Charles"
-    },
-    "Mark Carney": {
-      "label": "Mark Carney"
+    "Justin Trudeau": {
+      "label": "Justin Trudeau"
     }
   },
   "links": [
@@ -49,14 +38,19 @@
       "image": {
         "file": "File:Bundesarchiv Bild 183-S38324, Tag von Potsdam, Adolf Hitler, Paul v. Hindenburg.jpg"
       },
-      "line": "In 1933, Hitler shook hands with President Hindenburg, the old war hero who had just made him chancellor.",
+      "line": "In 1933, Hitler shook hands with President Hindenburg, who had just made him chancellor.",
       "a_face": 3,
       "b_face": [
         1426,
         165,
         220,
         250
-      ]
+      ],
+      "where": {
+        "place": "Potsdam",
+        "lat": 52.396,
+        "lon": 13.058
+      }
     },
     {
       "a": "Paul von Hindenburg",
@@ -64,157 +58,81 @@
       "image": {
         "file": "File:Hindenburg, Kaiser, Ludendorff HD-SN-99-02150.JPG"
       },
-      "line": "In 1917, Hindenburg studied war maps with his boss, Kaiser Wilhelm II, the last emperor of Germany.",
+      "line": "In 1917, Hindenburg studied war maps with Kaiser Wilhelm II, Germany's last emperor.",
       "a_face": 0,
-      "b_face": 1
+      "b_face": 1,
+      "where": {
+        "place": "German headquarters, Pless",
+        "lat": 49.977,
+        "lon": 18.945
+      }
     },
     {
       "a": "Wilhelm II, German Emperor",
-      "b": "Theodore Roosevelt",
+      "b": "George V",
       "image": {
-        "file": "File:Theodore Roosevelt riding on horseback with Kaiser Wilhelm II LCCN2013650883.jpg"
+        "file": "File:The Nine Sovereigns at Windsor for the funeral of King Edward VII.jpg"
       },
-      "line": "In 1910, the Kaiser took Teddy Roosevelt on horseback to watch the German army practice.",
-      "a_face": 0,
-      "b_face": 1
-    },
-    {
-      "a": "Theodore Roosevelt",
-      "b": "Ronald Reagan",
-      "lineage": {
-        "label": "LINE OF PRESIDENTS",
-        "people": [
-          {
-            "name": "Theodore Roosevelt",
-            "file": "File:Theodore Roosevelt by the Pach Bros.jpg",
-            "label": "26th"
-          },
-          {
-            "name": "William Howard Taft",
-            "file": "File:Cabinet card of William Howard Taft by Pach Brothers - Cropped to image.jpg",
-            "label": "27th"
-          },
-          {
-            "name": "Woodrow Wilson",
-            "file": "File:President Woodrow Wilson Harris & Ewing (3x4 cropped b).jpg",
-            "label": "28th"
-          },
-          {
-            "name": "Warren G. Harding",
-            "file": "File:Warren G Harding portrait as senator June 1920.jpg",
-            "label": "29th"
-          },
-          {
-            "name": "Calvin Coolidge",
-            "file": "File:President Calvin Coolidge, 1924 portrait photograph (3x4 cropped).jpeg",
-            "label": "30th"
-          },
-          {
-            "name": "Herbert Hoover",
-            "file": "File:President Hoover portrait.jpg",
-            "label": "31st"
-          },
-          {
-            "name": "Franklin Delano Roosevelt",
-            "file": "File:FDR 1944 Color Portrait.jpg",
-            "label": "32nd"
-          },
-          {
-            "name": "Harry S. Truman",
-            "file": "File:TRUMAN 58-766-06 (cropped).jpg",
-            "label": "33rd"
-          },
-          {
-            "name": "Dwight D. Eisenhower",
-            "file": "File:Dwight D. Eisenhower, official photo portrait, May 29, 1959.jpg",
-            "label": "34th"
-          },
-          {
-            "name": "John F. Kennedy",
-            "file": "File:John F. Kennedy, White House color photo portrait.jpg",
-            "label": "35th"
-          },
-          {
-            "name": "Lyndon B. Johnson",
-            "file": "File:Lyndon B. Johnson, photo portrait, leaning on chair, color cropped.jpg",
-            "label": "36th"
-          },
-          {
-            "name": "Richard Nixon",
-            "file": "File:Richard Nixon presidential portrait.jpg",
-            "label": "37th"
-          },
-          {
-            "name": "Gerald Ford",
-            "file": "File:Gerald Ford presidential portrait (cropped).jpg",
-            "label": "38th"
-          },
-          {
-            "name": "Jimmy Carter",
-            "file": "File:JimmyCarterPortrait2.jpg",
-            "label": "39th"
-          },
-          {
-            "name": "Ronald Reagan",
-            "file": "File:Ronald Reagan 1981 presidential portrait.jpg",
-            "label": "40th"
-          }
-        ]
+      "line": "In 1910, at a royal funeral at Windsor, the Kaiser posed with cousin King George V.",
+      "fact": "Windsor Castle, 1910",
+      "where": {
+        "place": "Windsor Castle",
+        "lat": 51.484,
+        "lon": -0.604
       },
-      "line": "Teddy Roosevelt was the 26th president, and the line runs all the way to the 40th, Ronald Reagan."
-    },
-    {
-      "a": "Ronald Reagan",
-      "b": "Arnold Schwarzenegger",
-      "image": {
-        "file": "File:President Ronald Reagan with Arnold Schwarzenegger Retouched.jpg"
-      },
-      "line": "In 1984, Reagan met a bodybuilder turned movie star, Arnold, at the Republican convention in Dallas.",
       "a_face": 5,
-      "b_face": 2
+      "b_face": 4
     },
     {
-      "a": "Arnold Schwarzenegger",
-      "b": "Barack Obama",
+      "a": "George V",
+      "b": "Elizabeth II",
       "image": {
-        "file": "File:P031909PS-0263 (3484026683).jpg"
+        "file": "File:3-5 (i.e. 6)-33, anniversaire du roi George V (la famille royale au balcon de Buckingham Palace) - btv1b532749892.jpg"
       },
-      "line": "In 2009, Arnold walked with Obama in Los Angeles.",
-      "a_face": 1,
-      "b_face": 3
-    },
-    {
-      "a": "Barack Obama",
-      "b": "Charles III",
-      "image": {
-        "file": "File:President Barack Obama meets with Prince Charles, Prince of Wales, in the Oval Office, May 4, 2011.jpg"
+      "line": "In 1933, on his birthday, King George V stood on the palace balcony with granddaughter Princess Elizabeth.",
+      "fact": "Buckingham Palace, 1933",
+      "where": {
+        "place": "Buckingham Palace",
+        "lat": 51.501,
+        "lon": -0.142
       },
-      "line": "In 2011, Obama hosted Prince Charles in the Oval Office.",
-      "a_face": 1,
+      "a_face": 5,
       "b_face": 0
     },
     {
-      "a": "Charles III",
-      "b": "Mark Carney",
+      "a": "Elizabeth II",
+      "b": "Justin Trudeau",
       "image": {
-        "file": "File:Diana Carney, King Charles III, and Mark Carney at Rideau Hall, 2025 (cropped).jpg"
+        "file": "File:Prime Minister Boris Johnson G7 Summit Day One - 51242021245.jpg"
       },
-      "line": "In 2025, the King met Canada's Mark Carney.",
-      "a_face": 2,
-      "b_face": 3
+      "line": "In 2021, Queen Elizabeth II welcomed Justin Trudeau and the other G7 leaders in Cornwall.",
+      "fact": "Eden Project, 2021",
+      "where": {
+        "place": "Eden Project, Cornwall",
+        "lat": 50.362,
+        "lon": -4.745
+      },
+      "a_face": 4,
+      "b_face": 5
     },
     {
-      "a": "Mark Carney",
+      "a": "Justin Trudeau",
       "b": "Mike Myers",
       "image": {
-        "url": "https://www.ctvnews.ca/resizer/v2/XFQWPZCO7ZAA3BJHW7OZBG54B4.jpeg?smart=true&auth=649dca20d49d2a91706c879ea4cee1311af1677a335f069677ac414e4ab6fe43&width=1200&height=630",
-        "credit": "Liberal Party of Canada campaign ad (via CTV News)",
+        "url": "https://cf-images.assettype.com/thequint/2016-03/27a8e0e1-bd2e-42a6-ab0d-7c391736bd0c/Screen%20Shot%202016-03-11%20at%2012.15.51%20pm.png?w=1200",
+        "credit": "Justin Trudeau on Twitter (via The Quint)",
         "license": "Fair use (commentary)",
-        "source": "https://www.ctvnews.ca/federal-election-2025/article/mike-myers-joins-mark-carney-in-liberal-ad-supporting-elbows-up-movement/"
+        "source": "https://www.thequint.com/news/world/when-trudeau-tangoed-his-way-to-washington-and-into-our-hearts"
       },
-      "line": "Who made an ad with Mike Myers.",
-      "a_face": 1,
-      "b_face": 0
+      "line": "In 2016, at the White House state dinner, Trudeau greeted fellow Canadian Mike Myers.",
+      "fact": "White House, 2016",
+      "where": {
+        "place": "White House",
+        "lat": 38.897,
+        "lon": -77.036
+      },
+      "a_face": 2,
+      "b_face": 7
     },
     {
       "a": "Mike Myers",
@@ -233,8 +151,15 @@
         ]
       },
       "a_face": 1,
-      "line": "Who voices Shrek.",
-      "b_face": 3
+      "line": "And in 2001, Mike Myers became the voice of Shrek himself.",
+      "b_face": 3,
+      "where": {
+        "place": "Hollywood",
+        "lat": 34.098,
+        "lon": -118.327
+      }
     }
-  ]
+  ],
+  "research_note": "Edward VII's 1910 funeral put the Kaiser in one photo with his cousin George V; the royals carry the chain to Trudeau, who greeted Mike Myers at a White House dinner.",
+  "fun_fact": "Kaiser Wilhelm II and King George V were first cousins, both grandsons of Queen Victoria, yet led opposite sides in World War I."
 }
