@@ -110,6 +110,15 @@ episode.json: the hook shows the viewer's request bubble and the first comment c
     photo: set `people.<name>.hook_photo` to an iconic, frontal, instantly recognisable image (a famous portrait, a
     character's official still). For characters and puppets without a human face, the renderer uses the hook photo
     centred; add `people.<name>.hook_box: [x, y, w, h]` (pixels in that photo) to frame the face exactly.
+  - **Opening A/B tests (owner, 2026-11-13; the arms are assigned by the orchestrators, not by producers).**
+    - `"hook_variant"` names the spoken-hook arm: A "How's Hitler linked to B?", B "What links Hitler to B?", F
+      (baseline) "How is Hitler connected to B?". There are no pauses in the hook, it's always a question that
+      implies the yes, and it says "Hitler", not "Adolf Hitler".
+    - `"text_variant": "T1"` switches on the new opening: one static bold line "HITLER → B?" in a light band between
+      the faces from frame 0, no chin tags, B's face bigger, and a brighter grade that keeps the blacks.
+    - `"T0"` (or no field) keeps today's opening. Requested pairs always keep T0, because the viewer's comment card is
+      their opening.
+    - Both arms are recorded in metadata.json and uploaded.json, and the studio report compares them.
   - **No dead air, ever (owner, 2026-11-13).** The question starts on frame 0, the voice never stops for more
     than ~2 s, and the video ends ~0.5 s after the last word. No pause after the opening question, and no music-only
     tail after the payoff ("it says 'opening night' and then pop, pop, pop for 3 seconds"). The renderer enforces the
