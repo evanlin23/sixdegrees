@@ -8,7 +8,14 @@
   "zoom",
   "chat",
   "domino",
-  "globe"
+  "globe",
+  "tcg",
+  "newspaper",
+  "subway",
+  "search",
+  "web",
+  "wiki",
+  "game"
  ],
- "_rotation": "Owner-approved formats only (2026-11-13 Review Room: museum, film reel, big photo/zoom, chat, domino, globe). Every style keeps the core: Buh jumping with pin + red string, name tags under the chins, zoom-out / move / zoom-in camera. Globe is skipped automatically for episodes without a place on every link. Add others only after the owner OKs them."
+ "_rotation": "All formats the owner OK'd in the Review Room (2026-11-13), as skins around the core: Buh jumping with pin + red string, name tags under the chins, zoom-out / move / zoom-in camera. Globe is skipped automatically for episodes without a place on every link."
 }
