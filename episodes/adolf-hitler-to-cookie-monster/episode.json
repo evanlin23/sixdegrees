@@ -31,7 +31,8 @@
       "label": "Michelle Obama"
     },
     "Cookie Monster": {
-      "label": "Cookie Monster"
+      "label": "Cookie Monster",
+      "hook_photo": "https://static.wikia.nocookie.net/muppet/images/b/b8/Cookie.jpg/revision/latest?cb=20190315142814"
     }
   },
   "links": [
