@@ -282,6 +282,14 @@
   "slug": "hitler-to-neil-armstrong"
  },
  {
+  "from": "Adolf Hitler",
+  "to": "Lionel Messi",
+  "status": "done",
+  "source": "[#2] Hitler pairs (Nov 2026)",
+  "hint": "Ribbentrop (1939 train) -> Stalin (1939 pact handshake) -> Khrushchev (1930s) -> Castro (1960 New York) -> Cristina Kirchner (2009 Havana) -> Messi (2014 Ezeiza)",
+  "slug": "adolf-hitler-to-lionel-messi"
+ },
+ {
   "from": "Joseph Stalin",
   "to": "MrBeast",
   "status": "todo"
