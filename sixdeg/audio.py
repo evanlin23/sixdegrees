@@ -33,6 +33,8 @@ RESPELL = {
     "Jae-in": "Jay In",
     "Mr. T": "Mister T",
     "Jung-jae": "Joongjay",
+    "SpongeBob": "Sponge Bob",       # owner: the voice slurred it as one word
+    "SquarePants": "Square Pants",
 }
 
 # How names get pronounced (Kokoro's espeak front end guesses names by English spelling rules, so it says
