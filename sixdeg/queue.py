@@ -144,8 +144,14 @@ def pick(wt: Path, log: list[dict], n: int) -> list[Path]:
     hold = json.loads(hf.read_text()) if hf.exists() else {}
     held = set(hold.get("slugs", []))
     only = [w.lower() for w in hold.get("only", [])]     # owner: post only these pairs for now (e.g. ["hitler"])
-    ready = [r for r in ready if r[0].name.split("-", 1)[1] not in held
-             and (not only or any(w in r[0].name.lower() for w in only))]
+    ready = [r for r in ready if r[0].name.split("-", 1)[1] not in held]
+    # owner, 2026-11-13: "3 Hitler and 1 non, so we do a little exploration". hold.json "explore": k gives k of each
+    # run's n slots to Shorts outside "only" (in their priority order), at a fixed position (the 3rd slot), so a day
+    # is 3 series Shorts + 1 exploration. With no "explore" (or 0), "only" is strict, as before.
+    k = int(hold.get("explore", 0) or 0) if only else 0
+    explore = [r for r in ready if not any(w in r[0].name.lower() for w in only)] if k else []
+    if only:
+        ready = [r for r in ready if any(w in r[0].name.lower() for w in only)]
     of = ROOT / "data" / "upload_order.json"
     order = json.loads(of.read_text()) if of.exists() else {}
     lists = [v for k, v in order.items() if not k.startswith("_")]
@@ -154,14 +160,22 @@ def pick(wt: Path, log: list[dict], n: int) -> list[Path]:
         first += [v[i] for v in lists if i < len(v) and v[i] not in first]
     rank = {s: i for i, s in enumerate(first)}
     ready.sort(key=lambda x: rank.get(x[0].name.split("-", 1)[1], len(rank)))   # stable: oldest first otherwise
+    explore.sort(key=lambda x: rank.get(x[0].name.split("-", 1)[1], len(rank)))
+    n_explore = min(k, len(explore), n)
+    plan = ["series"] * (n - n_explore)
+    for j in range(n_explore):                   # exploration in the 3rd slot (then the 4th...), never first
+        plan.insert(min(2 + j, len(plan)), "explore")
     prev = _people(log[-1].get("title", "")) if log else set()
     out = []
-    while ready and len(out) < n:
+    for slot in plan:
+        pool = explore if slot == "explore" else ready
+        if not pool:
+            continue
         # highest priority first, but never the same person as the previous upload (4 Stalins in a row went
         # 63 -> 55 % viewed). Requests vs formula showed no difference, so kinds just interleave via the list.
-        nxt = next((x for x in ready if not (_people(x[2]) & prev)), ready[0])
+        nxt = next((x for x in pool if not (_people(x[2]) & prev)), pool[0])
         out.append(nxt[0])
-        ready.remove(nxt)
+        pool.remove(nxt)
         prev = _people(nxt[2])
     return out
 
