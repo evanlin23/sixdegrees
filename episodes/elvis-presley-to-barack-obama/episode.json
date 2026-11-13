@@ -3,7 +3,14 @@
   "to": "Barack Obama",
   "title": "How is Elvis connected to Obama?",
   "description": "Four real photos connect Elvis Presley to Barack Obama.",
-  "hook": "How is Elvis Presley connected to Barack Obama?",
+  "hook": "How's Elvis linked to Obama?",
+  "hook_variant": "A",
+  "text_variant": "T1",
+  "people": {
+    "Elvis Presley": {
+      "short": "Elvis"
+    }
+  },
   "links": [
     {
       "a": "Elvis Presley",
@@ -11,7 +18,7 @@
       "image": {
         "file": "File:Elvis-nixon.jpg"
       },
-      "line": "In December 1970, Elvis showed up at the White House and asked Richard Nixon to make him a federal drug agent."
+      "line": "In 1970, Elvis asked Richard Nixon to make him a federal drug agent."
     },
     {
       "a": "Richard Nixon",
@@ -19,7 +26,7 @@
       "image": {
         "file": "File:Mr. and Mrs. Ford and Nixon 13 Oct 1973.jpg"
       },
-      "line": "In 1973, Nixon picked Gerald Ford as his vice president. Less than a year later, Ford had Nixon's job."
+      "line": "In 1973, Nixon picked Gerald Ford as his vice president."
     },
     {
       "a": "Gerald Ford",
@@ -27,7 +34,7 @@
       "image": {
         "file": "File:President Clinton with former presidents George H. W. Bush, Gerald Ford, and Jimmy Carter wave from the stage at the dedication of the George H. W. Bush Presidential Library at Texa - DPLA - 34dd2e1f15a119c9c93c3b2c42c179f0.jpg"
       },
-      "line": "In 1997, Ford shared a stage with President Bill Clinton at the opening of a presidential library in Texas."
+      "line": "In 1997, Ford joined President Bill Clinton at a presidential library dedication."
     },
     {
       "a": "Bill Clinton",
@@ -35,7 +42,7 @@
       "image": {
         "file": "File:Bill clinton medal of freedom.jpg"
       },
-      "line": "And in 2013, Barack Obama hung the Presidential Medal of Freedom around Clinton's neck."
+      "line": "And in 2013, Clinton received the Medal of Freedom from Barack Obama."
     }
   ]
 }
