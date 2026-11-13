@@ -1,14 +1,22 @@
 {
   "from": "Pablo Escobar",
   "to": "Winnie the Pooh (Disney character)",
-  "hook": "How is Pablo Escobar connected to Winnie the Pooh?",
-  "title": "How is Pablo Escobar connected to Winnie the Pooh?",
+  "hook": "What links Pablo Escobar to Winnie the Pooh?",
+  "hook_variant": "B",
+  "text_variant": "T0",
+  "title": "Pablo Escobar to Winnie the Pooh: how?",
   "description": "A TV star, two presidents, a first lady and NBC's Willard Scott connect Pablo Escobar to Winnie the Pooh in six real photos.",
   "people": {
     "Winnie the Pooh (Disney character)": {
       "label": "Winnie the Pooh",
       "short": "Pooh",
-      "hook_photo": "File:Winnie the pooh in a restaurant.jpg"
+      "hook_photo": "https://static.wikia.nocookie.net/disney/images/0/03/Profile_-_Winnie_the_Pooh.png/revision/latest?cb=20250323022729",
+      "hook_box": [
+        150,
+        110,
+        510,
+        610
+      ]
     },
     "Belisario Betancur": {
       "short": "Betancur"
@@ -27,7 +35,7 @@
         "license": "Fair use (commentary)",
         "source": "https://www.eltiempo.com/cultura/gente/fotos-de-famosos-colombianos-junto-a-narcotraficantes-608064"
       },
-      "line": "In 1983, Colombian TV star Vallejo interviewed Pablo Escobar, and became his lover.",
+      "line": "In 1983, Colombian TV star Virginia Vallejo interviewed Pablo Escobar.",
       "a_face": 0,
       "b_face": [
         55,
@@ -45,7 +53,7 @@
         "license": "Fair use (commentary)",
         "source": "https://virginiavallejo.com/sociales/"
       },
-      "line": "In 1984, Vallejo was photographed with the president of Colombia.",
+      "line": "In 1984, Vallejo was photographed with Colombia's president, Belisario Betancur.",
       "a_face": 1,
       "b_face": [
         0,
@@ -70,7 +78,7 @@
       "image": {
         "file": "File:President Ronald Reagan and Nancy Reagan with Frank Sinatra (cropped).jpg"
       },
-      "line": "In 1981, Reagan and First Lady Nancy Reagan shared a laugh with Frank Sinatra in the Oval Office.",
+      "line": "In 1981, Reagan and his wife, Nancy, laughed together in the Oval Office.",
       "a_face": 1,
       "b_face": 2
     },
@@ -80,7 +88,7 @@
       "image": {
         "file": "File:Nancy Reagan Attending The Great American Family Awards Presentation with Willard Scott in The State Dining Room - DPLA - 201e390316bae8d32c9e78c13ae7aff0.jpg"
       },
-      "line": "In 1986, NBC weatherman Willard Scott gave Nancy Reagan a bear hug at the White House.",
+      "line": "In 1986, NBC weatherman Willard Scott gave Nancy a bear hug.",
       "a_face": 3,
       "b_face": 5
     },
@@ -90,7 +98,7 @@
       "image": {
         "file": "File:Group Shot of Cartoon-Comic Book Characters with Willard Scott During The Easter Egg Roll on The South Lawn - DPLA - a4a78b89f6ad3de82e82823717f31fb2.jpg"
       },
-      "line": "And at the 1983 White House Easter Egg Roll, Scott posed with Winnie the Pooh himself.",
+      "line": "And in 1983, at the Easter Egg Roll, Scott met Winnie the Pooh.",
       "b_face": [
         1460,
         470,
