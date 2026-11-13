@@ -208,7 +208,8 @@
   "links": 8,
   "music": "Like a Loop Machine",
   "trending": false,
-  "n": 56
+  "n": 56,
+  "comment": "posted UgzolcVO9owZT-8--Kx4AaABAg"
  },
  {
   "slug": "adolf-hitler-to-pikachu",
@@ -225,7 +226,8 @@
   "links": 5,
   "music": null,
   "trending": false,
-  "n": 50
+  "n": 50,
+  "comment": "posted UgxNnxrrhpqcWaZ4Byx4AaABAg"
  },
  {
   "slug": "adam-to-the-rock",
@@ -242,6 +244,25 @@
   "links": 6,
   "music": null,
   "trending": false,
-  "n": 9
+  "n": 9,
+  "comment": "posted UgySaB0msbph3FZluVZ4AaABAg"
+ },
+ {
+  "slug": "adolf-hitler-to-jensen-huang",
+  "title": "How is Adolf Hitler connected to Jensen Huang?",
+  "publish_at": "2026-11-13T17:37:00Z",
+  "video_id": "pc83MjU12As",
+  "privacy": "scheduled",
+  "url": "https://youtube.com/shorts/pc83MjU12As",
+  "thumbnail": "not set: <HttpError 403 when requesting https://youtube.googleapis.com/upload/youtube/v3/thumbnails/set?videoId=pc83MjU12As&alt=json&uploadType=media returned \"The authe",
+  "first_comment": "Fun fact from the research: Before he founded Nvidia, Jensen Huang worked at Denny's as a teenager, washing dishes and busing tables.\n\nWho should Hitler connect to next? Name anyone (a character works too) and I'll find the photos.",
+  "kind": "formula",
+  "outro": false,
+  "narration": true,
+  "links": 6,
+  "music": "Hip Hop Astrology Beat",
+  "style": "tcg",
+  "trending": false,
+  "n": 61
  }
 ]
