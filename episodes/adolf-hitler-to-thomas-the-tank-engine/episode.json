@@ -108,15 +108,15 @@
       "a": "Harold Wilson",
       "b": "Ringo Starr",
       "image": {
-        "url": "https://tristansgallery.com/images/gallery/12/111/3022.jpg",
-        "credit": "Terry O'Neill / Iconic Images (via Tristan's Gallery)",
+        "url": "https://i2-prod.examinerlive.co.uk/incoming/article7944812.ece/ALTERNATES/s1227b/WA1168031.jpg",
+        "credit": "Mirrorpix (via YorkshireLive)",
         "license": "Fair use (commentary)",
-        "source": "https://tristansgallery.com/photographers/terry-oneill/terry-oneill-music-celebrities/3022_the-beatles-with-the-prime-minister-harold-wilson-1964.aspx"
+        "source": "https://www.examinerlive.co.uk/news/west-yorkshire-news/gallery/harold-wilson-7944879"
       },
       "line": "In 1964, Harold Wilson handed Ringo Starr and the Beatles a showbiz award in London.",
       "fact": "Dorchester Hotel, 1964",
-      "a_face": 1,
-      "b_face": 4,
+      "a_face": 2,
+      "b_face": 0,
       "where": {
         "place": "Dorchester Hotel, London",
         "lat": 51.507,
