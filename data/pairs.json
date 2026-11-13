@@ -806,6 +806,14 @@
  },
  {
   "from": "Adolf Hitler",
+  "to": "Dolly Parton",
+  "status": "done",
+  "source": "[#2] Hitler pairs (Nov 2026)",
+  "hint": "Leni Riefenstahl (Nuremberg 1934), who photographed Mick Jagger in London in 1974; Jagger hugged Dolly backstage at the Bottom Line in 1977",
+  "slug": "adolf-hitler-to-dolly-parton"
+ },
+ {
+  "from": "Adolf Hitler",
   "to": "Shrek",
   "status": "done",
   "source": "viral formula",

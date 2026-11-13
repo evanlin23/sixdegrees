@@ -1,0 +1,84 @@
+{
+  "from": "Adolf Hitler",
+  "to": "Dolly Parton",
+  "title": "How is Adolf Hitler connected to Dolly Parton?",
+  "description": "Three real photos connect Adolf Hitler to Dolly Parton, through the filmmaker Leni Riefenstahl and Mick Jagger.",
+  "hook": "How is Adolf Hitler connected to Dolly Parton?",
+  "fun_fact": "Dolly Parton wanted Mick Jagger to sing Satisfaction with her on her 2023 rock album, Rockstar. When he couldn't, P!nk and Brandi Carlile stepped in.",
+  "research_note": "Leni Riefenstahl lived until 2003, and her own photo archive holds a snapshot of her arm in arm with Mick Jagger from the 1974 Sunday Times shoot of Mick and Bianca Jagger; three years later Jagger was backstage at Dolly Parton's Bottom Line show.",
+  "people": {
+    "Adolf Hitler": {
+      "label": "Adolf Hitler",
+      "short": "Hitler"
+    },
+    "Leni Riefenstahl": {
+      "label": "Leni Riefenstahl",
+      "short": "Riefenstahl"
+    },
+    "Mick Jagger": {
+      "label": "Mick Jagger"
+    },
+    "Dolly Parton": {
+      "label": "Dolly Parton"
+    }
+  },
+  "links": [
+    {
+      "a": "Adolf Hitler",
+      "b": "Leni Riefenstahl",
+      "image": {
+        "url": "https://iiif.archive.org/image/iiif/3/hinterdenkulisse00rief%2fhinterdenkulisse00rief_jp2.zip%2fhinterdenkulisse00rief_jp2%2fhinterdenkulisse00rief_0034.jp2/906,1892,1888,650/max/0/default.jpg",
+        "credit": "Hinter den Kulissen des Reichsparteitag-Films (Munich, 1935), p. 32, via Internet Archive",
+        "license": "Fair use (commentary)",
+        "source": "https://archive.org/details/hinterdenkulisse00rief"
+      },
+      "line": "In 1934, Hitler inspected the film setup in Nuremberg with filmmaker Leni Riefenstahl.",
+      "fact": "Nuremberg, 1934",
+      "where": {
+        "place": "Nuremberg",
+        "lat": 49.452,
+        "lon": 11.077
+      },
+      "a_face": 0,
+      "b_face": 1
+    },
+    {
+      "a": "Leni Riefenstahl",
+      "b": "Mick Jagger",
+      "image": {
+        "url": "http://www.leni-riefenstahl.de/lr-produktion/werkaufnahmen/Webseiten/originals/1095.jpg",
+        "credit": "Leni Riefenstahl Produktion (LRP) archive",
+        "license": "Fair use (commentary)",
+        "source": "http://www.leni-riefenstahl.de/lr-produktion/werkaufnahmen/Webseiten/detail.np/detail-57.html"
+      },
+      "line": "In 1974, Leni Riefenstahl photographed Rolling Stones singer Mick Jagger in London for The Sunday Times.",
+      "fact": "London, 1974",
+      "where": {
+        "place": "London",
+        "lat": 51.507,
+        "lon": -0.128
+      },
+      "a_face": 1,
+      "b_face": 0
+    },
+    {
+      "a": "Mick Jagger",
+      "b": "Dolly Parton",
+      "image": {
+        "url": "https://a.1stdibscdn.com/allan-tannenbaum-photography-dolly-parton-and-mick-jagger-hugging-for-sale/a_18122/a_113803521670618747838/Rolling_Stones_Mick_and_Dolly_BL_master.jpg",
+        "credit": "Allan Tannenbaum / SoHo Weekly News",
+        "license": "Fair use (commentary)",
+        "source": "https://www.1stdibs.com/art/photography/black-white-photography/allan-tannenbaum-dolly-parton-mick-jagger-hugging/id-a_11380352"
+      },
+      "line": "And in 1977, backstage in New York, Mick Jagger hugged Dolly Parton.",
+      "fact": "Bottom Line, New York, 1977",
+      "where": {
+        "place": "The Bottom Line, New York",
+        "lat": 40.7295,
+        "lon": -73.9965
+      },
+      "a_face": 1,
+      "b_face": 0
+    }
+  ]
+}
