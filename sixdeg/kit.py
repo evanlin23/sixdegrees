@@ -84,6 +84,8 @@ def kit(slug: str) -> str:
         meta["music"] = vinfo.get("music")
         meta["style"] = vinfo.get("style", "cards")        # presentation-style pilot
         meta["trending"] = vinfo.get("trending", False)    # a claimed song: must stay under 60 s
+        meta["hook_variant"] = vinfo.get("hook_variant")  # A/B: spoken-hook arm (A/B/F; None = old hook)
+        meta["text_variant"] = vinfo.get("text_variant", "T0")   # A/B: opening text (T0 today, T1 band)
     out = d / "out"
     out.mkdir(exist_ok=True)
     mp4 = out / f"{slug}.mp4"
