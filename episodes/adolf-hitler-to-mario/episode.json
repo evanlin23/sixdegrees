@@ -36,7 +36,7 @@
       "image": {
         "file": "File:Anny Ondra, Max Schmeling and Hitler after the 1st fight against Joe Louis.jpg"
       },
-      "line": "In 1936, Hitler welcomed home German boxer Max Schmeling after his shock win in New York."
+      "line": "In 1936, Hitler welcomed home German boxing hero Max Schmeling."
     },
     {
       "a": "Max Schmeling",
@@ -44,7 +44,7 @@
       "image": {
         "file": "File:Joe Louis and Max Schmeling 1971 Press Photo.jpg"
       },
-      "line": "In 1938, Joe Louis knocked him out in their rematch, and years later the two became close friends.",
+      "line": "In 1938, Joe Louis knocked him out, and they later became friends.",
       "a_face": 1,
       "b_face": 0
     },
@@ -54,7 +54,7 @@
       "image": {
         "file": "File:4 Champions ALI LOUIS WALCOTT BRADDOCK 1965 UPI photo.jpg"
       },
-      "line": "In 1965, Joe Louis dropped by the training camp of the young champ, Muhammad Ali.",
+      "line": "In 1965, Louis dropped by the training camp of a young Muhammad Ali.",
       "a_face": 1,
       "b_face": 3
     },
@@ -80,7 +80,7 @@
         "license": "Fair use (commentary)",
         "source": "https://www.goodmorningamerica.com/culture/story/arnold-schwarzeneggers-family-supports-fubar-premiere-122790066"
       },
-      "line": "In 2025, at his FUBAR premiere, Arnold posed with his son-in-law, Chris Pratt.",
+      "line": "In 2025, Arnold posed at his premiere with his son-in-law, Chris Pratt.",
       "fact": "FUBAR premiere, LA, 2025"
     },
     {
@@ -99,7 +99,7 @@
           }
         ]
       },
-      "line": "And in 2023, Chris Pratt became the voice of Mario himself.",
+      "line": "And in 2023, Chris Pratt became the voice of Mario.",
       "b_face": 1
     }
   ]

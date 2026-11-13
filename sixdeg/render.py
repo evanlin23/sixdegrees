@@ -178,12 +178,24 @@ class Ctx:
             im = cv2.imread(str(self.work / "refs" / refs[0]))
             if im is None:
                 continue
+            pdata = self.spec.get("people", {}).get(name, {})
+            if pdata.get("hook_box"):          # hand-set box on the hook photo: [x, y, w, h] in its pixels
+                self.hero_src[name] = (im, tuple(pdata["hook_box"]))
+                continue
             fs = detect(im)
             if fs:
                 big = max(fs, key=lambda f: f["box"][2] * f["box"][3])
                 if big["box"][3] >= 60:
                     self.thumbs[name] = face_crop(im, big["box"], 220, pad=0.55)
                     self.hero_src[name] = (im, big["box"])
+                    continue
+            if pdata.get("hook_photo"):
+                # owner: the opening shows the MOST RECOGNISABLE photo of A and B. Characters and puppets (Big Bird,
+                # Cookie Monster, Thomas) have no human face for the detector, so use their hook photo anyway
+                # (centred), instead of falling back to a crop from a chain photo.
+                ih, iw = im.shape[:2]
+                side = 0.55 * min(iw, ih)
+                self.hero_src[name] = (im, (iw / 2 - side / 2, ih * 0.42 - side / 2, side, side))
         for i, l in enumerate(self.fj["links"]):
             if l.get("lineage"):   # lineage boxes belong to individual portraits, not to links[i]["image"]
                 continue
@@ -192,13 +204,13 @@ class Ctx:
                 bx = l[role]["box"]
                 if name not in self.thumbs and bx:
                     self.thumbs[name] = face_crop(self.imgs[i], bx, 220)
-                    self.hero_src[name] = (self.imgs[i], bx)
+                    self.hero_src.setdefault(name, (self.imgs[i], bx))   # keep a hook photo set above
         for name in self.people:
             if name not in self.thumbs:  # no usable portrait and never boxed in a photo
                 refs = self.fj["people"][name]["refs"]
                 im = cv2.imread(str(self.work / "refs" / refs[0])) if refs else np.full((300, 300, 3), 60, np.uint8)
                 self.thumbs[name] = face_crop(im, None, 220)
-                self.hero_src[name] = (im, None)
+                self.hero_src.setdefault(name, (im, None))
         self.labels = {n: self.spec.get("people", {}).get(n, {}).get("label", short_name(n)) for n in self.people}
 
 

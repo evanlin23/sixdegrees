@@ -30,7 +30,7 @@
       "image": {
         "file": "File:Meeting at Hendaye (en.wiki).jpg"
       },
-      "line": "In 1940, Hitler met Spain's dictator Franco at a train station on the French border.",
+      "line": "In 1940, Hitler met Spain's dictator, Francisco Franco, at the French border.",
       "a_face": 0,
       "b_face": 4
     },
@@ -40,7 +40,7 @@
       "image": {
         "file": "File:In Madrid is herdacht dat Franco 30 jaar geleden de burgeroorlog ( 1936 1939 ) w, Bestanddeelnr 922-4913 (cropped).jpg"
       },
-      "line": "In 1969, Franco stood beside young Prince Juan Carlos, the man he chose to rule after him.",
+      "line": "In 1969, Franco named young Prince Juan Carlos as his successor.",
       "a_face": 2,
       "b_face": 1
     },
@@ -50,7 +50,7 @@
       "image": {
         "file": "File:Sofia, Laura Bush, George W. Bush and Juan Carlos.jpg"
       },
-      "line": "In 2001, King Juan Carlos welcomed George and Laura Bush to his palace in Madrid.",
+      "line": "In 2001, King Juan Carlos welcomed Laura Bush to Madrid.",
       "a_face": 3,
       "b_face": 1
     },
@@ -60,7 +60,7 @@
       "image": {
         "file": "File:Mrs. Laura Bush and daughters pose for a photo with Sesame Street character Elmo.jpg"
       },
-      "line": "And in 2007, Laura Bush posed with Elmo at a Sesame Street benefit dinner.",
+      "line": "And in 2007, at a Sesame Street dinner, Laura Bush posed with Elmo.",
       "a_face": 1,
       "b_face": [
         258,
