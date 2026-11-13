@@ -331,6 +331,15 @@ def render(slug: str, log=print) -> Path:
     (out_dir / "voice.json").write_text(json.dumps(vinfo))
     a, words = audio.say(hook, voice)
     HOOK_VO = 0.0    # the question starts on the very first frame
+    # owner: "the first word should always start the moment the video is scrolled to": trim any leading silence the
+    # TTS clip carries (keep 10 ms so the attack isn't clipped) and shift the caption word times to match
+    _a = np.abs(np.asarray(a, dtype=np.float32))
+    _on = np.flatnonzero(_a > max(1e-4, 0.03 * float(_a.max() or 1.0)))
+    _lead = max(0, int(_on[0]) - int(0.01 * audio.SR)) if len(_on) else 0
+    if _lead:
+        a = a[_lead:]
+        _sh = _lead / audio.SR
+        words = [(w, max(0.0, s0 - _sh), max(0.0, e0 - _sh)) for w, s0, e0 in words]
     # owner: "in the hook there cannot be any pauses, no dead space": link 1's voice follows the question at once
     # (the clip's own ~0.1 s tail + link 1's 0.08 s lead-in is the only breath; this used to hold +0.3 s of silence)
     d = max(len(a) / audio.SR - 0.06 + HOOK_VO, FF + RW + 1.3)
