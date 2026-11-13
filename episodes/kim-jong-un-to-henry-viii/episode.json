@@ -2,9 +2,11 @@
  "from": "Kim Jong Un",
  "to": "Henry VIII",
  "requested_by": "@y4p_Genius_Severus",
- "title": "Kim Jong Un and Henry VIII are only three links apart",
+ "title": "Kim Jong Un to Henry VIII: how?",
  "description": "A border handshake, a D-Day ceremony and four centuries of English monarchs link Kim Jong Un to Henry VIII.",
- "hook": "How is Kim Jong Un connected to King Henry the Eighth?",
+ "hook": "What links Kim Jong Un to Henry VIII?",
+ "hook_variant": "B",
+ "text_variant": "T0",
  "people": {
   "Elizabeth II": {
    "label": "Queen Elizabeth II"
@@ -30,7 +32,7 @@
    "image": {
     "file": "File:Trump with national leaders at 75th D-Day.jpg"
    },
-   "line": "Weeks earlier, Trump marked D-Day's 75th anniversary beside Queen Elizabeth the Second.",
+   "line": "That June, Trump marked D-Day's 75th anniversary beside Queen Elizabeth II.",
    "a_face": 13,
    "b_face": 12
   },
@@ -87,7 +89,7 @@
      }
     ]
    },
-   "line": "Elizabeth sat on the throne of Henry the Eighth, handed down through four centuries of kings and queens."
+   "line": "And in 1952, Elizabeth took the throne once held by Henry VIII."
   }
  ]
 }
