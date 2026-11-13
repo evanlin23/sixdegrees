@@ -835,5 +835,13 @@
   "source": "viral formula",
   "hint": "racing route: Porsche, Neubauer, Fangio, Moss, Hamilton, then Kimmel and Jim Carrey with the costumed Sonic at the 2020 premiere",
   "slug": "adolf-hitler-to-sonic-the-hedgehog"
+ },
+ {
+  "from": "Adolf Hitler",
+  "to": "Jensen Huang",
+  "status": "done",
+  "source": "operator (topical)",
+  "hint": "Molotov (Berlin 1940), Truman (Potsdam 1945), Nixon, Reagan (1970), Trump (1987), Huang (2025)",
+  "slug": "adolf-hitler-to-jensen-huang"
  }
 ]
