@@ -822,6 +822,14 @@
  },
  {
   "from": "Adolf Hitler",
+  "to": "Steve Irwin",
+  "status": "done",
+  "source": "[#2] Hitler pairs (Nov 2026)",
+  "hint": "via skater Sonja Henie (1936), King Olav V (1968), Queen Elizabeth II (1969) and Hugh Jackman (2011, G'Day LA 2006)",
+  "slug": "adolf-hitler-to-steve-irwin"
+ },
+ {
+  "from": "Adolf Hitler",
   "to": "Elmo",
   "status": "done",
   "source": "viral formula",

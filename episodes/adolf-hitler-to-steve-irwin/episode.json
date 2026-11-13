@@ -1,0 +1,130 @@
+{
+  "from": "Adolf Hitler",
+  "to": "Steve Irwin",
+  "title": "How is Hitler linked to Steve Irwin?",
+  "description": "Five real photos connect Adolf Hitler to Steve Irwin, through skating star Sonja Henie, Norway's King Olav, Queen Elizabeth II and Hugh Jackman.",
+  "hook": "How is Hitler connected to Steve Irwin?",
+  "fun_fact": "Sonja Henie won three Olympic golds in a row, in 1928, 1932 and 1936, then became one of Hollywood's top box-office stars.",
+  "research_note": "Albert Speer and Knut Hamsun were tried first, but neither has a findable photo with anyone who reaches Steve Irwin's era (Speer's 1975 Donahue interview has no usable still), so the chain leaves Hitler through skating star Sonja Henie, whose 1968 museum opening with King Olav leads to the Queen at the 1984 D-Day anniversary.",
+  "people": {
+    "Adolf Hitler": {
+      "label": "Adolf Hitler",
+      "short": "Hitler",
+      "hook_photo": "File:Hitler_portrait_crop_(cropped)(2).jpg"
+    },
+    "Sonja Henie": {
+      "label": "Sonja Henie",
+      "short": "Henie"
+    },
+    "Olav V": {
+      "label": "King Olav V",
+      "short": "King Olav"
+    },
+    "Elizabeth II": {
+      "label": "Queen Elizabeth II",
+      "short": "Queen Elizabeth"
+    },
+    "Hugh Jackman": {
+      "label": "Hugh Jackman",
+      "short": "Jackman"
+    },
+    "Steve Irwin": {
+      "label": "Steve Irwin",
+      "short": "Steve Irwin",
+      "hook_photo": "File:Steve Irwin in 2000.jpg"
+    }
+  },
+  "links": [
+    {
+      "a": "Adolf Hitler",
+      "b": "Sonja Henie",
+      "image": {
+        "file": "File:Sonja Henie & Adolf Hitler 1936.jpg"
+      },
+      "line": "In 1936, Hitler shook hands with Norway's Olympic skating star, Sonja Henie.",
+      "fact": "Olympic year, 1936",
+      "where": {
+        "place": "Garmisch-Partenkirchen",
+        "lat": 47.4921,
+        "lon": 11.0958
+      },
+      "a_face": [
+        372,
+        112,
+        100,
+        100
+      ],
+      "b_face": 0
+    },
+    {
+      "a": "Sonja Henie",
+      "b": "Olav V",
+      "image": {
+        "file": "File:57314 Henie Onstad kunstsenter.jpg"
+      },
+      "line": "In 1968, Henie welcomed Norway's King Olav to open her art museum.",
+      "fact": "Henie Onstad opening, 1968",
+      "where": {
+        "place": "Henie Onstad Art Centre, Høvikodden",
+        "lat": 59.8879,
+        "lon": 10.5531
+      },
+      "a_face": 3,
+      "b_face": 4
+    },
+    {
+      "a": "Olav V",
+      "b": "Elizabeth II",
+      "image": {
+        "file": "File:Trip to France 40th Anniversary Of D-Day landings, Ceremony at Utah Beach President Ronald Reagan, Queen Elizabeth II, Francois Mitterrand, Queen Beatrix, King Olav V, King Baudoin - DPLA - 5627ad7f2f5da18a493fd3eb2697b5c5.jpg"
+      },
+      "line": "In 1984, King Olav joined Queen Elizabeth at D-Day's 40th anniversary in Normandy.",
+      "fact": "Utah Beach, June 1984",
+      "where": {
+        "place": "Utah Beach, Normandy",
+        "lat": 49.4153,
+        "lon": -1.1756
+      },
+      "a_face": 2,
+      "b_face": 5
+    },
+    {
+      "a": "Elizabeth II",
+      "b": "Hugh Jackman",
+      "image": {
+        "url": "https://www.nickiswift.com/img/gallery/heres-what-really-happened-when-hugh-jackman-met-the-queen/hugh-jackman-managed-to-surprise-queen-elizabeth-ii-1669901822.jpg",
+        "credit": "WPA Pool / Getty Images (via Nicki Swift)",
+        "license": "Fair use (commentary)",
+        "source": "https://www.nickiswift.com/1122672/heres-what-really-happened-when-hugh-jackman-met-the-queen"
+      },
+      "line": "In 2011, the Queen greeted Hugh Jackman at a palace party for Australians.",
+      "fact": "Buckingham Palace, 2011",
+      "where": {
+        "place": "Buckingham Palace, London",
+        "lat": 51.5014,
+        "lon": -0.1419
+      },
+      "a_face": 1,
+      "b_face": 6
+    },
+    {
+      "a": "Hugh Jackman",
+      "b": "Steve Irwin",
+      "image": {
+        "url": "https://cmg-cmg-rd-20023-prod.cdn.arcpublishing.com/resizer/v2/WAUTC5NVF5ATLF3XWW25RNC2E4.jpg?auth=dfb2e6d0f930334ae688f3a29f4d347a35872af58dd888e5d785478d2ad1865c&width=1600",
+        "credit": "Getty Images (via 97.1 The River)",
+        "license": "Fair use (commentary)",
+        "source": "https://www.971theriver.com/entertainment/gallery-steve-irwin/J34PZ6YSXJCK7MH54WU7FS27ME"
+      },
+      "line": "And in 2006, Jackman clowned around with the Crocodile Hunter, Steve Irwin.",
+      "fact": "G'Day LA gala, 2006",
+      "where": {
+        "place": "Hollywood Palladium, Los Angeles",
+        "lat": 34.0983,
+        "lon": -118.3247
+      },
+      "a_face": 0,
+      "b_face": 1
+    }
+  ]
+}
