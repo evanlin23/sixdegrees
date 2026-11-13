@@ -82,10 +82,30 @@ episode.json: the hook shows the viewer's request bubble and the first comment c
   - **Hide the destination where the route allows.** Nothing from B's world before the last 1–2 links.
   - **Even pace to the end; the last link is the payoff (owner, 2026-11-12).** Never speed up: every link gets
     the same beat on screen (the renderer holds each link at least 3.4 s). Every link but the last gets a context
-    line, where/when and how the two met, in about 8-16 words ("At the 2012 Easter Egg Roll, Michelle Obama played
+    line, where/when and how the two met, in about 9-13 words (see "Write like Steve and Miku") ("At the 2012 Easter Egg Roll, Michelle Obama played
     soccer with SpongeBob himself."). No 3-word sprint lines like "Who voices Shrek." mid-chain. The LAST line
     explains less, because the link itself is the payoff: short and on the meeting ("At Late Night with Seth Meyers,
     Ash Carter met Kevin Hart.", "Jon Favreau created Baby Yoda."), never a paragraph after B's name.
+  - **Write like Steve and Miku (owner, 2026-11-13: "I really like the structure and pacing and sentences of the Miku
+    and Steve ones").** The model scripts:
+      In 1938, Hitler signed the Munich deal with Britain's Neville Chamberlain.
+      In 1940, Winston Churchill replaced Chamberlain as prime minister.
+      In 1953, Churchill greeted the new Queen and her children.
+      In 2014, the Queen made Angelina Jolie an honorary dame.
+      In 2008, Jolie and Jack Black brought Kung Fu Panda to Cannes.
+      And in 2025, Jack Black became Steve in A Minecraft Movie.
+    and Miku: "In 1937, Hitler welcomed Britain's former king, Edward VIII." / "That year, Nixon picked a young George
+    Bush as his ambassador to the United Nations." / "Back in 2012, Obama sat down with David Letterman on the Late
+    Show." / "And in 2014, Letterman shared his stage with Hatsune Miku, live as a hologram."
+    Rules that come from them (these override the older "8-16 words" wording):
+      - 9-13 words a line. ONE fact per line: who met whom, and the one detail that makes it fun.
+      - Plain descriptors over titles: "Britain's former king", "the new Queen", "a young George Bush". Full name the
+        first time someone appears, then the short name ("Chamberlain", "Jolie").
+      - No stacked appositives or extra places ("Vichy France's leader, Marshal Pétain, at Montoire's train station").
+      - The year leads every line, but natural connectors count: "That year, …", "Back in 2012, …", "Two years later, …".
+      - Each line hands off: the new person of one line is the subject of the next.
+      - Last line: short, ends on B, and varied. Not "…himself." every time ("became Steve in A Minecraft Movie",
+        "shared his stage with Hatsune Miku, live as a hologram").
   - **The opening shows the most recognisable photo of A and of B (owner, 2026-11-13).** Not a crop from a chain
     photo: set `people.<name>.hook_photo` to an iconic, frontal, instantly recognisable image (a famous portrait, a
     character's official still). For characters and puppets without a human face, the renderer uses the hook photo
