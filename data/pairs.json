@@ -518,6 +518,14 @@
  },
  {
   "from": "Adolf Hitler",
+  "to": "Spider-Man",
+  "status": "done",
+  "source": "[#2] Hitler pairs (Nov 2026)",
+  "hint": "Sonja Henie (1930s handshake) -> King Olav V (1968 museum opening) -> Queen Elizabeth II (her 1969 visit to Norway) -> Queen Camilla (2013 palace balcony) -> Andrew Garfield (2025 palace reception) -> Spider-Man (Garfield played him from 2012; Comic-Con 2013 in the suit)",
+  "slug": "adolf-hitler-to-spider-man"
+ },
+ {
+  "from": "Adolf Hitler",
   "to": "Thomas the Tank Engine",
   "status": "done",
   "source": "[#2] Hitler pairs (Nov 2026)",

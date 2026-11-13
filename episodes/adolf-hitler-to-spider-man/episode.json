@@ -1,0 +1,163 @@
+{
+  "from": "Adolf Hitler",
+  "to": "Spider-Man",
+  "title": "How is Hitler connected to Spider-Man?",
+  "description": "Six real photos connect Adolf Hitler to Spider-Man, through a Norwegian skating star, King Olav V, Queen Elizabeth II, Queen Camilla and Andrew Garfield.",
+  "hook": "How is Hitler connected to Spider-Man?",
+  "fun_fact": "After winning her third Olympic gold in 1936, Sonja Henie accepted Hitler's invitation to lunch at Berchtesgaden, and he gave her a signed photo of himself.",
+  "research_note": "Instead of the usual Chamberlain or Mussolini exit, this chain leaves Hitler through skater Sonja Henie, whose 1968 museum opening with King Olav V leads straight into the royals; a Tom Holland ending through Benedict Cumberbatch only had tiny group shots, while Andrew Garfield came to Comic-Con 2013 in the Spider-Man suit.",
+  "people": {
+    "Adolf Hitler": {
+      "label": "Adolf Hitler",
+      "short": "Hitler"
+    },
+    "Sonja Henie": {
+      "label": "Sonja Henie",
+      "short": "Henie"
+    },
+    "Olav V": {
+      "label": "King Olav V",
+      "short": "King Olav"
+    },
+    "Elizabeth II": {
+      "label": "Queen Elizabeth II",
+      "short": "Queen Elizabeth"
+    },
+    "Queen Camilla": {
+      "label": "Queen Camilla",
+      "short": "Camilla"
+    },
+    "Andrew Garfield": {
+      "label": "Andrew Garfield",
+      "short": "Garfield"
+    },
+    "Spider-Man": {
+      "label": "Spider-Man",
+      "hook_photo": "File:Spider-Man.jpg",
+      "hook_box": [
+        285,
+        15,
+        265,
+        310
+      ]
+    }
+  },
+  "links": [
+    {
+      "a": "Adolf Hitler",
+      "b": "Sonja Henie",
+      "image": {
+        "file": "File:Sonja Henie & Adolf Hitler 1936.jpg"
+      },
+      "line": "In the 1930s, Hitler shook hands with Norway's skating star, Sonja Henie.",
+      "fact": "Ice rink, Germany, 1930s",
+      "where": {
+        "place": "Germany",
+        "lat": 51.0,
+        "lon": 10.4
+      },
+      "a_face": [
+        375,
+        108,
+        95,
+        105
+      ],
+      "b_face": 0
+    },
+    {
+      "a": "Sonja Henie",
+      "b": "Olav V",
+      "image": {
+        "file": "File:57314 Henie Onstad kunstsenter.jpg"
+      },
+      "line": "In 1968, Henie walked Norway's King Olav into her new art museum.",
+      "fact": "Henie Onstad museum, 1968",
+      "where": {
+        "place": "Henie Onstad Art Centre, Høvikodden, Norway",
+        "lat": 59.888,
+        "lon": 10.567
+      },
+      "a_face": 3,
+      "b_face": 4
+    },
+    {
+      "a": "Olav V",
+      "b": "Elizabeth II",
+      "image": {
+        "file": "File:Dronning Elisabeth II besøker Norge i august 1969 - PA-0797 6007A 013.jpg"
+      },
+      "line": "In 1969, King Olav hosted Queen Elizabeth on her visit to Norway.",
+      "fact": "Royal visit to Norway, 1969",
+      "where": {
+        "place": "Flå, Melhus, Norway",
+        "lat": 63.21,
+        "lon": 10.3
+      },
+      "a_face": 22,
+      "b_face": 21
+    },
+    {
+      "a": "Elizabeth II",
+      "b": "Queen Camilla",
+      "image": {
+        "file": "File:The Queen and the Duchess of Cornwall.JPG"
+      },
+      "line": "In 2013, the Queen watched the royal flypast beside her son's wife, Camilla.",
+      "fact": "Palace balcony, 2013",
+      "where": {
+        "place": "Buckingham Palace, London",
+        "lat": 51.5014,
+        "lon": -0.1419
+      },
+      "a_face": 2,
+      "b_face": 0
+    },
+    {
+      "a": "Queen Camilla",
+      "b": "Andrew Garfield",
+      "image": {
+        "url": "https://images.hellomagazine.com/horizon/original_aspect_ratio/e176cf9ae343-gettyimages-2199751507.jpg",
+        "credit": "WPA Pool / Getty Images (via HELLO!)",
+        "license": "Fair use (commentary)",
+        "source": "https://www.hellomagazine.com/royalty/815112/queen-camilla-surprised-star-studded-palace-reception"
+      },
+      "line": "In 2025, Camilla, now Queen, welcomed Andrew Garfield to Buckingham Palace.",
+      "fact": "Buckingham Palace, 2025",
+      "where": {
+        "place": "Buckingham Palace, London",
+        "lat": 51.5014,
+        "lon": -0.1419
+      },
+      "a_face": 0,
+      "b_face": 1
+    },
+    {
+      "a": "Andrew Garfield",
+      "b": "Spider-Man",
+      "image": {
+        "pair": [
+          {
+            "file": "File:Andrew Garfield by Gage Skidmore.jpg"
+          },
+          {
+            "file": "File:Spider-Man.jpg"
+          }
+        ]
+      },
+      "line": "And in 2012, Andrew Garfield swung into theaters as the Amazing Spider-Man.",
+      "fact": "The Amazing Spider-Man, 2012",
+      "where": {
+        "place": "Comic-Con, San Diego",
+        "lat": 32.7065,
+        "lon": -117.1618
+      },
+      "a_face": 0,
+      "b_face": [
+        1640,
+        60,
+        520,
+        600
+      ]
+    }
+  ]
+}
