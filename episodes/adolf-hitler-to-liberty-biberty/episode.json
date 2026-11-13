@@ -1,0 +1,134 @@
+{
+  "from": "Adolf Hitler",
+  "to": "Liberty Biberty",
+  "title": "Hitler and Liberty Biberty: how?",
+  "description": "Seven real pictures connect Adolf Hitler to Liberty Biberty, through a former king, the Queen, a president, two TV actors and a talk-show host.",
+  "hook": "How is Hitler connected to Liberty Biberty?",
+  "fun_fact": "Liberty Biberty is named after a flub: in a 2019 Liberty Mutual ad, Tanner Novlan's struggling-actor character mangled the company's name into 'Liberty Biberty', and in 2026 the company turned the mistake into a puppet built by Jim Henson's Creature Shop.",
+  "research_note": "Tanner Novlan had no free photo with anyone famous, so the route runs through a CBS group shot from The Talk with Jerry O'Connell, then O'Connell's We Are Men co-star Kal Penn, who once worked in Obama's White House.",
+  "people": {
+    "Adolf Hitler": {
+      "label": "Adolf Hitler",
+      "short": "Hitler"
+    },
+    "Edward VIII": {
+      "label": "Edward VIII"
+    },
+    "Elizabeth II": {
+      "label": "Queen Elizabeth II",
+      "short": "The Queen"
+    },
+    "Barack Obama": {
+      "label": "Barack Obama",
+      "short": "Obama"
+    },
+    "Kal Penn": {
+      "label": "Kal Penn"
+    },
+    "Jerry O'Connell": {
+      "label": "Jerry O'Connell",
+      "short": "O'Connell"
+    },
+    "Tanner Novlan": {
+      "label": "Tanner Novlan",
+      "short": "Novlan"
+    },
+    "Liberty Biberty": {
+      "label": "Liberty Biberty",
+      "hook_photo": "https://i.ytimg.com/vi/c5X7YYZmhS4/maxresdefault.jpg",
+      "hook_box": [290, 190, 510, 420]
+    }
+  },
+  "links": [
+    {
+      "a": "Adolf Hitler",
+      "b": "Edward VIII",
+      "image": {
+        "file": "File:Duc et duchesse de Windsor avec Hitler (1937).jpg"
+      },
+      "line": "In 1937, Hitler welcomed Britain's ex-king, Edward VIII, to his mountain home.",
+      "fact": "Obersalzberg, 1937",
+      "where": {"place": "Obersalzberg, Germany", "lat": 47.631, "lon": 13.041},
+      "a_face": 6,
+      "b_face": 5
+    },
+    {
+      "a": "Edward VIII",
+      "b": "Elizabeth II",
+      "image": {
+        "file": "File:Duke and Duchess of Gloucester wedding.png"
+      },
+      "line": "Back in 1935, Edward joined his niece, Princess Elizabeth, at a royal wedding.",
+      "fact": "Buckingham Palace, 1935",
+      "where": {"place": "Buckingham Palace, London", "lat": 51.501, "lon": -0.142},
+      "a_face": 8,
+      "b_face": 3
+    },
+    {
+      "a": "Elizabeth II",
+      "b": "Barack Obama",
+      "image": {
+        "file": "File:Barack Obama Michelle Obama Queen Elizabeth II Buckingham Palace London.jpg"
+      },
+      "line": "In 2009, Queen Elizabeth welcomed Barack Obama to Buckingham Palace.",
+      "fact": "Buckingham Palace, 2009",
+      "where": {"place": "Buckingham Palace, London", "lat": 51.501, "lon": -0.142},
+      "a_face": 3,
+      "b_face": 0
+    },
+    {
+      "a": "Barack Obama",
+      "b": "Kal Penn",
+      "image": {
+        "file": "File:P030911PS-0607 (5610488753).jpg"
+      },
+      "line": "In 2011, Obama strolled the White House with his aide, actor Kal Penn.",
+      "fact": "White House, 2011",
+      "where": {"place": "White House", "lat": 38.897, "lon": -77.037},
+      "a_face": 2,
+      "b_face": 0
+    },
+    {
+      "a": "Kal Penn",
+      "b": "Jerry O'Connell",
+      "image": {
+        "file": "File:The cast of We Are Men 2013.jpg"
+      },
+      "line": "In 2013, Penn starred with Jerry O'Connell in the sitcom We Are Men.",
+      "fact": "We Are Men cast, 2013",
+      "where": {"place": "Los Angeles", "lat": 34.052, "lon": -118.244},
+      "a_face": 0,
+      "b_face": 4
+    },
+    {
+      "a": "Jerry O'Connell",
+      "b": "Tanner Novlan",
+      "image": {
+        "url": "https://i.ytimg.com/vi/gOBKcXlN4OI/maxresdefault.jpg",
+        "credit": "The Talk / CBS (YouTube)",
+        "license": "Fair use (commentary)",
+        "source": "https://www.youtube.com/watch?v=gOBKcXlN4OI"
+      },
+      "line": "In 2023, O'Connell welcomed Tanner Novlan, the insurance-ad actor, on The Talk.",
+      "fact": "The Talk, 2023",
+      "where": {"place": "CBS Studio Center, Studio City", "lat": 34.143, "lon": -118.389},
+      "a_face": 0,
+      "b_face": 1
+    },
+    {
+      "a": "Tanner Novlan",
+      "b": "Liberty Biberty",
+      "image": {
+        "url": "https://i.ytimg.com/vi/gRluOgYBRRA/maxresdefault.jpg",
+        "credit": "Liberty Mutual Insurance (YouTube)",
+        "license": "Fair use (commentary)",
+        "source": "https://www.youtube.com/watch?v=gRluOgYBRRA"
+      },
+      "line": "And in 2026, Novlan's old flubbed line came to life as Liberty Biberty.",
+      "fact": "Liberty Mutual ad, 2026",
+      "where": {"place": "Los Angeles", "lat": 34.052, "lon": -118.244},
+      "a_face": 0,
+      "b_face": [875, 400, 205, 190]
+    }
+  ]
+}

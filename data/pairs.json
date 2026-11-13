@@ -525,6 +525,14 @@
   "slug": "adolf-hitler-to-thomas-the-tank-engine"
  },
  {
+  "from": "Adolf Hitler",
+  "to": "Liberty Biberty",
+  "status": "done",
+  "source": "[#2] Hitler pairs (Nov 2026)",
+  "hint": "Edward VIII (Obersalzberg 1937) -> Elizabeth II (Gloucester wedding 1935) -> Obama (Buckingham Palace 2009) -> Kal Penn (White House 2011) -> Jerry O'Connell (We Are Men 2013) -> Tanner Novlan (The Talk 2023) -> Liberty Biberty (Liberty Mutual ad 2026)",
+  "slug": "adolf-hitler-to-liberty-biberty"
+ },
+ {
   "from": "Kim Jong Un",
   "to": "Mickey Mouse",
   "status": "done",
