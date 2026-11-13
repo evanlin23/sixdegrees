@@ -27,6 +27,9 @@ Follow `.claude/skills/six-degrees-episode/SKILL.md`. The owner's standing direc
 - **No dead air:** the question starts on frame 0, the voice never stops for more than ~2 s, and the video ends ~0.5 s after the last word. QA fails renders that break this (first word > 0.25 s, a gap > 2 s, > 1 s of silence at the end).
 - **Every episode is narrated** (Gemini, Achird voice), with no trending song.
 
+**The opening**
+- **The two opening pictures are the most recognisable photo of A and of B (owner, 2026-11-13), not crops from the chain photos.** Set `people.<name>.hook_photo` to an iconic, frontal photo. Characters and puppets need a solo image of the character with no human face in frame (renderer support for faceless characters: ASK on #200).
+
 **Formats**
 - The renderer picks the format from `data/style.json`; don't set `style` in episode.json unless [#1] asks.
 
