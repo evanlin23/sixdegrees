@@ -1,6 +1,6 @@
 # Consumer: uploads the oldest videos on the `queue` branch to YouTube. Started by cron-job.org (GitHub's own
 # `schedule:` has proven unreliable), like blocky-stories. Two modes:
-#   privacy=scheduled (the live setup: one cron-job.org run at 8:07 CT, max=3): private, published at the next free
+#   privacy=scheduled (the live setup: one cron-job.org run at 8:07 CT; schedules sixdeg.upload.PER_DAY = 4 a day): private, published at the next free
 #                     slots (~11:30, ~18:30, ~21:30 CT); first comments are posted by a later run once public
 #   privacy=public    (by hand, max=1): goes live now, sets the thumbnail, posts the first comment
 # Run it by hand from the Actions tab too.

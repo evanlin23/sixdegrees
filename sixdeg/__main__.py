@@ -132,6 +132,9 @@ def main(argv):
     elif cmd == "consume":
         from .queue import consume
         mx = int(args[args.index("--max") + 1]) if "--max" in args else 2
+        if os.environ.get("YT_PRIVACY", "scheduled") == "scheduled":   # the daily scheduling run fills every slot
+            from .upload import PER_DAY
+            mx = max(mx, PER_DAY)
         consume(mx, dry_run="--dry-run" in args)
     elif cmd == "make":
         from .episode import prep
