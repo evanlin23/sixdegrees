@@ -48,7 +48,7 @@
         "lat": 48.191,
         "lon": 16.381
       },
-      "line": "In 1940, Hitler met Mussolini's foreign minister, Galeazzo Ciano, in Vienna, as Hungary joined their pact.",
+      "line": "In 1940, Hitler met Mussolini's foreign minister, Galeazzo Ciano, in Vienna.",
       "a_face": [
         355,
         100,
@@ -74,7 +74,7 @@
         "lat": 41.9,
         "lon": 12.496
       },
-      "line": "In 1939, Ciano and Britain's foreign secretary, Lord Halifax, stood side by side at the Rome opera.",
+      "line": "In 1939, Ciano shared an opera box in Rome with Britain's Lord Halifax.",
       "a_face": 3,
       "b_face": 2
     },
@@ -90,7 +90,7 @@
         "lat": 51.503,
         "lon": -0.128
       },
-      "line": "In 1938, Halifax walked through London with Winston Churchill, his future rival for prime minister.",
+      "line": "In 1938, Halifax walked through London beside Winston Churchill.",
       "a_face": 2,
       "b_face": 1
     },
@@ -106,7 +106,7 @@
         "lat": 51.501,
         "lon": -0.142
       },
-      "line": "In 1953, Churchill was back as prime minister, serving the young Queen Elizabeth the Second.",
+      "line": "In 1953, Churchill was prime minister to the young Queen Elizabeth.",
       "a_face": 3,
       "b_face": 2
     },
@@ -122,7 +122,7 @@
         "lat": 51.484,
         "lon": -0.604
       },
-      "line": "In 2016, Queen Elizabeth hosted Barack and Michelle Obama for lunch at Windsor Castle.",
+      "line": "In 2016, the Queen hosted Barack and Michelle Obama at Windsor Castle.",
       "a_face": 1,
       "b_face": 3
     },
@@ -142,7 +142,7 @@
         "lat": 38.897,
         "lon": -77.037
       },
-      "line": "And in 2014, Michelle Obama posed at the White House with Cookie Monster.",
+      "line": "And in 2014, Michelle Obama posed for a photo with Cookie Monster.",
       "a_face": 4,
       "b_face": [
         562,
