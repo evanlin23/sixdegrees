@@ -4,10 +4,8 @@ tags). Beside it the infobox lists the date and who is pictured: B is "???" unti
 The image caption under it is the link's fact, cut before B's name until the reveal. Under the infobox data a small
 donation-style "ad" (Support Buhpedia: Like & Subscribe; no "Like" on sensitive links).
 
-Link to link is a click: in the last ~0.5 s of every link but the final one the article scrolls down fast to its
-"See also" section and everything blurs except one sharp, highlighted blue link: B's article (B is already revealed
-and is the next link's A). A cursor glides in and clicks it right before the cut, and the next article opens under a
-load bar. The core is still drawn on every frame (then blurred with the page); the next link's B never appears."""
+Link to link: the next article opens under a load bar (the owner dropped the scroll/blur/click-a-link transition
+as confusing). The core is still drawn on every frame (then blurred with the page); the next link's B never appears."""
 from __future__ import annotations
 
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
@@ -234,9 +232,8 @@ def make(ctx):
         def mount(b, X0, Y0, w, h):                    # the infobox image's thin border
             ImageDraw.Draw(b).rectangle([X0 - 3, Y0 - 3, X0 + w + 2, Y0 + h + 2], fill=(200, 204, 210))
         c = ctx.draw_core(base, seg, tt, WX, WY, SC, frame=mount)
-        dur = seg["t1"] - seg["t0"]
-        if i < ctx.n_links - 1 and local > dur - TR:                    # scroll, blur all but B's link, click
-            transition(base, i, ctx.link_names(i)[1], (local - (dur - TR)) / TR, local >= dur - CLICK)
+        # owner (Review Room): "maybe don't need the link, it's a bit confusing" -> no scroll/blur/click transition;
+        # the next article just loads under the blue load bar. (transition() kept, unused, in case it comes back.)
         if i > 0 and local < 0.4:                                       # the new article loads
             ImageDraw.Draw(base).rectangle([44, 402, 44 + int(994 * ctx.ease(min(1.0, local / 0.35))), 406],
                                            fill=BLUE)

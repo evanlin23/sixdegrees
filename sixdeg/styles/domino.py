@@ -3,7 +3,7 @@ screen: its top half is the core photo window (the shared camera, Buh, the red s
 spinner and divider run across, and the bottom half carries the link number in ivory pips plus a small gold
 "year · place" engraving (cut before B's name, like every on-screen text).
 
-Between links the tile itself falls: on the cut, a still of the previous tile (its last frame, Buh still on B's
+Between links the tile itself falls: on the cut, a still of the previous tile (its last frame, without Buh, B's
 head) tips forward toward the viewer in perspective, with gravity, and drops out of the bottom of the frame, showing
 the next tile already standing behind it, which takes a small "clack" jolt as the old one hits. The whole fall is
 over in the first FALL seconds of the link, while the core is still in its opening pixel-in, so it never delays the
@@ -177,7 +177,13 @@ def make(ctx):
         if key not in _c:
             sg = seg_of(i)
             im = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-            ctx.draw_core(im, {**sg, "cap": None}, sg["t1"] - 1 / 30, X0, Y0, S, frame=tile_frame(i))
+            # the photo window as it stood at the end of its link, WITHOUT Buh: the live Buh is already standing on
+            # the next photo, and two Buhs on screen during the fall looked wrong (owner: formats must be clean)
+            c = ctx.link_core({**sg, "cap": None}, sg["t1"] - 1 / 30)
+            cw, ch = c["size"]
+            w, h = int(cw * S), int(ch * S)
+            tile_frame(i)(im, int(X0), int(Y0), w, h)
+            im.alpha_composite(c["img"].resize((w, h), Image.BILINEAR), (int(X0), int(Y0)))
             _c[key] = im
         return _c[key]
 
