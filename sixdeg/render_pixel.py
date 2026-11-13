@@ -331,6 +331,15 @@ def render(slug: str, log=print) -> Path:
     (out_dir / "voice.json").write_text(json.dumps(vinfo))
     a, words = audio.say(hook, voice)
     HOOK_VO = 0.0    # the question starts on the very first frame
+    # owner: "the first word should always start the moment the video is scrolled to": trim any leading silence the
+    # TTS clip carries (keep 10 ms so the attack isn't clipped) and shift the caption word times to match
+    _a = np.abs(np.asarray(a, dtype=np.float32))
+    _on = np.flatnonzero(_a > max(1e-4, 0.03 * float(_a.max() or 1.0)))
+    _lead = max(0, int(_on[0]) - int(0.01 * audio.SR)) if len(_on) else 0
+    if _lead:
+        a = a[_lead:]
+        _sh = _lead / audio.SR
+        words = [(w, max(0.0, s0 - _sh), max(0.0, e0 - _sh)) for w, s0, e0 in words]
     # owner: "in the hook there cannot be any pauses, no dead space": link 1's voice follows the question at once
     # (the clip's own ~0.1 s tail + link 1's 0.08 s lead-in is the only breath; this used to hold +0.3 s of silence)
     d = max(len(a) / audio.SR - 0.06 + HOOK_VO, FF + RW + 1.3)
@@ -368,10 +377,11 @@ def render(slug: str, log=print) -> Path:
             if hit:
                 rv = max(REVEAL, (hit[0] + 0.08 - THROW + 0.15) / speech)
                 rv = min(rv, (speech - THROW - 0.1) / speech) if not last else min(rv, max(REVEAL, (speech - THROW - 0.3) / speech))
-        d = max(speech + 0.05, rv * speech + THROW + 1.2) if last else speech + PAD   # hold the payoff ~1 s (owner: "cutting too fast")
-        d = max(d, MIN_LINK)        # owner: the pace never speeds up; a short line still gets a full beat on screen
-        if last and narration and _durs:   # owner (Mario, twice): "still too fast at the end" -> the payoff link is
-            d = max(d, min(6.0, sum(_durs) / len(_durs)))   # never shorter than the links before it (capped)
+        # last link: cut ~0.5 s after the voice ends (owner: "we should just cut as soon as the voice is done"), but
+        # never before Buh has landed and CONNECTED! has stamped (~0.9 s after the landing)
+        d = max(speech + 0.5, rv * speech + THROW + 0.9) if last else speech + PAD
+        d = d if last else max(d, MIN_LINK)        # owner: the pace never speeds up; a short line still gets a full beat on screen
+        # (the "payoff link as long as the average" hold was removed: it left ~3 s of music with no voice at the end)
         if not link.get("lineage"):
             _durs.append(d)
         if last and STYLE == "board":

@@ -1,0 +1,163 @@
+{
+  "from": "Adolf Hitler",
+  "to": "Mr. Bean",
+  "title": "How is Hitler connected to Mr. Bean?",
+  "description": "Six real pictures connect Adolf Hitler to Mr. Bean, through Daladier, Léon Blum, Churchill, Queen Elizabeth II and Rowan Atkinson.",
+  "hook": "How is Adolf Hitler connected to Mr. Bean?",
+  "fun_fact": "After France fell, the Vichy regime put Édouard Daladier and Léon Blum on trial together at Riom in 1942, and both men were then held prisoner by the Nazis until 1945.",
+  "research_note": "The only photos of Daladier with King George VI, from the 1938 state visit and the King's 1939 trip to the front, survive as watermarked agency prints, so the chain leaves Daladier through his 1936 Popular Front rally with Léon Blum instead.",
+  "people": {
+    "Adolf Hitler": {
+      "label": "Adolf Hitler",
+      "short": "Hitler"
+    },
+    "Édouard Daladier": {
+      "label": "Édouard Daladier",
+      "short": "Daladier"
+    },
+    "Léon Blum": {
+      "label": "Léon Blum"
+    },
+    "Winston Churchill": {
+      "label": "Winston Churchill",
+      "short": "Churchill"
+    },
+    "Elizabeth II": {
+      "label": "Queen Elizabeth II",
+      "short": "Queen Elizabeth"
+    },
+    "Rowan Atkinson": {
+      "label": "Rowan Atkinson"
+    },
+    "Mr. Bean": {
+      "label": "Mr. Bean",
+      "wiki": "Mr. Bean (character)",
+      "hook_photo": "http://www.impawards.com/2007/posters/mr_beans_holiday_ver5_xlg.jpg"
+    }
+  },
+  "links": [
+    {
+      "a": "Adolf Hitler",
+      "b": "Édouard Daladier",
+      "image": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/9/9c/Bundesarchiv_Bild_183-R69173%2C_M%C3%BCnchener_Abkommen%2C_Staatschefs.jpg",
+        "credit": "Bundesarchiv, Bild 183-R69173 / CC-BY-SA 3.0",
+        "license": "CC BY-SA 3.0 de",
+        "source": "https://commons.wikimedia.org/wiki/File:Bundesarchiv_Bild_183-R69173,_M%C3%BCnchener_Abkommen,_Staatschefs.jpg",
+        "free": true
+      },
+      "line": "In 1938, French prime minister Édouard Daladier met Hitler in Munich to sign the Munich Agreement.",
+      "fact": "Munich, September 1938",
+      "where": {
+        "place": "Führerbau, Munich",
+        "lat": 48.1455,
+        "lon": 11.5658
+      },
+      "a_face": 4,
+      "b_face": 3
+    },
+    {
+      "a": "Édouard Daladier",
+      "b": "Léon Blum",
+      "image": {
+        "file": "File:Manifestation du Rassemblement Populaire au 14 juillet - la tribune officielle - M.M. Léon Blum, Delbos, Daladier, Thorez, Salengro, Spinasse, Violette, Cot etc... - btv1b9045892z.jpg"
+      },
+      "line": "In 1936, Daladier stood beside Prime Minister Léon Blum at a Bastille Day rally in Paris.",
+      "fact": "Bastille Day rally, 1936",
+      "where": {
+        "place": "Paris",
+        "lat": 48.8566,
+        "lon": 2.3522
+      },
+      "a_face": 7,
+      "b_face": 4
+    },
+    {
+      "a": "Léon Blum",
+      "b": "Winston Churchill",
+      "image": {
+        "file": "File:Léon Blum et Winston Churchill.jpg"
+      },
+      "line": "In 1939, Léon Blum lunched with Winston Churchill at Churchill's country home in Kent.",
+      "fact": "Westerham, Kent, May 1939",
+      "where": {
+        "place": "Chartwell, Westerham, Kent",
+        "lat": 51.2466,
+        "lon": 0.0886
+      },
+      "a_face": 0,
+      "b_face": 1
+    },
+    {
+      "a": "Winston Churchill",
+      "b": "Elizabeth II",
+      "image": {
+        "file": "File:Special Film Project 186 - Buckingham Palace 2.jpg"
+      },
+      "line": "In 1945, on Victory in Europe Day, Churchill joined young Princess Elizabeth on the palace balcony.",
+      "fact": "VE Day balcony, 1945",
+      "where": {
+        "place": "Buckingham Palace, London",
+        "lat": 51.5014,
+        "lon": -0.1419
+      },
+      "a_face": 2,
+      "b_face": 0
+    },
+    {
+      "a": "Elizabeth II",
+      "b": "Rowan Atkinson",
+      "image": {
+        "url": "https://www.thenationalnews.com/resizer/v2/ZV3VRLVMC5CO5IZLUZ3N4AI54U.jpg?auth=c3822913a868cbe8763f2dc151628d335d683ba0cad690c0a9be802f4150fce6&width=1600",
+        "credit": "WPA Pool / Getty Images (via The National)",
+        "license": "Fair use (commentary)",
+        "source": "https://www.thenationalnews.com/world/us-news/2022/09/08/queen-elizabeth-ii-meets-celebrities-in-pictures"
+      },
+      "line": "In 2012, Queen Elizabeth II met Rowan Atkinson at a palace party celebrating Charles Dickens.",
+      "fact": "Dickens reception, 2012",
+      "where": {
+        "place": "Buckingham Palace, London",
+        "lat": 51.5014,
+        "lon": -0.1419
+      },
+      "a_face": [
+        250,
+        200,
+        330,
+        400
+      ],
+      "b_face": 3
+    },
+    {
+      "a": "Rowan Atkinson",
+      "b": "Mr. Bean",
+      "image": {
+        "pair": [
+          {
+            "file": "File:Rowan Atkinson, 2011.jpg"
+          },
+          {
+            "url": "http://www.impawards.com/2007/posters/mr_beans_holiday_ver5_xlg.jpg",
+            "credit": "Universal Pictures / Working Title Films (via IMP Awards)",
+            "license": "Fair use (commentary)",
+            "source": "http://www.impawards.com/2007/mr_beans_holiday_ver5.html"
+          }
+        ]
+      },
+      "line": "And in 1990, Rowan Atkinson first became Mr. Bean himself.",
+      "fact": "Mr. Bean debuts, 1990",
+      "where": {
+        "place": "Johnny English Reborn premiere, Sydney",
+        "lat": -33.8688,
+        "lon": 151.2093
+      },
+      "a_face": 0,
+      "b_face": [
+        1300,
+        120,
+        400,
+        330
+      ]
+    }
+  ]
+}
