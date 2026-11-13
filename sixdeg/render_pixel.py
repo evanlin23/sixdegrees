@@ -331,7 +331,9 @@ def render(slug: str, log=print) -> Path:
     (out_dir / "voice.json").write_text(json.dumps(vinfo))
     a, words = audio.say(hook, voice)
     HOOK_VO = 0.0    # the question starts on the very first frame
-    d = max(len(a) / audio.SR + 0.3 + HOOK_VO, FF + RW + 1.3)
+    # owner: "in the hook there cannot be any pauses, no dead space": link 1's voice follows the question at once
+    # (the clip's own ~0.1 s tail + link 1's 0.08 s lead-in is the only breath; this used to hold +0.3 s of silence)
+    d = max(len(a) / audio.SR - 0.06 + HOOK_VO, FF + RW + 1.3)
     if not narration:
         d = 3.0                     # the reference hits all hold the intro card for about 3 s
     segs.append({"kind": "hook", "t0": t, "t1": t + d, "cap": PixelCaptions(words, t + HOOK_VO)})
