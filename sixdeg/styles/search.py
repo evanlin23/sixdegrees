@@ -1,10 +1,13 @@
-"""Search engine skin around the show's core: a fictional picture search ("Searchly"). "<A> and " types into the
-search box, and the top picture result IS the core window (camera, Buh, red string, name tags). At the reveal B's
-name finishes typing, the result gets a selection ring and its title completes. A column of related pictures (this
-photo's crops and earlier links' photos) sits beside it. Nothing names B before the reveal."""
+"""Search engine skin around the show's core: the show's own picture search ("Buh Search", the channel avatar,
+Buh the red pin, as its logo). "<A> and " types into the search box, and the top picture result IS the core window
+(camera, Buh, red string, name tags). At the reveal B's name finishes typing, the result gets a selection ring and
+its title completes. A column of related pictures (this photo's crops and earlier links' photos) sits beside it.
+Nothing names B before the reveal."""
 from __future__ import annotations
 
 from PIL import Image, ImageDraw, ImageFont
+
+from ..common import ROOT
 
 NAME = "search"
 
@@ -18,6 +21,7 @@ PURPLE = (92, 60, 220)
 INKT = (32, 33, 36)
 GREY = (95, 99, 104)
 LIGHT = (218, 220, 224)
+AVATAR = ROOT / "branding" / "avatar-purple.png"
 
 
 def make(ctx):
@@ -56,10 +60,18 @@ def make(ctx):
             return _cache["bg"]
         im = Image.new("RGBA", (ctx.W, ctx.H), (255, 255, 255, 255))
         d = ImageDraw.Draw(im)
-        # our own mark: a purple rounded tile with an "S" and a yellow dot
-        d.rounded_rectangle([TX0, BOX[1] + 2, TX0 + 76, BOX[3] - 2], 20, fill=PURPLE)
-        d.text((TX0 + 38, (BOX[1] + BOX[3]) / 2 - 2), "S", font=F(46, "Black"), fill=(255, 255, 255), anchor="mm")
-        d.ellipse([TX0 + 56, BOX[3] - 22, TX0 + 68, BOX[3] - 10], fill=(255, 190, 0))
+        # our own mark: the channel avatar (Buh, the red pin) in a rounded tile
+        n = BOX[3] - BOX[1] - 4
+        try:
+            av = Image.open(AVATAR).convert("RGBA")
+            s_ = av.width
+            av = av.crop((int(s_ * 0.16), int(s_ * 0.08), int(s_ * 0.84), int(s_ * 0.76)))
+            av = av.resize((n, n), Image.NEAREST if av.width % n == 0 else Image.LANCZOS)
+        except OSError:                                  # no branding file: Buh's sprite on the purple tile
+            av = Image.new("RGBA", (n, n), PURPLE + (255,))
+            pin = ctx.pin_sprite("happy", scale=1)
+            av.alpha_composite(pin, ((n - pin.width) // 2, (n - pin.height) // 2))
+        im.alpha_composite(rounded(av, 20), (TX0, BOX[1] + 2))
         d.rounded_rectangle([BOX[0] + 2, BOX[1] + 5, BOX[2] + 2, BOX[3] + 5], 40, fill=(226, 228, 232))
         d.rounded_rectangle(BOX, 40, fill=(255, 255, 255), outline=LIGHT, width=2)
         cy = (BOX[1] + BOX[3]) / 2

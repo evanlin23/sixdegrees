@@ -3,7 +3,11 @@ frame on a red damask wall, under a picture light, with a wall label above it (n
 until the reveal, then a glint runs across the label). Between links the camera walks along the wall: the finished
 picture slides off to the left as a still in its frame and the next one comes in from the right. A link with a
 sensitive person (dictators etc.) hangs in a plain dark archive frame with no picture light and a grey label: no
-honour framing, no gold."""
+honour framing, no gold.
+The room is furnished like a real gallery, all on the wall strip so it walks with the camera: neighbouring paintings
+(made-up landscapes, never people) peek in at both edges, a marble plinth with a vase and a small room plaque stands
+on the right, and on the floor a red velvet rope on brass stanchions and a gallery bench, all below the captions and
+the Subscribe button and never over the photo window."""
 from __future__ import annotations
 
 import math
@@ -162,6 +166,103 @@ def make(ctx):
         st[key] = im
         return im
 
+    # ---------- gallery furniture, drawn into the wall strip (it is dimmed x0.55 at frame time: colours run bright)
+    def neighbour(kind):
+        """A small made-up painting in a thin gilt frame (no people): 0 dusk landscape, 1 seascape, 2 still life."""
+        fw, fh, b = 300, 380, 22
+        im = Image.new("RGB", (fw, fh), (60, 40, 20))
+        d = ImageDraw.Draw(im)
+        for k, col in enumerate(((120, 80, 30), (230, 190, 110), (200, 156, 80), (150, 104, 44))):
+            d.rectangle([k * 5, k * 5, fw - 1 - k * 5, fh - 1 - k * 5], outline=col, width=5)
+        x0, y0, x1, y1 = b, b, fw - b, fh - b
+        cw, ch = x1 - x0, y1 - y0
+        cv = Image.new("RGB", (cw, ch))
+        cd = ImageDraw.Draw(cv)
+        if kind == 0:
+            for yy in range(ch):                       # dusk sky into hills
+                u = yy / ch
+                cd.line([(0, yy), (cw, yy)], fill=(int(250 - 90 * u), int(180 - 60 * u), int(120 + 40 * u)))
+            cd.ellipse([cw * 0.55, ch * 0.30, cw * 0.80, ch * 0.30 + cw * 0.25], fill=(255, 236, 170))
+            cd.polygon([(0, ch * 0.62), (cw * 0.35, ch * 0.48), (cw * 0.7, ch * 0.6), (cw, ch * 0.52), (cw, ch), (0, ch)], fill=(110, 130, 80))
+            cd.polygon([(0, ch * 0.78), (cw * 0.5, ch * 0.66), (cw, ch * 0.8), (cw, ch), (0, ch)], fill=(70, 96, 54))
+            for tx in (0.18, 0.26, 0.8):               # cypress trees
+                cd.ellipse([cw * tx - 9, ch * 0.52, cw * tx + 9, ch * 0.74], fill=(40, 64, 36))
+        elif kind == 1:
+            cd.rectangle([0, 0, cw, ch * 0.55], fill=(150, 190, 220))
+            cd.ellipse([cw * 0.1, ch * 0.12, cw * 0.5, ch * 0.24], fill=(236, 240, 244))
+            cd.rectangle([0, ch * 0.55, cw, ch], fill=(40, 90, 130))
+            for k in range(7):
+                yy = ch * (0.6 + 0.055 * k)
+                cd.arc([cw * (k % 3) * 0.3 - 20, yy - 8, cw * (k % 3) * 0.3 + 70, yy + 12], 200, 340, fill=(200, 226, 240), width=3)
+            cd.polygon([(cw * 0.55, ch * 0.54), (cw * 0.62, ch * 0.3), (cw * 0.62, ch * 0.54)], fill=(244, 236, 220))
+            cd.rectangle([cw * 0.5, ch * 0.54, cw * 0.72, ch * 0.58], fill=(110, 60, 30))
+        else:
+            cd.rectangle([0, 0, cw, ch], fill=(70, 46, 40))
+            cd.rectangle([0, ch * 0.66, cw, ch], fill=(140, 96, 60))
+            cd.polygon([(cw * 0.3, ch * 0.66), (cw * 0.36, ch * 0.4), (cw * 0.5, ch * 0.32), (cw * 0.64, ch * 0.4), (cw * 0.7, ch * 0.66)], fill=(70, 110, 150))
+            for fx_, fy_, col in ((0.42, 0.24, (230, 80, 60)), (0.56, 0.2, (250, 210, 90)), (0.5, 0.28, (240, 240, 230))):
+                cd.ellipse([cw * fx_ - 22, ch * fy_ - 22, cw * fx_ + 22, ch * fy_ + 22], fill=col)
+            for fx_ in (0.2, 0.8):
+                cd.ellipse([cw * fx_ - 26, ch * 0.62, cw * fx_ + 26, ch * 0.72], fill=(220, 150, 50))
+        im.paste(cv, (x0, y0))
+        return im
+
+    def furnish(arr):
+        """Neighbour paintings, a plinth with a vase + plaque, velvet rope on stanchions and a bench, every STEP."""
+        im = Image.fromarray(arr)
+        d = ImageDraw.Draw(im)
+        WW = im.width
+        brass = [(140, 96, 30), (230, 180, 80), (255, 230, 150)]
+        for k in range(-1, WW // STEP + 2):
+            bx = k * STEP + W // 2                     # where a main picture hangs on the strip
+            # neighbour painting between two main pictures: peeks in at the screen edges when the camera rests
+            npic = neighbour(k % 3)
+            nx = bx + STEP // 2 - npic.width // 2
+            d.rectangle([nx + 10, 470 + 14, nx + npic.width + 14, 470 + npic.height + 18], fill=(30, 8, 12))
+            im.paste(npic, (nx, 470))
+            # plinth + vase on the right, against the wall
+            px0, px1, pt = bx + 395, bx + 525, FLOOR - 170
+            d.rectangle([px0 + 10, pt + 10, px1 + 14, FLOOR + 8], fill=(30, 10, 14))
+            d.rectangle([px0, pt, px1, FLOOR], fill=(236, 230, 220))
+            d.rectangle([px0 - 8, pt - 14, px1 + 8, pt], fill=(250, 246, 238))
+            d.rectangle([px0 - 8, FLOOR - 14, px1 + 8, FLOOR], fill=(214, 206, 194))
+            d.line([px1 - 10, pt, px1 - 10, FLOOR - 14], fill=(200, 194, 184), width=6)        # shaded side
+            d.rectangle([px0 + 22, pt + 40, px1 - 22, pt + 72], fill=brass[0])                 # room plaque
+            d.rectangle([px0 + 25, pt + 43, px1 - 25, pt + 69], fill=brass[1])
+            d.text(((px0 + px1) / 2, pt + 56), "HALL OF LINKS", font=font("Bold", 11), fill=(70, 44, 10), anchor="mm")
+            vx, vb = (px0 + px1) / 2, pt - 14          # an amphora, terracotta with a black band
+            d.polygon([(vx - 16, vb), (vx - 34, vb - 40), (vx - 38, vb - 70), (vx - 24, vb - 100), (vx - 12, vb - 112),
+                       (vx - 16, vb - 124), (vx + 16, vb - 124), (vx + 12, vb - 112), (vx + 24, vb - 100), (vx + 38, vb - 70),
+                       (vx + 34, vb - 40), (vx + 16, vb)], fill=(214, 120, 64), outline=(60, 24, 10))
+            d.rectangle([vx - 37, vb - 74, vx + 37, vb - 58], fill=(40, 24, 20))
+            for hx in (-1, 1):
+                d.arc([vx + hx * 30 - 14, vb - 118, vx + hx * 30 + 14, vb - 86], 0, 360, fill=(60, 24, 10), width=4)
+            # velvet rope on brass stanchions, in front of the main picture
+            posts = (bx - 330, bx + 330)
+            top_y, base_y = FLOOR - 40, FLOOR + 110
+            for sx_ in posts:
+                d.ellipse([sx_ - 36, base_y - 10, sx_ + 36, base_y + 14], fill=(40, 20, 10))   # shadow
+                d.ellipse([sx_ - 30, base_y - 14, sx_ + 30, base_y + 6], fill=brass[1], outline=brass[0], width=3)
+                d.rectangle([sx_ - 7, top_y, sx_ + 7, base_y - 6], fill=brass[1], outline=brass[0], width=2)
+                d.line([sx_ - 2, top_y + 4, sx_ - 2, base_y - 10], fill=brass[2], width=3)
+                d.ellipse([sx_ - 13, top_y - 22, sx_ + 13, top_y + 4], fill=brass[1], outline=brass[0], width=2)
+                d.ellipse([sx_ - 6, top_y - 17, sx_ + 1, top_y - 10], fill=brass[2])
+            rope = [(posts[0] + (posts[1] - posts[0]) * q / 40,
+                     top_y + 4 + 70 * math.sin(math.pi * q / 40)) for q in range(41)]
+            d.line(rope, fill=(70, 6, 16), width=16, joint="curve")
+            d.line(rope, fill=(196, 30, 52), width=10, joint="curve")
+            d.line([(x, y - 3) for x, y in rope], fill=(240, 90, 100), width=2)
+            # a gallery bench, front centre (dark leather on a wooden frame)
+            bl, br, by = bx - 250, bx + 250, H - 150
+            d.rectangle([bl + 14, by + 20, br + 14, by + 64], fill=(40, 22, 12))
+            for lx_ in (bl + 26, br - 46):
+                d.rectangle([lx_, by + 30, lx_ + 20, by + 120], fill=(110, 66, 34), outline=(50, 28, 14), width=2)
+            d.rounded_rectangle([bl, by, br, by + 44], 14, fill=(64, 48, 40), outline=(26, 16, 12), width=3)
+            d.line([bl + 16, by + 10, br - 16, by + 10], fill=(120, 96, 82), width=4)
+            for tx_ in range(bl + 60, br - 40, 80):    # tufting buttons
+                d.ellipse([tx_ - 4, by + 22, tx_ + 4, by + 30], fill=(30, 20, 16))
+        return np.asarray(im.convert("RGB")).copy()
+
     # ---------- wall + floor: a wide strip that scrolls as the camera walks
     def wall():
         if "wall" in st:
@@ -200,7 +301,7 @@ def make(ctx):
                 fl[ys.start - FLOOR:ys.stop - FLOOR, x:x + 2] = (70, 40, 22)
         shade = (0.55 + 0.45 * ((fy - FLOOR) / (H - FLOOR)) ** 0.7)[:, None, None]
         img[FLOOR:] = fl * shade
-        st["wall"] = img.clip(0, 255).astype(np.uint8)
+        st["wall"] = furnish(img.clip(0, 255).astype(np.uint8))
         # picture light: a scalloped pool of light over a frame (gain map, centred, moves with the frame)
         gy, gx = np.mgrid[0:H, -700:700].astype(np.float32)
         top = 300 + 0.0012 * gx ** 2

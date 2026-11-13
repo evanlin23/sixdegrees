@@ -1,10 +1,10 @@
 """Web browser skin around the show's core: a dark browser window (tab strip, address bar, a load bar on every new
 link) shows a fictional photo-archive page whose hero picture IS the core window (camera, Buh, red string, name
-tags). The tab title and the address name A until Buh lands on B, then B is appended. The page's headline under the
-photo is the link's fact, cut before B's name until the reveal. Generic chrome: no real browser's or site's brand."""
+tags). The tab title names A until Buh lands on B, then B is appended; the address is a playful hidden message on
+the show's own domain (buh.connects/subscribe-if-you-read-this ...), different per link and never naming B. The
+page's headline under the photo is the link's fact, cut before B's name until the reveal. Generic chrome: no real
+browser's or site's brand."""
 from __future__ import annotations
-
-import re
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -23,11 +23,12 @@ TXT = (232, 234, 240)
 DIM = (150, 154, 166)
 PAGE = (244, 241, 234)                 # warm archive paper
 ACCENT = (190, 60, 50)
-SITE = "photo-archive.example"
-
-
-def slug(s):
-    return re.sub(r"[^a-z0-9]+", "-", s.lower()).strip("-")
+SITE = "buh.connects"
+PATHS = [                              # the address is a little hidden message, one per link (never B's name)
+    "/subscribe-if-you-read-this", "/who-is-next/comment-below", "/the-pin-knows", "/buh-was-here",
+    "/hi-mom/im-on-a-short", "/you-found-the-secret-url", "/six-degrees-or-less", "/pause-more-often",
+    "/tell-a-friend-about-buh", "/the-red-string-never-lies",
+]
 
 
 def make(ctx):
@@ -100,18 +101,11 @@ def make(ctx):
         lx = f0 + 22                                                                        # lock
         d.rounded_rectangle([lx, acy - 3, lx + 18, acy + 12], 3, fill=DIM)
         d.arc([lx + 3, acy - 13, lx + 15, acy + 3], 180, 360, fill=DIM, width=3)
-        path = f"/{yr}/" if yr else "/photo/"
-        url_a = f"{SITE}{path}{slug(label(an))}-and-"
-        url_b = slug(label(bn)) if revealed else ""
+        path = PATHS[i % len(PATHS)]
         uf = F(24, "Medium")
-        full, room = url_a + url_b, FR[2] - 60 - (lx + 34)
-        tail = full[len(SITE):]
-        while uf.getlength(SITE + "/…" + tail) > room and len(tail) > 1 and uf.getlength(full) > room:
-            tail = tail[1:]                              # long address: keep its end (B's name) in view
-        if tail != full[len(SITE):]:
-            full = SITE + "/…" + tail
-        d.text((lx + 34, acy), full[:len(SITE)], font=uf, fill=TXT, anchor="lm")
-        d.text((lx + 34 + uf.getlength(full[:len(SITE)]), acy), full[len(SITE):], font=uf, fill=DIM, anchor="lm")
+        path = clip(path, uf, FR[2] - 60 - (lx + 34) - uf.getlength(SITE))
+        d.text((lx + 34, acy), SITE, font=uf, fill=TXT, anchor="lm")
+        d.text((lx + 34 + uf.getlength(SITE), acy), path, font=uf, fill=DIM, anchor="lm")
         # page: site header (ours), then the hero picture slot, then the headline under it
         d.text((FR[0] + 30, PAGE_Y + 30), "THE PHOTO ARCHIVE", font=F(22, "Black"), fill=ACCENT, anchor="lm")
         for k in range(3):                                                                  # menu icon
