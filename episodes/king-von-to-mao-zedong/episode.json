@@ -2,9 +2,11 @@
   "from": "King Von",
   "to": "Mao Zedong",
   "requested_by": "@coreychen7092",
-  "title": "King Von to Chairman Mao takes only five photos",
+  "title": "How is King Von linked to Mao Zedong?",
   "description": "Five real photos link Chicago rapper King Von to Mao Zedong, through Lil Durk, Kanye West, Donald Trump and Henry Kissinger.",
-  "hook": "How is King Von connected to Mao Zedong?",
+  "hook": "How's King Von linked to Mao Zedong?",
+  "hook_variant": "A",
+  "text_variant": "T0",
   "people": {
     "Kanye West": {
       "label": "Kanye West"
@@ -20,7 +22,7 @@
         "license": "Fair use (commentary)",
         "source": "https://hotnewhiphop.com/343484-lil-durk-pays-tribute-to-king-von-by-livestreaming-his-music-news"
       },
-      "line": "In 2018, Lil Durk signed King Von to his label, Only the Family, and the two Chicago rappers became inseparable.",
+      "line": "In 2018, Chicago rapper King Von signed to Lil Durk's label.",
       "a_face": 5,
       "b_face": 3
     },
@@ -33,7 +35,7 @@
         "license": "Fair use (commentary)",
         "source": "https://www.booska-p.com/musique/actualites/lil-durk-en-arabie-saoudite-avec-kanye-west/"
       },
-      "line": "Durk idolizes Kanye West, even naming a 2021 song after him, and the two have hung out.",
+      "line": "In 2021, Durk named a song after his idol, Kanye West.",
       "a_face": 0,
       "b_face": 1
     },
@@ -46,7 +48,7 @@
         "license": "Fair use (commentary)",
         "source": "https://abc7ny.com/post/kanye-west-meets-with-donald-trump-in-nyc/1653731/"
       },
-      "line": "In December 2016, Kanye visited the newly elected Donald Trump at Trump Tower in New York."
+      "line": "In December 2016, Kanye visited the newly elected Donald Trump at Trump Tower."
     },
     {
       "a": "Donald Trump",
@@ -54,7 +56,7 @@
       "image": {
         "file": "File:President Trump Meets with Henry Kissinger (33787724293).jpg"
       },
-      "line": "Months later, President Trump hosted Henry Kissinger, the diplomat who opened America's door to China.",
+      "line": "Months later, Trump hosted Henry Kissinger, who opened America's door to China.",
       "a_face": 2,
       "b_face": 1
     },
@@ -64,7 +66,7 @@
       "image": {
         "file": "File:Kissinger, Ford and Mao, 1975 A7912.jpg"
       },
-      "line": "And in 1975 in Beijing, Kissinger shook hands with Chairman Mao Zedong himself.",
+      "line": "And back in 1975 in Beijing, Kissinger shook hands with Mao Zedong.",
       "a_face": 2,
       "b_face": 0
     }
