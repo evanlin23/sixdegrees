@@ -1,13 +1,22 @@
 {
   "from": "Vladimir Lenin",
   "to": "Minions",
-  "title": "Lenin to the Minions in five links",
+  "title": "How is Lenin connected to the Minions?",
   "description": "The line of Kremlin leaders, a summit, a window knock on the Oval Office, two comedians and a Paris premiere connect Vladimir Lenin to the Minions.",
-  "hook": "How is Vladimir Lenin connected to the Minions?",
+  "hook": "How is Lenin connected to the Minions?",
+  "hook_variant": "F",
+  "text_variant": "T0",
   "people": {
     "Minions": {
       "wiki": "Minions (Despicable Me)",
-      "label": "Minions"
+      "label": "Minions",
+      "hook_photo": "https://static.wikia.nocookie.net/despicableme/images/f/f0/DM3_Minions_.jpg/revision/latest?cb=20230531232107&format=original",
+      "hook_box": [
+        280,
+        540,
+        250,
+        200
+      ]
     }
   },
   "links": [
@@ -54,7 +63,7 @@
           }
         ]
       },
-      "line": "Lenin founded the Soviet state in 1917, and the line of Kremlin leaders runs to Vladimir Putin."
+      "line": "Since 1917, the Kremlin has passed from Lenin down to Vladimir Putin."
     },
     {
       "a": "Vladimir Putin",
@@ -62,7 +71,7 @@
       "image": {
         "file": "File:Vladimir Putin and Barack Obama (2015-09-29) 01.jpg"
       },
-      "line": "In 2015, Putin met President Barack Obama at the United Nations in New York."
+      "line": "In 2015, Putin met Barack Obama at the United Nations."
     },
     {
       "a": "Barack Obama",
@@ -70,7 +79,7 @@
       "image": {
         "file": "File:Jerry Seinfeld knocks on the Oval Office window.jpg"
       },
-      "line": "That December, Jerry Seinfeld knocked on Obama's Oval Office window to film Comedians in Cars Getting Coffee."
+      "line": "That December, Jerry Seinfeld knocked on Obama's Oval Office window for his show."
     },
     {
       "a": "Jerry Seinfeld",
@@ -81,7 +90,7 @@
         "license": "Fair use (commentary)",
         "source": "https://brioux.tv/blog/2017/07/28/jfl35-seinfeld-and-elmaleh-face-off-at-bell-centre/"
       },
-      "line": "In 2017, Seinfeld shared a Montreal stage with his friend, French comedian Gad Elmaleh.",
+      "line": "In 2017, Seinfeld shared a Montreal stage with French comedian Gad Elmaleh.",
       "a_face": 1,
       "b_face": 0
     },
@@ -94,7 +103,7 @@
         "license": "Fair use (commentary)",
         "source": "https://mulderville.net/en/events/1787/minions-the-rise-of-gru-discover-the-official-photos-of-the-paris-premiere"
       },
-      "line": "And Elmaleh, the French voice of Gru, posed with the Minions at their 2022 Paris premiere.",
+      "line": "And in 2022, Elmaleh, Gru's French voice, posed with the Minions.",
       "a_face": 0,
       "b_face": [
         80,
