@@ -120,15 +120,15 @@
       "a": "Charles III",
       "b": "Christopher Nolan",
       "image": {
-        "url": "https://pbs.twimg.com/media/GfF932wWgAIV0bu.jpg?name=orig",
-        "credit": "The Royal Family on X",
+        "url": "https://wsrv.nl/?url=https%3A%2F%2Fpbs.twimg.com%2Fmedia%2FGfF932wWgAIV0bu%3Fformat%3Djpg%26name%3Dorig&cx=1080&cy=420&cw=1600&ch=1200&output=jpg&q=92",
+        "credit": "The Royal Family on X (Jordan Pettitt/PA), cropped",
         "license": "Fair use (commentary)",
         "source": "https://x.com/RoyalFamily/status/1869414467483926947"
       },
       "line": "In 2024, Charles knighted the film director Christopher Nolan at Buckingham Palace.",
       "fact": "Buckingham Palace, 2024",
-      "a_face": 2,
-      "b_face": 5,
+      "a_face": 1,
+      "b_face": 4,
       "where": {
         "place": "Buckingham Palace",
         "lat": 51.501,
@@ -139,19 +139,19 @@
       "a": "Christopher Nolan",
       "b": "Benny Safdie",
       "image": {
-        "url": "https://edge.sitecorecloud.io/directorsguf4d4-dga2c79-dgaprod1615-f6e3/media/Images/Landscape-Images/Events-Images/2025/011-Nov2025/REPix002/SmashingMachine-002LA.jpg",
-        "credit": "Elisa Haber / Directors Guild of America",
+        "url": "https://pbs.twimg.com/media/GDFS_3KWcAAiI-7.jpg?name=orig",
+        "credit": "Roy Rochlin/Getty Images for Paramount+ with Showtime (via Consequence on X)",
         "license": "Fair use (commentary)",
-        "source": "https://www.dga.org/events/2025/november2025/smashingmachine_qna_1025"
+        "source": "https://x.com/consequence/status/1743265848247107809"
       },
-      "line": "In 2025, Nolan interviewed his Oppenheimer actor, Benny Safdie, on stage.",
-      "fact": "DGA Theater, 2025",
-      "a_face": 0,
-      "b_face": 1,
+      "line": "That year, Nolan interviewed his Oppenheimer actor, Benny Safdie, in New York.",
+      "fact": "New York, 2024",
+      "a_face": 1,
+      "b_face": 0,
       "where": {
-        "place": "DGA Theater, Los Angeles",
-        "lat": 34.098,
-        "lon": -118.364
+        "place": "New York City",
+        "lat": 40.764,
+        "lon": -73.983
       }
     },
     {
@@ -181,5 +181,5 @@
     }
   ],
   "fun_fact": "Benny Safdie is on screen as Agamemnon for only about four minutes, yet fans crowned his helmeted king the champion of aura farming.",
-  "research_note": "A 1926 museum photo of Sven Hedin with Sweden's crown prince opened the Swedish royal line down to King Charles, who knighted Christopher Nolan; Nolan then interviewed Benny Safdie at the Directors Guild in 2025."
+  "research_note": "A 1926 museum photo of Sven Hedin with Sweden's crown prince opened the Swedish royal line down to King Charles, who knighted Christopher Nolan; Nolan had hosted a Q&A with Benny Safdie for The Curse earlier that year."
 }
