@@ -1,0 +1,118 @@
+{
+  "from": "Adolf Hitler",
+  "to": "Big Bird",
+  "title": "How is Hitler connected to Big Bird?",
+  "description": "Five real photos connect Adolf Hitler to Big Bird from Sesame Street, through Hungary's regent, a future pope, a president and a first lady.",
+  "hook": "How is Adolf Hitler connected to Big Bird?",
+  "fun_fact": "At the 1970 diplomats' children's Christmas party, Pat Nixon reportedly walked the East Room with two of Big Bird's yellow feathers tucked into her diamond brooch.",
+  "research_note": "Horthy's free photo with Cardinal Pacelli opens the way west; Pius XII also received the Nixons in 1957, but no free photo of that audience turned up, so the chain crosses through his 1956 audience with Harry Truman.",
+  "people": {
+    "Adolf Hitler": {
+      "label": "Adolf Hitler"
+    },
+    "Miklós Horthy": {
+      "label": "Miklós Horthy",
+      "short": "Horthy"
+    },
+    "Pope Pius XII": {
+      "label": "Pope Pius XII",
+      "short": "Pius XII"
+    },
+    "Harry S. Truman": {
+      "label": "Truman"
+    },
+    "Pat Nixon": {
+      "label": "Pat Nixon"
+    },
+    "Big Bird": {
+      "label": "Big Bird"
+    }
+  },
+  "links": [
+    {
+      "a": "Adolf Hitler",
+      "b": "Miklós Horthy",
+      "image": {
+        "file": "File:Miklós Horthy and Adolf Hitler 1938.jpg"
+      },
+      "fact": "Kiel, August 1938",
+      "line": "In 1938, Hitler hosted Hungary's regent, Admiral Miklós Horthy, for a warship launch in Kiel.",
+      "a_face": 1,
+      "b_face": 0,
+      "where": {
+        "place": "Kiel, Germany",
+        "lat": 54.315,
+        "lon": 10.132
+      }
+    },
+    {
+      "a": "Miklós Horthy",
+      "b": "Pope Pius XII",
+      "image": {
+        "file": "File:Horthy Miklós és Eugenio Pacelli a Keleti pályaudvaron (Képes Pesti Hírlap, 1938).jpg"
+      },
+      "fact": "Budapest station, 1938",
+      "line": "In 1938, Horthy greeted Cardinal Pacelli, the future Pope Pius XII, at a Budapest train station.",
+      "a_face": 1,
+      "b_face": 2,
+      "where": {
+        "place": "Keleti station, Budapest",
+        "lat": 47.5,
+        "lon": 19.084
+      }
+    },
+    {
+      "a": "Pope Pius XII",
+      "b": "Harry S. Truman",
+      "image": {
+        "file": "File:Pius XII with Harry and Bess Truman, in the Vatican, 1956.jpg"
+      },
+      "fact": "Vatican, 1956",
+      "line": "In 1956, Pope Pius XII received former president Harry Truman and his wife Bess at the Vatican.",
+      "a_face": 1,
+      "b_face": 0,
+      "where": {
+        "place": "Vatican City",
+        "lat": 41.904,
+        "lon": 12.453
+      }
+    },
+    {
+      "a": "Harry S. Truman",
+      "b": "Pat Nixon",
+      "image": {
+        "file": "File:President Richard Nixon plays the piano at the Truman Library.jpg"
+      },
+      "fact": "Truman Library, 1969",
+      "line": "In 1969, Truman and first lady Pat Nixon watched President Nixon play piano at the Truman Library.",
+      "a_face": 2,
+      "b_face": 1,
+      "where": {
+        "place": "Truman Library, Independence, Missouri",
+        "lat": 39.104,
+        "lon": -94.416
+      }
+    },
+    {
+      "a": "Pat Nixon",
+      "b": "Big Bird",
+      "image": {
+        "file": "File:Pat Nixon and Big Bird.jpg"
+      },
+      "fact": "White House, 1970",
+      "line": "And in 1970, at a White House Christmas party, Pat Nixon met Big Bird.",
+      "a_face": 0,
+      "b_face": [
+        190,
+        930,
+        320,
+        320
+      ],
+      "where": {
+        "place": "White House, Washington, D.C.",
+        "lat": 38.897,
+        "lon": -77.036
+      }
+    }
+  ]
+}

@@ -605,6 +605,14 @@
   "slug": "joseph-stalin-to-steve"
  },
  {
+  "from": "Adolf Hitler",
+  "to": "Big Bird",
+  "status": "done",
+  "source": "[#2] Hitler pairs (Nov 2026)",
+  "hint": "Horthy, Cardinal Pacelli (Pius XII), Harry Truman, Pat Nixon (1970 White House Christmas party)",
+  "slug": "adolf-hitler-to-big-bird"
+ },
+ {
   "from": "Pablo Escobar",
   "to": "Winnie the Pooh",
   "status": "done",
