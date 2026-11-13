@@ -21,13 +21,14 @@
         "source": "https://www.hot97.com/news/president-donald-trump-responds-to-diddy-pardon-allegations/"
       },
       "line": "In 1998, Diddy and Donald Trump posed together at a celebrity polo match in the Hamptons.",
+      "where": {"place": "The Hamptons, New York", "lat": 40.94, "lon": -72.3},
       "a_face": 5,
       "b_face": 6
     },
     {
       "a": "Donald Trump",
       "b": "George Washington",
-      "line": "From Trump, the line of presidents runs all the way back to George Washington.",
+      "line": "And in 2025, Trump became the 47th president, in a line going back to George Washington.",
       "fact": "Every president, 47th to 1st",
       "lineage": {
         "label": "LINE OF PRESIDENTS",
