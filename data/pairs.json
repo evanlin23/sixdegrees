@@ -461,6 +461,14 @@
   "views_nov2026": 2190
  },
  {
+  "from": "Adolf Hitler",
+  "to": "Michael Jackson",
+  "status": "done",
+  "source": "[#2] Hitler pairs (Nov 2026)",
+  "hint": "Hitler > Petain (Montoire 1940) > Mitterrand (Vichy 1942) > Reagan (Yorktown 1981) > Michael Jackson (White House 1984)",
+  "slug": "adolf-hitler-to-michael-jackson"
+ },
+ {
   "from": "Joseph Stalin",
   "to": "Sophie Rain",
   "status": "done",
