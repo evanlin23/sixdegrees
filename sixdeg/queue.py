@@ -185,7 +185,10 @@ def _people(title: str) -> set[str]:
     and 'Adolf Hitler' are the same person (2026-11-13: a 'How is Hitler connected to Messi?' title slipped past
     'Adolf Hitler' Shorts and jumped the owner-approved order). The series subject (hold.json "only", e.g. hitler)
     is left out: every Short in the series shares it, so only the other person counts."""
-    m = re.match(r"How is (.+?) connected to (.+?)\?$", title or "")
+    t = title or ""   # every title pattern in use: "How is A connected/linked to B?", "What links A to B?",
+    m = (re.match(r"How(?: is|'s) (.+?) (?:connected|linked|tied) to (.+?)\?$", t)   # "A to B: how?", "A to B?"
+         or re.match(r"What links (.+?) to (.+?)\?$", t)
+         or re.match(r"(.+?) (?:to|and) (.+?)(?::? how)?\?$", t))
     if not m:
         return set()
     names = {n.lower().split()[-1].strip(".,!?'\"") for n in (m.group(1), m.group(2)) if n.split()}
