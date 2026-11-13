@@ -2,9 +2,11 @@
   "from": "Jesus",
   "to": "Roxy",
   "requested_by": "@TheFacelessIllustrator",
-  "title": "How is Jesus connected to Roxy from FNAF?",
+  "title": "How is Jesus connected to Roxy?",
   "description": "A Renaissance fresco, 2,000 years of popes and eight real photos connect Jesus to Roxanne Wolf from Five Nights at Freddy's.",
-  "hook": "How is Jesus connected to Roxy?",
+  "hook": "What links Jesus to Roxy?",
+  "hook_variant": "B",
+  "text_variant": "T0",
   "people": {
     "Jesus": {
       "label": "Jesus"
@@ -37,7 +39,14 @@
       "label": "Marta Svetek"
     },
     "Roxy": {
-      "label": "Roxy"
+      "label": "Roxy",
+      "hook_photo": "https://static.wikia.nocookie.net/freddy-fazbears-pizza/images/5/51/Roxanne_Wolf.jpg/revision/latest?cb=20201226205758&format=original",
+      "hook_box": [
+        800,
+        270,
+        365,
+        370
+      ]
     }
   },
   "links": [
@@ -47,7 +56,7 @@
       "image": {
         "file": "File:Gesupietrochiave.jpg"
       },
-      "line": "In 1482, Perugino painted Jesus handing the apostle Peter the keys of heaven, on the Sistine Chapel wall.",
+      "line": "In 1482, Perugino painted Jesus handing the apostle Peter the keys of heaven.",
       "a_face": 4,
       "b_face": [
         668,
@@ -59,7 +68,7 @@
     {
       "a": "Saint Peter",
       "b": "Pope Francis",
-      "line": "Peter is counted as the first pope, and the line runs unbroken to Pope Francis in 2013.",
+      "line": "In 2013, the line of popes counted from Peter reached Pope Francis.",
       "lineage": {
         "label": "LINE OF POPES",
         "people": [
@@ -117,7 +126,7 @@
       "image": {
         "file": "File:Donald Trump Pope Francis Melania Trump in 2017.jpg"
       },
-      "line": "In 2017, Pope Francis received President Donald Trump at the Vatican.",
+      "line": "In 2017, Francis welcomed President Donald Trump to the Vatican.",
       "a_face": 4,
       "b_face": 0
     },
@@ -127,7 +136,7 @@
       "image": {
         "file": "File:Philippine President Bongbong Marcos and U.S. President Donald Trump meet at the funeral of Pope Francis.jpg"
       },
-      "line": "In 2025, at Pope Francis's funeral, Trump met Philippine president Bongbong Marcos.",
+      "line": "In 2025, Trump met Philippine president Bongbong Marcos at Francis's funeral.",
       "a_face": 8,
       "b_face": 15
     },
@@ -160,7 +169,7 @@
         "license": "Fair use (commentary)",
         "source": "https://www.gettyimages.com.au/detail/news-photo/josh-hutcherson-and-piper-rubio-speak-onstage-at-blumhouses-news-photo/2226875812"
       },
-      "line": "In 2025, Hutcherson and his Five Nights at Freddy's co-star Piper Rubio took the stage at Comic-Con.",
+      "line": "In 2025, Hutcherson took the Comic-Con stage with his co-star Piper Rubio.",
       "a_face": 0,
       "b_face": 1
     },
@@ -173,7 +182,7 @@
         "license": "Fair use (commentary)",
         "source": "https://www.gettyimages.com.au/detail/news-photo/kellen-goff-and-piper-rubio-attend-halloween-horror-nights-news-photo/2233776464"
       },
-      "line": "Weeks later, Rubio posed at Halloween Horror Nights with the voice actor behind Freddy Fazbear.",
+      "line": "Weeks later, Rubio posed with Kellen Goff, the voice of Freddy Fazbear.",
       "a_face": 1,
       "b_face": 0
     },
@@ -186,7 +195,7 @@
         "license": "Fair use (commentary)",
         "source": "https://www.gettyimages.com.au/detail/news-photo/marta-svetek-and-kellen-goff-attend-the-five-nights-at-news-photo/2249678216"
       },
-      "line": "That December, he walked the Five Nights at Freddy's 2 premiere with his Security Breach co-star Marta Svetek.",
+      "line": "That December, Goff walked a Five Nights at Freddy's premiere with Marta Svetek.",
       "a_face": 1,
       "b_face": 0
     },
@@ -206,7 +215,7 @@
           }
         ]
       },
-      "line": "She is the voice of Roxy, the wolf animatronic in Five Nights at Freddy's: Security Breach.",
+      "line": "And back in 2021, Svetek started voicing the animatronic wolf, Roxy.",
       "a_face": 0,
       "b_face": [
         820,
