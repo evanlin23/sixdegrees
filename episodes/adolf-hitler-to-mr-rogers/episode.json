@@ -37,7 +37,7 @@
         "source": "https://collections.ushmm.org/search/catalog/pa1051319",
         "free": true
       },
-      "line": "In the early 1940s, Hitler welcomed his wartime ally, Bulgaria's Tsar Boris III, to Germany.",
+      "line": "In the early 1940s, Hitler hosted his ally, Bulgaria's Tsar Boris III.",
       "fact": "Wartime visit, early 1940s",
       "a_face": 3,
       "b_face": 1,
@@ -53,7 +53,7 @@
       "image": {
         "file": "File:Car Boris III. s rodinou (1938).jpg"
       },
-      "line": "In 1938, Tsar Boris posed with his baby son Simeon, who became Bulgaria's boy king in 1943.",
+      "line": "In 1938, Boris posed with his baby son, Simeon, a future king.",
       "fact": "Royal portrait, 1938",
       "a_face": 1,
       "b_face": 3,
@@ -69,7 +69,7 @@
       "image": {
         "file": "File:President George W. Bush welcomes Simeon Saxe-Coburg Gotha, Prime Minister of the Republic of Bulgaria.jpg"
       },
-      "line": "In 2003, Simeon, by then Bulgaria's elected prime minister, met George W. Bush in the Oval Office.",
+      "line": "In 2003, a grown-up Simeon met George W. Bush as Bulgaria's prime minister.",
       "fact": "Oval Office, 2003",
       "a_face": 0,
       "b_face": 1,
@@ -85,7 +85,7 @@
       "image": {
         "file": "File:President George W. Bush Presents the Presidential Medal of Freedom Award to Fred Rogers.jpg"
       },
-      "line": "And in 2002, George W. Bush gave the Presidential Medal of Freedom to Mister Rogers.",
+      "line": "And a year earlier, Bush hung the Medal of Freedom on Mister Rogers.",
       "fact": "East Room, 2002",
       "a_face": 2,
       "b_face": 1,
