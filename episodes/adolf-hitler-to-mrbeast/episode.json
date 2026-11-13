@@ -1,0 +1,155 @@
+{
+  "from": "Adolf Hitler",
+  "to": "MrBeast",
+  "title": "How is Adolf Hitler connected to MrBeast?",
+  "description": "Seven real photos connect Adolf Hitler to MrBeast, through Mussolini, Turkey's wartime leader, Churchill, the Queen, Trump and Ronaldo.",
+  "hook": "How is Adolf Hitler connected to MrBeast?",
+  "fun_fact": "Churchill spent 1943 trying to drag Turkey into the war against Hitler. Turkey held out and only declared war in February 1945.",
+  "research_note": "Nearly every free photo of Mussolini shows people who died in the 1940s, so the way out to today runs through the Turkish leader he welcomed to Rome in 1932, who lived until 1973 and sat beside Churchill in Cairo.",
+  "people": {
+    "Adolf Hitler": {
+      "label": "Adolf Hitler",
+      "short": "Hitler"
+    },
+    "Benito Mussolini": {
+      "label": "Mussolini"
+    },
+    "İsmet İnönü": {
+      "label": "Ismet Inonu"
+    },
+    "Winston Churchill": {
+      "label": "Winston Churchill",
+      "short": "Churchill"
+    },
+    "Elizabeth II": {
+      "label": "Queen Elizabeth II",
+      "short": "Queen Elizabeth"
+    },
+    "Donald Trump": {
+      "label": "Donald Trump"
+    },
+    "Cristiano Ronaldo": {
+      "label": "Ronaldo"
+    },
+    "MrBeast": {
+      "label": "MrBeast"
+    }
+  },
+  "links": [
+    {
+      "a": "Adolf Hitler",
+      "b": "Benito Mussolini",
+      "image": {
+        "file": "File:Hitler and Mussolini June 1940.jpg"
+      },
+      "line": "In 1940, Hitler rode through Munich with his ally, Benito Mussolini, the dictator of Italy.",
+      "fact": "Munich, June 1940",
+      "a_face": 15,
+      "b_face": 2,
+      "where": {
+        "place": "Munich",
+        "lat": 48.137,
+        "lon": 11.575
+      }
+    },
+    {
+      "a": "Benito Mussolini",
+      "b": "İsmet İnönü",
+      "image": {
+        "file": "File:Ismet pacha, ministre des affaires étrangères de Turquie, Mussolini, Ruscdy Bey - btv1b9051855q.jpg"
+      },
+      "line": "In 1932, Turkey's prime minister, Ismet Inonu, came to Rome for talks with Mussolini.",
+      "fact": "Rome, 1932",
+      "a_face": 7,
+      "b_face": 5,
+      "where": {
+        "place": "Rome",
+        "lat": 41.893,
+        "lon": 12.483
+      }
+    },
+    {
+      "a": "İsmet İnönü",
+      "b": "Winston Churchill",
+      "image": {
+        "file": "File:Roosevelt Inönü and Churchill in Cairo cph.3b15312.jpg"
+      },
+      "line": "In 1943, Inonu flew to Cairo, where Winston Churchill begged Turkey to join the war.",
+      "fact": "Cairo conference, 1943",
+      "a_face": 5,
+      "b_face": 10,
+      "where": {
+        "place": "Cairo",
+        "lat": 30.044,
+        "lon": 31.236
+      }
+    },
+    {
+      "a": "Winston Churchill",
+      "b": "Elizabeth II",
+      "image": {
+        "file": "File:Churchill queen Elizabeth 1953.jpg"
+      },
+      "line": "In 1953, Churchill was prime minister to the newly crowned Queen Elizabeth.",
+      "fact": "London, 1953",
+      "a_face": 3,
+      "b_face": 2,
+      "where": {
+        "place": "London",
+        "lat": 51.507,
+        "lon": -0.128
+      }
+    },
+    {
+      "a": "Elizabeth II",
+      "b": "Donald Trump",
+      "image": {
+        "file": "File:The Trumps with Elizabeth II in 2018.jpg"
+      },
+      "line": "In 2018, the Queen welcomed Donald Trump to Windsor Castle.",
+      "fact": "Windsor Castle, 2018",
+      "a_face": 1,
+      "b_face": 2,
+      "where": {
+        "place": "Windsor Castle",
+        "lat": 51.484,
+        "lon": -0.604
+      }
+    },
+    {
+      "a": "Donald Trump",
+      "b": "Cristiano Ronaldo",
+      "image": {
+        "file": "File:President Donald Trump meets with Cristiano Ronaldo in the Oval Office (54934459299).jpg"
+      },
+      "line": "In 2025, Trump hosted Cristiano Ronaldo in the Oval Office.",
+      "fact": "Oval Office, 2025",
+      "a_face": 2,
+      "b_face": 1,
+      "where": {
+        "place": "White House",
+        "lat": 38.897,
+        "lon": -77.037
+      }
+    },
+    {
+      "a": "Cristiano Ronaldo",
+      "b": "MrBeast",
+      "image": {
+        "url": "https://jang.com.pk/assets/uploads/english_news/2024-11-29/26212_015918_eng.jpg",
+        "credit": "MrBeast (Instagram), via The News International",
+        "license": "Fair use (commentary)",
+        "source": "https://jang.com.pk/en/26212-mrbeast-and-cristiano-ronaldo-spark-excitement-with-big-announcement-news"
+      },
+      "line": "And in 2024, Ronaldo filmed a video with MrBeast.",
+      "fact": "Riyadh, 2024",
+      "a_face": 2,
+      "b_face": 0,
+      "where": {
+        "place": "Riyadh",
+        "lat": 24.713,
+        "lon": 46.675
+      }
+    }
+  ]
+}

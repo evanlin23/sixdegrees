@@ -7,6 +7,7 @@ pixelate-dissolve cuts; 8-bit SFX; CONNECTED! on the final reveal.
 """
 from __future__ import annotations
 
+import itertools
 import json
 import math
 import re
@@ -136,6 +137,60 @@ def mosaic(im: Image.Image, block: int) -> Image.Image:
 def pin_sprite(expr, angle=0.0, squash=0.0, look=0, scale=6):
     return pixelpin.draw(expr, scale, angle, squash, look, arms=True, hat=True)
 
+
+_SUB = {}
+
+
+def subscribe_button(base, t):
+    """A pixel SUBSCRIBE button under the photo: pops in, a pointer clicks it at 0.55 s and it turns into
+    SUBSCRIBED + a ringing bell. Lives in the gap between the photo card and the Shorts UI (y ~1470)."""
+    if "on" not in _SUB:
+        for k, (txt, bg, fg) in {"on": ("SUBSCRIBE", (204, 0, 0), WHITE), "off": ("SUBSCRIBED", (60, 60, 60), WHITE)}.items():
+            lab = pixel_text(txt, 34, fill=fg, shadow=False)
+            w, h = lab.width + 120, lab.height + 34
+            im = Image.new("RGBA", (w + 10, h + 10), (0, 0, 0, 0))
+            d = ImageDraw.Draw(im)
+            d.rounded_rectangle([10, 10, w + 9, h + 9], 18, fill=INK)                     # pixel drop shadow
+            d.rounded_rectangle([0, 0, w, h], 18, fill=bg, outline=INK, width=5)
+            bx, by = 26, h // 2                                                        # bell
+            d.ellipse([bx - 14, by - 16, bx + 14, by + 10], fill=fg)
+            d.rectangle([bx - 18, by + 4, bx + 18, by + 10], fill=fg)
+            d.ellipse([bx - 5, by + 10, bx + 5, by + 18], fill=fg)
+            im.alpha_composite(lab, (60, (h - lab.height) // 2))
+            _SUB[k] = im
+        hand = Image.new("RGBA", (44, 56), (0, 0, 0, 0))                               # pixel pointer
+        d = ImageDraw.Draw(hand)
+        d.polygon([(4, 2), (4, 44), (14, 34), (22, 52), (30, 48), (22, 30), (36, 30)], fill=WHITE, outline=INK)
+        _SUB["hand"] = hand
+    pop = ease_out_back(min(1.0, t / 0.18))
+    clicked = t > 1.0
+    btn = _SUB["off" if clicked else "on"]
+    press = 0.92 if 0.95 < t < 1.07 else 1.0
+    y = 1478
+    paste(base, btn, CX, y, scale=pop * press)
+    if t > 0.45:                                           # the pointer glides in from the lower right and taps
+        u = ease(min(1.0, (t - 0.45) / 0.5))
+        hx, hy = CX + 300 - 230 * u, y + 120 - 95 * u
+        paste(base, _SUB["hand"], hx, hy, scale=1.0)
+
+
+def _avatar(url):
+    """Download (and cache) a commenter's YouTube profile picture as a 70x70 RGB image; None if unavailable."""
+    if not url:
+        return None
+    import hashlib
+    import urllib.request
+    from .common import ROOT
+    cache = ROOT / ".cache" / "avatars"
+    cache.mkdir(parents=True, exist_ok=True)
+    f = cache / (hashlib.sha1(url.encode()).hexdigest() + ".img")
+    try:
+        if not f.exists():
+            req = urllib.request.Request(url, headers={"User-Agent": "sixdegrees-render/1.0"})
+            f.write_bytes(urllib.request.urlopen(req, timeout=20).read())
+        return Image.open(f).convert("RGB").resize((70, 70), Image.LANCZOS)
+    except Exception:  # noqa: BLE001 - fall back to the default silhouette
+        return None
 
 def paste_pin(base, spr, x, tip_y):
     # needle tip is ~41/44 down the sprite
@@ -276,7 +331,9 @@ def render(slug: str, log=print) -> Path:
     (out_dir / "voice.json").write_text(json.dumps(vinfo))
     a, words = audio.say(hook, voice)
     HOOK_VO = 0.0    # the question starts on the very first frame
-    d = max(len(a) / audio.SR + 0.3 + HOOK_VO, FF + RW + 1.3)
+    # owner: "in the hook there cannot be any pauses, no dead space": link 1's voice follows the question at once
+    # (the clip's own ~0.1 s tail + link 1's 0.08 s lead-in is the only breath; this used to hold +0.3 s of silence)
+    d = max(len(a) / audio.SR - 0.06 + HOOK_VO, FF + RW + 1.3)
     if not narration:
         d = 3.0                     # the reference hits all hold the intro card for about 3 s
     segs.append({"kind": "hook", "t0": t, "t1": t + d, "cap": PixelCaptions(words, t + HOOK_VO)})
@@ -290,6 +347,7 @@ def render(slug: str, log=print) -> Path:
     n_lin = sum(1 for l in spec["links"] if l.get("lineage"))
     mid_n = max(1, n_links - n_fast - n_lin)
     mid_pace = max(3.3, (18.0 - 3.0 - 2.2 * n_fast - 4.0 * n_lin) / mid_n)
+    _durs = []
     for i, link in enumerate(spec["links"]):
         a, words = audio.say(link["line"], voice)
         last = i == n_links - 1
@@ -310,6 +368,10 @@ def render(slug: str, log=print) -> Path:
                 rv = min(rv, (speech - THROW - 0.1) / speech) if not last else min(rv, max(REVEAL, (speech - THROW - 0.3) / speech))
         d = max(speech + 0.05, rv * speech + THROW + 1.2) if last else speech + PAD   # hold the payoff ~1 s (owner: "cutting too fast")
         d = max(d, MIN_LINK)        # owner: the pace never speeds up; a short line still gets a full beat on screen
+        if last and narration and _durs:   # owner (Mario, twice): "still too fast at the end" -> the payoff link is
+            d = max(d, min(6.0, sum(_durs) / len(_durs)))   # never shorter than the links before it (capped)
+        if not link.get("lineage"):
+            _durs.append(d)
         if last and STYLE == "board":
             d += 1.1                                     # time to zoom out to the whole evidence board
         reveal = t + (speech * 0.9 - THROW if link.get("lineage") else rv * speech)
@@ -429,13 +491,14 @@ def render(slug: str, log=print) -> Path:
                 base.alpha_composite(th.convert("RGBA"), (int(x0 + 6), int(y0 + 6)))
             dr.rectangle([x0, y0, x0 + size, y0 + size], outline=INK, width=6)
 
-    def credit(base, i):
+    def credit(base, i, xy=None):
+        """Photo credit (CC licences require it), right-aligned at xy (default: under the cards photo)."""
         cr = C.fj["credits"][i]
         who = (cr.get("artist") or "").strip()
         if len(who) > 26 or "(" in who or "http" in who:
             who = "Wikimedia Commons" if cr.get("file") else ""
         txt = f"PHOTO: {who + ' / ' if who else ''}{cr.get('license', '')}".upper()
-        ImageDraw.Draw(base).text((CARD[2], CARD[3] + 32), txt, font=sf(18), fill=(255, 255, 255), anchor="rm",
+        ImageDraw.Draw(base).text(xy or (CARD[2], CARD[3] + 32), txt, font=sf(18), fill=(255, 255, 255), anchor="rm",
                                   stroke_width=2, stroke_fill=INK)
 
     # ---------- frames
@@ -504,10 +567,12 @@ def render(slug: str, log=print) -> Path:
             base.alpha_composite(Image.new("RGBA", (W, H), (255, 255, 255, int(220 * (1 - incut / 0.10)))))
         return base
 
-    def frame_link(seg, tt):
+    def link_core(seg, tt):
+        """THE SHOW'S CORE, shared by every presentation style (owner, 2026-11-12: Buh jumping with his pin and red
+        string, name tags under the chins, and the zoom-out / move / zoom-in camera are crucial in every format).
+        Returns the photo window (CARD-sized RGBA: photo + string + pin marker + tags, all riding the photo and
+        clipped to its edge) and the pin's pose in card-local px. Styles place it with draw_core()."""
         i = seg["i"]
-        if C.fj["links"][i].get("lineage"):
-            return frame_lineage(seg, tt)
         img, cm = C.imgs[i], cams[i]
         last = i == n_links - 1
         k = min(1.0, (tt - seg["t0"]) / seg["speech"])
@@ -528,60 +593,71 @@ def render(slug: str, log=print) -> Path:
         punch = 0.10 * math.exp(-land * 8) if land >= 0 else 0.0
         cam = (cam[0], cam[1], cam[2] * (1 + 0.02 * math.sin(tt * 1.3) + punch + 0.15 * math.exp(-incut * 10)))
         sx, sy = shake(land, 26 if last else 12, 0.45 if last else 0.3)
-        base = checker(tt, TONES[i % len(TONES)])
-        # photo card
         ph, M = warp_photo(img, cam, center_y=(CARD[1] + CARD[3]) / 2)
         cw, ch = CARD[2] - CARD[0], CARD[3] - CARD[1]
         crop = ph.crop((CARD[0], CARD[1], CARD[2], CARD[3]))
         blk = int(46 * (1 - incut / 0.2)) if incut < 0.2 else 0
         if blk > 1:
             crop = mosaic(crop, blk)
-        x0, y0 = int(CARD[0] + sx), int(CARD[1] + sy)
-        dr = ImageDraw.Draw(base)
-        dr.rectangle([x0 - 14 + 16, y0 - 14 + 16, x0 + cw + 14 + 16, y0 + ch + 14 + 16], fill=INK)
-        dr.rectangle([x0 - 14, y0 - 14, x0 + cw + 14, y0 + ch + 14], fill=WHITE)
         flat = card_bg[i].copy()          # blurred photo fills the card when zoomed out
         flat.alpha_composite(crop)
-        base.alpha_composite(flat, (x0, y0))
-        M = M.copy(); M[0, 2] += sx; M[1, 2] += sy
-
-        def scr(x, y):
-            px, py = to_screen(M, x, y)
-            return max(CARD[0] + 30, min(CARD[2] - 30, px)), max(CARD[1] + 60, min(CARD[3] - 40, py))
-        pa = scr(cm["ba"][0] + cm["ba"][2] / 2, cm["ba"][1] - cm["ba"][3] * 0.08)
-        pb = scr(cm["bb"][0] + cm["bb"][2] / 2, cm["bb"][1] - cm["bb"][3] * 0.08)
-        # string
-        start = (pa[0] + 60, pa[1] - 30)
+        M = M.copy(); M[0, 2] -= CARD[0]; M[1, 2] -= CARD[1]     # card-local coordinates
+        pa = to_screen(M, cm["ba"][0] + cm["ba"][2] / 2, cm["ba"][1] - cm["ba"][3] * 0.08)
+        pb = to_screen(M, cm["bb"][0] + cm["bb"][2] / 2, cm["bb"][1] - cm["bb"][3] * 0.08)
+        # the red string + pinned marker live ON the photo (drawn into the card, so its edge clips them)
         if since >= 0:
             if since < THROW:
-                x, y, _ = pixelpin_path(start, pb, since / THROW)
+                x, y, _ = pixelpin_path(pa, pb, since / THROW)
                 pe = (x, y)
             else:
                 pe = pb
-            dr.line([pa, pe], fill=INK, width=14)
-            dr.line([pa, pe], fill=RED, width=8)
-            dr.rectangle([pa[0] - 10, pa[1] - 10, pa[0] + 10, pa[1] + 10], fill=RED, outline=INK, width=4)
-        # name tags
+            sd = ImageDraw.Draw(flat)
+            sd.line([pa, pe], fill=INK, width=14)
+            sd.line([pa, pe], fill=RED, width=8)
+            sd.rectangle([pa[0] - 10, pa[1] - 10, pa[0] + 10, pa[1] + 10], fill=RED, outline=INK, width=4)
+        # name tags: stickers under the chins, riding the photo and sliding under its edge; never stacked
         names = (spec["links"][i]["a"], spec["links"][i]["b"])
+        tags_ = []
         for role, nm, appear, col in (("ba", names[0], 0.0, CYAN), ("bb", names[1], R + THROW / seg["speech"], YELLOW)):
             bx = cm[role]
-            fx, fy = to_screen(M, bx[0] + bx[2] / 2, bx[1] + bx[3] / 2)
-            if not (CARD[0] < fx < CARD[2] and CARD[1] < fy < CARD[3]):
-                continue
             if k >= appear:
                 pop = ease_out_back((k - appear) * seg["speech"] / 0.12)
                 tag = pixel_tag(C.labels[nm].upper(), col, 26 if len(C.labels[nm]) < 15 else 22)
                 tx, ty = to_screen(M, bx[0] + bx[2] / 2, bx[1] + bx[3])   # under the chin
-                tx = max(SAFE[0] + tag.width / 2, min(SAFE[2] - tag.width / 2, tx))
-                ty = max(CARD[1] + 60, min(CARD[3] - 230, ty + 34))
-                paste(base, tag, tx, ty, scale=pop)
-        # Pin
+                tags_.append([tag, tx, ty + 34, pop])
+        if len(tags_) == 2:
+            (ta, ax, ay, _), (tb, bx_, by_, _) = tags_
+            if abs(ax - bx_) < (ta.width + tb.width) / 2 + 8 and abs(ay - by_) < (ta.height + tb.height) / 2 + 6:
+                tags_[1][2] = ay + (ta.height + tb.height) / 2 + 10 if by_ >= ay else ay - (ta.height + tb.height) / 2 - 10
+        for tag, tx, ty, pop in tags_:
+            sh_ = Image.new("RGBA", (tag.width + 8, tag.height + 8), (0, 0, 0, 0))
+            ImageDraw.Draw(sh_).rectangle([8, 8, tag.width + 7, tag.height + 7], fill=(0, 0, 0, 140))
+            paste(flat, sh_, tx + 4, ty + 4, scale=pop)                     # drop shadow: a printed sticker
+            paste(flat, tag, tx, ty, scale=pop)
+        return {"img": flat, "pa": pa, "pb": pb, "since": since, "land": land, "k": k, "R": R, "last": last,
+                "shake": (sx, sy), "incut": incut, "i": i, "size": (cw, ch)}
+
+    def draw_core(base, seg, tt, x0, y0, scale=1.0, frame=None):
+        """Place the core photo window with its top-left at (x0, y0) (scaled), then Buh on top (never clipped).
+        frame: optional callable(base, x0, y0, w, h) drawing the style's border/mount behind the photo.
+        Returns the core dict plus screen-space pa/pb and the window rect."""
+        c = link_core(seg, tt)
+        sx, sy = c["shake"]
+        cw, ch = c["size"]
+        w, h = int(cw * scale), int(ch * scale)
+        X0, Y0 = int(x0 + sx), int(y0 + sy)
+        if frame:
+            frame(base, X0, Y0, w, h)
+        im = c["img"] if scale == 1.0 else c["img"].resize((w, h), Image.BILINEAR)
+        base.alpha_composite(im, (X0, Y0))
+        m = lambda p: (X0 + p[0] * scale, Y0 + p[1] * scale)   # noqa: E731
+        pa, pb = m(c["pa"]), m(c["pb"])
+        since, land, last = c["since"], c["land"], c["last"]
         if since < 0:
             bob = int(8 * abs(math.sin(tt * 7)))
-            spr = pin_sprite("happy", 0, 0, 1 if pb[0] > pa[0] else -1)
-            paste_pin(base, spr, start[0], start[1] - bob)
+            paste_pin(base, pin_sprite("happy", 0, 0, 1 if pb[0] > pa[0] else -1), pa[0], pa[1] - bob)
         elif since < THROW:
-            x, y, ang = pixelpin_path(start, pb, since / THROW)
+            x, y, ang = pixelpin_path(pa, pb, since / THROW)
             paste_pin(base, pin_sprite("shock", ang, -0.4), x, y)
         else:
             sq = 0.8 * math.exp(-land * 10) * math.cos(land * 30)
@@ -590,21 +666,50 @@ def render(slug: str, log=print) -> Path:
             if last and land > 0.6:
                 hop = int(-abs(math.sin(land * 7)) * 40)  # celebrates on the final reveal
             paste_pin(base, pin_sprite(ex, 0, sq), pb[0], pb[1] + hop)
-        # CONNECTED!
+        c.update(spa=pa, spb=pb, rect=(X0, Y0, w, h))
+        return c
+
+    def core_finish(base, seg, tt, c, connected_y=1020, sub=True, chain=True, caption=True, credit_xy=None):
+        """The shared payoff + chrome every style keeps: CONNECTED!, the Subscribe nudge, the title band and chain
+        bar, the photo credit, the caption and the cut flashes. A style can move CONNECTED! or skip a piece it
+        draws itself (chain=False if it has its own progress display)."""
+        i, land, last, incut = c["i"], c["land"], c["last"], c["incut"]
         if last and land > 0.35:
             st = min(1.0, (land - 0.35) / 0.12)
             _ci = pixel_text("CONNECTED!", 72, fill=RED)
-            paste(base, _ci, CX, 1020, scale=min(2.0 - ease(st), (SAFE[2] - SAFE[0]) / _ci.width))   # never clipped
+            paste(base, _ci, CX, connected_y, scale=min(2.0 - ease(st), (SAFE[2] - SAFE[0]) / _ci.width))
+        if sub and last and land > 0.45:
+            subscribe_button(base, land - 0.45)
         band(base, i)
-        upto = i + (1 if land >= 0 else 0)
-        blocks(base, upto, {upto} if land >= 0 else {i}, tt, sharpen=min(1.0, land / 0.35) if land >= 0 else 1.0)
-        credit(base, i)
-        seg["cap"].draw(base, tt)
+        if chain:
+            upto = i + (1 if land >= 0 else 0)
+            blocks(base, upto, {upto} if land >= 0 else {i}, tt, sharpen=min(1.0, land / 0.35) if land >= 0 else 1.0)
+        # the credit hugs the photo window the style actually drew (right edge, just under it), unless told otherwise
+        X0, Y0, w_, h_ = c["rect"]
+        cxy = credit_xy or (X0 + w_, Y0 + h_ + 32)
+        if not credit_xy and cxy[1] > SAFE[3] - 4:          # no room under it: print it inside the photo's bottom edge
+            cxy = (X0 + w_ - 12, Y0 + h_ - 18)
+        credit(base, i, cxy)
+        if caption:
+            seg["cap"].draw(base, tt)
         if incut < 0.10:
             base.alpha_composite(Image.new("RGBA", (W, H), (255, 255, 255, int(220 * (1 - incut / 0.10)))))
         if 0 <= land < 0.07:
             base.alpha_composite(Image.new("RGBA", (W, H), TONES[i % len(TONES)][0] + (int(120 * (1 - land / 0.07)),)))
         return base
+
+    def frame_link(seg, tt):
+        i = seg["i"]
+        if C.fj["links"][i].get("lineage"):
+            return frame_lineage(seg, tt)
+        base = checker(tt, TONES[i % len(TONES)])
+
+        def card_frame(b, X0, Y0, w, h):
+            dr = ImageDraw.Draw(b)
+            dr.rectangle([X0 - 14 + 16, Y0 - 14 + 16, X0 + w + 14 + 16, Y0 + h + 14 + 16], fill=INK)
+            dr.rectangle([X0 - 14, Y0 - 14, X0 + w + 14, Y0 + h + 14], fill=WHITE)
+        c = draw_core(base, seg, tt, CARD[0], CARD[1], 1.0, frame=card_frame)
+        return core_finish(base, seg, tt, c)
 
     class _NoCap:
         def draw(self, *a, **k):
@@ -648,7 +753,11 @@ def render(slug: str, log=print) -> Path:
             m = (mask.astype(np.float32) / 255)[..., None]
             out = (crop * m + bg * (1 - m)).astype(np.uint8)
             _hero[key] = Image.fromarray(cv2.cvtColor(out, cv2.COLOR_BGR2RGB)).convert("RGBA")
+            # where the head really is on screen (the cover/no-gap clamps can push the face off (CX, fy))
+            _hero_head[key] = (fx * s_ + tx, y * s_ + ty - 0.12 * bh * s_)
         return _hero[key]
+
+    _hero_head = {}
 
     def make_comment_card():
         """A YouTube-style comment card: avatar, @handle, the request in the viewer's words."""
@@ -665,14 +774,21 @@ def render(slug: str, log=print) -> Path:
         d = ImageDraw.Draw(im)
         d.rounded_rectangle([12, 12, w + 11, h + 11], 26, fill=(0, 0, 0, 120))           # shadow
         d.rounded_rectangle([0, 0, w, h], 26, fill=(255, 255, 255, 255), outline=INK, width=4)
-        d.ellipse([22, 30, 92, 100], fill=(120, 130, 150, 255))                             # avatar
-        d.ellipse([44, 44, 70, 70], fill=(225, 228, 235, 255))
-        d.pieslice([32, 70, 82, 120], 180, 360, fill=(225, 228, 235, 255))
+        av = _avatar(spec.get("request_avatar"))          # the viewer's real profile picture, when we have it
+        if av is not None:
+            mask = Image.new("L", (70, 70), 0)
+            ImageDraw.Draw(mask).ellipse([0, 0, 69, 69], fill=255)
+            im.paste(av, (22, 30), mask)
+        else:
+            d.ellipse([22, 30, 92, 100], fill=(120, 130, 150, 255))                         # default avatar
+            d.ellipse([44, 44, 70, 70], fill=(225, 228, 235, 255))
+            d.pieslice([32, 70, 82, 120], 180, 360, fill=(225, 228, 235, 255))
         d.text((112, 26), handle, font=fh, fill=(96, 96, 96))
         d.text((112, 64), text, font=ft, fill=(15, 15, 15))
         return im
 
-    comment_im = make_comment_card() if spec.get("requested_by") else None
+    # owner: never "a viewer": the request card only appears with the real @handle (and their profile picture)
+    comment_im = make_comment_card() if str(spec.get("requested_by", "")).startswith("@") else None
 
     def frame_hook(seg, tt):
         k = tt - seg["t0"]
@@ -712,24 +828,53 @@ def render(slug: str, log=print) -> Path:
                 slide = int(sgn * 70 * (1 - ease(min(1.0, kk / 0.22))))  # A slides in from the left, B from the right
                 base.alpha_composite(im, (slide + int(sx), y0 + int(sy)))
                 tag = pixel_tag(C.labels[nm].upper(), col, 44)
-                ty = y1 - tag.height // 2 - 24 if sgn < 0 else y0 + tag.height // 2 + 30   # A under its face, B above
+                # both tags under their faces (B's used to sit above B's face, where Buh now lands)
+                ty = y1 - tag.height // 2 - 24 if sgn < 0 else min(SAFE[3] + 60, y0 + fy + 210)
                 paste(base, tag, CX + int(sx), ty + int(sy))
+                # hero() puts the face box (brows..chin, ~340 px) centred at fy: its top is ~fy-150, the hair ~fy-300
+                # Buh's pin tip goes into the hair at the top of the real face box (after the push-in zoom)
+                hx, hy = _hero_head[(nm, y1 - y0, fy)]
+                hx, hy = hx * z - CX * (z - 1), hy * z - fy * (z - 1)
+                spot = (int(hx) + slide + int(sx), int(max(y0 + (150 if sgn < 0 else 240), y0 + hy)) + int(sy))
+                if sgn < 0:   # Buh starts on top of A's head...
+                    a_spot = spot
+                else:         # ...and jumps from head to head (owner)
+                    b_spot = spot
             dr = ImageDraw.Draw(base)
             dr.rectangle([0, HERO_A[1], W, HERO_B[0]], fill=INK)               # the seam carries the question
             dr.rectangle([0, HERO_A[1] - 6, W, HERO_A[1]], fill=CYAN)
             dr.rectangle([0, HERO_B[0], W, HERO_B[0] + 6], fill=YELLOW)
-            hop = abs(math.sin(kk * 8)) * 26
-            paste_pin(base, pin_sprite("shock" if kk < 0.8 else ("smug" if int(kk * 2) % 2 else "angry"), 0, 0, -1),
-                      SAFE[2] - 170, HERO_A[1] - 6 - hop)                # Buh stands on the seam (clear of the Shorts buttons)
-            if spec.get("requested_by"):   # the viewer's comment IS the hook (every reference hit opens on one)
+            if comment_im is not None:   # the viewer's comment IS the hook (every reference hit opens on one)
                 pop = ease_out_back(min(1.0, kk / 0.25))
                 paste(base, comment_im, CX, (HERO_A[1] + HERO_B[0]) // 2 + 10, scale=0.6 + 0.4 * pop, nearest=False)
+                dr = ImageDraw.Draw(base)
                 ax = CX + comment_im.width // 2 - 70
                 ay = (HERO_A[1] + HERO_B[0]) // 2 + comment_im.height // 2 + 10
-                dr = ImageDraw.Draw(base)
                 dr.line([(ax, ay), (ax + 30, ay + 70), (ax + 10, ay + 150)], fill=RED, width=14, joint="curve")
                 dr.polygon([(ax - 18, ay + 132), (ax + 38, ay + 140), (ax + 6, ay + 190)], fill=RED)
-                return base
+                dr = ImageDraw.Draw(base)
+            # owner: ~70 % stayed to watch, the opening sat still for 2.4 s. Now Buh jumps from A to B in the first
+            # second and drags the red string across: the "how?" in motion, and the show's mechanic up front.
+            J0, J1 = 0.55, 0.55 + THROW * 1.6
+            if kk < J0:
+                hop = abs(math.sin(kk * 9)) * 22
+                paste_pin(base, pin_sprite("shock", 0, 0, 1), a_spot[0], a_spot[1] - hop)
+            else:
+                u = min(1.0, (kk - J0) / (J1 - J0))
+                x, y, ang = pixelpin_path(a_spot, b_spot, u)
+                pe = (x, y) if u < 1 else b_spot
+                dr.line([a_spot, pe], fill=INK, width=14)
+                dr.line([a_spot, pe], fill=RED, width=8)
+                dr.rectangle([a_spot[0] - 10, a_spot[1] - 10, a_spot[0] + 10, a_spot[1] + 10], fill=RED, outline=INK, width=4)
+                if u < 1:
+                    paste_pin(base, pin_sprite("shock", ang, -0.4), x, y)
+                else:
+                    land = kk - J1
+                    sq = 0.8 * math.exp(-land * 10) * math.cos(land * 30)
+                    hop = abs(math.sin(land * 7)) * 18
+                    paste_pin(base, pin_sprite("smug" if int(land * 2) % 2 else "happy", 0, sq), b_spot[0], b_spot[1] - hop)
+            if comment_im is not None:
+                return base               # Buh jumps OVER the comment card; the card is the question
         seg["cap"].draw(base, tt, y=(HERO_A[1] + HERO_B[0]) // 2)
         return base
 
@@ -819,193 +964,52 @@ def render(slug: str, log=print) -> Path:
         m = re.search(r"\b(1\d{3}|20\d{2})\b", (l.get("fact") or "") + " " + l["line"])
         return int(m.group(1)) if m else None
 
-    # --- zoom: one continuous camera inside a big photo window, A's face -> both -> drift -> B's face (B is the next
-    # photo's A, so links hand over on the same face). Scale is capped near the source's own pixels (never mush);
-    # where a small photo can't fill the window its edges fade into a dark blurred copy instead of a hard bar.
-    ZW_Y0, ZW_Y1 = BAND - 40, 1290                   # the photo window (full width, under the header)
-    ZW_W, ZW_H = W, ZW_Y1 - ZW_Y0
-    Z_FX = CX                                        # focal point x on screen (left of the feed buttons)
-    Z_CAP_Y, Z_DONE_Y, Z_ROW_Y = 1362, 1450, 1566   # caption band, CONNECTED!, the chain row (below the window)
-    Z_BUH_X, Z_TH = 95, 80
-    _zc = {}
+    # --- zoom: the core, bigger. The photo window runs (almost) edge to edge at ~1.1x with only a thin keyline, over a
+    # dark blurred copy of the same photo that slowly pans and breathes; everything else (camera, Buh, string, tags, payoff) is the shared core.
+    Z_S = 1.08                                       # core window scale: 950 x 1026 (ends above the Subscribe button)
+    Z_X0, Z_Y0 = (W - int((CARD[2] - CARD[0]) * Z_S)) // 2, 404
+    _zbg = {}
 
-    def z_limits(i):
-        """(s_lo, s_hi): widest and tightest scale for photo i in the window."""
-        ih, iw = C.imgs[i].shape[:2]
-        s_cover = max(ZW_W / iw, ZW_H / ih)
-        s_lo = min(s_cover, max(1.3, 800 / iw))      # cover the window if that needs <= ~1.3x, else show it smaller
-        return s_lo, max(1.38, s_lo * 1.12)
-
-    def z_clamp(i, cam):
-        ih, iw = C.imgs[i].shape[:2]
-        lo, hi = z_limits(i)
-        s = max(lo, min(hi, cam[2]))
-        if iw * s >= ZW_W:
-            cx = max(Z_FX / s, min(iw - (ZW_W - Z_FX) / s, cam[0]))
-        else:
-            cx = iw / 2 + (Z_FX - ZW_W / 2) / s     # too narrow to cover: centred, edges feathered
-        if ih * s >= ZW_H:
-            cy = max(ZW_H / 2 / s, min(ih - ZW_H / 2 / s, cam[1]))
-        else:
-            cy = ih / 2
-        return cx, cy, s
-
-    def z_seg(i):
-        return next(s for s in segs if s["kind"] == "link" and s["i"] == i)
-
-    def z_keys(i, d):
-        """Camera keyframes [(time, (cx, cy, log s))] for link i lasting d seconds."""
-        if ("k", i) in _zc:
-            return _zc[("k", i)]
-        lo, hi = z_limits(i)
-        ba, bb = fbox(i, "a"), fbox(i, "b")
-        (ax, ay), (bx, by) = ctr(ba), ctr(bb)
-        x0, x1 = min(ba[0], bb[0]), max(ba[0] + ba[2], bb[0] + bb[2])
-        y0, y1 = min(ba[1], bb[1]), max(ba[1] + ba[3], bb[1] + bb[3])
-        sb = min(ZW_W * 0.62 / max(1, x1 - x0), ZW_H * 0.5 / max(1, y1 - y0))
-        both = ((x0 + x1) / 2, (y0 + y1) / 2 + (y1 - y0) * 0.3, max(lo, min(hi * 0.97, sb)))
-        fa = (ax, ay + ba[3] * 0.5, hi)
-        fb = (bx, by + bb[3] * 0.5, hi)
-        drift = (both[0] + (fb[0] - both[0]) * 0.35, both[1] + (fb[1] - both[1]) * 0.35, both[2] * 1.05)
-        sg = z_seg(i)
-        rv_t = sg.get("rv", REVEAL) * sg["speech"] + THROW
-        if sensitive(link_names(i)[0]):               # no hero close-up: open on the two-shot, already drifting
-            start = (both[0] - (fb[0] - both[0]) * 0.12, both[1], both[2] * 0.96)
-        else:
-            start = fa
-        last = i == n_links - 1
-        keys = [(0.0, start), (max(0.9, min(rv_t, d * 0.45)), both), (d * (0.6 if last else 0.72), drift),
-                (d + (0.0 if last else 0.4), fb)]
-        keys = [(t_, z_clamp(i, c)) for t_, c in keys]
-        keys = [(t_, (c[0], c[1], math.log(c[2]))) for t_, c in keys]
-        _zc[("k", i)] = keys
-        return keys
-
-    def z_cam(i, d, t):
-        """Smooth camera (cubic Hermite through the keyframes, continuous velocity); never fully still."""
-        keys = z_keys(i, d)
-        n = len(keys)
-        t = max(0.0, min(keys[-1][0], t))
-        j = next((k for k in range(n - 1) if t <= keys[k + 1][0]), n - 2)
-        (t0_, p0), (t1_, p1) = keys[j], keys[j + 1]
-        h = max(1e-3, t1_ - t0_)
-
-        def tang(k):
-            if k == 0:
-                return [(keys[1][1][m] - keys[0][1][m]) / (keys[1][0] - keys[0][0]) * 0.6 for m in range(3)]
-            if k == n - 1:
-                return [(keys[k][1][m] - keys[k - 1][1][m]) / (keys[k][0] - keys[k - 1][0]) * 0.8 for m in range(3)]
-            return [(keys[k + 1][1][m] - keys[k - 1][1][m]) / (keys[k + 1][0] - keys[k - 1][0]) for m in range(3)]
-        m0, m1 = tang(j), tang(j + 1)
-        u = (t - t0_) / h
-        h00, h10, h01, h11 = 2 * u ** 3 - 3 * u ** 2 + 1, u ** 3 - 2 * u ** 2 + u, -2 * u ** 3 + 3 * u ** 2, u ** 3 - u ** 2
-        c = [h00 * p0[m] + h10 * h * m0[m] + h01 * p1[m] + h11 * h * m1[m] for m in range(3)]
-        return z_clamp(i, (c[0], c[1], math.exp(c[2])))
+    Z_OVER = 1.30                                    # the backdrop is this much bigger than the frame (room to pan)
 
     def z_bg(i):
-        if ("bg", i) not in _zc:
+        """A dark, heavily blurred, oversized copy of photo i (the backdrop around the window), kept at half
+        resolution: it is blurred anyway, and the per-frame pan/zoom resamples it up to full frame."""
+        if i not in _zbg:
             img = rgb(i)
             ih, iw = img.shape[:2]
-            cs = max(W / iw, H / ih)
-            b = cv2.resize(img, (int(iw * cs) + 2, int(ih * cs) + 2))
-            y0, x0 = (b.shape[0] - H) // 2, (b.shape[1] - W) // 2
-            _zc[("bg", i)] = cv2.GaussianBlur(b[y0:y0 + H, x0:x0 + W], (0, 0), 30).astype(np.float32) * 0.3
-        return _zc[("bg", i)]
+            ow, oh = int(W * Z_OVER / 2), int(H * Z_OVER / 2)
+            cs = max(ow / iw, oh / ih)
+            b = cv2.resize(img, (int(iw * cs) + 2, int(ih * cs) + 2), interpolation=cv2.INTER_AREA)
+            y0, x0 = (b.shape[0] - oh) // 2, (b.shape[1] - ow) // 2
+            b = (cv2.GaussianBlur(b[y0:y0 + oh, x0:x0 + ow], (0, 0), 10) * 0.36).astype(np.uint8)
+            _zbg[i] = Image.fromarray(b).convert("RGBA")
+        return _zbg[i]
 
-    def z_view(i, cam):
-        """The full frame: photo i through the window at cam, over a dark blurred copy; soft edges, no hard bars."""
-        img = rgb(i)
-        ih, iw = img.shape[:2]
-        cx, cy, s = cam
-        M = np.float32([[s, 0, Z_FX - cx * s], [0, s, ZW_Y0 + ZW_H / 2 - cy * s]])
-        out = cv2.warpAffine(img, M, (W, H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE).astype(np.float32)
-        mask = cv2.warpAffine(np.full((ih, iw), 255, np.uint8), M, (W, H)).astype(np.float32) / 255
-        mask[ZW_Y1:] = 0
-        mask = cv2.GaussianBlur(mask, (0, 0), 22)[..., None]
-        out = out * mask + z_bg(i) * (1 - mask)
-        return Image.fromarray(out.astype(np.uint8)).convert("RGBA")
+    def z_backdrop(i, tt):
+        """The blurred copy never stands still: a slow Ken Burns drift across it plus a gentle breathing zoom
+        (a few % over ~7 s). One bilinear resample of a half-res crop per frame."""
+        bg = z_bg(i)
+        bw, bh = bg.size
+        s = 1.0 - 0.05 * (0.5 + 0.5 * math.sin(tt * 2 * math.pi / 7.0))        # breathe: up to 5 % closer
+        vw, vh = W / 2 * s, H / 2 * s
+        rx, ry = (bw - vw) / 2 * 0.92, (bh - vh) / 2 * 0.92                     # room left to pan
+        cx = bw / 2 + rx * math.sin(tt * 0.31 + i * 1.7)
+        cy = bh / 2 + ry * math.sin(tt * 0.23 + 0.8 + i * 2.3)
+        return bg.resize((W, H), Image.BILINEAR, box=(cx - vw / 2, cy - vh / 2, cx + vw / 2, cy + vh / 2))
 
-    def z_tags(base, i, cam, revealed, alpha=1.0):
-        """Name tags under their own faces: inside the window, clear of the edges, never overlapping."""
-        an, bn = link_names(i)
-        cx, cy, s = cam
-        items = []
-        for role, nm, col in (("a", an, CYAN), ("b", bn, YELLOW)):
-            b = fbox(i, role)
-            fx = (b[0] + b[2] / 2 - cx) * s + Z_FX
-            fy_bot = (b[1] + b[3] - cy) * s + ZW_Y0 + ZW_H / 2
-            if not (-40 < fx < W + 40):
-                continue
-            txt = C.labels[nm].upper() if (role == "a" or revealed) else "???"
-            tg = pixel_tag(txt, col, 26)
-            x = max(SAFE[0] + tg.width / 2, min(SAFE[2] - tg.width / 2, fx))
-            y = max(ZW_Y0 + 50 + tg.height / 2, min(ZW_Y1 - 40 - tg.height / 2, fy_bot + 14 + tg.height / 2))
-            items.append([tg, x, y])
-        if len(items) == 2:
-            (ta, xa, ya), (tb, xb, yb) = items
-            if abs(xa - xb) < (ta.width + tb.width) / 2 + 36 and abs(ya - yb) < (ta.height + tb.height) / 2 + 14:
-                step = (ta.height + tb.height) / 2 + 16
-                lo_y = ZW_Y1 - 40 - tb.height / 2
-                if ya + step <= lo_y:
-                    items[1][2] = ya + step
-                else:
-                    items[1][2], items[0][2] = lo_y, lo_y - step
-        if alpha <= 0.01:
-            return
-        for tg, x, y in items:
-            paste(base, tg, x, y, alpha=alpha)
-
-    def z_row(base, i, revealed, local):
-        """The chain so far as a row of small faces ("?" for whoever isn't revealed yet); the current pair outlined."""
-        n = len(C.people)
-        x0, x1 = 205, SAFE[2] - Z_TH / 2
-        step = (x1 - x0) / max(1, n - 1)
-        known = i + (2 if revealed else 1)
-        dr = ImageDraw.Draw(base)
-        for j, nm in enumerate(C.people):
-            x, y = x0 + j * step, Z_ROW_Y
-            if j + 1 < n:
-                dr.rectangle([x + Z_TH / 2, y - 3, x + step - Z_TH / 2, y + 3], fill=(235, 235, 245) if j + 1 < known else (90, 80, 130))
-            box = [x - Z_TH / 2, y - Z_TH / 2, x + Z_TH / 2, y + Z_TH / 2]
-            dr.rectangle([box[0] + 6, box[1] + 6, box[2] + 6, box[3] + 6], fill=INK)
-            if j < known:
-                base.alpha_composite(sharp[nm].resize((Z_TH, Z_TH), Image.BICUBIC), (int(box[0]), int(box[1])))
-            else:
-                dr.rectangle(box, fill=PURPLE_Q)
-                paste(base, pixel_text("?", 34, fill=WHITE, shadow=False), x, y)
-            col = CYAN if j == i else (YELLOW if j == i + 1 else INK)
-            dr.rectangle(box, outline=col, width=5 if j in (i, i + 1) else 3)
+    def z_frame(b, X0, Y0, w, h):
+        dr = ImageDraw.Draw(b)
+        dr.rectangle([X0 - 6 + 10, Y0 - 6 + 10, X0 + w + 6 + 10, Y0 + h + 6 + 10], fill=INK)
+        dr.rectangle([X0 - 6, Y0 - 6, X0 + w + 6, Y0 + h + 6], fill=WHITE)
 
     def frame_zoom(seg, tt):
         i = seg["i"]
         if C.fj["links"][i].get("lineage"):
             return frame_lineage(seg, tt)
-        sp, R = seg["speech"], seg.get("rv", REVEAL)
-        local = tt - seg["t0"]
-        d = seg["t1"] - seg["t0"]
-        cam = z_cam(i, d, local)
-        base = z_view(i, cam)
-        if i > 0 and local < 0.4 and not C.fj["links"][i - 1].get("lineage"):
-            ps = z_seg(i - 1)                            # dissolve from the previous photo's last frame (same face)
-            pd = ps["t1"] - ps["t0"]
-            base = Image.blend(z_view(i - 1, z_cam(i - 1, pd, pd + local)), base, ease(local / 0.4))
-        rv_t = R * sp + THROW
-        # tags only once the crossfade has finished (else they sit on the old photo's people), then ease in
-        z_tags(base, i, cam, local > rv_t, alpha=1.0 if i == 0 else ease(max(0.0, min(1.0, (local - 0.42) / 0.25))))
-        z_row(base, i, local > rv_t, local)
-        # Buh, pinned bottom-left at the start of the chain row; hops when B is revealed (a small nod on sensitive links)
-        quiet = sensitive(link_names(i)[0]) or sensitive(link_names(i)[1])
-        u = (local - rv_t) / 0.5
-        hop = (math.sin(math.pi * u) * (22 if quiet else 70)) if 0 <= u <= 1 else 0.0
-        if i == n_links - 1:                          # last link: a little dance in place (CONNECTED! sits just above)
-            hop = 0.0
-        expr = "shock" if local < rv_t else ("smug" if quiet else "happy")
-        paste_pin(base, pin_sprite(expr, (14 if i == n_links - 1 and local > rv_t else 4) * math.sin(tt * (9 if i == n_links - 1 and local > rv_t else 2.1)), 0, 1, scale=3), Z_BUH_X,
-                  Z_ROW_Y + 52 - hop - 4 * abs(math.sin(tt * 2.6)))
-        header(base, i)
-        connected(base, seg, tt, y=Z_DONE_Y)
-        seg["cap"].draw(base, tt, y=Z_CAP_Y)
-        return base
+        base = z_backdrop(i, tt)
+        c = draw_core(base, seg, tt, Z_X0, Z_Y0, Z_S, frame=z_frame)
+        return core_finish(base, seg, tt, c)
 
     # --- board: Buh pins each photo to a corkboard; red string from photo to photo; zoom out at the end
     BW, PW, PH = 1700, 600, 660
@@ -1240,17 +1244,17 @@ def render(slug: str, log=print) -> Path:
             _map["tex"] = np.array(Image.open(FONTS.parent / "earth_texture.jpg").convert("RGB"))
         return _map["tex"]
 
-    # --- globe: the photo big on top; below, a pixel-art Earth window. Buh flies from place to place drawing a dotted
-    # route; the view frames both ends of each hop and zooms by distance (city scale for short hops). No spin: the
-    # view only slides and zooms, and the map floats gently.
-    G_Y0 = 1110                                         # map window top (feathered); it runs to the bottom
-    G_CY = 1340                                         # screen y of the view centre
+    # --- globe: the core photo window on top, over a starfield; below it a pixel-art Earth fills the lower screen.
+    # At the start of each link the view flies from the last place to this one (a red dot hops along a dotted route,
+    # the view frames both ends and zooms by distance), then the place is marked and named. The core stays the hero.
+    G_Y0 = 1150                                         # map top (feathered); it runs to the bottom
+    G_CY = 1610                                         # screen y of the view centre
     G_BOX = (330, 105)                                  # both ends of a hop stay within this many px of the centre
     G_R1 = 450                                          # globe radius on screen at zoom 1
     G_PX, G_M = 2, 24                                   # map pixel size; margin so the float never shows an edge
-    G_FLY = 1.7                                         # seconds of flight at the start of a link
-    G_PW, G_PH, G_PH_TOP = 840, 620, 262                # the photo (inside its print): width, max height, top y
-    G_CAP_Y, G_DONE_Y = 1062, 1428
+    G_FLY = 1.2                                         # seconds of flight at the start of a link
+    G_S = 0.8                                           # core window scale (704 x 760)
+    G_X0, G_WY0 = int(CX - (CARD[2] - CARD[0]) * G_S / 2), 425
     # zoom cap: one texel of the 3840 px Earth texture (3840 / 2pi px per radian) stays <= ~4 screen px (= 2 map pixels)
     G_ZMAX = 4.0 * (3840 / (2 * math.pi)) / G_R1
     _gxs = np.arange(-G_M, W + G_M, G_PX, dtype=np.float32) + G_PX / 2 - CX
@@ -1368,24 +1372,11 @@ def render(slug: str, log=print) -> Path:
             _gst["stars"] = Image.fromarray(st).convert("RGBA")
         return _gst["stars"]
 
-    def g_tags(base, i, cam, x0, revealed, tag_y):
-        """Name tags under their own faces (x from the face box), pushed apart or stacked so they never overlap."""
-        an, bn = link_names(i)
-        items = []
-        for role, nm, col in (("a", an, CYAN), ("b", bn, YELLOW)):
-            fx = (ctr(fbox(i, role))[0] - cam[0]) * cam[2] + G_PW / 2 + x0
-            txt = C.labels[nm].upper() if (role == "a" or revealed) else "???"
-            tg = pixel_tag(txt, col, 24)
-            items.append([tg, fx, tag_y])
-        lo_x = lambda it: SAFE[0] + it[0].width / 2
-        hi_x = lambda it: SAFE[2] - it[0].width / 2
-        for it in items:                                 # each tag centred on its own face (only kept off the edges)
-            it[1] = max(lo_x(it), min(hi_x(it), it[1]))
-        left, right = sorted(items, key=lambda it: it[1])
-        if right[1] - left[1] < (left[0].width + right[0].width) / 2 + 12:
-            items[1][2] = tag_y + (left[0].height + right[0].height) / 2 + 6   # B one row lower, same face x
-        for tg, x, y in items:
-            paste(base, tg, x, y)
+    def g_frame(b, X0, Y0, w, h):
+        """A slim white print border with a hard shadow, like the cards."""
+        dr = ImageDraw.Draw(b)
+        dr.rectangle([X0 - 12 + 14, Y0 - 12 + 14, X0 + w + 12 + 14, Y0 + h + 12 + 14], fill=INK)
+        dr.rectangle([X0 - 12, Y0 - 12, X0 + w + 12, Y0 + h + 12], fill=WHITE)
 
     _G_SHOW = re.compile(r"(?i)\bshow\b|tonight|late night|\blive\b|\btv\b|network|records|studios?\b|\bcbs\b|\bnbc\b|\babc\b")
     _G_ABBR = {"NYC": "New York", "NY": "New York", "DC": "Washington", "LA": "Los Angeles", "UK": "London"}
@@ -1398,75 +1389,122 @@ def render(slug: str, log=print) -> Path:
             keep = [_G_ABBR.get(keep[0].upper().replace(".", ""), keep[0])]
         return ", ".join(keep)
 
+    def g_drift(tt, z):
+        """The globe never sits still: a slow turn (longitude) and a gentle nod (latitude), a fixed few screen px
+        whatever the zoom, so it reads as a slowly turning planet when far out and a soft drift when close in."""
+        k = 1.0 / (G_R1 * z)                                    # radians per screen px at this zoom
+        return (math.degrees(18 * k * math.sin(tt * 0.31 + 0.7)),
+                math.degrees(46 * k * math.sin(tt * 0.23)) + math.degrees(10 * k) * tt / 6)
+
+    def g_stars_at(tt):
+        """The starfield, panning slowly sideways (wraps), so space drifts too."""
+        st = g_stars()
+        off = int(tt * 7) % W
+        if off == 0:
+            return st.copy()
+        out = Image.new("RGBA", (W, H))
+        out.paste(st.crop((off, 0, W, H)), (0, 0))
+        out.paste(st.crop((0, 0, off, H)), (W - off, 0))
+        return out
+
+    def g_route(dr, a, b, vc, z, fx, fy, upto, on_map, r=4, fill=WHITE, dim=None):
+        """A dotted great-circle route a -> b: dots up to fraction `upto` in `fill`, the rest in `dim` (None: skip).
+        Returns the screen points of the dots drawn."""
+        nd = max(3, min(220, int(G_R1 * z * math.radians(ang_deg(a, b)) / 26)))
+        pts = []
+        for d_ in range(nd + 1):
+            u = d_ / nd
+            col = fill if u <= upto + 1e-6 else dim
+            if col is None:
+                break
+            q = g_xy(slerp_ll(a, b, u), vc, z)
+            if on_map(q):
+                x, y = q[0] + fx, q[1] + fy
+                dr.rectangle([x - r, y - r, x + r, y + r], fill=col, outline=INK, width=1)
+                pts.append((x, y))
+        return pts
+
+    def g_label_spot(i, tw, th):
+        """Where link i's place label goes relative to its dot: the side (right, left, below, above) that covers the
+        fewest route dots and visited places in the settled view. Chosen once per link so it never flips."""
+        key = ("lbl", i)
+        if key in _gst:
+            return _gst[key]
+        cur, p = ll(i), prev_ll(i)
+        vc, z, _, _ = g_state(i, G_FLY)
+        dq = g_xy(cur, vc, z)
+        obst = []
+        if p is not None and ang_deg(p, cur) > 0.05:
+            nd = max(3, min(220, int(G_R1 * z * math.radians(ang_deg(p, cur)) / 26)))
+            obst += [g_xy(slerp_ll(p, cur, d_ / nd), vc, z) for d_ in range(nd)]
+        obst += [g_xy(ll(j), vc, z) for j in range(i) if ll(j)]
+        obst = [q for q in obst if q is not None]
+        cands = [(24 + tw / 2, -8), (-24 - tw / 2, -8), (0, 34), (0, -44)]
+        best, spot = None, cands[0]
+        for k, (ox, oy) in enumerate(cands):
+            x = max(SAFE[0] + tw / 2, min(SAFE[2] - tw / 2, dq[0] + ox)) if dq else ox
+            y = (dq[1] if dq else 0) + oy
+            hits = sum(1 for q in obst if abs(q[0] - x) < tw / 2 + 10 and abs(q[1] - y) < th / 2 + 10)
+            pushed = abs(x - ((dq[0] if dq else 0) + ox)) > 40          # clamped far off its dot
+            score = hits * 10 + (25 if pushed else 0) + k
+            if best is None or score < best:
+                best, spot = score, (ox, oy)
+        _gst[key] = spot
+        return spot
+
     def frame_globe(seg, tt):
         i = seg["i"]
-        if C.fj["links"][i].get("lineage") or ll(i) is None:
-            return frame_timeline(seg, tt)
+        if C.fj["links"][i].get("lineage"):
+            return frame_lineage(seg, tt)
         local = tt - seg["t0"]
-        sp, R = seg["speech"], seg.get("rv", REVEAL)
-        revealed = local > R * sp + THROW
-        cur, p = ll(i), prev_ll(i)
-        vc, z, travel, fly = g_state(i, local)
-        base = g_stars().copy()
-        fx, fy = int(10 * math.sin(tt * 0.8)), int(12 * math.sin(tt * 0.6 + 1))   # gentle float, map and Buh together
-        layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-        layer.alpha_composite(g_map(vc, z), (-G_M + fx, G_Y0 - G_M + fy))
-        dr = ImageDraw.Draw(layer)
+        base = g_stars_at(tt)
+        if ll(i) is not None:
+            cur, p = ll(i), prev_ll(i)
+            vc, z, travel, fly = g_state(i, local)
+            dla, dlo = g_drift(tt, z)                    # slow turn + nod of the planet
+            vc = (max(-85.0, min(85.0, vc[0] + dla)), vc[1] + dlo)
+            fx, fy = int(10 * math.sin(tt * 0.8)), int(12 * math.sin(tt * 0.6 + 1))   # gentle float
+            layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+            layer.alpha_composite(g_map(vc, z), (-G_M + fx, G_Y0 - G_M + fy))
+            dr = ImageDraw.Draw(layer)
 
-        def on_map(q):
-            return q is not None and -20 < q[0] < W + 20 and G_Y0 + 30 < q[1] < H + 20
+            def on_map(q):
+                return q is not None and -20 < q[0] < W + 20 and G_Y0 + 30 < q[1] < H + 20
 
-        for j in range(i + 1):                          # places visited so far (the current one only on arrival)
-            if ll(j) and (j < i or fly > 0.96 or p is None):
-                q = g_xy(ll(j), vc, z)
+            # the journey so far: earlier hops stay on the globe as faint small dots
+            placed = [j for j in range(i) if ll(j)]
+            for j0, j1 in itertools.pairwise(placed):
+                if ang_deg(ll(j0), ll(j1)) > 0.05:
+                    g_route(dr, ll(j0), ll(j1), vc, z, fx, fy, 1.0, on_map, r=2, fill=(150, 150, 190))
+            # this hop's dotted route: the whole way is there from the first frame of the link (dim ahead of the
+            # plane-dot, white behind it) and stays for the whole link
+            moved = p is not None and ang_deg(p, cur) > 0.05
+            if moved:
+                g_route(dr, p, cur, vc, z, fx, fy, fly, on_map, fill=WHITE, dim=(110, 110, 150))
+            for j in range(i + 1):                      # places visited so far (the current one only on arrival)
+                if ll(j) and (j < i or fly > 0.96 or p is None):
+                    q = g_xy(ll(j), vc, z)
+                    if on_map(q):
+                        r = 9 if j == i else 6
+                        dr.rectangle([q[0] + fx - r, q[1] + fy - r, q[0] + fx + r, q[1] + fy + r], fill=RED, outline=INK, width=3)
+            if moved and fly < 1:                    # the travelling marker: a little red plane-dot with a hop
+                q = g_xy(travel, vc, z)
                 if on_map(q):
-                    q = (q[0] + fx, q[1] + fy)
-                    r = 9 if j == i else 6
-                    dr.rectangle([q[0] - r, q[1] - r, q[0] + r, q[1] + r], fill=RED, outline=INK, width=3)
-        if p is not None and ang_deg(p, cur) > 0.05:    # this hop's dotted route, drawn as far as Buh has got
-            a = ang_deg(p, cur)
-            nd = max(3, min(220, int(G_R1 * z * math.radians(a) / 26)))
-            for d_ in range(int(nd * fly) + 1):
-                q = g_xy(slerp_ll(p, cur, d_ / nd), vc, z)
-                if on_map(q):
-                    dr.rectangle([q[0] + fx - 4, q[1] + fy - 4, q[0] + fx + 4, q[1] + fy + 4], fill=WHITE, outline=INK, width=1)
-        # Buh: rides the route, then lands just beside the marker (never on it) and bobs; always kept on screen
-        q = g_xy(travel, vc, z) or (CX, G_CY)
-        dest = g_xy(cur, vc, z) or (CX, G_CY)
-        side = -1 if dest[0] > CX + 120 else 1          # Buh on one side of the marker, the place name on the other
-        bx = q[0] - side * 62 * ease(fly)
-        hop = math.sin(math.pi * fly) * 80 if fly < 1 else 5 * abs(math.sin(local * 3))
-        bx = max(SAFE[0] + 40, min(SAFE[2] - 40, bx)) + fx
-        by = max(G_Y0 + 150, min(1500, q[1] + 8 - hop)) + fy
-        look = 1 if (p is None or cur[1] >= p[1]) else -1
-        paste_pin(layer, pin_sprite("shock" if fly < 1 else "happy", 0, 0, look, scale=4), bx, by)
-        place = g_place((spec["links"][i].get("where") or {}).get("place", ""))
-        if fly >= 1 and place:
-            tg = pixel_tag(place.upper(), WHITE, 20)
-            lx = dest[0] + fx + side * (24 + tg.width / 2)
-            lx = max(SAFE[0] + tg.width / 2, min(SAFE[2] - tg.width / 2, lx))
-            paste(layer, tg, lx, dest[1] + fy - 8)
-        base.alpha_composite(layer)
-        # the photo, big, in a print at the top; it pops in over the first 0.3 s of the link
-        ih, iw = C.imgs[i].shape[:2]
-        ph = int(max(470, min(G_PH, G_PW * ih / iw)))   # the print takes the photo's own shape (less crop)
-        ba_, bb_ = fbox(i, "a"), fbox(i, "b")           # crop to the two faces (small faces in group shots get
-        fx0, fx1 = min(ba_[0], bb_[0]), max(ba_[0] + ba_[2], bb_[0] + bb_[2])   # bigger), never past ~1.25x
-        fy0, fy1 = min(ba_[1], bb_[1]), max(ba_[1] + ba_[3], bb_[1] + bb_[3])
-        sc_ = max(min(1.25, G_PW * 0.72 / max(1, fx1 - fx0), ph * 0.62 / max(1, fy1 - fy0)),
-                  G_PW / iw, ph / ih)                   # always covered: no blurred fill inside the print
-        cam = ((fx0 + fx1) / 2, (fy0 + fy1) / 2 + ph * 0.18 / sc_, sc_)   # faces in the upper part of the print
-        cam = (max(G_PW / 2 / sc_, min(iw - G_PW / 2 / sc_, cam[0])), max(ph / 2 / sc_, min(ih - ph / 2 / sc_, cam[1])), sc_)
-        pop = ease_out_back(min(1.0, local / 0.3))
-        card = framed(view(i, *cam, G_PW, ph), tilt=0.0, tape=True)
-        bob = 6 * math.sin(local * 2.1)
-        paste(base, card, CX + 6, G_PH_TOP + ph / 2 + 10 + bob, scale=0.6 + 0.4 * pop, nearest=False)
-        if local > 0.25:
-            g_tags(base, i, cam, CX - G_PW / 2, revealed, G_PH_TOP + ph + 70)
-        header(base, i)
-        connected(base, seg, tt, y=G_DONE_Y)
-        seg["cap"].draw(base, tt, y=G_CAP_Y)
-        return base
+                    hop = math.sin(math.pi * fly) * 40
+                    x, y = q[0] + fx, q[1] + fy - hop
+                    dr.ellipse([x - 12, y - 12, x + 12, y + 12], fill=RED, outline=INK, width=4)
+            dest = g_xy(cur, vc, z)
+            place = before_b(g_place((spec["links"][i].get("where") or {}).get("place", "")), spec["links"][i])
+            if fly >= 1 and dest and place.strip("…"):
+                tg = pixel_tag(place.upper(), WHITE, 20)
+                dx_, dy_ = dest[0] + fx, dest[1] + fy
+                ox, oy = g_label_spot(i, tg.width, tg.height)
+                lx = max(SAFE[0] + tg.width / 2, min(SAFE[2] - tg.width / 2, dx_ + ox))
+                ly = dy_ + oy
+                paste(layer, tg, lx, ly)
+            base.alpha_composite(layer)
+        c = draw_core(base, seg, tt, G_X0, G_WY0, G_S, frame=g_frame)
+        return core_finish(base, seg, tt, c)
 
     style_frames = {"globe": frame_globe, "cards": frame_link, "zoom": frame_zoom, "board": frame_board, "timeline": frame_timeline,
 }

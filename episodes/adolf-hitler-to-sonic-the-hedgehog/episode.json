@@ -1,0 +1,137 @@
+{
+  "from": "Adolf Hitler",
+  "to": "Sonic the Hedgehog",
+  "title": "How is Adolf Hitler connected to Sonic the Hedgehog?",
+  "description": "The Beetle's designer, the Mercedes racing team, two racing legends, a seven-time champion, a talk-show host and Jim Carrey connect Adolf Hitler to Sonic the Hedgehog.",
+  "hook": "How is Adolf Hitler connected to Sonic the Hedgehog?",
+  "fun_fact": "Alfred Neubauer, pictured with Porsche in 1924, is credited with inventing pit signals: he was the first team boss to signal his drivers with flags and boards from the pit wall.",
+  "research_note": "Commons only had a tiny copy of the famous Beetle-model photo, so a larger scan of the same Hoffmann photo came from Santa Clara University's exhibit; from there, motor racing leads to Lewis Hamilton, and Sonic comes in through a real 2020 premiere photo of the costumed Sonic with Jim Carrey.",
+  "people": {
+    "Adolf Hitler": {
+      "label": "Adolf Hitler",
+      "short": "Hitler"
+    },
+    "Ferdinand Porsche": {
+      "label": "Ferdinand Porsche",
+      "short": "Porsche"
+    },
+    "Alfred Neubauer": {
+      "label": "Alfred Neubauer",
+      "short": "Neubauer"
+    },
+    "Juan Manuel Fangio": {
+      "label": "Fangio"
+    },
+    "Stirling Moss": {
+      "label": "Stirling Moss"
+    },
+    "Lewis Hamilton": {
+      "label": "Lewis Hamilton",
+      "short": "Hamilton"
+    },
+    "Jimmy Kimmel": {
+      "label": "Jimmy Kimmel"
+    },
+    "Jim Carrey": {
+      "label": "Jim Carrey"
+    },
+    "Sonic the Hedgehog": {
+      "label": "Sonic"
+    }
+  },
+  "links": [
+    {
+      "a": "Adolf Hitler",
+      "b": "Ferdinand Porsche",
+      "image": {
+        "url": "https://dh.scu.edu/exhibits/files/original/201/5919/Hitler_with_Beetle.png",
+        "credit": "Heinrich Hoffmann",
+        "license": "Public domain (PD-anon-70-EU)",
+        "source": "https://commons.wikimedia.org/wiki/File:Hitler_with_Beetle.webp"
+      },
+      "line": "In the 1930s, Ferdinand Porsche showed Hitler a model of his new people's car, the Volkswagen Beetle.",
+      "fact": "Beetle model, 1930s",
+      "a_face": 3,
+      "b_face": 0
+    },
+    {
+      "a": "Ferdinand Porsche",
+      "b": "Alfred Neubauer",
+      "image": {
+        "file": "File:Auto-ontwerper Ferdinand Porsche (rechts) en Alfred Neubauer met een racewagen,race-auto op, SFA007000597.jpg"
+      },
+      "line": "In 1924, Porsche took a race car to Sicily with Alfred Neubauer, the man who invented pit signals.",
+      "fact": "Sicily, 1924"
+    },
+    {
+      "a": "Alfred Neubauer",
+      "b": "Juan Manuel Fangio",
+      "image": {
+        "file": "File:Training voor Grote Prijs van Nederland op Zandvoort, leider van de Mercedesploe, Bestanddeelnr 907-1856.jpg"
+      },
+      "line": "In 1955, Neubauer was running the Mercedes team, and his star driver was Fangio.",
+      "fact": "Dutch Grand Prix, 1955",
+      "a_face": 0,
+      "b_face": 3
+    },
+    {
+      "a": "Juan Manuel Fangio",
+      "b": "Stirling Moss",
+      "image": {
+        "file": "File:Grote Prijs van Nederland Zandvoort. De winnaar J. M. Fangio (links) wordt gefel, Bestanddeelnr 907-1900.jpg"
+      },
+      "line": "In June 1955, Fangio won the Dutch Grand Prix, and his teammate Stirling Moss congratulated him.",
+      "fact": "Zandvoort, June 1955",
+      "a_face": 2,
+      "b_face": 4
+    },
+    {
+      "a": "Stirling Moss",
+      "b": "Lewis Hamilton",
+      "image": {
+        "file": "File:Bob Ives, Lewis Hamilton. Joe Ives, Stirling Moss.jpg"
+      },
+      "line": "In 2008, Moss posed with Lewis Hamilton, who had just won his first world title.",
+      "fact": "Moss meets young Hamilton"
+    },
+    {
+      "a": "Lewis Hamilton",
+      "b": "Jimmy Kimmel",
+      "image": {
+        "url": "https://i.ytimg.com/vi/LSuuxVyyd2I/maxresdefault.jpg",
+        "credit": "Jimmy Kimmel Live / ABC (YouTube)",
+        "license": "Fair use (commentary)",
+        "source": "https://www.youtube.com/watch?v=LSuuxVyyd2I"
+      },
+      "line": "In 2022, Sir Lewis told Jimmy Kimmel about being knighted.",
+      "fact": "Jimmy Kimmel Live, 2022"
+    },
+    {
+      "a": "Jimmy Kimmel",
+      "b": "Jim Carrey",
+      "image": {
+        "url": "https://i.ytimg.com/vi/LQMvZ5nvjc8/maxresdefault.jpg",
+        "credit": "Jimmy Kimmel Live / ABC (YouTube)",
+        "license": "Fair use (commentary)",
+        "source": "https://www.youtube.com/watch?v=LQMvZ5nvjc8"
+      },
+      "line": "In 2017, a heavily bearded Jim Carrey sat down with Kimmel.",
+      "fact": "Jimmy Kimmel Live, 2017"
+    },
+    {
+      "a": "Jim Carrey",
+      "b": "Sonic the Hedgehog",
+      "image": {
+        "file": "File:JimCarreySonicMoviePremiere2020.jpg"
+      },
+      "line": "And in 2020, at the premiere, Jim Carrey, the movie's Doctor Robotnik, posed with Sonic himself.",
+      "fact": "Sonic premiere, 2020",
+      "b_face": [
+        180,
+        330,
+        300,
+        280
+      ]
+    }
+  ]
+}

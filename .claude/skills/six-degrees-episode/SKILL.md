@@ -21,7 +21,9 @@ first). When you pick new pairs yourself, follow "What goes viral" in `docs/STYL
 instantly recognisable person × something innocent, cute or kid/gamer-coded (Hitler → Minecraft's Steve made
 17M views). Costume and puppet characters (Elmo, Kermit, Mickey, Pikachu) are ideal endpoints because they appear
 in real photos with presidents and celebrities. Never repeat a pair already in `data/pairs.json`. Slug: `<from>-to-<to>`, lowercase with dashes. If the entry has `requested_by`, copy it into
-episode.json: the hook shows the viewer's request bubble and the first comment credits them.
+episode.json: the hook shows the viewer's request bubble and the first comment credits them. Use their real
+@handle (never "a viewer" when the handle is known) and, when the request came from a YouTube comment, also set
+`"request_avatar"` to the commenter's profile-picture URL (comments.json `avatar`) so the bubble shows their PFP.
 
 ## 2. The chain (honesty rules)
 - Every link is a **real picture of two people together**: a photo, or a painting, mosaic or sculpture that
