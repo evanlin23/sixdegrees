@@ -2,7 +2,10 @@
  "style": "pixel",
  "mascot": "pixel Pin with detective hat",
  "rotation": [
-  "cards"
+  "cards",
+  "museum",
+  "filmreel",
+  "zoom"
  ],
- "_rotation": "Only 'cards' (owner 2026-11-12): every style must keep Buh jumping with his pin + red line, name tags on faces, and the zoom-out / move / zoom-in camera. The plug-in styles go back in once they're rebuilt as skins around that core."
+ "_rotation": "Owner-approved formats only (2026-11-13: museum 'ok', film reel 'ok fine', big photo/zoom 'sure that's fine'). Every style keeps the core: Buh jumping with pin + red string, name tags under the chins, zoom-out / move / zoom-in camera. Add others only after the owner OKs them in the Review Room."
 }
