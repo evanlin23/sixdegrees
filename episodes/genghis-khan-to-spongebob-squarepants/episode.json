@@ -1,17 +1,35 @@
 {
   "from": "Genghis Khan",
   "to": "SpongeBob SquarePants",
-  "title": "Genghis Khan to SpongeBob in six links",
+  "title": "Genghis Khan to SpongeBob: how?",
   "description": "Five Great Khans, two pages of a medieval Marco Polo manuscript, 82 popes, the Obamas and a London soccer drill connect Genghis Khan to SpongeBob SquarePants.",
-  "hook": "How is Genghis Khan connected to SpongeBob SquarePants?",
+  "hook": "How's Genghis Khan linked to SpongeBob?",
+  "hook_variant": "A",
+  "text_variant": "T0",
   "people": {
+    "Genghis Khan": {
+      "hook_photo": "File:YuanEmperorAlbumGenghisPortrait.jpg",
+      "hook_box": [
+        280,
+        360,
+        430,
+        420
+      ]
+    },
     "Niccolò Polo": {
       "wiki": "Niccolò and Maffeo Polo",
       "label": "Niccolò Polo"
     },
     "SpongeBob SquarePants": {
       "wiki": "SpongeBob SquarePants (character)",
-      "label": "SpongeBob"
+      "label": "SpongeBob",
+      "hook_photo": "https://static.wikia.nocookie.net/spongebob/images/6/6b/Spongebob_happy_stock_art_1.octet-stream.png/revision/latest?cb=20260401183834",
+      "hook_box": [
+        1200,
+        100,
+        2300,
+        2500
+      ]
     }
   },
   "links": [
@@ -48,7 +66,7 @@
           }
         ]
       },
-      "line": "Genghis Khan founded the Mongol Empire, and his grandson Kublai became its fifth Great Khan."
+      "line": "In 1260, Genghis Khan's grandson, Kublai Khan, became the fifth Great Khan."
     },
     {
       "a": "Kublai Khan",
@@ -56,7 +74,7 @@
       "image": {
         "file": "File:PoloBrotherAndKubilai.JPG"
       },
-      "line": "A 15th-century French manuscript painted Kublai Khan receiving the Venetian merchant brothers Niccolò and Maffeo Polo.",
+      "line": "In the 1400s, a French book painted Kublai welcoming Venice's Polo brothers.",
       "a_face": 3,
       "b_face": 0
     },
@@ -66,7 +84,7 @@
       "image": {
         "file": "File:NoccoloAndMaffeoPoloWithGregoryX.JPG"
       },
-      "line": "The same book paints the Polos with Pope Gregory X, who sent them back to Kublai in 1271.",
+      "line": "In 1271, the Polos met Pope Gregory X, painted in the same book.",
       "a_face": 3,
       "b_face": 1
     },
@@ -118,7 +136,7 @@
           }
         ]
       },
-      "line": "From Gregory X, the 184th pope, the line runs unbroken to the 266th, Pope Francis."
+      "line": "In 2013, 82 popes after Gregory, the line reached Pope Francis."
     },
     {
       "a": "Pope Francis",
@@ -126,7 +144,7 @@
       "image": {
         "file": "File:Pope Francis and the Obamas at the White House.jpg"
       },
-      "line": "In 2015, Barack and Michelle Obama welcomed Pope Francis to the White House."
+      "line": "In 2015, Francis met Barack and Michelle Obama at the White House."
     },
     {
       "a": "Michelle Obama",
@@ -137,7 +155,7 @@
         "license": "Fair use (commentary)",
         "source": "https://www.cbsnews.com/pictures/michelle-obama-at-the-olympics"
       },
-      "line": "And in 2012 in London, Michelle Obama kicked a goal past SpongeBob, with David Beckham cheering.",
+      "line": "And in 2012, in London, Michelle kicked a goal past SpongeBob.",
       "b_face": [
         185,
         60,
