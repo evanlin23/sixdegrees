@@ -1,8 +1,8 @@
 """Hitler series extras (owner, 2026-11-12: "only the AH ones are blowing up"):
 
 - `python -m sixdeg series`   every uploaded Hitler Short joins the public playlist SERIES_TITLE (created once)
-- `python -m sixdeg comments` top comments on the Hitler Shorts -> comments.json, so the producer can make the
-  "Hitler to X" pairs viewers ask for first (their comment becomes the hook)
+- `python -m sixdeg comments` top comments and their replies on every upload -> comments.json (likely
+  requests flagged "request": true, each with the @handle and a 240 px profile picture), so producers make what viewers ask for first
 Both run after each upload in upload.yml; quota cost is tiny (list = 1 unit, playlistItems.insert = 50).
 """
 from __future__ import annotations
@@ -53,26 +53,64 @@ def series() -> str:
     return f"playlist {pl}: added {len(added)} ({', '.join(added) or 'none'}), {len(have) + len(added)} total"
 
 
+# "You could've ended it at Nixon. Trump & Nixon met." Viewers point out shorter routes: producers check these first.
+SHORTCUT_RE = re.compile(r"(?i)(could\s*'?ve|could have|shorter|faster|quicker|easier|skip|instead|directly|\bmet\b|ended it at|just go|method|unpatched|patched)")
+REQUEST_RE = re.compile(r"(?i)(\bto\b|→|->|\bconnect|\bnext\b|\bvs\.?\b|\bdo\b|\bplease\b|\bpls\b|\bcan you\b)")
+
+
+def _uploads() -> list[dict]:
+    """Every upload with a video id (Hitler Shorts and the rest: requests come in on all of them)."""
+    import subprocess
+    raw = subprocess.check_output(["git", "-C", str(ROOT), "show", "origin/queue:uploaded.json"], text=True)
+    return [u for u in json.loads(raw) if u.get("video_id")]
+
+
+def _big_avatar(url: str) -> str:
+    """YouTube serves the commenter's picture at any size: ask for 240 px instead of the 48 px thumbnail."""
+    return re.sub(r"=s\d+-", "=s240-", url or "")
+
+
+def _row(s: dict, cid: str, parent: dict | None = None) -> dict:
+    return {"author": s.get("authorDisplayName", ""),            # the @handle (requested_by)
+            "author_channel": (s.get("authorChannelId") or {}).get("value", ""),
+            "text": s.get("textDisplay", "")[:300], "likes": s.get("likeCount", 0),
+            "avatar": _big_avatar(s.get("authorProfileImageUrl", "")),   # request_avatar
+            "published": s.get("publishedAt", ""), "comment_id": cid,
+            "reply_to": parent["author"] if parent else None}   # replies to our "Who should I connect next?"
+
+
 def comments(limit: int = 100) -> dict:
+    """Top comments AND their replies on every upload -> comments.json. Viewers answer the pinned "Who should I connect
+    next?" comment with a reply, so replies are where most requests are. Each row keeps the @handle and a 240 px
+    profile-picture URL, so a requested pair can credit the viewer (requested_by, request_avatar)."""
     from .upload import youtube
     yt = youtube()
-    out = {}
-    for u in _hitler_uploads():
+    out, requests = {}, []
+    for u in _uploads():
         try:
-            r = yt.commentThreads().list(part="snippet", videoId=u["video_id"], maxResults=limit, order="relevance",
-                                         textFormat="plainText").execute()
+            r = yt.commentThreads().list(part="snippet,replies", videoId=u["video_id"], maxResults=limit,
+                                         order="relevance", textFormat="plainText").execute()
         except Exception as e:  # noqa: BLE001 - comments off / not public yet
             out[u["slug"]] = {"error": str(e)[:120]}
             continue
         rows = []
         for it in r.get("items", []):
-            s = it["snippet"]["topLevelComment"]["snippet"]
-            rows.append({"author": s.get("authorDisplayName", ""), "text": s.get("textDisplay", "")[:300],
-                         "likes": s.get("likeCount", 0), "avatar": s.get("authorProfileImageUrl", ""),
-                         "comment_id": it["id"]})
+            top = _row(it["snippet"]["topLevelComment"]["snippet"], it["id"])
+            rows.append(top)
+            replies = (it.get("replies") or {}).get("comments", [])
+            if it["snippet"].get("totalReplyCount", 0) > len(replies):     # the thread view returns 5 at most
+                try:
+                    replies = yt.comments().list(part="snippet", parentId=it["id"], maxResults=100,
+                                                 textFormat="plainText").execute().get("items", [])
+                except Exception:  # noqa: BLE001 - keep the 5 we have
+                    pass
+            rows += [_row(c["snippet"], c["id"], top) for c in replies]
+        for c in rows:   # flag likely requests in place (upload.yml saves comments.json only)
+            ours = c["author"].lower() == "@buhconnects"
+            c["request"] = not ours and bool(REQUEST_RE.search(c["text"]))
+            c["shortcut"] = not ours and bool(SHORTCUT_RE.search(c["text"]))   # a shorter route, or a "method" meme
         out[u["slug"]] = {"video_id": u["video_id"], "comments": rows}
+        requests += [c for c in rows if c["request"]]
     (ROOT / "comments.json").write_text(json.dumps(out, indent=1, ensure_ascii=False))
     n = sum(len(v.get("comments", [])) for v in out.values())
-    asks = sum(1 for v in out.values() for c in v.get("comments", [])
-               if re.search(r"(?i)\b(do|next|connect|to|vs)\b", c["text"]))
-    return {"videos": len(out), "comments": n, "maybe_requests": asks}
+    return {"videos": len(out), "comments": n, "maybe_requests": len(requests)}
