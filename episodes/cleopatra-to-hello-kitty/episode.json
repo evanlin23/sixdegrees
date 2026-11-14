@@ -2,7 +2,7 @@
   "from": "Cleopatra",
   "to": "Hello Kitty",
   "title": "Cleopatra to Hello Kitty: how?",
-  "description": "A Guercino painting, the line of Roman emperors, a Raphael-workshop fresco, the line of popes, a papal visit to Tokyo and a Yokohama reception connect Cleopatra to Hello Kitty.",
+  "description": "An Angelica Kauffman painting, the line of Roman emperors, a Raphael-workshop fresco, the line of popes, a papal visit to Tokyo and a Yokohama reception connect Cleopatra to Hello Kitty.",
   "hook": "How is Cleopatra connected to Hello Kitty?",
   "hook_variant": "F",
   "text_variant": "T1",
@@ -47,16 +47,16 @@
       "a": "Cleopatra",
       "b": "Augustus",
       "image": {
-        "file": "File:Guercino - Cleopatra and Octavian - Google Art Project.jpg"
+        "file": "File:Angelica Kauffmann Kleopatra vor Augustus..jpg"
       },
-      "line": "In 30 BC, Cleopatra came face to face with Octavian, the future Augustus.",
-      "fact": "Guercino's painting, 1640",
+      "line": "In 30 BC, Cleopatra knelt before Octavian, the future Augustus.",
+      "fact": "Angelica Kauffman's painting, c. 1805",
       "where": {
         "place": "Alexandria",
         "lat": 31.2,
         "lon": 29.918
       },
-      "a_face": 3,
+      "a_face": 1,
       "b_face": 2
     },
     {
@@ -1621,5 +1621,5 @@
     }
   ],
   "fun_fact": "Pope Francis's 2019 trip was the first papal visit to Japan in 38 years, since John Paul II in 1981.",
-  "research_note": "Real people only: Cleopatra meets Octavian in Guercino's painting, then the full lines of 62 emperors and 232 popes, joined by a Raphael-workshop fresco, carry the chain to Pope Francis's 2019 visit to Shinzo Abe."
+  "research_note": "Real people only: Cleopatra kneels before Octavian in Angelica Kauffman's painting, then the full lines of 62 emperors and 232 popes, joined by a Raphael-workshop fresco, carry the chain to Pope Francis's 2019 visit to Shinzo Abe."
 }
