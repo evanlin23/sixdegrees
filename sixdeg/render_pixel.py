@@ -1696,16 +1696,21 @@ def render(slug: str, log=print) -> Path:
     def method_stamp(base, label, k):
         """'QUEEN METHOD' over 'STILL UNPATCHED': slams in (k = seconds since landing), tilted, at the top of the
         content area (above the photo's faces, inside the safe zone), then fades."""
-        if label not in _stamps:
-            size = 58
-            while pf(size).getlength(f"{label} METHOD") > SAFE[2] - SAFE[0] - 90 and size > 30:
+        if label not in _stamps:      # an "achievement" plate: dark, yellow border, so it reads on any photo or style
+            size = 64
+            while pf(size).getlength(f"{label} METHOD") > SAFE[2] - SAFE[0] - 140 and size > 30:
                 size -= 2
             top = pixel_text(f"{label} METHOD", size, fill=YELLOW)
-            sub = pixel_text("STILL UNPATCHED", max(22, size // 2), fill=WHITE)
-            im = Image.new("RGBA", (max(top.width, sub.width) + 20, top.height + sub.height + 6), (0, 0, 0, 0))
-            im.alpha_composite(top, ((im.width - top.width) // 2, 0))
-            im.alpha_composite(sub, ((im.width - sub.width) // 2, top.height + 6))
-            _stamps[label] = im.rotate(6, resample=Image.BICUBIC, expand=True)
+            sub = pixel_text("STILL UNPATCHED", max(26, int(size * 0.6)), fill=WHITE)
+            pad, gap = 22, 10
+            w, h = max(top.width, sub.width) + 2 * pad, top.height + gap + sub.height + 2 * pad
+            im = Image.new("RGBA", (w + 10, h + 10), (0, 0, 0, 0))
+            d = ImageDraw.Draw(im)
+            d.rectangle([10, 10, w + 9, h + 9], fill=(0, 0, 0, 150))                    # hard shadow
+            d.rectangle([0, 0, w - 1, h - 1], fill=INK + (240,), outline=YELLOW, width=7)
+            im.alpha_composite(top, ((w - top.width) // 2, pad))
+            im.alpha_composite(sub, ((w - sub.width) // 2, pad + top.height + gap))
+            _stamps[label] = im.rotate(5, resample=Image.BICUBIC, expand=True)
         im = _stamps[label]
         pop = ease_out_back(min(1.0, k / 0.16))
         alpha = 1.0 if k < 1.25 else max(0.0, 1 - (k - 1.25) / 0.25)
