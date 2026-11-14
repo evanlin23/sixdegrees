@@ -1,0 +1,157 @@
+{
+  "from": "Adolf Hitler",
+  "to": "Cookie Monster",
+  "title": "Hitler to Cookie Monster: how?",
+  "hook": "How is Hitler connected to Cookie Monster?",
+  "hook_variant": "F",
+  "text_variant": "T1",
+  "description": "Six real photos connect Adolf Hitler to Cookie Monster: Mussolini's foreign minister Ciano, Lord Halifax, Churchill, Queen Elizabeth II and Michelle Obama.",
+  "fun_fact": "In May 1940 Lord Halifax could have become Britain's prime minister, but he stepped aside and the job went to Winston Churchill.",
+  "research_note": "The obvious exit, Lord Halifax's 1937 visit to Hitler's Berghof, survives only in non-free press copies, so Hitler leaves through Mussolini's foreign minister Ciano, who stood beside Halifax at the Rome opera in 1939.",
+  "people": {
+    "Adolf Hitler": {
+      "label": "Adolf Hitler",
+      "short": "Hitler"
+    },
+    "Galeazzo Ciano": {
+      "label": "Galeazzo Ciano",
+      "short": "Ciano"
+    },
+    "E. F. L. Wood, 1st Earl of Halifax": {
+      "label": "Lord Halifax",
+      "short": "Halifax"
+    },
+    "Winston Churchill": {
+      "label": "Winston Churchill",
+      "short": "Churchill"
+    },
+    "Elizabeth II": {
+      "label": "Queen Elizabeth II",
+      "short": "Queen Elizabeth"
+    },
+    "Michelle Obama": {
+      "label": "Michelle Obama"
+    },
+    "Cookie Monster": {
+      "label": "Cookie Monster",
+      "hook_photo": "https://static.wikia.nocookie.net/muppet/images/b/b8/Cookie.jpg/revision/latest?cb=20190315142814"
+    }
+  },
+  "links": [
+    {
+      "a": "Adolf Hitler",
+      "b": "Galeazzo Ciano",
+      "image": {
+        "file": "File:Teleki & Hitler Tripartite-pact.jpg"
+      },
+      "fact": "Vienna, November 1940",
+      "where": {
+        "place": "Belvedere Palace, Vienna",
+        "lat": 48.191,
+        "lon": 16.381
+      },
+      "line": "In 1940, Hitler met Mussolini's foreign minister, Galeazzo Ciano, in Vienna.",
+      "a_face": [
+        355,
+        100,
+        130,
+        170
+      ],
+      "b_face": [
+        700,
+        145,
+        120,
+        170
+      ]
+    },
+    {
+      "a": "Galeazzo Ciano",
+      "b": "E. F. L. Wood, 1st Earl of Halifax",
+      "image": {
+        "file": "File:Mussolini and Chamberlain in Rome 1939.jpg"
+      },
+      "fact": "Rome opera, January 1939",
+      "where": {
+        "place": "Rome",
+        "lat": 41.9,
+        "lon": 12.496
+      },
+      "line": "In 1939, Ciano shared an opera box in Rome with Britain's Lord Halifax.",
+      "a_face": 3,
+      "b_face": 2
+    },
+    {
+      "a": "E. F. L. Wood, 1st Earl of Halifax",
+      "b": "Winston Churchill",
+      "image": {
+        "file": "File:0929 fc-churchill-halifax.jpg"
+      },
+      "fact": "London, 1938",
+      "where": {
+        "place": "London",
+        "lat": 51.503,
+        "lon": -0.128
+      },
+      "line": "In 1938, Halifax walked through London beside Winston Churchill.",
+      "a_face": 2,
+      "b_face": 1
+    },
+    {
+      "a": "Winston Churchill",
+      "b": "Elizabeth II",
+      "image": {
+        "file": "File:Churchill queen Elizabeth 1953.jpg"
+      },
+      "fact": "London, 1953",
+      "where": {
+        "place": "London",
+        "lat": 51.501,
+        "lon": -0.142
+      },
+      "line": "In 1953, Churchill was prime minister to the young Queen Elizabeth.",
+      "a_face": 3,
+      "b_face": 2
+    },
+    {
+      "a": "Elizabeth II",
+      "b": "Michelle Obama",
+      "image": {
+        "file": "File:Barack Obama's trip to the United Kingdom April 2016 (5).jpg"
+      },
+      "fact": "Windsor Castle, 2016",
+      "where": {
+        "place": "Windsor Castle",
+        "lat": 51.484,
+        "lon": -0.604
+      },
+      "line": "In 2016, the Queen hosted Barack and Michelle Obama at Windsor Castle.",
+      "a_face": 1,
+      "b_face": 3
+    },
+    {
+      "a": "Michelle Obama",
+      "b": "Cookie Monster",
+      "image": {
+        "url": "https://catalog.archives.gov/medialz/presidential-libraries/obama/81145631/Batch_0007/P042114LJ-0715.JPG",
+        "credit": "Official White House Photo by Lawrence Jackson (Barack Obama Presidential Library)",
+        "license": "Public domain (White House photo)",
+        "source": "https://catalog.archives.gov/id/441119826",
+        "free": true
+      },
+      "fact": "White House, April 2014",
+      "where": {
+        "place": "White House",
+        "lat": 38.897,
+        "lon": -77.037
+      },
+      "line": "And in 2014, Michelle Obama posed for a photo with Cookie Monster.",
+      "a_face": 4,
+      "b_face": [
+        562,
+        170,
+        84,
+        66
+      ]
+    }
+  ]
+}

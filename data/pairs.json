@@ -685,6 +685,14 @@
   "source": "YouTube comment (the reference channel's 15.5M-view pair; asked again under Stalin to Elmo), Studio snapshot 2026-11-10"
  },
  {
+  "from": "Adolf Hitler",
+  "to": "Cookie Monster",
+  "status": "done",
+  "source": "[#2] Hitler pairs (Nov 2026)",
+  "hint": "Ciano in Vienna (1940), Lord Halifax at the Rome opera, Churchill, Queen Elizabeth II, Michelle Obama with Cookie Monster at the 2014 Easter Egg Roll (Barney had no honest photo route)",
+  "slug": "adolf-hitler-to-cookie-monster"
+ },
+ {
   "from": "LeBron James",
   "to": "Kim Jong Un",
   "status": "done",
