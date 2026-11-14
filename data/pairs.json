@@ -799,6 +799,14 @@
  },
  {
   "from": "Adolf Hitler",
+  "to": "Mr. Rogers",
+  "status": "done",
+  "source": "[#2] Hitler pairs (Nov 2026)",
+  "hint": "Tsar Boris III, his son Simeon II (later Bulgaria's PM), George W. Bush, who gave Fred Rogers the Medal of Freedom",
+  "slug": "adolf-hitler-to-mr-rogers"
+ },
+ {
+  "from": "Adolf Hitler",
   "to": "SpongeBob SquarePants",
   "status": "done",
   "source": "viral formula",
