@@ -56,20 +56,17 @@
       "a": "Edward VIII",
       "b": "Elizabeth II",
       "image": {
-        "url": "https://i0.wp.com/oldphotogallery.com/wp-content/uploads/2023/03/queen-elizabeth-childhood-and-adolescence-65.jpg",
-        "credit": "Unknown photographer (via Old Photo Gallery)",
-        "license": "Fair use (commentary)",
-        "source": "https://oldphotogallery.com/places-people/65-edward-the-prince-of-wales-with-his-brother-the-duke-of-york-and-the-dukes-children-princess-elizabeth-and-princess-margaret/"
+        "file": "File:Duke and Duchess of Gloucester wedding.png"
       },
-      "line": "In the 1930s, Edward posed with his niece, the future Queen Elizabeth.",
-      "fact": "Family holiday, 1930s",
+      "line": "Back in 1935, Edward joined his niece, Princess Elizabeth, at a royal wedding.",
+      "fact": "Buckingham Palace, 1935",
       "where": {
-        "place": "Scotland",
-        "lat": 57.04,
-        "lon": -3.23
+        "place": "Buckingham Palace, London",
+        "lat": 51.501,
+        "lon": -0.142
       },
-      "a_face": 1,
-      "b_face": 0
+      "a_face": 8,
+      "b_face": 3
     },
     {
       "a": "Elizabeth II",
