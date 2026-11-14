@@ -2,12 +2,21 @@
   "from": "Grug",
   "to": "Napoleon",
   "requested_by": "@Aceofspades6906",
-  "title": "A caveman to an emperor in six links",
+  "title": "How is Grug connected to Napoleon?",
   "description": "Grug from The Croods connects to Napoleon through Nicolas Cage, Elvis, two presidents and France's line of rulers.",
-  "hook": "How is Grug connected to Napoleon?",
+  "hook": "How's Grug linked to Napoleon?",
+  "hook_variant": "A",
+  "text_variant": "T0",
   "people": {
     "Grug": {
-      "label": "Grug"
+      "label": "Grug",
+      "hook_photo": "https://static.wikia.nocookie.net/dreamworks/images/5/5b/Grug_Crood_Profile.jpg/revision/latest?cb=20240418223400&format=original",
+      "hook_box": [
+        420,
+        300,
+        680,
+        800
+      ]
     },
     "Nicolas Cage": {
       "label": "Nicolas Cage"
@@ -45,7 +54,7 @@
           }
         ]
       },
-      "line": "Grug, the caveman dad of The Croods, is voiced by Nicolas Cage.",
+      "line": "In 2013, The Croods' caveman dad, Grug, was voiced by Nicolas Cage.",
       "a_face": 5
     },
     {
@@ -57,7 +66,7 @@
         "license": "Fair use (commentary)",
         "source": "https://www.cbsnews.com/pictures/nicolas-cage/"
       },
-      "line": "In 2001, Cage sat beside Lisa Marie Presley at the Capitol, and the next year they married.",
+      "line": "In 2001, Cage sat beside his future wife, Lisa Marie Presley.",
       "a_face": 1
     },
     {
@@ -66,7 +75,7 @@
       "image": {
         "file": "File:Elvis, Priscilla and Lisa Marie.jpg"
       },
-      "line": "Her father was Elvis Presley, pictured here with baby Lisa Marie in 1968.",
+      "line": "Back in 1968, baby Lisa Marie posed with her father, Elvis Presley.",
       "a_face": 3
     },
     {
@@ -75,7 +84,7 @@
       "image": {
         "file": "File:Elvis-nixon.jpg"
       },
-      "line": "In December 1970, Elvis showed up at the White House asking President Nixon for a narcotics badge."
+      "line": "In 1970, Elvis asked President Richard Nixon for a narcotics badge."
     },
     {
       "a": "Richard Nixon",
@@ -89,7 +98,7 @@
     {
       "a": "Charles de Gaulle",
       "b": "Napoleon",
-      "line": "De Gaulle's France traces its line of rulers back to Napoleon, through kings and emperors.",
+      "line": "And in 1959, de Gaulle took the helm once held by Napoleon.",
       "lineage": {
         "label": "RULERS OF FRANCE",
         "people": [

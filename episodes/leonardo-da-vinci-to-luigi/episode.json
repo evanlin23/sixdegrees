@@ -1,12 +1,22 @@
 {
   "from": "Leonardo da Vinci",
   "to": "Luigi",
-  "title": "From the Mona Lisa painter to Luigi in five links",
+  "title": "How is da Vinci connected to Luigi?",
   "description": "An Ingres painting, five centuries of French rulers, a royal visit to Wrexham and the cast of It's Always Sunny connect Leonardo da Vinci to Luigi.",
-  "hook": "How is Leonardo da Vinci connected to Luigi?",
+  "hook": "What links da Vinci to Luigi?",
+  "hook_variant": "B",
+  "text_variant": "T1",
   "people": {
     "Leonardo da Vinci": {
-      "label": "Leonardo da Vinci"
+      "label": "Leonardo da Vinci",
+      "short": "da Vinci",
+      "hook_photo": "File:Leonardo da Vinci - presumed self-portrait - WGA12798.jpg",
+      "hook_box": [
+        390,
+        330,
+        400,
+        420
+      ]
     },
     "Francis I of France": {
       "label": "King Francis I"
@@ -24,7 +34,14 @@
       "label": "Charlie Day"
     },
     "Luigi": {
-      "label": "Luigi"
+      "label": "Luigi",
+      "hook_photo": "https://static.wikia.nocookie.net/mario/images/3/3c/SMP_Luigi.png/revision/latest?cb=20190808214713&format=original",
+      "hook_box": [
+        380,
+        20,
+        880,
+        750
+      ]
     }
   },
   "links": [
@@ -34,7 +51,7 @@
       "image": {
         "file": "File:Jean-Auguste-Dominique Ingres - François Ier reçoit les derniers soupirs de Léonard de Vinci - PDUT1165 - Musée des Beaux-Arts de la ville de Paris.jpg"
       },
-      "line": "In 1818, a French artist painted Leonardo dying in the arms of his patron, King Francis the First.",
+      "line": "In 1818, an artist painted Leonardo dying in the arms of King Francis.",
       "a_face": [
         440,
         665,
@@ -51,7 +68,7 @@
     {
       "a": "Francis I of France",
       "b": "Emmanuel Macron",
-      "line": "The French throne passed from Francis through Louis the Fourteenth, Napoleon and de Gaulle to Emmanuel Macron.",
+      "line": "From 1515, France's rulers ran from Francis through Napoleon to Emmanuel Macron.",
       "lineage": {
         "label": "RULERS OF FRANCE",
         "people": [
@@ -109,7 +126,7 @@
       "image": {
         "file": "File:King Charles III and Emmanuel Macron at British Embassy Paris.jpg"
       },
-      "line": "In 2023, Macron joined King Charles the Third in Paris to plant a tree at the British embassy."
+      "line": "In 2023, Macron planted a tree in Paris with Britain's King Charles."
     },
     {
       "a": "Charles III",
@@ -120,7 +137,7 @@
         "license": "Fair use (commentary)",
         "source": "https://www.etonline.com/ryan-reynolds-meets-king-charles-iii-and-camilla-at-wrexham-soccer-club-with-rob-mcelhenney-195752"
       },
-      "line": "In 2022, the King toured Wrexham's football ground with its co-owner, actor Rob McElhenney.",
+      "line": "Back in 2022, Charles toured Wrexham's football ground with co-owner Rob McElhenney.",
       "a_face": 1,
       "b_face": 5
     },
@@ -130,7 +147,7 @@
       "image": {
         "file": "File:Rob McElhenney, Glenn Howerton & Charlie Day (9363078009).jpg"
       },
-      "line": "McElhenney created It's Always Sunny in Philadelphia, starring his old friend Charlie Day."
+      "line": "In 2005, McElhenney created It's Always Sunny, starring his old friend Charlie Day."
     },
     {
       "a": "Charlie Day",
@@ -148,7 +165,7 @@
           }
         ]
       },
-      "line": "And in 2023, Charlie Day became the voice of Luigi in the Super Mario Bros Movie.",
+      "line": "And in 2023, Charlie Day became the voice of Luigi.",
       "b_face": [
         1200,
         470,
