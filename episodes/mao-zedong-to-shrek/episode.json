@@ -8,6 +8,7 @@
   "text_variant": "T1",
   "people": {
     "Mao Zedong": {
+      "short": "Mao",
       "label": "Mao Zedong",
       "hook_photo": "File:Mao Zedong sitting.jpg"
     },

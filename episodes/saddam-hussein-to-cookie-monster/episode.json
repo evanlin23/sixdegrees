@@ -8,6 +8,7 @@
   "text_variant": "T1",
   "people": {
     "Saddam Hussein": {
+      "short": "Saddam",
       "label": "Saddam Hussein",
       "hook_photo": "File:Saddam Hussein 1979.jpg"
     },
