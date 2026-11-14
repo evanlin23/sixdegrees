@@ -3,7 +3,7 @@
   "to": "Julius Caesar",
   "requested_by": "@TheEditer-c7f",
   "title": "How is Trump linked to Julius Caesar?",
-  "description": "A Vatican visit, the unbroken line of popes, a Raphael-workshop fresco and the line of Roman emperors connect Donald Trump to Julius Caesar.",
+  "description": "A Vatican visit, the unbroken line of popes, a Raphael-workshop fresco, the line of Roman emperors and a coin of Augustus connect Donald Trump to Julius Caesar.",
   "hook": "How's Trump linked to Julius Caesar?",
   "hook_variant": "A",
   "text_variant": "T0",
@@ -20,8 +20,18 @@
     "Constantine the Great": {
       "label": "Constantine"
     },
+    "Augustus": {
+      "label": "Augustus"
+    },
     "Julius Caesar": {
-      "label": "Julius Caesar"
+      "label": "Julius Caesar",
+      "hook_photo": "File:Retrato de Julio César (26724093101) (cropped).jpg",
+      "hook_box": [
+        220,
+        300,
+        520,
+        540
+      ]
     }
   },
   "links": [
@@ -1240,7 +1250,7 @@
     },
     {
       "a": "Constantine the Great",
-      "b": "Julius Caesar",
+      "b": "Augustus",
       "lineage": {
         "label": "LINE OF EMPERORS",
         "people": [
@@ -1553,23 +1563,44 @@
             "name": "Augustus",
             "file": "File:Augustus of Prima Porta (inv. 2290).jpg",
             "label": "1st emperor"
-          },
-          {
-            "name": "Julius Caesar",
-            "file": "File:Retrato de Julio César (26724093101) (cropped).jpg",
-            "label": "dictator"
           }
         ]
       },
-      "line": "And Constantine's line of emperors began in 27 BC with Augustus, heir of Julius Caesar.",
+      "line": "In AD 306, Constantine became Rome's 62nd emperor, in a line back to Augustus.",
       "fact": "62 emperors, back to 27 BC",
       "where": {
         "place": "Rome",
         "lat": 41.893,
         "lon": 12.483
       }
+    },
+    {
+      "a": "Augustus",
+      "b": "Julius Caesar",
+      "image": {
+        "file": "File:Rare denarius of Octavian & Caesar.jpg"
+      },
+      "line": "And in 17 BC, one coin showed Augustus and his adoptive father, Julius Caesar.",
+      "fact": "Silver denarius, 17 BC",
+      "where": {
+        "place": "Rome mint",
+        "lat": 41.893,
+        "lon": 12.483
+      },
+      "a_face": [
+        100,
+        40,
+        82,
+        108
+      ],
+      "b_face": [
+        350,
+        72,
+        80,
+        102
+      ]
     }
   ],
   "fun_fact": "In the Vatican fresco of Constantine's baptism, Pope Sylvester wears the face of Clement VII, who was pope when the room was finished in 1524.",
-  "research_note": "Real people only: no actor stands in for Caesar, so the chain runs through two full lines of succession, all 232 popes from Sylvester to Francis and all 62 emperors from Augustus to Constantine, joined by the Raphael-workshop fresco of Constantine's baptism."
+  "research_note": "Real people only: no actor stands in for Caesar, so the chain runs through two full lines of succession, all 232 popes from Sylvester to Francis and all 62 emperors from Augustus to Constantine, joined by the Raphael-workshop fresco of Constantine's baptism; a 17 BC denarius with both their portraits links Augustus to Caesar."
 }
