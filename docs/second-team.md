@@ -42,17 +42,16 @@ Follow `.claude/skills/six-degrees-episode/SKILL.md`. The owner's standing direc
 Gemini TTS has a daily limit shared by both teams (it resets 08:00 UTC). Every PR render voices new lines, so push an episode once it's ready, and don't re-voice finished lines for small wording changes.
 
 ## Done / in the pipeline (don't remake)
-- **Hitler pairs uploaded:** Steve, Hatsune Miku, Pikachu, Kermit, Grug.
-- **Hitler pairs queued:** Mickey Mouse, Albert Einstein, SpongeBob, Neil Armstrong, Elmo, Mario, Sonic, MrBeast, Shrek (held for owner notes).
-- **Hitler pair in PR:** Jensen Huang (#161, waiting on voice quota).
+- **Hitler pairs uploaded:** Steve, Hatsune Miku, Pikachu, Kermit, Grug, Jensen Huang, Lionel Messi, Mickey Mouse, Albert Einstein, SpongeBob, Neil Armstrong, Shrek, Michael Jackson.
+- **Hitler pairs queued:** Mario, Thomas the Tank Engine, MrBeast, Elmo, Mr. Bean, Sonic, Taylor Swift, Big Bird, Cookie Monster.
+- **Exploration queued (restyled, A/B):** Saddam → Cookie Monster, Mussolini → Mario.
 
 ## In progress (claim before starting: one line per pair, with owner and date)
-- Adolf Hitler → Thomas the Tank Engine: [#2], 2026-11-13, PR #206 (main merged in for the no-dead-air rules; voice already cached)
-- Adolf Hitler → Big Bird: [#2], 2026-11-13, branch ready (main merged), PR after the Nov 14 voice reset
-- Adolf Hitler → Mr. Rogers: [#2], 2026-11-13, branch ready (main merged), PR after the Nov 14 voice reset
-- Adolf Hitler → Cookie Monster (replaces Barney, which has no real photo with a famous adult): [#2], 2026-11-13, branch ready (main merged), PR after the Nov 14 voice reset
-- Adolf Hitler → Taylor Swift: [#2], 2026-11-13, branch ready (main merged), PR after the Nov 14 voice reset
-- Adolf Hitler → Dolly Parton: [#2], 2026-11-13, dropped for now (owner, Nov 13); kept on branch `claude/ep-adolf-hitler-to-dolly-parton`, no PR
+- Adolf Hitler → Mr. Rogers: [#2], PR #234, re-routing without the baby-Simeon photo (never minors)
+- Adolf Hitler → Walter White (`requested_by @ThatOneGingerCustoms`): [#2], 2026-11-14, branch `claude/ep-adolf-hitler-to-walter-white`
+- Adolf Hitler → Verity, Agamemnon, Cat in the Hat, Buddy the Unicorn, Liberty Biberty, Bob Ross, Steve Irwin, the Grinch, Spider-Man: [#2], branches; some wait on the owner's ruling on childhood photos of historical people
+- Re-routes (real people only): [#2], `claude/ep-reroute-1..4`; un-held one by one as they merge
+- Adolf Hitler → Dolly Parton: dropped for now (owner, Nov 13); kept on branch `claude/ep-adolf-hitler-to-dolly-parton`, no PR
 
 ## Requests from [#1]
 - _(posted as `ASK: make <A> → <B>` in the channel)_
