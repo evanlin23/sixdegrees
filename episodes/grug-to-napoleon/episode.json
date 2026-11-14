@@ -3,7 +3,9 @@
   "to": "Napoleon",
   "requested_by": "@Aceofspades6906",
   "title": "How is Grug connected to Napoleon?",
-  "description": "Grug from The Croods connects to Napoleon through Nicolas Cage, Elvis, two presidents and France's line of rulers.",
+  "description": "Nicolas Cage, Jimmy Kimmel, Barack Obama, the line of popes and David's Coronation connect Grug from The Croods to Napoleon.",
+  "fun_fact": "Five years after the coronation, Napoleon had Pius VII arrested, and the pope stayed his prisoner until 1814.",
+  "research_note": "No photo shows Nicolas Cage with a pope, so the chain reaches Pope Francis through Jimmy Kimmel and Barack Obama, then scrolls the popes back to Pius VII, who sits behind Napoleon in David's Coronation.",
   "hook": "How's Grug linked to Napoleon?",
   "hook_variant": "A",
   "text_variant": "T0",
@@ -21,17 +23,18 @@
     "Nicolas Cage": {
       "label": "Nicolas Cage"
     },
-    "Lisa Marie Presley": {
-      "label": "Lisa Marie Presley"
+    "Jimmy Kimmel": {
+      "label": "Jimmy Kimmel"
     },
-    "Elvis Presley": {
-      "label": "Elvis Presley"
+    "Barack Obama": {
+      "label": "Barack Obama"
     },
-    "Richard Nixon": {
-      "label": "Richard Nixon"
+    "Pope Francis": {
+      "label": "Pope Francis"
     },
-    "Charles de Gaulle": {
-      "label": "Charles de Gaulle"
+    "Pope Pius VII": {
+      "label": "Pope Pius VII",
+      "short": "Pius VII"
     },
     "Napoleon": {
       "label": "Napoleon"
@@ -44,10 +47,10 @@
       "image": {
         "pair": [
           {
-            "url": "https://www.filmofilia.com/wp-content/uploads/2012/09/Crood-Family.jpg",
-            "credit": "DreamWorks Animation (via Entertainment Weekly)",
+            "url": "https://static.wikia.nocookie.net/dreamworks/images/5/5b/Grug_Crood_Profile.jpg/revision/latest?cb=20240418223400&format=original",
+            "credit": "DreamWorks Animation (via DreamWorks Wiki)",
             "license": "Fair use (commentary)",
-            "source": "https://www.filmofilia.com/the-croods-new-images-114199/"
+            "source": "https://dreamworks.fandom.com/wiki/Grug_Crood"
           },
           {
             "file": "File:Nicolas Cage Deauville 2013.jpg"
@@ -55,95 +58,173 @@
         ]
       },
       "line": "In 2013, The Croods' caveman dad, Grug, was voiced by Nicolas Cage.",
-      "a_face": 5
+      "fact": "The Croods, 2013",
+      "where": {
+        "place": "Deauville",
+        "lat": 49.3601,
+        "lon": 0.0753
+      },
+      "a_face": 1,
+      "b_face": 2
     },
     {
       "a": "Nicolas Cage",
-      "b": "Lisa Marie Presley",
+      "b": "Jimmy Kimmel",
       "image": {
-        "url": "https://assets2.cbsnewsstatic.com/hub/i/r/2005/10/28/4a49dc26-a642-11e2-a3f0-029118418759/thumbnail/620x493/6d296e5611ad855611f616fb0fd105a1/image990867.jpg",
-        "credit": "Mark Wilson/Getty Images",
+        "url": "https://s3.amazonaws.com/syndication.abcaudio.com/files/2022-04-21/e_nic_cage_kimmel_04212022_0.jpg",
+        "credit": "ABC/Randy Holmes",
         "license": "Fair use (commentary)",
-        "source": "https://www.cbsnews.com/pictures/nicolas-cage/"
+        "source": "https://southernillinoisnow.com/?p=88178"
       },
-      "line": "In 2001, Cage sat beside his future wife, Lisa Marie Presley.",
-      "a_face": 1
+      "line": "In 2022, Cage ended a 14-year talk show break with Jimmy Kimmel.",
+      "fact": "Jimmy Kimmel Live!, April 2022",
+      "where": {
+        "place": "Jimmy Kimmel Live!, Hollywood",
+        "lat": 34.1012,
+        "lon": -118.3394
+      },
+      "a_face": 0,
+      "b_face": 2
     },
     {
-      "a": "Lisa Marie Presley",
-      "b": "Elvis Presley",
+      "a": "Jimmy Kimmel",
+      "b": "Barack Obama",
       "image": {
-        "file": "File:Elvis, Priscilla and Lisa Marie.jpg"
+        "file": "File:President Barack Obama talks with Jimmy Kimmel during a Jimmy Kimmel Live! video taping in Los Angeles, California, March 12, 2015. (Official White House Photo by Pete Souza).jpg"
       },
-      "line": "Back in 1968, baby Lisa Marie posed with her father, Elvis Presley.",
-      "a_face": 3
+      "line": "Back in 2015, Kimmel had President Barack Obama read mean tweets about himself.",
+      "fact": "Jimmy Kimmel Live!, March 2015",
+      "where": {
+        "place": "Jimmy Kimmel Live!, Hollywood",
+        "lat": 34.1012,
+        "lon": -118.3394
+      }
     },
     {
-      "a": "Elvis Presley",
-      "b": "Richard Nixon",
+      "a": "Barack Obama",
+      "b": "Pope Francis",
       "image": {
-        "file": "File:Elvis-nixon.jpg"
+        "file": "File:Pope Francis and Barack Obama in the Oval Office.jpg"
       },
-      "line": "In 1970, Elvis asked President Richard Nixon for a narcotics badge."
+      "line": "That year, Obama welcomed Pope Francis to the White House.",
+      "fact": "White House, September 2015",
+      "where": {
+        "place": "White House",
+        "lat": 38.8977,
+        "lon": -77.0365
+      }
     },
     {
-      "a": "Richard Nixon",
-      "b": "Charles de Gaulle",
-      "image": {
-        "file": "File:President Nixon and staff members with President Charles DeGaulle of France - NARA - 194610.jpg"
-      },
-      "line": "In 1969, Nixon flew to Paris to meet French President Charles de Gaulle.",
-      "b_face": 5
-    },
-    {
-      "a": "Charles de Gaulle",
-      "b": "Napoleon",
-      "line": "And in 1959, de Gaulle took the helm once held by Napoleon.",
+      "a": "Pope Francis",
+      "b": "Pope Pius VII",
       "lineage": {
-        "label": "RULERS OF FRANCE",
+        "label": "LINE OF POPES",
         "people": [
           {
-            "name": "Charles de Gaulle",
-            "file": "File:De_Gaulle-OWI_(cropped)_(c)(2).jpg",
-            "label": "1959"
+            "name": "Pope Francis",
+            "file": "File:Pope Francis Korea Haemi Castle 19.jpg",
+            "label": "266th"
           },
           {
-            "name": "Vincent Auriol",
-            "file": "File:Portrait_officiel_Vincent_Auriol.jpg",
-            "label": "1947"
+            "name": "Benedict XVI",
+            "file": "File:Papst Benedikt XVI in Berlin 2011.jpg",
+            "label": "265th"
           },
           {
-            "name": "Raymond Poincaré",
-            "file": "File:Raymond_Poincaré_officiel_(cropped).jpg",
-            "label": "1913"
+            "name": "John Paul II",
+            "file": "File:Pope John Paul II smile.jpg",
+            "label": "264th"
           },
           {
-            "name": "Adolphe Thiers",
-            "file": "File:Adolphe_Thiers_Nadar_2.JPG",
-            "label": "1871"
+            "name": "John Paul I",
+            "file": "File:Paus Johannes Paulus I (Bestanddeelnr 929-9074) (cropped).jpg",
+            "label": "263rd"
           },
           {
-            "name": "Napoleon III",
-            "file": "File:Alexandre_Cabanel_002.jpg",
-            "label": "1848"
+            "name": "Paul VI",
+            "file": "File:Pope Paul VI 1969 Portrait (4x5 cropped).jpg",
+            "label": "262nd"
           },
           {
-            "name": "Louis Philippe I",
-            "file": "File:1841_portrait_painting_of_Louis_Philippe_I_(King_of_the_French)_by_Winterhalter.jpg",
-            "label": "1830"
+            "name": "John XXIII",
+            "file": "File:Ioannes XXIII, by De Agostini, 1958–1963.jpg",
+            "label": "261st"
           },
           {
-            "name": "Louis XVIII",
-            "file": "File:Gérard_-_Louis_XVIII_of_France_in_Coronation_Robes.jpg",
-            "label": "1814"
+            "name": "Pius XII",
+            "file": "File:Pius XII with tabard, by Michael Pitcairn, 1951 (retouched).jpg",
+            "label": "260th"
           },
           {
-            "name": "Napoleon",
-            "file": "File:Jacques-Louis_David_-_The_Emperor_Napoleon_in_His_Study_at_the_Tuileries_-_Google_Art_Project.jpg",
-            "label": "1804"
+            "name": "Pius XI",
+            "file": "File:Pius XI, by Nicola Perscheid, circa 1922 (retouched).jpg",
+            "label": "259th"
+          },
+          {
+            "name": "Benedict XV",
+            "file": "File:Benedictus XV, by Nicola Perscheid, 1915 (retouched).jpg",
+            "label": "258th"
+          },
+          {
+            "name": "Pius X",
+            "file": "File:Pius X, by Ernest Walter Histed (retouched).jpg",
+            "label": "257th"
+          },
+          {
+            "name": "Leo XIII",
+            "file": "File:Papa Leone XIII (3x4 cropped).jpeg",
+            "label": "256th"
+          },
+          {
+            "name": "Pius IX",
+            "file": "File:Pius IX, by Adolphe Braun, 1875.jpg",
+            "label": "255th"
+          },
+          {
+            "name": "Gregory XVI",
+            "file": "File:Gregory XVI.jpg",
+            "label": "254th"
+          },
+          {
+            "name": "Pius VIII",
+            "file": "File:Ritratto di Papa Pio VIII, by Clemente Alberi.jpg",
+            "label": "253rd"
+          },
+          {
+            "name": "Leo XII",
+            "file": "File:Charles Picqué – Portrait de Léon XII (1828).jpg",
+            "label": "252nd"
+          },
+          {
+            "name": "Pope Pius VII",
+            "file": "File:Jacques-Louis David 018.jpg",
+            "label": "251st"
           }
         ]
+      },
+      "line": "From 2013, the line of popes runs back to Pope Pius VII in 1800.",
+      "fact": "Line of popes, 2013 back to 1800",
+      "where": {
+        "place": "Vatican City",
+        "lat": 41.9022,
+        "lon": 12.4539
       }
+    },
+    {
+      "a": "Pope Pius VII",
+      "b": "Napoleon",
+      "image": {
+        "file": "File:Louis david, consacrazione di napoleone I (incoronaz. dell'imp. giuseppina nella cattedrale di notre-dame, 2-12-1804), 1806-07, 07.jpg"
+      },
+      "line": "And in 1807, David painted Pius VII at the coronation of Napoleon.",
+      "fact": "David's Coronation, 1807",
+      "where": {
+        "place": "Louvre, Paris",
+        "lat": 48.8606,
+        "lon": 2.3376
+      },
+      "a_face": 6,
+      "b_face": 0
     }
   ]
 }
