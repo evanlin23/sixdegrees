@@ -854,6 +854,17 @@
  },
  {
   "from": "Adolf Hitler",
+  "to": "Walter White",
+  "status": "done",
+  "requested_by": "@ThatOneGingerCustoms",
+  "comment": "Walter White and Heisenberg",
+  "likes": 36,
+  "source": "[#2] Hitler pairs (Nov 2026)",
+  "hint": "Edward VIII at the Berghof 1937, then young Princess Elizabeth with her uncle (1930s), the Queen with Obama at Windsor (2016), Obama with Bryan Cranston at the White House (2016), Cranston as Walter White",
+  "slug": "adolf-hitler-to-walter-white"
+ },
+ {
+  "from": "Adolf Hitler",
   "to": "MrBeast",
   "status": "done",
   "source": "operator request",
