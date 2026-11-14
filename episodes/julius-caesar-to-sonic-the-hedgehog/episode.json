@@ -2,7 +2,7 @@
   "from": "Julius Caesar",
   "to": "Sonic the Hedgehog",
   "title": "How is Julius Caesar linked to Sonic?",
-  "description": "The line of Roman emperors, a Raphael-workshop fresco, the unbroken line of popes, a Vatican audience and The Tonight Show connect Julius Caesar to Sonic the Hedgehog.",
+  "description": "A coin of Augustus, the line of Roman emperors, a Raphael-workshop fresco, the unbroken line of popes, a Vatican audience and The Tonight Show connect Julius Caesar to Sonic the Hedgehog.",
   "hook": "What links Julius Caesar to Sonic?",
   "hook_variant": "B",
   "text_variant": "T1",
@@ -16,6 +16,9 @@
         520,
         540
       ]
+    },
+    "Augustus": {
+      "label": "Augustus"
     },
     "Constantine the Great": {
       "label": "Constantine"
@@ -46,15 +49,36 @@
   "links": [
     {
       "a": "Julius Caesar",
+      "b": "Augustus",
+      "image": {
+        "file": "File:Rare denarius of Octavian & Caesar.jpg"
+      },
+      "line": "In 17 BC, a Roman coin put Julius Caesar beside his adopted son, Augustus.",
+      "fact": "Silver denarius, 17 BC",
+      "where": {
+        "place": "Rome mint",
+        "lat": 41.893,
+        "lon": 12.483
+      },
+      "a_face": [
+        350,
+        72,
+        80,
+        102
+      ],
+      "b_face": [
+        100,
+        40,
+        82,
+        108
+      ]
+    },
+    {
+      "a": "Augustus",
       "b": "Constantine the Great",
       "lineage": {
         "label": "LINE OF EMPERORS",
         "people": [
-          {
-            "name": "Julius Caesar",
-            "file": "File:Retrato de Julio César (26724093101) (cropped).jpg",
-            "label": "dictator"
-          },
           {
             "name": "Augustus",
             "file": "File:Augustus of Prima Porta (inv. 2290).jpg",
@@ -367,8 +391,8 @@
           }
         ]
       },
-      "line": "In 27 BC, Caesar's heir Augustus became emperor, starting a line that reached Constantine.",
-      "fact": "Caesar, then 62 emperors",
+      "line": "From 27 BC, Augustus led a line of 62 emperors that reached Constantine.",
+      "fact": "62 emperors, 27 BC to AD 306",
       "where": {
         "place": "Rome",
         "lat": 41.893,
@@ -1641,5 +1665,5 @@
     }
   ],
   "fun_fact": "Pope Francis's June 2024 audience with comedians brought Jimmy Fallon, Stephen Colbert, Chris Rock, Whoopi Goldberg and Conan O'Brien to the Vatican.",
-  "research_note": "Real people only: the old route used a six-ruler dynasty scroll, so Caesar now heads the full line of 62 emperors to Constantine, whose baptism fresco hands over to the 232 popes from Sylvester to Francis."
+  "research_note": "Real people only: the old route used a six-ruler dynasty scroll, so a 17 BC denarius with Caesar's and Augustus's portraits leads into the full line of 62 emperors to Constantine, whose baptism fresco hands over to the 232 popes from Sylvester to Francis."
 }
