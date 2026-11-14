@@ -1,0 +1,19 @@
+{
+  "_doc": "Cross-posts of YouTube Shorts to other apps. Numbers are logged by hand from the owner's insights screenshots (no scraping). snapshots: [{at, views, likes, comments, shares, saves?, avg_watch_s?}]",
+  "posts": [
+    {
+      "slug": "adolf-hitler-to-hatsune-miku",
+      "platform": "instagram",
+      "url": "https://www.instagram.com/p/DfthvJtSGMe/",
+      "posted": "2026-11-14",
+      "snapshots": []
+    },
+    {
+      "slug": "adolf-hitler-to-hatsune-miku",
+      "platform": "tiktok",
+      "url": "https://www.tiktok.com/@buhconnects/video/7707905435273071886",
+      "posted": "2026-11-14",
+      "snapshots": []
+    }
+  ]
+}
