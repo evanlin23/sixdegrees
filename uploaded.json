@@ -382,5 +382,25 @@
   "hook_variant": "F",
   "text_variant": "T1",
   "n": 57
+ },
+ {
+  "slug": "adolf-hitler-to-michael-jackson",
+  "title": "Hitler to Michael Jackson: how?",
+  "publish_at": "2026-11-15T03:47:00Z",
+  "video_id": "YvOyUS-9kT0",
+  "privacy": "scheduled",
+  "url": "https://youtube.com/shorts/YvOyUS-9kT0",
+  "thumbnail": "not set: <HttpError 403 when requesting https://youtube.googleapis.com/upload/youtube/v3/thumbnails/set?videoId=YvOyUS-9kT0&alt=json&uploadType=media returned \"The authe",
+  "first_comment": "Fun fact from the research: Pétain stood beside President Hoover at Yorktown's 150th anniversary in October 1931. Exactly 50 years later, on 19 October 1981, Mitterrand stood there with Reagan for the 200th.\n\nWho should Hitler connect to next? Name anyone (a character works too) and I'll find the photos.",
+  "kind": "formula",
+  "outro": true,
+  "narration": true,
+  "links": 4,
+  "music": "Keeping Fit",
+  "style": "tcg",
+  "trending": false,
+  "hook_variant": "A",
+  "text_variant": "T0",
+  "n": 64
  }
 ]
