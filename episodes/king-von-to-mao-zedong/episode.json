@@ -3,15 +3,18 @@
   "to": "Mao Zedong",
   "requested_by": "@coreychen7092",
   "title": "How is King Von linked to Mao Zedong?",
-  "description": "Five real photos link Chicago rapper King Von to Mao Zedong, through Lil Durk, Kanye West, Donald Trump and Henry Kissinger.",
+  "description": "Five real pictures link Chicago rapper King Von to Mao Zedong, through Lil Durk, Drake, Barack Obama and Henry Kissinger.",
   "hook": "How's King Von linked to Mao Zedong?",
   "hook_variant": "A",
   "text_variant": "T0",
   "people": {
-    "Kanye West": {
-      "label": "Kanye West"
+    "Drake": {
+      "label": "Drake",
+      "wiki": "Drake (musician)"
     }
   },
+  "fun_fact": "In 1971, Kissinger reached Beijing in secret by pretending to be ill during a stop in Pakistan.",
+  "research_note": "Kanye is off-limits, so Lil Durk now reaches Obama through Drake: their Laugh Now Cry Later video, then Drake's handshake with Obama backstage at the 2019 NBA Finals; Obama's 2009 Oval Office meeting with Kissinger leads on to Mao.",
   "links": [
     {
       "a": "King Von",
@@ -24,41 +27,67 @@
       },
       "line": "In 2018, Chicago rapper King Von signed to Lil Durk's label.",
       "a_face": 5,
-      "b_face": 3
+      "b_face": 3,
+      "fact": "Durk's OTF label, 2018",
+      "where": {
+        "place": "State Farm Arena, Atlanta",
+        "lat": 33.7573,
+        "lon": -84.3963
+      }
     },
     {
       "a": "Lil Durk",
-      "b": "Kanye West",
+      "b": "Drake",
       "image": {
-        "url": "https://www.booska-p.com/wp-content/uploads/2023/11/Kanye-x-Lil-Durk.png",
-        "credit": "via Booska-P",
+        "url": "https://media.gq.com/photos/5f36d6f98f9d96b932abcda5/16:9/w_1280,c_limit/05-drake-Laugh-Now-Cry-Later-Lil-Durk-music-video-gq-august-2020.jpg",
+        "credit": "Laugh Now Cry Later video (OVO Sound / Republic Records), via GQ",
         "license": "Fair use (commentary)",
-        "source": "https://www.booska-p.com/musique/actualites/lil-durk-en-arabie-saoudite-avec-kanye-west/"
+        "source": "https://www.gq.com/story/drake-laugh-now-cry-later"
       },
-      "line": "In 2021, Durk named a song after his idol, Kanye West.",
-      "a_face": 0,
-      "b_face": 1
+      "line": "In 2020, Durk joined Drake on the hit song Laugh Now Cry Later.",
+      "fact": "Laugh Now Cry Later, 2020",
+      "where": {
+        "place": "Nike World Headquarters, Beaverton",
+        "lat": 45.5076,
+        "lon": -122.8296
+      },
+      "a_face": 1,
+      "b_face": 0
     },
     {
-      "a": "Kanye West",
-      "b": "Donald Trump",
+      "a": "Drake",
+      "b": "Barack Obama",
       "image": {
-        "url": "https://cdn.abcotvs.com/dip/images/1654069_121316-wabc-ap-trump-kanye-trump-tower-img.jpg?w=1600",
-        "credit": "Seth Wenig / AP, via ABC7 New York",
+        "url": "https://media.gettyimages.com/id/1148198269/photo/toronto-canada-rapper-drake-shakes-hands-and-talks-with-the-44th-president-of-the-united.jpg?s=612x612&w=0&k=20&c=2DjZlnqUi9NVhNzAnqAnMnmB1nhvVnE5IUDSUD665rI=",
+        "credit": "Joe Murphy / NBAE via Getty Images",
         "license": "Fair use (commentary)",
-        "source": "https://abc7ny.com/post/kanye-west-meets-with-donald-trump-in-nyc/1653731/"
+        "source": "https://www.gettyimages.com/detail/news-photo/rapper-drake-shakes-hands-and-talks-with-the-44th-president-news-photo/1148198269"
       },
-      "line": "In December 2016, Kanye visited the newly elected Donald Trump at Trump Tower."
+      "line": "In 2019, Drake greeted Barack Obama backstage at the NBA Finals in Toronto.",
+      "fact": "NBA Finals, Toronto 2019",
+      "where": {
+        "place": "Scotiabank Arena, Toronto",
+        "lat": 43.6435,
+        "lon": -79.3791
+      },
+      "a_face": 7,
+      "b_face": 2
     },
     {
-      "a": "Donald Trump",
+      "a": "Barack Obama",
       "b": "Henry Kissinger",
       "image": {
-        "file": "File:President Trump Meets with Henry Kissinger (33787724293).jpg"
+        "file": "File:P051909PS-0435 (3582763391).jpg"
       },
-      "line": "Months later, Trump hosted Henry Kissinger, who opened America's door to China.",
-      "a_face": 2,
-      "b_face": 1
+      "line": "In 2009, Obama hosted Henry Kissinger, who had opened America's door to China.",
+      "fact": "Oval Office, 2009",
+      "where": {
+        "place": "White House, Washington",
+        "lat": 38.8977,
+        "lon": -77.0365
+      },
+      "a_face": 5,
+      "b_face": 7
     },
     {
       "a": "Henry Kissinger",
@@ -68,7 +97,13 @@
       },
       "line": "And back in 1975 in Beijing, Kissinger shook hands with Mao Zedong.",
       "a_face": 2,
-      "b_face": 0
+      "b_face": 0,
+      "fact": "Beijing, 1975",
+      "where": {
+        "place": "Beijing",
+        "lat": 39.9042,
+        "lon": 116.4074
+      }
     }
   ]
 }
