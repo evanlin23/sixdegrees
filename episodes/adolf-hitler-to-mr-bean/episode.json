@@ -3,7 +3,9 @@
   "to": "Mr. Bean",
   "title": "How is Hitler connected to Mr. Bean?",
   "description": "Six real pictures connect Adolf Hitler to Mr. Bean, through Daladier, Léon Blum, Churchill, Queen Elizabeth II and Rowan Atkinson.",
-  "hook": "How is Adolf Hitler connected to Mr. Bean?",
+  "hook": "How is Hitler connected to Mr. Bean?",
+  "hook_variant": "F",
+  "text_variant": "T0",
   "fun_fact": "After France fell, the Vichy regime put Édouard Daladier and Léon Blum on trial together at Riom in 1942, and both men were then held prisoner by the Nazis until 1945.",
   "research_note": "The only photos of Daladier with King George VI, from the 1938 state visit and the King's 1939 trip to the front, survive as watermarked agency prints, so the chain leaves Daladier through his 1936 Popular Front rally with Léon Blum instead.",
   "people": {
