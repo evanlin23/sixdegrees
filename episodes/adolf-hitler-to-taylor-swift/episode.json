@@ -1,0 +1,139 @@
+{
+  "from": "Adolf Hitler",
+  "to": "Taylor Swift",
+  "title": "How is Hitler linked to Taylor Swift?",
+  "hook": "What links Hitler to Taylor Swift?",
+  "hook_variant": "B",
+  "text_variant": "T1",
+  "description": "Six real photos connect Adolf Hitler to Taylor Swift: Romania's dictator and its young king, a Kremlin Victory Day, cheeseburgers with Obama, and Meryl Streep's Medal of Freedom.",
+  "fun_fact": "In 1944, King Michael had Ion Antonescu arrested and switched Romania to the Allies, and Moscow later gave him the Soviet Order of Victory.",
+  "research_note": "Taylor Swift's free photos with famous people are rare, so the route ends at The Giver's 2014 premiere with Meryl Streep instead of the press photo of Prince William's 2013 gala; Romania's King Michael, who lived until 2017, carries it from the war to 2010.",
+  "people": {
+    "Adolf Hitler": {
+      "label": "Adolf Hitler"
+    },
+    "Ion Antonescu": {
+      "label": "Ion Antonescu"
+    },
+    "Michael I of Romania": {
+      "label": "King Michael",
+      "short": "King Michael"
+    },
+    "Dmitry Medvedev": {
+      "label": "Dmitry Medvedev",
+      "short": "Medvedev"
+    },
+    "Barack Obama": {
+      "label": "Barack Obama"
+    },
+    "Meryl Streep": {
+      "label": "Meryl Streep"
+    },
+    "Taylor Swift": {
+      "label": "Taylor Swift",
+      "hook_photo": "File:Taylor Swift at the 2024 Golden Globes (2).png"
+    }
+  },
+  "links": [
+    {
+      "a": "Adolf Hitler",
+      "b": "Ion Antonescu",
+      "image": {
+        "url": "https://collections.ushmm.org/iiif-b/assets/735041",
+        "credit": "US National Archives (NARA 242-HB-48400-908), via US Holocaust Memorial Museum",
+        "license": "Public domain",
+        "source": "https://collections.ushmm.org/search/catalog/pa12403",
+        "free": true
+      },
+      "fact": "Official visit, 1940s",
+      "where": {
+        "place": "Germany",
+        "lat": 51.165,
+        "lon": 10.452
+      },
+      "line": "In the 1940s, Hitler hosted his ally, Romania's dictator Ion Antonescu.",
+      "a_face": 4,
+      "b_face": 0
+    },
+    {
+      "a": "Ion Antonescu",
+      "b": "Michael I of Romania",
+      "image": {
+        "file": "File:Signal 16-1941..jpg"
+      },
+      "fact": "Prut River, 1941",
+      "where": {
+        "place": "Prut River, Romania",
+        "lat": 47.2,
+        "lon": 27.8
+      },
+      "line": "In 1941, Antonescu stood at the front beside Romania's young King Michael.",
+      "a_face": 3,
+      "b_face": 2
+    },
+    {
+      "a": "Michael I of Romania",
+      "b": "Dmitry Medvedev",
+      "image": {
+        "file": "File:Dmitry Medvedev greetings 9 May 2010-26.jpg"
+      },
+      "fact": "Kremlin, Victory Day 2010",
+      "where": {
+        "place": "Kremlin, Moscow",
+        "lat": 55.752,
+        "lon": 37.617
+      },
+      "line": "In 2010, an elderly King Michael visited Russia's Dmitry Medvedev at the Kremlin.",
+      "a_face": 4,
+      "b_face": 3
+    },
+    {
+      "a": "Dmitry Medvedev",
+      "b": "Barack Obama",
+      "image": {
+        "file": "File:Dmitry Medvedev in the United States 24 June 2010-10.jpeg"
+      },
+      "fact": "Ray's Hell Burger, 2010",
+      "where": {
+        "place": "Ray's Hell Burger, Arlington, Virginia",
+        "lat": 38.894,
+        "lon": -77.079
+      },
+      "line": "That year, Barack Obama took Medvedev out for cheeseburgers in Virginia.",
+      "a_face": 4,
+      "b_face": 2
+    },
+    {
+      "a": "Barack Obama",
+      "b": "Meryl Streep",
+      "image": {
+        "file": "File:Barack Obama presents the Presidential Medal of Freedom to Meryl Streep November 2014.jpg"
+      },
+      "fact": "White House, 2014",
+      "where": {
+        "place": "White House",
+        "lat": 38.897,
+        "lon": -77.036
+      },
+      "line": "In 2014, Obama gave Meryl Streep the Presidential Medal of Freedom.",
+      "a_face": 9,
+      "b_face": 8
+    },
+    {
+      "a": "Meryl Streep",
+      "b": "Taylor Swift",
+      "image": {
+        "file": "File:The cast of The Giver August 2014.jpg"
+      },
+      "fact": "The Giver premiere, 2014",
+      "where": {
+        "place": "New York City",
+        "lat": 40.763,
+        "lon": -73.979
+      },
+      "line": "And in 2014, Streep's co-star at The Giver's premiere was Taylor Swift.",
+      "a_face": 0,
+      "b_face": 6
+    }
+  ]
+}

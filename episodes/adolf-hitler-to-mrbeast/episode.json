@@ -1,9 +1,12 @@
 {
   "from": "Adolf Hitler",
   "to": "MrBeast",
-  "title": "How is Adolf Hitler connected to MrBeast?",
+  "title": "How is Hitler connected to MrBeast?",
+  "title_override": "How is Hitler connected to MrBeast?",
   "description": "Seven real photos connect Adolf Hitler to MrBeast, through Mussolini, Turkey's wartime leader, Churchill, the Queen, Trump and Ronaldo.",
-  "hook": "How is Adolf Hitler connected to MrBeast?",
+  "hook": "How's Hitler linked to MrBeast?",
+  "hook_variant": "A",
+  "text_variant": "T1",
   "fun_fact": "Churchill spent 1943 trying to drag Turkey into the war against Hitler. Turkey held out and only declared war in February 1945.",
   "research_note": "Nearly every free photo of Mussolini shows people who died in the 1940s, so the way out to today runs through the Turkish leader he welcomed to Rome in 1932, who lived until 1973 and sat beside Churchill in Cairo.",
   "people": {
