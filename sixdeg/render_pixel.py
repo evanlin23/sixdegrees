@@ -52,6 +52,11 @@ def sensitive(name) -> bool:
     return bool(SENSITIVE.search(name or ""))
 
 
+# the hub people viewers call "methods" ("queen method still unpatched"): the first landing on one gets a stamp
+METHODS = {"Elizabeth II": "QUEEN", "Barack Obama": "OBAMA", "Donald Trump": "TRUMP", "Richard Nixon": "NIXON",
+           "Winston Churchill": "CHURCHILL"}
+
+
 MIN_LINK = 3.4                        # seconds on screen per link, at least (even pace to the end)
 CAP_Y = 1300                          # captions
 HERO_A = (0, 790, 470)                # hook: face A photo spans y0..y1 (full bleed), face centred at y=fy within it
@@ -436,6 +441,30 @@ def render(slug: str, log=print) -> Path:
                     (reveal + THROW + 0.35, assets.sfx("px_pop", 0.4))]
         t += d
     total = t
+    # ---------- "METHOD" stamps (owner, 2026-11-14: play into the comments, "queen method still unpatched",
+    # "Obama method still not patched"). The first time the chain lands on a hub person, a speedrun-style stamp
+    # slams in: "QUEEN METHOD / STILL UNPATCHED" (once per Short). Episode "method": false turns it off; a dict adds or renames hubs.
+    hubs = dict(METHODS)
+    if isinstance(spec.get("method"), dict):
+        hubs.update(spec["method"])
+    method_events, seen = [], set()
+    if spec.get("method", True) is not False and narration:
+        for sg in segs:
+            if sg["kind"] != "link":
+                continue
+            link = spec["links"][sg["i"]]
+            label = hubs.get(link["b"])
+            if (not label or link["b"] in seen or link.get("lineage")
+                    or sensitive(link["a"]) or sensitive(link["b"])):   # nothing celebratory on a dictator's photo
+                continue
+            seen.add(link["b"])
+            t_land = sg["t0"] + sg["rv"] * sg["speech"] + THROW
+            t_end = min(sg["t1"] - 0.05, t_land + 1.5)
+            if t_end - t_land >= 0.6:
+                method_events.append((t_land, t_end, label))
+                sfx.append((t_land, assets.sfx("px_win", 0.35)))
+                break                     # one stamp per Short: a running gag, not a sticker sheet
+    vinfo["methods"] = [e[2] for e in method_events]
     # music-only uses a trending song (an episode's "music" pick only applies to narrated renders); opt out with
     # "trending": false
     track = (assets.pick_trending(slug) if not narration and spec.get("trending") is True else None) \
@@ -1662,10 +1691,36 @@ def render(slug: str, log=print) -> Path:
         style_frames.update(_styles.load(_styles.build_ctx(locals(), globals())))
     draw = {"hook": frame_hook, "link": style_frames.get(STYLE, frame_link)}
 
+    _stamps = {}
+
+    def method_stamp(base, label, k):
+        """'QUEEN METHOD' over 'STILL UNPATCHED': slams in (k = seconds since landing), tilted, at the top of the
+        content area (above the photo's faces, inside the safe zone), then fades."""
+        if label not in _stamps:
+            size = 58
+            while pf(size).getlength(f"{label} METHOD") > SAFE[2] - SAFE[0] - 90 and size > 30:
+                size -= 2
+            top = pixel_text(f"{label} METHOD", size, fill=YELLOW)
+            sub = pixel_text("STILL UNPATCHED", max(22, size // 2), fill=WHITE)
+            im = Image.new("RGBA", (max(top.width, sub.width) + 20, top.height + sub.height + 6), (0, 0, 0, 0))
+            im.alpha_composite(top, ((im.width - top.width) // 2, 0))
+            im.alpha_composite(sub, ((im.width - sub.width) // 2, top.height + 6))
+            _stamps[label] = im.rotate(6, resample=Image.BICUBIC, expand=True)
+        im = _stamps[label]
+        pop = ease_out_back(min(1.0, k / 0.16))
+        alpha = 1.0 if k < 1.25 else max(0.0, 1 - (k - 1.25) / 0.25)
+        sx, sy = shake(k, 10, 0.18)
+        sc = min(1.6 - 0.6 * pop, (W - 20) / im.width)            # never wider than the frame (no negative paste)
+        paste(base, im, CX + sx, SAFE[1] + 130 + im.height / 2 - 40 + sy, scale=sc, alpha=alpha, nearest=False)
+
     def frame_at(tt):
         for j, sg in enumerate(segs):
             if sg["t0"] <= tt < sg["t1"] or j == len(segs) - 1:
-                return draw[sg["kind"]](sg, tt)
+                base = draw[sg["kind"]](sg, tt)
+                for t_land, t_end, label in method_events:
+                    if t_land <= tt < t_end:
+                        method_stamp(base, label, tt - t_land)
+                return base
         raise AssertionError
 
     # thumbnail: the settled opening (both faces, names, Buh) without captions, plus a yellow "?" on the seam
