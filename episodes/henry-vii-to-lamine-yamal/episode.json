@@ -2,9 +2,11 @@
  "from": "Henry VII",
  "to": "Lamine Yamal",
  "requested_by": "@iasser656",
- "title": "From the first Tudor king to Lamine Yamal",
+ "title": "Henry VII to Lamine Yamal: how?",
  "description": "Four centuries of English monarchs and three real photos link King Henry VII to Lamine Yamal.",
- "hook": "How is King Henry the Seventh connected to Lamine Yamal?",
+ "hook": "How's Henry VII linked to Lamine Yamal?",
+ "hook_variant": "A",
+ "text_variant": "T0",
  "people": {
   "Elizabeth II": {
    "label": "Queen Elizabeth II"
@@ -76,7 +78,7 @@
      }
     ]
    },
-   "line": "Henry the Seventh's throne passed down for four centuries to Queen Elizabeth the Second."
+   "line": "From 1485, Henry the Seventh's throne passed down to Queen Elizabeth the Second."
   },
   {
    "a": "Elizabeth II",
@@ -96,7 +98,7 @@
    },
    "a_face": 1,
    "b_face": 0,
-   "line": "A year earlier, Trump had hosted Spain's prime minister, Pedro Sánchez, in New York."
+   "line": "Back in 2018, Trump hosted Spain's prime minister, Pedro Sánchez, in New York."
   },
   {
    "a": "Pedro Sánchez",
@@ -106,7 +108,7 @@
    },
    "a_face": 1,
    "b_face": 3,
-   "line": "And in 2024, Sánchez welcomed Lamine Yamal and Spain's Euro champions in Madrid."
+   "line": "And in 2024, Sánchez welcomed Spain's Euro champions, among them Lamine Yamal."
   }
  ]
 }
