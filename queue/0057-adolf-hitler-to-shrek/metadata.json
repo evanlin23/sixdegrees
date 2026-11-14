@@ -31,5 +31,7 @@
  "music": "Game Boy",
  "style": "game",
  "trending": false,
+ "hook_variant": "F",
+ "text_variant": "T1",
  "slug": "adolf-hitler-to-shrek"
 }
