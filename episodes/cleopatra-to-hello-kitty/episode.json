@@ -1,12 +1,30 @@
 {
   "from": "Cleopatra",
   "to": "Hello Kitty",
-  "title": "Cleopatra to Hello Kitty: two paintings, 266 popes and a golf selfie",
+  "title": "Cleopatra to Hello Kitty: how?",
   "description": "A Baroque painting, Rome's first dynasty, a Renaissance fresco, the line of popes, a golf selfie and a Yokohama reception connect Cleopatra to Hello Kitty.",
   "hook": "How is Cleopatra connected to Hello Kitty?",
+  "hook_variant": "F",
+  "text_variant": "T1",
   "people": {
+    "Cleopatra": {
+      "hook_photo": "File:Bust of Cleopatra VII Altes Museum Berlin 2017 (3x4 cropped).jpg",
+      "hook_box": [
+        290,
+        400,
+        390,
+        510
+      ]
+    },
     "Hello Kitty": {
-      "label": "Hello Kitty"
+      "label": "Hello Kitty",
+      "hook_photo": "https://static.wikia.nocookie.net/sanrio/images/9/9f/Hello_Kitty.jpg/revision/latest?cb=20191128154539&format=original",
+      "hook_box": [
+        210,
+        40,
+        775,
+        560
+      ]
     }
   },
   "links": [
@@ -16,7 +34,7 @@
       "image": {
         "file": "File:César remet Cléopâtre sur le trône d'Égypte - Pierre de Cortone.jpg"
       },
-      "line": "Around 1637, Pietro da Cortona painted Julius Caesar giving Cleopatra the throne of Egypt.",
+      "line": "Around 1637, Pietro da Cortona painted Julius Caesar giving Cleopatra Egypt's throne.",
       "a_face": 4,
       "b_face": 5
     },
@@ -58,7 +76,7 @@
           }
         ]
       },
-      "line": "Caesar's heir Augustus became Rome's first emperor, and his dynasty ended with Nero."
+      "line": "In 27 BC, Caesar's heir Augustus founded a dynasty that ended with Nero."
     },
     {
       "a": "Nero",
@@ -66,7 +84,7 @@
       "image": {
         "file": "File:Cappella brancacci, Disputa di Simon Mago (restaurato), Filippino Lippi.jpg"
       },
-      "line": "Around 1482, Filippino Lippi painted Nero putting the apostle Peter, the first pope, on trial.",
+      "line": "Around 1482, Filippino Lippi painted Nero putting the apostle Peter on trial.",
       "a_face": 6,
       "b_face": 2
     },
@@ -123,7 +141,7 @@
           }
         ]
       },
-      "line": "From Peter, the line of popes runs unbroken to the 266th, Pope Francis."
+      "line": "In 2013, Peter's line of popes reached its 266th, Pope Francis."
     },
     {
       "a": "Pope Francis",
@@ -131,7 +149,7 @@
       "image": {
         "file": "File:Donald Trump Pope Francis Melania Trump in 2017.jpg"
       },
-      "line": "In 2017, President Donald Trump visited Pope Francis at the Vatican.",
+      "line": "In 2017, the pope welcomed President Donald Trump to the Vatican.",
       "a_face": 4,
       "b_face": 0
     },
@@ -141,7 +159,7 @@
       "image": {
         "file": "File:Selfie of Shinzo Abe and Donald Trump.jpg"
       },
-      "line": "In 2019, Japan's prime minister Shinzo Abe took a golf selfie with Trump near Tokyo.",
+      "line": "In 2019, Trump posed for a golf selfie with Japan's leader, Shinzo Abe.",
       "a_face": 0,
       "b_face": 1
     },
@@ -151,7 +169,7 @@
       "image": {
         "file": "File:Welcome Reception co-hosted by Prime Minister of Japan and Mayor of the City of Yokohama (48636282272).jpg"
       },
-      "line": "And three months later, Hello Kitty joined Abe on stage at a summit reception in Yokohama.",
+      "line": "And three months later, Abe was joined on stage by Hello Kitty.",
       "a_face": 3,
       "b_face": [
         1625,

@@ -2,9 +2,11 @@
   "from": "Donald Trump",
   "to": "Julius Caesar",
   "requested_by": "@TheEditer-c7f",
-  "title": "From Trump to Julius Caesar through 266 popes",
+  "title": "How is Trump linked to Julius Caesar?",
   "description": "A Vatican visit, the line of popes, a Renaissance fresco and Rome's first emperors connect Donald Trump to Julius Caesar.",
-  "hook": "How is Donald Trump connected to Julius Caesar?",
+  "hook": "How's Trump linked to Julius Caesar?",
+  "hook_variant": "A",
+  "text_variant": "T0",
   "links": [
     {
       "a": "Donald Trump",
@@ -74,7 +76,7 @@
           }
         ]
       },
-      "line": "Francis was the 266th pope, in an unbroken line of popes running back to Saint Peter."
+      "line": "That year, Francis was the 266th pope, counting from Saint Peter."
     },
     {
       "a": "Saint Peter",
@@ -82,7 +84,7 @@
       "image": {
         "file": "File:Cappella brancacci, Disputa di Simon Mago (restaurato), Filippino Lippi.jpg"
       },
-      "line": "Around 1482, Filippino Lippi painted Saint Peter on trial before the Roman emperor Nero.",
+      "line": "Around 1482, Filippino Lippi painted Peter on trial before the Roman emperor Nero.",
       "a_face": 2,
       "b_face": 6
     },
@@ -124,7 +126,7 @@
           }
         ]
       },
-      "line": "And Nero was the last emperor of the dynasty that began with Julius Caesar and his heir Augustus."
+      "line": "Centuries earlier, Nero was the last ruler in the line of Julius Caesar."
     }
   ]
 }
