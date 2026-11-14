@@ -22,6 +22,7 @@ Follow `.claude/skills/six-degrees-episode/SKILL.md`. The owner's standing direc
 - **Real people link only through real people (owner, 2026-11-14).**
   - **Actors and voice actors are only for fictional characters:** "we should only use like voice actor or movie if its like a fictional character".
   - **Historical figures** (Caesar, Cleopatra, Augustus, Genghis Khan, Henry VIII) link through real artworks or objects that show both people (paintings of real meetings, coins), or through a 40+ lineage. Never through an actor who played them; the owner says that "feels like cheating".
+- **Minors (owner, 2026-11-14):** never use anyone who is a minor today, as a link or the subject of a photo. Famous people pictured as children in old photos are fine (young Princess Elizabeth, baby Simeon II, a teenage Bill Clinton), because they are famous adults today or in history.
 - **Gods and myths: bridge through real people in the myth (owner, 2026-11-14).** Examples: Alexander the Great (son of Zeus-Ammon) on coins with Zeus, Henry IV with Jupiter in Rubens, Washington with Minerva in Brumidi.
 
 **The script**
@@ -47,9 +48,9 @@ Gemini TTS has a daily limit shared by both teams (it resets 08:00 UTC). Every P
 - **Exploration queued (restyled, A/B):** Saddam → Cookie Monster, Mussolini → Mario.
 
 ## In progress (claim before starting: one line per pair, with owner and date)
-- Adolf Hitler → Mr. Rogers: [#2], PR #234, re-routing without the baby-Simeon photo (never minors)
+- Adolf Hitler → Mr. Rogers: [#2], PR #234 (green; baby Simeon is fine under the owner's Nov 14 minors ruling, so it merges as is)
 - Adolf Hitler → Walter White (`requested_by @ThatOneGingerCustoms`): [#2], 2026-11-14, branch `claude/ep-adolf-hitler-to-walter-white`
-- Adolf Hitler → Verity, Agamemnon, Cat in the Hat, Buddy the Unicorn, Liberty Biberty, Bob Ross, Steve Irwin, the Grinch, Spider-Man: [#2], branches; some wait on the owner's ruling on childhood photos of historical people
+- Adolf Hitler → Verity, Agamemnon, Cat in the Hat, Buddy the Unicorn, Liberty Biberty, Bob Ross, Steve Irwin, the Grinch, Spider-Man: [#2], branches
 - Re-routes (real people only): [#2], `claude/ep-reroute-1..4`; un-held one by one as they merge
 - Adolf Hitler → Dolly Parton: dropped for now (owner, Nov 13); kept on branch `claude/ep-adolf-hitler-to-dolly-parton`, no PR
 
