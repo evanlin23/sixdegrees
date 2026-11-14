@@ -1,12 +1,15 @@
 {
   "from": "Saddam Hussein",
   "to": "Cookie Monster",
-  "title": "Saddam Hussein to Cookie Monster in four real photos",
+  "title": "Saddam to Cookie Monster: how?",
   "description": "Four real photos connect Iraq's Saddam Hussein to Cookie Monster from Sesame Street, through a defense secretary, a president and a first lady.",
-  "hook": "How is Saddam Hussein connected to Cookie Monster?",
+  "hook": "How is Saddam connected to Cookie Monster?",
+  "hook_variant": "F",
+  "text_variant": "T1",
   "people": {
     "Saddam Hussein": {
-      "label": "Saddam Hussein"
+      "label": "Saddam Hussein",
+      "hook_photo": "File:Saddam Hussein 1979.jpg"
     },
     "Donald Rumsfeld": {
       "label": "Donald Rumsfeld"
@@ -18,7 +21,14 @@
       "label": "Michelle Obama"
     },
     "Cookie Monster": {
-      "label": "Cookie Monster"
+      "label": "Cookie Monster",
+      "hook_photo": "https://static.wikia.nocookie.net/muppet/images/c/cc/Cookie_monster_puppet.jpg/revision/latest?cb=20160905061353&format=original",
+      "hook_box": [
+        300,
+        55,
+        320,
+        300
+      ]
     }
   },
   "links": [
@@ -28,7 +38,7 @@
       "image": {
         "file": "File:Saddam rumsfeld.jpg"
       },
-      "line": "In 1983, Saddam Hussein shook hands with Donald Rumsfeld, sent to Baghdad as Reagan's special envoy.",
+      "line": "In 1983, Saddam Hussein shook hands with Reagan's special envoy, Donald Rumsfeld.",
       "a_face": [
         174,
         15,
@@ -43,7 +53,7 @@
       "image": {
         "file": "File:Bush and Rumsfeld shakes hands, November 8, 2006.jpg"
       },
-      "line": "In 2006, after leading the Pentagon through the Iraq War, Rumsfeld resigned as George W. Bush's defense secretary.",
+      "line": "In 2006, Rumsfeld resigned as George W. Bush's defense secretary.",
       "a_face": 1,
       "b_face": 0
     },
@@ -53,7 +63,7 @@
       "image": {
         "file": "File:Bushes with Obamas 2.jpg"
       },
-      "line": "Days after the 2008 election, President Bush welcomed the Obamas to the White House.",
+      "line": "In 2008, Bush welcomed the incoming Obamas to the White House.",
       "a_face": 1,
       "b_face": 3
     },
@@ -63,7 +73,7 @@
       "image": {
         "file": "File:Jill Biden and Michelle Obama pose with some of the cast of Sesame Street, 2011.jpg"
       },
-      "line": "And in 2011, Michelle Obama posed on stage with Cookie Monster at an event for military families in Ohio.",
+      "line": "And in 2011, Michelle Obama posed on stage with Cookie Monster.",
       "a_face": 2,
       "b_face": [
         60,
