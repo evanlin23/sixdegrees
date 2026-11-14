@@ -1,16 +1,18 @@
 {
   "from": "Adolf Hitler",
   "to": "SpongeBob SquarePants",
-  "title": "How is Adolf Hitler connected to SpongeBob SquarePants?",
+  "title": "How is Hitler connected to SpongeBob?",
   "description": "A 1938 pact, two prime ministers, a queen and a London soccer clinic connect Adolf Hitler to SpongeBob SquarePants.",
-  "hook": "How is Adolf Hitler connected to SpongeBob SquarePants?",
+  "hook": "How's Hitler linked to SpongeBob?",
+  "hook_variant": "A",
+  "text_variant": "T1",
   "people": {
     "Adolf Hitler": {"label": "Adolf Hitler"},
     "Neville Chamberlain": {"label": "Neville Chamberlain"},
     "Winston Churchill": {"label": "Winston Churchill"},
     "Elizabeth II": {"label": "Queen Elizabeth II"},
     "Michelle Obama": {"label": "Michelle Obama"},
-    "SpongeBob SquarePants": {"wiki": "SpongeBob SquarePants (character)", "label": "SpongeBob"}
+    "SpongeBob SquarePants": {"wiki": "SpongeBob SquarePants (character)", "label": "SpongeBob", "hook_photo": "https://static.wikia.nocookie.net/spongebob/images/6/6b/Spongebob_happy_stock_art_1.octet-stream.png/revision/latest?cb=20260401183834", "hook_box": [1200, 100, 2300, 2500]}
   },
   "links": [
     {
