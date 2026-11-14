@@ -3,112 +3,374 @@
  "to": "Lamine Yamal",
  "requested_by": "@iasser656",
  "title": "Henry VII to Lamine Yamal: how?",
- "description": "Four centuries of English monarchs and three real photos link King Henry VII to Lamine Yamal.",
+ "description": "Holbein's Whitehall mural, a 1570 Reformation woodcut, the line of popes and two 2026 photos link King Henry VII to Lamine Yamal.",
  "hook": "How's Henry VII linked to Lamine Yamal?",
  "hook_variant": "A",
  "text_variant": "T0",
  "people": {
-  "Elizabeth II": {
-   "label": "Queen Elizabeth II"
-  },
-  "Pedro Sánchez": {
-   "label": "Pedro Sánchez"
-  },
   "Henry VII": {
    "label": "King Henry VII",
    "wiki": "Henry VII of England"
+  },
+  "Henry VIII": {
+   "label": "King Henry VIII"
+  },
+  "Pope Clement VII": {
+   "label": "Pope Clement VII",
+   "short": "Clement VII"
+  },
+  "Pope Leo XIV": {
+   "label": "Pope Leo"
+  },
+  "Felipe VI": {
+   "label": "King Felipe VI"
   }
  },
+ "fun_fact": "Holbein's original Whitehall mural burned with the palace in 1698; it survives only through the copy Remigius van Leemput painted for Charles II in 1667.",
+ "research_note": "Real people only: Henry VII has no photo, so he comes in through Holbein's Whitehall mural (Leemput's 1667 copy) and Foxe's 1570 woodcut of Henry VIII with Pope Clement VII; the line of popes runs 49 holders to Leo XIV, who met King Felipe in Madrid, and Yamal is 19 in the last photo.",
  "links": [
   {
    "a": "Henry VII",
-   "b": "Elizabeth II",
+   "b": "Henry VIII",
+   "image": {
+    "file": "File:Remigius van Leemput (d. 1675) - Henry VII, Elizabeth of York, Henry VIII and Jane Seymour - RCIN 405750 - Royal Collection.jpg"
+   },
+   "line": "In 1537, Holbein painted Henry VII standing behind his son, Henry VIII.",
+   "fact": "Whitehall mural, 1537",
+   "where": {
+    "place": "Whitehall Palace, London",
+    "lat": 51.5045,
+    "lon": -0.1262
+   },
+   "a_face": 1,
+   "b_face": 0
+  },
+  {
+   "a": "Henry VIII",
+   "b": "Pope Clement VII",
+   "image": {
+    "file": "File:Illustration Foxe's Book of Martyrs 1570.jpg"
+   },
+   "line": "In 1570, a woodcut showed Henry VIII enthroned above Pope Clement VII.",
+   "fact": "Foxe's woodcut, 1570",
+   "where": {
+    "place": "London",
+    "lat": 51.5138,
+    "lon": -0.0984
+   },
+   "a_face": [
+    240,
+    95,
+    42,
+    42
+   ],
+   "b_face": [
+    205,
+    322,
+    40,
+    42
+   ]
+  },
+  {
+   "a": "Pope Clement VII",
+   "b": "Pope Leo XIV",
    "lineage": {
-    "label": "LINE OF ENGLISH MONARCHS",
+    "label": "LINE OF POPES",
     "people": [
      {
-      "name": "Henry VII",
-      "file": "File:Enrique_VII_de_Inglaterra,_por_un_artista_anónimo.jpg",
-      "label": "1485"
+      "name": "Pope Clement VII",
+      "file": "File:El papa Clemente VII, por Sebastiano del Piombo.jpg",
+      "label": "219th"
      },
      {
-      "name": "Henry VIII",
-      "file": "File:After_Hans_Holbein_the_Younger_-_Portrait_of_Henry_VIII_-_Google_Art_Project.jpg",
-      "label": "1509"
+      "name": "Paul III",
+      "file": "File:Portrait of Pope Paul III Farnese (by Titian) - National Museum of Capodimonte.jpg",
+      "label": "220th"
      },
      {
-      "name": "Elizabeth I",
-      "file": "File:Darnley_stage_3.jpg",
-      "label": "1558"
+      "name": "Julius III",
+      "file": "File:Girolamo Sicciolante - Paus Julius III.jpg",
+      "label": "221st"
      },
      {
-      "name": "James I",
-      "file": "File:JamesIEngland_(cropped_2).jpg",
-      "label": "1603"
+      "name": "Marcellus II",
+      "file": "File:Portrait of Pope Marcellus II Cervini (Vatican Museums - Musei Vaticani, Vatican).jpg",
+      "label": "222nd"
      },
      {
-      "name": "Charles I",
-      "file": "File:King_Charles_I_after_original_by_van_Dyck.jpg",
-      "label": "1625"
+      "name": "Paul IV",
+      "file": "File:Pope Paul IV – Jacopino Conte (Manner), ca. 1560.jpg",
+      "label": "223rd"
      },
      {
-      "name": "Queen Anne",
-      "file": "File:Dahl,_Michael_-_Queen_Anne_-_NPG_6187.jpg",
-      "label": "1702"
+      "name": "Pius IV",
+      "file": "File:Portrait of Pope Pius IV, three-quarter-length, seated at a draped table (Circle of Scipione Pulzone).jpg",
+      "label": "224th"
      },
      {
-      "name": "George III",
-      "file": "File:Allan_Ramsay_-_King_George_III_in_coronation_robes_-_Google_Art_Project.jpg",
-      "label": "1760"
+      "name": "Pius V",
+      "file": "File:Bartolomeo Passarotti - Pius V.jpg",
+      "label": "225th"
      },
      {
-      "name": "Queen Victoria",
-      "file": "File:Queen_Victoria_by_Bassano.jpg",
-      "label": "1837"
+      "name": "Gregory XIII",
+      "file": "File:Lavinia Fontana - Portrait of Pope Gregory XIII.jpg",
+      "label": "226th"
      },
      {
-      "name": "George V",
-      "file": "File:King_George_1923_LCCN2014715558_(cropped).jpg",
-      "label": "1910"
+      "name": "Sixtus V",
+      "file": "File:(Albi) Cathédrale Sainte-Cécile - Trèsor - Portrait du pape Sixte V - PalissyIM81001477.jpg",
+      "label": "227th"
      },
      {
-      "name": "Elizabeth II",
-      "file": "File:Queen_Elizabeth_II_official_portrait_for_1959_tour_(retouched)_(cropped)_(3-to-4_aspect_ratio).jpg",
-      "label": "1952"
+      "name": "Urban VII",
+      "file": "File:Portrait of Pope Urban VII Castagna (Jacopo del Conte, Vatican Museums).jpg",
+      "label": "228th"
+     },
+     {
+      "name": "Gregory XIV",
+      "file": "File:Roman School – Portrait of Pope Gregory XIV (16th Century).jpg",
+      "label": "229th"
+     },
+     {
+      "name": "Innocent IX",
+      "file": "File:Portrait of Pope Innocent IX (Fidenza Cathedral Museum - Museo del Duomo di Fidenza, Fidenza) – edited.jpg",
+      "label": "230th"
+     },
+     {
+      "name": "Clement VIII",
+      "file": "File:Papa Clemente VIII Aldobrandini – Giuseppe Cesari (cropped).jpg",
+      "label": "231st"
+     },
+     {
+      "name": "Leo XI",
+      "file": "File:Pope Leo XI - Portrait.jpg",
+      "label": "232nd"
+     },
+     {
+      "name": "Paul V",
+      "file": "File:Pope Paul V.jpg",
+      "label": "233rd"
+     },
+     {
+      "name": "Gregory XV",
+      "file": "File:(Albi) Cathédrale Sainte-Cécile - Trèsor - Portrait du pape Grégoire XV - PalissyIM81001477.jpg",
+      "label": "234th"
+     },
+     {
+      "name": "Urban VIII",
+      "file": "File:Pietro da Cortona - Portrait of Urban VIII (ca. 1624-1627) - Google Art Project - edited.jpg",
+      "label": "235th"
+     },
+     {
+      "name": "Innocent X",
+      "file": "File:Diego Velázquez, Portrait du pape Innocent X, 1650, huile sur toile, 140 × 120 cm, Rome, Galleria Doria Pamphilj (inv. 237).jpg",
+      "label": "236th"
+     },
+     {
+      "name": "Alexander VII",
+      "file": "File:Portrait of Pope Alexander VII Chigi (by Giovanni Battista Gaulli - Baciccio).jpg",
+      "label": "237th"
+     },
+     {
+      "name": "Clement IX",
+      "file": "File:Carlo Maratta - Portrait of Pope Clement IX.jpg",
+      "label": "238th"
+     },
+     {
+      "name": "Clement X",
+      "file": "File:Portrait of Pope Clement X, by Giovanni Battista Gaulli (Baciccio) - Metropolitan Museum of Art.jpg",
+      "label": "239th"
+     },
+     {
+      "name": "Innocent XI",
+      "file": "File:Jacob Ferdinand Voet Portrait of Innocenzo XI Odescalchi.jpeg",
+      "label": "240th"
+     },
+     {
+      "name": "Alexander VIII",
+      "file": "File:Portrait of Pope Alexander VIII – Roman School of 17th Century – (unframed).jpg",
+      "label": "241st"
+     },
+     {
+      "name": "Innocent XII",
+      "file": "File:Antonio Zanchi – Papa Innocenzo XII.jpg",
+      "label": "242nd"
+     },
+     {
+      "name": "Clement XI",
+      "file": "File:Pope Clement XI – Pier Leone Ghezzi (c. 1708).jpg",
+      "label": "243rd"
+     },
+     {
+      "name": "Innocent XIII",
+      "file": "File:InnocientXIII.jpg",
+      "label": "244th"
+     },
+     {
+      "name": "Benedict XIII",
+      "file": "File:Benedetto XIII.jpg",
+      "label": "245th"
+     },
+     {
+      "name": "Clement XII",
+      "file": "File:Agostino Masucci – Portrait of Pope Clement XII, seated.jpg",
+      "label": "246th"
+     },
+     {
+      "name": "Benedict XIV",
+      "file": "File:Pierre Subleyras Portrait of Benedict XIV 1746. Metropolitan Museum of Art.jpg",
+      "label": "247th"
+     },
+     {
+      "name": "Clement XIII",
+      "file": "File:Anton Raphael Mengs (1728-1779) - Portret van paus Clemens XIII (1758) - Bologna Pinacoteca Nazionale - 26-04-2012 9-53-03.jpg",
+      "label": "248th"
+     },
+     {
+      "name": "Clement XIV",
+      "file": "File:Giovanni Domenico Porta – Ritratto di papa Clemente XIV (c. 1770).jpg",
+      "label": "249th"
+     },
+     {
+      "name": "Pius VI",
+      "file": "File:Pompeo Batoni - Ritratto di Papa Pio VI (National Gallery of Ireland).jpg",
+      "label": "250th"
+     },
+     {
+      "name": "Pius VII",
+      "file": "File:Jacques-Louis David 018.jpg",
+      "label": "251st"
+     },
+     {
+      "name": "Leo XII",
+      "file": "File:Charles Picqué – Portrait de Léon XII (1828).jpg",
+      "label": "252nd"
+     },
+     {
+      "name": "Pius VIII",
+      "file": "File:Ritratto di Papa Pio VIII, by Clemente Alberi.jpg",
+      "label": "253rd"
+     },
+     {
+      "name": "Gregory XVI",
+      "file": "File:Gregory XVI.jpg",
+      "label": "254th"
+     },
+     {
+      "name": "Pius IX",
+      "file": "File:Pius IX, by Adolphe Braun, 1875.jpg",
+      "label": "255th"
+     },
+     {
+      "name": "Leo XIII",
+      "file": "File:Papa Leone XIII (3x4 cropped).jpeg",
+      "label": "256th"
+     },
+     {
+      "name": "Pius X",
+      "file": "File:Pius X, by Ernest Walter Histed (retouched).jpg",
+      "label": "257th"
+     },
+     {
+      "name": "Benedict XV",
+      "file": "File:Benedictus XV, by Nicola Perscheid, 1915 (retouched).jpg",
+      "label": "258th"
+     },
+     {
+      "name": "Pius XI",
+      "file": "File:Pius XI, by Nicola Perscheid, circa 1922 (retouched).jpg",
+      "label": "259th"
+     },
+     {
+      "name": "Pius XII",
+      "file": "File:Pius XII with tabard, by Michael Pitcairn, 1951 (retouched).jpg",
+      "label": "260th"
+     },
+     {
+      "name": "John XXIII",
+      "file": "File:Ioannes XXIII, by De Agostini, 1958–1963.jpg",
+      "label": "261st"
+     },
+     {
+      "name": "Paul VI",
+      "file": "File:Pope Paul VI 1969 Portrait (4x5 cropped).jpg",
+      "label": "262nd"
+     },
+     {
+      "name": "John Paul I",
+      "file": "File:Paus Johannes Paulus I (Bestanddeelnr 929-9074) (cropped).jpg",
+      "label": "263rd"
+     },
+     {
+      "name": "John Paul II",
+      "file": "File:Pope John Paul II smile.jpg",
+      "label": "264th"
+     },
+     {
+      "name": "Benedict XVI",
+      "file": "File:Papst Benedikt XVI in Berlin 2011.jpg",
+      "label": "265th"
+     },
+     {
+      "name": "Pope Francis",
+      "file": "File:Pope Francis Korea Haemi Castle 19.jpg",
+      "label": "266th"
+     },
+     {
+      "name": "Pope Leo XIV",
+      "file": "File:Leo XIV (13 October 2025).jpg",
+      "label": "267th"
      }
     ]
    },
-   "line": "From 1485, Henry the Seventh's throne passed down to Queen Elizabeth the Second."
+   "line": "From 1523, the line of popes ran 49 holders down to Pope Leo XIV.",
+   "fact": "49 popes, 1523 to 2025",
+   "where": {
+    "place": "Vatican City",
+    "lat": 41.9022,
+    "lon": 12.4539
+   }
   },
   {
-   "a": "Elizabeth II",
-   "b": "Donald Trump",
+   "a": "Pope Leo XIV",
+   "b": "Felipe VI",
    "image": {
-    "file": "File:Trump with national leaders at 75th D-Day.jpg"
+    "file": "File:La presidenta de la Comunidad de Madrid y del PP madrileño, Isabel Díaz Ayuso, en la recepción oficial al Papa León XIV, junto a S.S.M.M Los Reyes, dando inicio oficial a la visita del Santo Padre a España. - 55317678281.jpg"
+   },
+   "line": "In 2026, Pope Leo arrived in Madrid and met Spain's King Felipe.",
+   "fact": "Madrid, June 2026",
+   "where": {
+    "place": "Madrid",
+    "lat": 40.4722,
+    "lon": -3.5608
    },
    "a_face": 12,
-   "b_face": 13,
-   "line": "In 2019, the Queen marked D-Day's 75th anniversary beside Donald Trump."
+   "b_face": 5
   },
   {
-   "a": "Donald Trump",
-   "b": "Pedro Sánchez",
-   "image": {
-    "file": "File:President Donald Trump and Pedro Sánchez.jpg"
-   },
-   "a_face": 1,
-   "b_face": 0,
-   "line": "Back in 2018, Trump hosted Spain's prime minister, Pedro Sánchez, in New York."
-  },
-  {
-   "a": "Pedro Sánchez",
+   "a": "Felipe VI",
    "b": "Lamine Yamal",
    "image": {
-    "file": "File:Sánchez se reunió con los futbolistas de la selección española tras ganar la Eurocopa 2024 (3).jpg"
+    "url": "https://www.hola.com/horizon/landscape/1200/53a24b4f5d8d-gettyimages-2286273919.jpg",
+    "credit": "Getty Images, via ¡HOLA!",
+    "license": "Fair use (commentary)",
+    "source": "https://www.hola.com/actualidad/20260721914020/rey-felipe-vi-saludo-viral-lamine-yamal-zarzuela/"
    },
-   "a_face": 1,
-   "b_face": 3,
-   "line": "And in 2024, Sánchez welcomed Spain's Euro champions, among them Lamine Yamal."
+   "line": "And that July, King Felipe hugged World Cup champion Lamine Yamal.",
+   "fact": "World Cup final, 2026",
+   "where": {
+    "place": "MetLife Stadium, New Jersey",
+    "lat": 40.8135,
+    "lon": -74.0745
+   },
+   "a_face": 0,
+   "b_face": [
+    600,
+    330,
+    180,
+    180
+   ]
   }
  ]
 }
