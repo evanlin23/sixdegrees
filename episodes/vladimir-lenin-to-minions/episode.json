@@ -2,11 +2,31 @@
   "from": "Vladimir Lenin",
   "to": "Minions",
   "title": "How is Lenin connected to the Minions?",
-  "description": "The line of Kremlin leaders, a summit, a window knock on the Oval Office, two comedians and a Paris premiere connect Vladimir Lenin to the Minions.",
+  "description": "A garden bench, a summit, a royal greeting, a palace visit, an Oval Office window knock, two comedians and a Paris premiere connect Vladimir Lenin to the Minions.",
   "hook": "How is Lenin connected to the Minions?",
   "hook_variant": "F",
   "text_variant": "T0",
+  "fun_fact": "The 1922 photos of Lenin and Stalin at Gorki were taken by Lenin's sister Maria, and Soviet censors later retouched Stalin's pockmarks out of some prints.",
+  "research_note": "The old route scrolled the Kremlin leaders; every link is now a real photo, running from Lenin's 1922 Gorki pictures through Yalta, the young Queen and Barack Obama to the comedians who meet the Minions.",
   "people": {
+    "Joseph Stalin": {
+      "label": "Joseph Stalin"
+    },
+    "Winston Churchill": {
+      "label": "Winston Churchill"
+    },
+    "Elizabeth II": {
+      "label": "Queen Elizabeth II"
+    },
+    "Barack Obama": {
+      "label": "Barack Obama"
+    },
+    "Jerry Seinfeld": {
+      "label": "Jerry Seinfeld"
+    },
+    "Gad Elmaleh": {
+      "label": "Gad Elmaleh"
+    },
     "Minions": {
       "wiki": "Minions (Despicable Me)",
       "label": "Minions",
@@ -22,56 +42,67 @@
   "links": [
     {
       "a": "Vladimir Lenin",
-      "b": "Vladimir Putin",
-      "lineage": {
-        "label": "KREMLIN LEADERS",
-        "people": [
-          {
-            "name": "Vladimir Lenin",
-            "file": "File:Lenin in 1920 (cropped).jpg",
-            "label": "from 1917"
-          },
-          {
-            "name": "Joseph Stalin",
-            "file": "File:StalinCropped1943.jpg",
-            "label": "1924"
-          },
-          {
-            "name": "Nikita Khrushchev",
-            "file": "File:1956 Press Photo Communist Party Secretary Nikita S. Khrushchev in Moscow (cropped).jpg",
-            "label": "1953"
-          },
-          {
-            "name": "Leonid Brezhnev",
-            "file": "File:Leonid Brezhnev, Staatshoofden, portretten, Bestanddeelnr 925-6564 (cropped)(2).jpg",
-            "label": "1964"
-          },
-          {
-            "name": "Mikhail Gorbachev",
-            "file": "File:GorbachevMS.jpg",
-            "label": "1985"
-          },
-          {
-            "name": "Boris Yeltsin",
-            "file": "File:Boris Yeltsin (3x4 cropped).jpg",
-            "label": "1991"
-          },
-          {
-            "name": "Vladimir Putin",
-            "file": "File:Vladimir Putin (2026 02 23) (cropped).jpg",
-            "label": "from 2000"
-          }
-        ]
+      "b": "Joseph Stalin",
+      "image": {
+        "file": "File:19220900-lenin stalin gorky-02.jpg"
       },
-      "line": "Since 1917, the Kremlin has passed from Lenin down to Vladimir Putin."
+      "line": "In 1922, Lenin sat for a photo with Joseph Stalin near Moscow.",
+      "fact": "Gorki, near Moscow, 1922",
+      "where": {
+        "place": "Gorki Leninskiye, near Moscow",
+        "lat": 55.5079,
+        "lon": 37.7712
+      },
+      "a_face": 0,
+      "b_face": 1
     },
     {
-      "a": "Vladimir Putin",
+      "a": "Joseph Stalin",
+      "b": "Winston Churchill",
+      "image": {
+        "file": "File:Yalta summit 1945 with Churchill, Roosevelt, Stalin.jpg"
+      },
+      "line": "In 1945, Stalin met Britain's Winston Churchill at Yalta.",
+      "fact": "Yalta, 1945",
+      "where": {
+        "place": "Livadia Palace, Yalta",
+        "lat": 44.4676,
+        "lon": 34.1432
+      },
+      "a_face": 9,
+      "b_face": 4
+    },
+    {
+      "a": "Winston Churchill",
+      "b": "Elizabeth II",
+      "image": {
+        "file": "File:Churchill queen Elizabeth 1953.jpg"
+      },
+      "line": "In 1953, Churchill greeted the new Queen and her children.",
+      "fact": "London, 1953",
+      "where": {
+        "place": "London",
+        "lat": 51.5074,
+        "lon": -0.1278
+      },
+      "a_face": 3,
+      "b_face": 2
+    },
+    {
+      "a": "Elizabeth II",
       "b": "Barack Obama",
       "image": {
-        "file": "File:Vladimir Putin and Barack Obama (2015-09-29) 01.jpg"
+        "file": "File:Barack Obama Michelle Obama Queen Elizabeth II Buckingham Palace London.jpg"
       },
-      "line": "In 2015, Putin met Barack Obama at the United Nations."
+      "line": "In 2009, the Queen welcomed Barack Obama to Buckingham Palace.",
+      "fact": "Buckingham Palace, 2009",
+      "where": {
+        "place": "Buckingham Palace",
+        "lat": 51.5014,
+        "lon": -0.1419
+      },
+      "a_face": 3,
+      "b_face": 0
     },
     {
       "a": "Barack Obama",
@@ -79,7 +110,15 @@
       "image": {
         "file": "File:Jerry Seinfeld knocks on the Oval Office window.jpg"
       },
-      "line": "That December, Jerry Seinfeld knocked on Obama's Oval Office window for his show."
+      "line": "In 2015, Jerry Seinfeld knocked on Obama's Oval Office window for his show.",
+      "fact": "Oval Office, 2015",
+      "where": {
+        "place": "White House",
+        "lat": 38.8977,
+        "lon": -77.0365
+      },
+      "a_face": 1,
+      "b_face": 0
     },
     {
       "a": "Jerry Seinfeld",
@@ -92,7 +131,13 @@
       },
       "line": "In 2017, Seinfeld shared a Montreal stage with French comedian Gad Elmaleh.",
       "a_face": 1,
-      "b_face": 0
+      "b_face": 0,
+      "fact": "Bell Centre, Montreal, 2017",
+      "where": {
+        "place": "Bell Centre, Montreal",
+        "lat": 45.4961,
+        "lon": -73.5693
+      }
     },
     {
       "a": "Gad Elmaleh",
@@ -110,7 +155,13 @@
         385,
         200,
         200
-      ]
+      ],
+      "fact": "Paris premiere, 2022",
+      "where": {
+        "place": "Paris",
+        "lat": 48.8566,
+        "lon": 2.3522
+      }
     }
   ]
 }
