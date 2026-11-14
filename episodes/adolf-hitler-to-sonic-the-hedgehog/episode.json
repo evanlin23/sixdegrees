@@ -1,9 +1,11 @@
 {
   "from": "Adolf Hitler",
   "to": "Sonic the Hedgehog",
-  "title": "How is Adolf Hitler connected to Sonic the Hedgehog?",
+  "title": "How is Hitler connected to Sonic?",
   "description": "The Beetle's designer, the Mercedes racing team, two racing legends, a seven-time champion, a talk-show host and Jim Carrey connect Adolf Hitler to Sonic the Hedgehog.",
-  "hook": "How is Adolf Hitler connected to Sonic the Hedgehog?",
+  "hook": "How's Hitler linked to Sonic?",
+  "hook_variant": "A",
+  "text_variant": "T0",
   "fun_fact": "Alfred Neubauer, pictured with Porsche in 1924, is credited with inventing pit signals: he was the first team boss to signal his drivers with flags and boards from the pit wall.",
   "research_note": "Commons only had a tiny copy of the famous Beetle-model photo, so a larger scan of the same Hoffmann photo came from Santa Clara University's exhibit; from there, motor racing leads to Lewis Hamilton, and Sonic comes in through a real 2020 premiere photo of the costumed Sonic with Jim Carrey.",
   "people": {
@@ -36,7 +38,14 @@
       "label": "Jim Carrey"
     },
     "Sonic the Hedgehog": {
-      "label": "Sonic"
+      "label": "Sonic",
+      "hook_photo": "https://static.wikia.nocookie.net/sonic/images/1/10/SRCSonic.png/revision/latest?cb=20251202132714",
+      "hook_box": [
+        290,
+        250,
+        450,
+        560
+      ]
     }
   },
   "links": [
