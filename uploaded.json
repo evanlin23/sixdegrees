@@ -342,5 +342,25 @@
   "hook_variant": "A",
   "text_variant": "T1",
   "n": 47
+ },
+ {
+  "slug": "hitler-to-neil-armstrong",
+  "title": "Hitler to Neil Armstrong: how?",
+  "publish_at": "2026-11-14T21:07:00Z",
+  "video_id": "C9F7VFue_D0",
+  "privacy": "scheduled",
+  "url": "https://youtube.com/shorts/C9F7VFue_D0",
+  "thumbnail": "not set: <HttpError 403 when requesting https://youtube.googleapis.com/upload/youtube/v3/thumbnails/set?videoId=C9F7VFue_D0&alt=json&uploadType=media returned \"The authe",
+  "first_comment": "Who should Hitler connect to next? Name anyone (a character works too) and I'll find the photos.",
+  "kind": "formula",
+  "outro": true,
+  "narration": true,
+  "links": 5,
+  "music": "Like a Loop Machine",
+  "style": "zoom",
+  "trending": false,
+  "hook_variant": "B",
+  "text_variant": "T0",
+  "n": 6
  }
 ]
