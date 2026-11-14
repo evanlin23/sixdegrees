@@ -8,6 +8,7 @@
   "text_variant": "T1",
   "people": {
     "Queen Victoria": {
+      "short": "Queen Victoria",
       "label": "Queen Victoria"
     },
     "Edward VIII": {
