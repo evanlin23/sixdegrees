@@ -125,8 +125,25 @@ episode.json: the hook shows the viewer's request bubble and the first comment c
     timing; QA fails a render with dead air (first word > 0.25 s, a gap > 2 s, or > 1 s after the last word). Write
     lines so this holds: year first ("In 1931, …"), the final line ends on B's name, and keep lines long enough to
     fill their link (a lineage scroll's line should run about as long as the scroll).
-  - **Real people first.** A mythical or ancient start (Zeus, Jesus) links through a real photo, e.g. the actor who
-    played Zeus on screen, not a painting-to-painting hop.
+  - **Real people link only through real people (owner, 2026-11-14).**
+    - The owner's words:
+      - "since Caesar, Cleopatra, Augustus were all like real people, we should just use real people"; doing it
+        through actors "feels like cheating".
+      - "we should only use like voice actor or movie if its like a fictional character".
+    - So a historical figure (Caesar, Cleopatra, Augustus, Genghis Khan, Henry VIII, Jesus) never links through an
+      actor who played them. Use real artworks or objects that show both people together (paintings of a real
+      meeting, coins or cameos with both portraits, manuscripts), or a lineage scroll of 40 or more holders.
+    - A `pair` of two separate portraits is not a link between two real people.
+  - **Myths and gods: bridge through real people in the myth (owner, 2026-11-14).** The owner's words: "even stuff with
+    mythology (ex like gods) we can try our best to use bridge characters in the myths that also existed in real
+    life."
+    - Find a real person who appears in the god's story or alongside the god in art. Examples:
+      - Alexander the Great, hailed as the son of Zeus-Ammon, on his coins with Zeus;
+      - Augustus among the gods on the Gemma Augustea;
+      - Henry IV with Jupiter in Rubens;
+      - Washington with Minerva in Brumidi's *Apotheosis*.
+    - Continue from that real person.
+    - Never use an actor who played the god.
   - **Use a big lineage when it's the natural route** (e.g. Trump back to George Washington through every
     president), per the lineage rule below.
 - **Lineage scrolls only for HUGE lineages** (creator's call: "only if it's a lot, like the popes"): roughly

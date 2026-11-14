@@ -19,6 +19,10 @@ Follow `.claude/skills/six-degrees-episode/SKILL.md`. The owner's standing direc
 - **The first honest path you find, never padded.** Short is fine; don't add links just to lengthen it.
 - **Every link is a real photo (or real painting/coin for history) of both people together.** No watermarks. Check every face by eye.
 - **Lineage scrolls only for long lines of 40 or more holders** (popes, emperors, US presidents). Never short ones like German chancellors or one dynasty.
+- **Real people link only through real people (owner, 2026-11-14).**
+  - **Actors and voice actors are only for fictional characters:** "we should only use like voice actor or movie if its like a fictional character".
+  - **Historical figures** (Caesar, Cleopatra, Augustus, Genghis Khan, Henry VIII) link through real artworks or objects that show both people (paintings of real meetings, coins), or through a 40+ lineage. Never through an actor who played them; the owner says that "feels like cheating".
+- **Gods and myths: bridge through real people in the myth (owner, 2026-11-14).** Examples: Alexander the Great (son of Zeus-Ammon) on coins with Zeus, Henry IV with Jupiter in Rubens, Washington with Minerva in Brumidi.
 
 **The script**
 - **Write like Steve and Miku** (owner's favourites; full model scripts in the skill, "Write like Steve and Miku"): 9-13 words a line, ONE fact per line, plain descriptors ("Britain's former king", "the new Queen") over stacked titles and places, full name the first time then the short name, and each line hands off to the next person.
