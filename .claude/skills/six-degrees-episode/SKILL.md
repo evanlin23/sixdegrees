@@ -26,6 +26,9 @@ episode.json: the hook shows the viewer's request bubble and the first comment c
 `"request_avatar"` to the commenter's profile-picture URL (comments.json `avatar`, already 240 px) so the bubble shows their PFP.
 Requests live on the `comments` branch (`comments.json`: every upload's top comments and their replies, likely requests
 flagged `"request": true`). For a manual top-up from Studio, use `docs/comments-prompt.md` in Claude in Chrome.
+**Viewer shortcuts:** comments flagged `"shortcut": true` point out shorter routes ("You could've ended it at Nixon. Trump and Nixon
+met."). Before you research a chain, read the ones about the same people or hubs, and verify each with a real photo. A verified
+shortcut beats a longer route. Viewers love short chains: "How is the chain so short" is our most-liked comment (117).
 
 ## 2. The chain (honesty rules)
 - Every link is a **real picture of two people together**: a photo, or a painting, mosaic or sculpture that

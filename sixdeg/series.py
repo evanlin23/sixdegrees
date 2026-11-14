@@ -53,6 +53,8 @@ def series() -> str:
     return f"playlist {pl}: added {len(added)} ({', '.join(added) or 'none'}), {len(have) + len(added)} total"
 
 
+# "You could've ended it at Nixon. Trump & Nixon met." Viewers point out shorter routes: producers check these first.
+SHORTCUT_RE = re.compile(r"(?i)(could\s*'?ve|could have|shorter|faster|quicker|easier|skip|instead|directly|\bmet\b|ended it at|just go|method|unpatched|patched)")
 REQUEST_RE = re.compile(r"(?i)(\bto\b|→|->|\bconnect|\bnext\b|\bvs\.?\b|\bdo\b|\bplease\b|\bpls\b|\bcan you\b)")
 
 
@@ -104,7 +106,9 @@ def comments(limit: int = 100) -> dict:
                     pass
             rows += [_row(c["snippet"], c["id"], top) for c in replies]
         for c in rows:   # flag likely requests in place (upload.yml saves comments.json only)
-            c["request"] = c["author"].lower() != "@buhconnects" and bool(REQUEST_RE.search(c["text"]))
+            ours = c["author"].lower() == "@buhconnects"
+            c["request"] = not ours and bool(REQUEST_RE.search(c["text"]))
+            c["shortcut"] = not ours and bool(SHORTCUT_RE.search(c["text"]))   # a shorter route, or a "method" meme
         out[u["slug"]] = {"video_id": u["video_id"], "comments": rows}
         requests += [c for c in rows if c["request"]]
     (ROOT / "comments.json").write_text(json.dumps(out, indent=1, ensure_ascii=False))
