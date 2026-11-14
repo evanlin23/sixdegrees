@@ -26,7 +26,9 @@ def kit(slug: str) -> str:
     # Title is always the plain question with the names people know (the reference channel's hits used bare
     # "A to B" titles; a question adds the curiosity gap). An episode can force one with "title_override".
     lab = lambda n: spec.get("people", {}).get(n, {}).get("label") or _short(n)
-    title = spec.get("title_override") or f"How is {lab(spec['from'])} connected to {lab(spec['to'])}?"
+    # A/B episodes (hook_variant set) carry their short title in "title"; older episodes' "title" is stale text.
+    title = (spec.get("title_override") or (spec.get("title") if spec.get("hook_variant") else None)
+             or f"How is {lab(spec['from'])} connected to {lab(spec['to'])}?")
     if len(title) > 95:
         title = title[:92] + "..."
     chain = " → ".join(_short(p) for p in ppl)
