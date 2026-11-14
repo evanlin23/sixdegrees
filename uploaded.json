@@ -362,5 +362,25 @@
   "hook_variant": "B",
   "text_variant": "T0",
   "n": 6
+ },
+ {
+  "slug": "adolf-hitler-to-shrek",
+  "title": "How is Hitler connected to Shrek?",
+  "publish_at": "2026-11-15T00:39:00Z",
+  "video_id": "yqt6W8zpvOM",
+  "privacy": "scheduled",
+  "url": "https://youtube.com/shorts/yqt6W8zpvOM",
+  "thumbnail": "not set: <HttpError 403 when requesting https://youtube.googleapis.com/upload/youtube/v3/thumbnails/set?videoId=yqt6W8zpvOM&alt=json&uploadType=media returned \"The authe",
+  "first_comment": "Fun fact from the research: Kaiser Wilhelm II and King George V were first cousins, both grandsons of Queen Victoria, yet led opposite sides in World War I.\n\nWho should Hitler connect to next? Name anyone (a character works too) and I'll find the photos.",
+  "kind": "formula",
+  "outro": false,
+  "narration": true,
+  "links": 7,
+  "music": "Game Boy",
+  "style": "game",
+  "trending": false,
+  "hook_variant": "F",
+  "text_variant": "T1",
+  "n": 57
  }
 ]
