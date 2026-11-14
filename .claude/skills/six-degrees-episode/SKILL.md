@@ -23,7 +23,9 @@ instantly recognisable person × something innocent, cute or kid/gamer-coded (Hi
 in real photos with presidents and celebrities. Never repeat a pair already in `data/pairs.json`. Slug: `<from>-to-<to>`, lowercase with dashes. If the entry has `requested_by`, copy it into
 episode.json: the hook shows the viewer's request bubble and the first comment credits them. Use their real
 @handle (never "a viewer" when the handle is known) and, when the request came from a YouTube comment, also set
-`"request_avatar"` to the commenter's profile-picture URL (comments.json `avatar`) so the bubble shows their PFP.
+`"request_avatar"` to the commenter's profile-picture URL (comments.json `avatar`, already 240 px) so the bubble shows their PFP.
+Requests live on the `comments` branch (`comments.json`: every upload's top comments and their replies, likely requests
+flagged `"request": true`). For a manual top-up from Studio, use `docs/comments-prompt.md` in Claude in Chrome.
 
 ## 2. The chain (honesty rules)
 - Every link is a **real picture of two people together**: a photo, or a painting, mosaic or sculpture that
