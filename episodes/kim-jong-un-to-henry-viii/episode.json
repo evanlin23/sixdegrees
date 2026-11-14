@@ -3,13 +3,18 @@
  "to": "Henry VIII",
  "requested_by": "@y4p_Genius_Severus",
  "title": "Kim Jong Un to Henry VIII: how?",
- "description": "A border handshake, a D-Day ceremony and four centuries of English monarchs link Kim Jong Un to Henry VIII.",
+ "description": "A border handshake, a Vatican visit, 50 popes and a 1521 miniature link Kim Jong Un to Henry VIII.",
  "hook": "What links Kim Jong Un to Henry VIII?",
  "hook_variant": "B",
  "text_variant": "T0",
+ "fun_fact": "In 1521 Pope Leo X named Henry VIII \"Defender of the Faith\", and British monarchs still carry the title, even though Henry later broke with Rome.",
+ "research_note": "The old route scrolled a short line of English monarchs; Henry VIII now comes in through a British Library miniature of about 1521 that shows him with Pope Leo X, and the line of popes runs from Leo to Pope Francis, who met Trump in 2017.",
  "people": {
-  "Elizabeth II": {
-   "label": "Queen Elizabeth II"
+  "Pope Francis": {
+   "label": "Pope Francis"
+  },
+  "Pope Leo X": {
+   "label": "Pope Leo X"
   },
   "Henry VIII": {
    "label": "King Henry VIII"
@@ -24,72 +29,315 @@
    },
    "line": "In 2019, Kim Jong Un shook Donald Trump's hand at the Korean border.",
    "a_face": 2,
-   "b_face": 4
+   "b_face": 4,
+   "fact": "Korean border, 2019",
+   "where": {
+    "place": "Panmunjom, Korean border",
+    "lat": 37.956,
+    "lon": 126.677
+   }
   },
   {
    "a": "Donald Trump",
-   "b": "Elizabeth II",
+   "b": "Pope Francis",
    "image": {
-    "file": "File:Trump with national leaders at 75th D-Day.jpg"
+    "file": "File:Donald Trump Pope Francis Melania Trump in 2017.jpg"
    },
-   "line": "That June, Trump marked D-Day's 75th anniversary beside Queen Elizabeth II.",
-   "a_face": 13,
-   "b_face": 12
+   "line": "Two years earlier, Trump met Pope Francis at the Vatican.",
+   "fact": "Vatican, 2017",
+   "where": {
+    "place": "Apostolic Palace, Vatican City",
+    "lat": 41.9029,
+    "lon": 12.4545
+   },
+   "a_face": 0,
+   "b_face": 4
   },
   {
-   "a": "Elizabeth II",
-   "b": "Henry VIII",
+   "a": "Pope Francis",
+   "b": "Pope Leo X",
    "lineage": {
-    "label": "LINE OF ENGLISH MONARCHS",
+    "label": "LINE OF POPES",
     "people": [
      {
-      "name": "Elizabeth II",
-      "file": "File:Queen_Elizabeth_II_official_portrait_for_1959_tour_(retouched)_(cropped)_(3-to-4_aspect_ratio).jpg",
-      "label": "1952"
+      "name": "Pope Francis",
+      "file": "File:Pope Francis Korea Haemi Castle 19.jpg",
+      "label": "266th pope"
      },
      {
-      "name": "George V",
-      "file": "File:King_George_1923_LCCN2014715558_(cropped).jpg",
-      "label": "1910"
+      "name": "Benedict XVI",
+      "file": "File:Papst Benedikt XVI in Berlin 2011.jpg",
+      "label": "265th"
      },
      {
-      "name": "Queen Victoria",
-      "file": "File:Queen_Victoria_by_Bassano.jpg",
-      "label": "1837"
+      "name": "John Paul II",
+      "file": "File:Pope John Paul II smile.jpg",
+      "label": "264th"
      },
      {
-      "name": "George III",
-      "file": "File:Allan_Ramsay_-_King_George_III_in_coronation_robes_-_Google_Art_Project.jpg",
-      "label": "1760"
+      "name": "John Paul I",
+      "file": "File:Paus Johannes Paulus I (Bestanddeelnr 929-9074) (cropped).jpg",
+      "label": "263rd"
      },
      {
-      "name": "Queen Anne",
-      "file": "File:Dahl,_Michael_-_Queen_Anne_-_NPG_6187.jpg",
-      "label": "1702"
+      "name": "Paul VI",
+      "file": "File:Pope Paul VI 1969 Portrait (4x5 cropped).jpg",
+      "label": "262nd"
      },
      {
-      "name": "Charles I",
-      "file": "File:King_Charles_I_after_original_by_van_Dyck.jpg",
-      "label": "1625"
+      "name": "John XXIII",
+      "file": "File:Ioannes XXIII, by De Agostini, 1958–1963.jpg",
+      "label": "261st"
      },
      {
-      "name": "James I",
-      "file": "File:JamesIEngland_(cropped_2).jpg",
-      "label": "1603"
+      "name": "Pius XII",
+      "file": "File:Pius XII with tabard, by Michael Pitcairn, 1951 (retouched).jpg",
+      "label": "260th"
      },
      {
-      "name": "Elizabeth I",
-      "file": "File:Darnley_stage_3.jpg",
-      "label": "1558"
+      "name": "Pius XI",
+      "file": "File:Pius XI, by Nicola Perscheid, circa 1922 (retouched).jpg",
+      "label": "259th"
      },
      {
-      "name": "Henry VIII",
-      "file": "File:After_Hans_Holbein_the_Younger_-_Portrait_of_Henry_VIII_-_Google_Art_Project.jpg",
-      "label": "1509"
+      "name": "Benedict XV",
+      "file": "File:Benedictus XV, by Nicola Perscheid, 1915 (retouched).jpg",
+      "label": "258th"
+     },
+     {
+      "name": "Pius X",
+      "file": "File:Pius X, by Ernest Walter Histed (retouched).jpg",
+      "label": "257th"
+     },
+     {
+      "name": "Leo XIII",
+      "file": "File:Papa Leone XIII (3x4 cropped).jpeg",
+      "label": "256th"
+     },
+     {
+      "name": "Pius IX",
+      "file": "File:Pius IX, by Adolphe Braun, 1875.jpg",
+      "label": "255th"
+     },
+     {
+      "name": "Gregory XVI",
+      "file": "File:Gregory XVI.jpg",
+      "label": "254th"
+     },
+     {
+      "name": "Pius VIII",
+      "file": "File:Ritratto di Papa Pio VIII, by Clemente Alberi.jpg",
+      "label": "253rd"
+     },
+     {
+      "name": "Leo XII",
+      "file": "File:Charles Picqué – Portrait de Léon XII (1828).jpg",
+      "label": "252nd"
+     },
+     {
+      "name": "Pius VII",
+      "file": "File:Jacques-Louis David 018.jpg",
+      "label": "251st"
+     },
+     {
+      "name": "Pius VI",
+      "file": "File:Pompeo Batoni - Ritratto di Papa Pio VI (National Gallery of Ireland).jpg",
+      "label": "250th"
+     },
+     {
+      "name": "Clement XIV",
+      "file": "File:Giovanni Domenico Porta – Ritratto di papa Clemente XIV (c. 1770).jpg",
+      "label": "249th"
+     },
+     {
+      "name": "Clement XIII",
+      "file": "File:Anton Raphael Mengs (1728-1779) - Portret van paus Clemens XIII (1758) - Bologna Pinacoteca Nazionale - 26-04-2012 9-53-03.jpg",
+      "label": "248th"
+     },
+     {
+      "name": "Benedict XIV",
+      "file": "File:Pierre Subleyras Portrait of Benedict XIV 1746. Metropolitan Museum of Art.jpg",
+      "label": "247th"
+     },
+     {
+      "name": "Clement XII",
+      "file": "File:Agostino Masucci – Portrait of Pope Clement XII, seated.jpg",
+      "label": "246th"
+     },
+     {
+      "name": "Benedict XIII",
+      "file": "File:Benedetto XIII.jpg",
+      "label": "245th"
+     },
+     {
+      "name": "Innocent XIII",
+      "file": "File:InnocientXIII.jpg",
+      "label": "244th"
+     },
+     {
+      "name": "Clement XI",
+      "file": "File:Pope Clement XI – Pier Leone Ghezzi (c. 1708).jpg",
+      "label": "243rd"
+     },
+     {
+      "name": "Innocent XII",
+      "file": "File:Antonio Zanchi – Papa Innocenzo XII.jpg",
+      "label": "242nd"
+     },
+     {
+      "name": "Alexander VIII",
+      "file": "File:Portrait of Pope Alexander VIII – Roman School of 17th Century – (unframed).jpg",
+      "label": "241st"
+     },
+     {
+      "name": "Innocent XI",
+      "file": "File:Jacob Ferdinand Voet Portrait of Innocenzo XI Odescalchi.jpeg",
+      "label": "240th"
+     },
+     {
+      "name": "Clement X",
+      "file": "File:Portrait of Pope Clement X, by Giovanni Battista Gaulli (Baciccio) - Metropolitan Museum of Art.jpg",
+      "label": "239th"
+     },
+     {
+      "name": "Clement IX",
+      "file": "File:Carlo Maratta - Portrait of Pope Clement IX.jpg",
+      "label": "238th"
+     },
+     {
+      "name": "Alexander VII",
+      "file": "File:Portrait of Pope Alexander VII Chigi (by Giovanni Battista Gaulli - Baciccio).jpg",
+      "label": "237th"
+     },
+     {
+      "name": "Innocent X",
+      "file": "File:Diego Velázquez, Portrait du pape Innocent X, 1650, huile sur toile, 140 × 120 cm, Rome, Galleria Doria Pamphilj (inv. 237).jpg",
+      "label": "236th"
+     },
+     {
+      "name": "Urban VIII",
+      "file": "File:Pietro da Cortona - Portrait of Urban VIII (ca. 1624-1627) - Google Art Project - edited.jpg",
+      "label": "235th"
+     },
+     {
+      "name": "Gregory XV",
+      "file": "File:(Albi) Cathédrale Sainte-Cécile - Trèsor - Portrait du pape Grégoire XV - PalissyIM81001477.jpg",
+      "label": "234th"
+     },
+     {
+      "name": "Paul V",
+      "file": "File:Pope Paul V.jpg",
+      "label": "233rd"
+     },
+     {
+      "name": "Leo XI",
+      "file": "File:Pope Leo XI - Portrait.jpg",
+      "label": "232nd"
+     },
+     {
+      "name": "Clement VIII",
+      "file": "File:Papa Clemente VIII Aldobrandini – Giuseppe Cesari (cropped).jpg",
+      "label": "231st"
+     },
+     {
+      "name": "Innocent IX",
+      "file": "File:Portrait of Pope Innocent IX (Fidenza Cathedral Museum - Museo del Duomo di Fidenza, Fidenza) – edited.jpg",
+      "label": "230th"
+     },
+     {
+      "name": "Gregory XIV",
+      "file": "File:Roman School – Portrait of Pope Gregory XIV (16th Century).jpg",
+      "label": "229th"
+     },
+     {
+      "name": "Urban VII",
+      "file": "File:Portrait of Pope Urban VII Castagna (Jacopo del Conte, Vatican Museums).jpg",
+      "label": "228th"
+     },
+     {
+      "name": "Sixtus V",
+      "file": "File:(Albi) Cathédrale Sainte-Cécile - Trèsor - Portrait du pape Sixte V - PalissyIM81001477.jpg",
+      "label": "227th"
+     },
+     {
+      "name": "Gregory XIII",
+      "file": "File:Lavinia Fontana - Portrait of Pope Gregory XIII.jpg",
+      "label": "226th"
+     },
+     {
+      "name": "Pius V",
+      "file": "File:Bartolomeo Passarotti - Pius V.jpg",
+      "label": "225th"
+     },
+     {
+      "name": "Pius IV",
+      "file": "File:Portrait of Pope Pius IV, three-quarter-length, seated at a draped table (Circle of Scipione Pulzone).jpg",
+      "label": "224th"
+     },
+     {
+      "name": "Paul IV",
+      "file": "File:Pope Paul IV – Jacopino Conte (Manner), ca. 1560.jpg",
+      "label": "223rd"
+     },
+     {
+      "name": "Marcellus II",
+      "file": "File:Portrait of Pope Marcellus II Cervini (Vatican Museums - Musei Vaticani, Vatican).jpg",
+      "label": "222nd"
+     },
+     {
+      "name": "Julius III",
+      "file": "File:Girolamo Sicciolante - Paus Julius III.jpg",
+      "label": "221st"
+     },
+     {
+      "name": "Paul III",
+      "file": "File:Portrait of Pope Paul III Farnese (by Titian) - National Museum of Capodimonte.jpg",
+      "label": "220th"
+     },
+     {
+      "name": "Clement VII",
+      "file": "File:El papa Clemente VII, por Sebastiano del Piombo.jpg",
+      "label": "219th"
+     },
+     {
+      "name": "Adrian VI",
+      "file": "File:Portrait of Pope Adrian VI (after Jan van Scorel).jpg",
+      "label": "218th"
+     },
+     {
+      "name": "Pope Leo X",
+      "file": "File:Raffaello, ritratto di papa leone X tra i cardinali luigi de' rossi e giulio de' medici, 1518, 03.jpg",
+      "label": "217th pope"
      }
     ]
    },
-   "line": "And in 1952, Elizabeth took the throne once held by Henry VIII."
+   "line": "In 1513, 49 popes before Francis, Leo X was elected pope.",
+   "fact": "50 popes, 1513 to 2013",
+   "where": {
+    "place": "St. Peter's Basilica, Rome",
+    "lat": 41.9022,
+    "lon": 12.4539
+   }
+  },
+  {
+   "a": "Pope Leo X",
+   "b": "Henry VIII",
+   "image": {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Henry_VIII_with_Charles_Quint_and_Pope_Leon_X_circa_1520.jpg/1920px-Henry_VIII_with_Charles_Quint_and_Pope_Leon_X_circa_1520.jpg",
+    "credit": "British Library, Add MS 35254",
+    "license": "Public domain",
+    "free": true,
+    "source": "https://commons.wikimedia.org/wiki/File:Henry_VIII_with_Charles_Quint_and_Pope_Leon_X_circa_1520.jpg"
+   },
+   "line": "And around 1521, an artist painted Leo X with King Henry VIII.",
+   "fact": "Miniature, c. 1521",
+   "where": {
+    "place": "British Library (Add MS 35254), London",
+    "lat": 51.5299,
+    "lon": -0.127
+   },
+   "a_face": 6,
+   "b_face": 4
   }
  ]
 }
