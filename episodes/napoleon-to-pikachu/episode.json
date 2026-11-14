@@ -2,7 +2,9 @@
   "from": "Napoleon",
   "to": "Pikachu",
   "title": "How is Napoleon connected to Pikachu?",
-  "description": "France's line of rulers, a state dinner at Versailles and a royal visit to Wrexham connect Napoleon to Pikachu.",
+  "description": "David's Coronation, the line of popes, a royal visit to the Vatican and a tour of Wrexham connect Napoleon to Pikachu.",
+  "fun_fact": "Napoleon's mother sits in the gallery of David's Coronation, though in real life she stayed away from the ceremony.",
+  "research_note": "France's rulers are too short a line for a scroll, so the chain leaves Napoleon through Pope Pius VII in David's Coronation and follows the popes to Leo XIV, who prayed with King Charles in 2025.",
   "hook": "What links Napoleon to Pikachu?",
   "hook_variant": "B",
   "text_variant": "T1",
@@ -10,8 +12,13 @@
     "Napoleon": {
       "label": "Napoleon"
     },
-    "Emmanuel Macron": {
-      "label": "Emmanuel Macron"
+    "Pope Pius VII": {
+      "label": "Pope Pius VII",
+      "short": "Pius VII"
+    },
+    "Pope Leo XIV": {
+      "label": "Pope Leo XIV",
+      "short": "Leo XIV"
     },
     "Charles III": {
       "label": "King Charles"
@@ -33,71 +40,134 @@
   "links": [
     {
       "a": "Napoleon",
-      "b": "Emmanuel Macron",
-      "line": "Since 1804, France's line of rulers has run from Napoleon to Emmanuel Macron.",
+      "b": "Pope Pius VII",
+      "image": {
+        "file": "File:Louis david, consacrazione di napoleone I (incoronaz. dell'imp. giuseppina nella cattedrale di notre-dame, 2-12-1804), 1806-07, 07.jpg"
+      },
+      "line": "In 1807, David painted Pope Pius VII blessing Napoleon's coronation.",
+      "fact": "David's Coronation, 1807",
+      "where": {
+        "place": "Louvre, Paris",
+        "lat": 48.8606,
+        "lon": 2.3376
+      },
+      "a_face": 0,
+      "b_face": 6
+    },
+    {
+      "a": "Pope Pius VII",
+      "b": "Pope Leo XIV",
       "lineage": {
-        "label": "RULERS OF FRANCE",
+        "label": "LINE OF POPES",
         "people": [
           {
-            "name": "Napoleon",
-            "file": "File:Jacques-Louis_David_-_The_Emperor_Napoleon_in_His_Study_at_the_Tuileries_-_Google_Art_Project.jpg",
-            "label": "1804"
+            "name": "Pope Pius VII",
+            "file": "File:Jacques-Louis David 018.jpg",
+            "label": "251st"
           },
           {
-            "name": "Louis XVIII",
-            "file": "File:Gérard_-_Louis_XVIII_of_France_in_Coronation_Robes.jpg",
-            "label": "1814"
+            "name": "Leo XII",
+            "file": "File:Charles Picqué – Portrait de Léon XII (1828).jpg",
+            "label": "252nd"
           },
           {
-            "name": "Louis Philippe I",
-            "file": "File:1841_portrait_painting_of_Louis_Philippe_I_(King_of_the_French)_by_Winterhalter.jpg",
-            "label": "1830"
+            "name": "Pius VIII",
+            "file": "File:Ritratto di Papa Pio VIII, by Clemente Alberi.jpg",
+            "label": "253rd"
           },
           {
-            "name": "Napoleon III",
-            "file": "File:Alexandre_Cabanel_002.jpg",
-            "label": "1848"
+            "name": "Gregory XVI",
+            "file": "File:Gregory XVI.jpg",
+            "label": "254th"
           },
           {
-            "name": "Adolphe Thiers",
-            "file": "File:Adolphe_Thiers_Nadar_2.JPG",
-            "label": "1871"
+            "name": "Pius IX",
+            "file": "File:Pius IX, by Adolphe Braun, 1875.jpg",
+            "label": "255th"
           },
           {
-            "name": "Raymond Poincaré",
-            "file": "File:Raymond_Poincaré_officiel_(cropped).jpg",
-            "label": "1913"
+            "name": "Leo XIII",
+            "file": "File:Papa Leone XIII (3x4 cropped).jpeg",
+            "label": "256th"
           },
           {
-            "name": "Charles de Gaulle",
-            "file": "File:De_Gaulle-OWI_(cropped)_(c)(2).jpg",
-            "label": "1959"
+            "name": "Pius X",
+            "file": "File:Pius X, by Ernest Walter Histed (retouched).jpg",
+            "label": "257th"
           },
           {
-            "name": "François Mitterrand",
-            "file": "File:President_François_Mitterrand_in_1983_(cropped).jpg",
-            "label": "1981"
+            "name": "Benedict XV",
+            "file": "File:Benedictus XV, by Nicola Perscheid, 1915 (retouched).jpg",
+            "label": "258th"
           },
           {
-            "name": "Jacques Chirac",
-            "file": "File:Jacques_Chirac_(1997)_(cropped).jpg",
-            "label": "1995"
+            "name": "Pius XI",
+            "file": "File:Pius XI, by Nicola Perscheid, circa 1922 (retouched).jpg",
+            "label": "259th"
           },
           {
-            "name": "Emmanuel Macron",
-            "file": "File:Emmanuel_Macron_2025_(cropped).jpg",
-            "label": "2017"
+            "name": "Pius XII",
+            "file": "File:Pius XII with tabard, by Michael Pitcairn, 1951 (retouched).jpg",
+            "label": "260th"
+          },
+          {
+            "name": "John XXIII",
+            "file": "File:Ioannes XXIII, by De Agostini, 1958–1963.jpg",
+            "label": "261st"
+          },
+          {
+            "name": "Paul VI",
+            "file": "File:Pope Paul VI 1969 Portrait (4x5 cropped).jpg",
+            "label": "262nd"
+          },
+          {
+            "name": "John Paul I",
+            "file": "File:Paus Johannes Paulus I (Bestanddeelnr 929-9074) (cropped).jpg",
+            "label": "263rd"
+          },
+          {
+            "name": "John Paul II",
+            "file": "File:Pope John Paul II smile.jpg",
+            "label": "264th"
+          },
+          {
+            "name": "Benedict XVI",
+            "file": "File:Papst Benedikt XVI in Berlin 2011.jpg",
+            "label": "265th"
+          },
+          {
+            "name": "Pope Francis",
+            "file": "File:Pope Francis Korea Haemi Castle 19.jpg",
+            "label": "266th"
+          },
+          {
+            "name": "Pope Leo XIV",
+            "file": "File:Leo XIV (13 October 2025).jpg",
+            "label": "267th"
           }
         ]
+      },
+      "line": "Since 1800, the line of popes has run from Pius to Pope Leo XIV.",
+      "fact": "Line of popes, 1800 to 2025",
+      "where": {
+        "place": "Vatican City",
+        "lat": 41.9022,
+        "lon": 12.4539
       }
     },
     {
-      "a": "Emmanuel Macron",
+      "a": "Pope Leo XIV",
       "b": "Charles III",
       "image": {
-        "file": "File:King Charles III and Emmanuel Macron State Dinner 2023.jpg"
+        "file": "File:King Charles III and Queen Camilla with Pope Leo XIV.jpg"
       },
-      "line": "In 2023, Macron hosted Britain's King Charles at a Versailles state dinner."
+      "line": "In 2025, Pope Leo and King Charles prayed together, a first in centuries.",
+      "fact": "Vatican state visit, 2025",
+      "where": {
+        "place": "Apostolic Palace, Vatican City",
+        "lat": 41.9029,
+        "lon": 12.4545
+      }
     },
     {
       "a": "Charles III",
@@ -108,7 +178,13 @@
         "license": "Fair use (commentary)",
         "source": "https://www.etonline.com/ryan-reynolds-meets-king-charles-iii-and-camilla-at-wrexham-soccer-club-with-rob-mcelhenney-195752"
       },
-      "line": "Back in 2022, Charles toured Wrexham's football club with co-owner Ryan Reynolds."
+      "line": "Back in 2022, Charles toured Wrexham's football club with co-owner Ryan Reynolds.",
+      "fact": "Wrexham, December 2022",
+      "where": {
+        "place": "Racecourse Ground, Wrexham",
+        "lat": 53.052,
+        "lon": -3.004
+      }
     },
     {
       "a": "Ryan Reynolds",
@@ -127,7 +203,13 @@
         ]
       },
       "line": "And in 2019, Reynolds became the voice of Detective Pikachu.",
-      "b_face": 2
+      "b_face": 2,
+      "fact": "Detective Pikachu, 2019",
+      "where": {
+        "place": "San Diego Comic-Con",
+        "lat": 32.7064,
+        "lon": -117.1621
+      }
     }
   ]
 }
