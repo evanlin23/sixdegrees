@@ -263,7 +263,8 @@
   "music": "Hip Hop Astrology Beat",
   "style": "tcg",
   "trending": false,
-  "n": 61
+  "n": 61,
+  "comment": "posted UgzjT8kF5ZYXTh8-jPx4AaABAg"
  },
  {
   "slug": "adolf-hitler-to-lionel-messi",
@@ -281,7 +282,8 @@
   "music": "Keeping Fit",
   "style": "museum",
   "trending": false,
-  "n": 62
+  "n": 62,
+  "comment": "posted UgwEQHDn8aNbcj_meut4AaABAg"
  },
  {
   "slug": "adolf-hitler-to-mickey-mouse",
@@ -299,7 +301,8 @@
   "music": "A Game",
   "style": "chat",
   "trending": false,
-  "n": 52
+  "n": 52,
+  "comment": "posted Ugy9E3Xek4CDvguCzlZ4AaABAg"
  },
  {
   "slug": "adolf-hitler-to-albert-einstein",
@@ -317,6 +320,27 @@
   "music": "Hip Hop Astrology Beat",
   "style": "game",
   "trending": false,
-  "n": 58
+  "n": 58,
+  "comment": "posted Ugxv1xOFH22ZHP-tOgR4AaABAg"
+ },
+ {
+  "slug": "adolf-hitler-to-spongebob-squarepants",
+  "title": "How is Hitler connected to SpongeBob?",
+  "publish_at": "2026-11-14T17:39:00Z",
+  "video_id": "WCYPyj-mop0",
+  "privacy": "scheduled",
+  "url": "https://youtube.com/shorts/WCYPyj-mop0",
+  "thumbnail": "not set: <HttpError 403 when requesting https://youtube.googleapis.com/upload/youtube/v3/thumbnails/set?videoId=WCYPyj-mop0&alt=json&uploadType=media returned \"The authe",
+  "first_comment": "Who should Hitler connect to next? Name anyone (a character works too) and I'll find the photos.",
+  "kind": "formula",
+  "outro": true,
+  "narration": true,
+  "links": 5,
+  "music": "Like a Loop Machine",
+  "style": "zoom",
+  "trending": false,
+  "hook_variant": "A",
+  "text_variant": "T1",
+  "n": 47
  }
 ]
