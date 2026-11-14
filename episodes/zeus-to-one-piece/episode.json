@@ -3,132 +3,298 @@
   "to": "Monkey D. Luffy",
   "requested_by": "@Sealswowzazer",
   "title": "How is Zeus connected to Luffy?",
-  "description": "A Rubens painting, the line of French rulers, two presidents, the MythBusters and a cast of voice actors link Zeus to Luffy.",
+  "description": "A Versailles painting, the Capitol dome, the line of presidents, the MythBusters and a cast of voice actors link Zeus to Luffy.",
+  "fun_fact": "In Brumidi's dome, Minerva teaches Benjamin Franklin, Samuel Morse and Robert Fulton, and the 13 maidens around Washington stand for the first 13 states.",
+  "research_note": "France's rulers after Henry IV are too short a line for a scroll, so the myth crosses to history through Minerva, Zeus's daughter, who is painted in the Capitol dome with George Washington; the voice-actor tail to Luffy stays as before.",
   "hook": "How is Zeus connected to Luffy?",
   "hook_variant": "F",
   "text_variant": "T0",
   "people": {
-    "Monkey D. Luffy": {
-      "label": "Luffy"
-    },
     "Zeus": {
       "label": "Zeus"
     },
-    "Henry IV of France": {
-      "label": "Henry IV"
+    "Minerva": {
+      "label": "Minerva"
+    },
+    "George Washington": {
+      "label": "George Washington",
+      "short": "Washington"
+    },
+    "Barack Obama": {
+      "label": "Barack Obama"
+    },
+    "Monkey D. Luffy": {
+      "label": "Luffy"
     }
   },
   "links": [
     {
       "a": "Zeus",
-      "b": "Henry IV of France",
+      "b": "Minerva",
       "image": {
-        "file": "File:Peter Paul Rubens 036.jpg"
+        "file": "File:René-Antoine Houasse - Story of Minerva - Minerva and the Triumph of Jupiter, 1706.jpg"
       },
-      "line": "Around 1622, Rubens painted Jupiter, the Roman Zeus, lifting Henry IV into heaven.",
-      "a_face": 0,
-      "b_face": [
-        252,
-        200,
-        60,
-        55
-      ]
+      "line": "In 1706, a painter put Jupiter, the Roman Zeus, beside his daughter Minerva.",
+      "fact": "Houasse, 1706",
+      "where": {
+        "place": "Grand Trianon, Versailles",
+        "lat": 48.8143,
+        "lon": 2.1046
+      },
+      "a_face": 3,
+      "b_face": 1
     },
     {
-      "a": "Henry IV of France",
-      "b": "Emmanuel Macron",
+      "a": "Minerva",
+      "b": "George Washington",
+      "image": {
+        "file": "File:Flickr - USCapitol - Apotheosis of Washington.jpg"
+      },
+      "line": "In 1865, Brumidi painted Minerva circling George Washington in the Capitol dome.",
+      "fact": "Capitol Rotunda, 1865",
+      "where": {
+        "place": "U.S. Capitol, Washington",
+        "lat": 38.8899,
+        "lon": -77.0091
+      },
+      "a_face": [
+        440,
+        1195,
+        55,
+        70
+      ],
+      "b_face": 4
+    },
+    {
+      "a": "George Washington",
+      "b": "Barack Obama",
       "lineage": {
-        "label": "RULERS OF FRANCE",
+        "label": "LINE OF PRESIDENTS",
         "people": [
           {
-            "name": "Henry IV of France",
-            "file": "File:Frans_Pourbus_the_Younger_(Antwerp_1569_-_Paris_1622)_-_Henri_IV,_King_of_France_(1553-1610)_-_RCIN_402972_-_Royal_Collection.jpg",
-            "label": "1589"
+            "name": "George Washington",
+            "file": "File:Gilbert Stuart Williamstown Portrait of George Washington.jpg",
+            "label": "1st"
           },
           {
-            "name": "Louis XIII",
-            "file": "File:Luis_XIII,_rey_de_Francia_(Philippe_de_Champaigne).jpg",
-            "label": "1610"
+            "name": "John Adams",
+            "file": "File:John Adams A18236.jpg",
+            "label": "2nd"
           },
           {
-            "name": "Louis XIV",
-            "file": "File:Louis_XIV_of_France.jpg",
-            "label": "1643"
+            "name": "Thomas Jefferson",
+            "file": "File:Official Presidential portrait of Thomas Jefferson (by Rembrandt Peale, 1800)(cropped).jpg",
+            "label": "3rd"
           },
           {
-            "name": "Louis XV",
-            "file": "File:Louis_XV,_King_of_France_(1710-1774)_edited_2.jpg",
-            "label": "1715"
+            "name": "James Madison",
+            "file": "File:James Madison.jpg",
+            "label": "4th"
           },
           {
-            "name": "Louis XVI",
-            "file": "File:Antoine-François_Callet_-_Louis_XVI,_roi_de_France_et_de_Navarre_(1754-1793),_revêtu_du_grand_costume_royal_en_1779_-_Google_Art_Project.jpg",
-            "label": "1774"
+            "name": "James Monroe",
+            "file": "File:James Monroe by Gilbert Stuart c1817.jpg",
+            "label": "5th"
           },
           {
-            "name": "Napoleon",
-            "file": "File:Jacques-Louis_David_-_The_Emperor_Napoleon_in_His_Study_at_the_Tuileries_-_Google_Art_Project.jpg",
-            "label": "1804"
+            "name": "John Quincy Adams",
+            "file": "File:John Q. Adams-edit.jpg",
+            "label": "6th"
           },
           {
-            "name": "Louis XVIII",
-            "file": "File:Gérard_-_Louis_XVIII_of_France_in_Coronation_Robes.jpg",
-            "label": "1814"
+            "name": "Andrew Jackson",
+            "file": "File:Andrew jackson head.jpg",
+            "label": "7th"
           },
           {
-            "name": "Louis Philippe I",
-            "file": "File:1841_portrait_painting_of_Louis_Philippe_I_(King_of_the_French)_by_Winterhalter.jpg",
-            "label": "1830"
+            "name": "Martin Van Buren",
+            "file": "File:Martin Van Buren by Mathew Brady c1855-58 sepia original restored.jpg",
+            "label": "8th"
           },
           {
-            "name": "Napoleon III",
-            "file": "File:Alexandre_Cabanel_002.jpg",
-            "label": "1848"
+            "name": "William Henry Harrison",
+            "file": "File:William Henry Harrison by James Reid Lambdin, 1835.jpg",
+            "label": "9th"
           },
           {
-            "name": "Adolphe Thiers",
-            "file": "File:Adolphe_Thiers_Nadar_2.JPG",
-            "label": "1871"
+            "name": "John Tyler",
+            "file": "File:WHOportTyler.jpg",
+            "label": "10th"
           },
           {
-            "name": "Raymond Poincaré",
-            "file": "File:Raymond_Poincaré_officiel_(cropped).jpg",
-            "label": "1913"
+            "name": "James K. Polk",
+            "file": "File:James K. Polk restored (3x4 cropped).jpg",
+            "label": "11th"
           },
           {
-            "name": "Charles de Gaulle",
-            "file": "File:De_Gaulle-OWI_(cropped)_(c)(2).jpg",
-            "label": "1959"
+            "name": "Zachary Taylor",
+            "file": "File:Zachary Taylor 2.jpg",
+            "label": "12th"
           },
           {
-            "name": "François Mitterrand",
-            "file": "File:President_François_Mitterrand_in_1983_(cropped).jpg",
-            "label": "1981"
+            "name": "Millard Fillmore",
+            "file": "File:Millard Fillmore.jpg",
+            "label": "13th"
           },
           {
-            "name": "Emmanuel Macron",
-            "file": "File:Emmanuel_Macron_2025_(cropped).jpg",
-            "label": "2017"
+            "name": "Franklin Pierce",
+            "file": "File:Franklin Pierce.jpg",
+            "label": "14th"
+          },
+          {
+            "name": "James Buchanan",
+            "file": "File:James Buchanan (cropped).jpg",
+            "label": "15th"
+          },
+          {
+            "name": "Abraham Lincoln",
+            "file": "File:Abraham Lincoln O-77 matte collodion print.jpg",
+            "label": "16th"
+          },
+          {
+            "name": "Andrew Johnson",
+            "file": "File:President Andrew Johnson.jpg",
+            "label": "17th"
+          },
+          {
+            "name": "Ulysses S. Grant",
+            "file": "File:Ulysses S. Grant 1870-1880.jpg",
+            "label": "18th"
+          },
+          {
+            "name": "Rutherford B. Hayes",
+            "file": "File:President Rutherford Hayes 1870 - 1880 Restored.jpg",
+            "label": "19th"
+          },
+          {
+            "name": "James A. Garfield",
+            "file": "File:James Abram Garfield, photo portrait seated.jpg",
+            "label": "20th"
+          },
+          {
+            "name": "Chester A. Arthur",
+            "file": "File:Chester A. Arthur by Abraham Bogardus.jpg",
+            "label": "21st"
+          },
+          {
+            "name": "Benjamin Harrison",
+            "file": "File:Benjamin Harrison, head and shoulders bw photo, 1896.jpg",
+            "label": "23rd"
+          },
+          {
+            "name": "Grover Cleveland",
+            "file": "File:Grover Cleveland - NARA - 518139 (cropped).jpg",
+            "label": "22nd & 24th"
+          },
+          {
+            "name": "William McKinley",
+            "file": "File:William mckinley.jpg",
+            "label": "25th"
+          },
+          {
+            "name": "Theodore Roosevelt",
+            "file": "File:Theodore Roosevelt by the Pach Bros.jpg",
+            "label": "26th"
+          },
+          {
+            "name": "William Howard Taft",
+            "file": "File:Cabinet card of William Howard Taft by Pach Brothers - Cropped to image.jpg",
+            "label": "27th"
+          },
+          {
+            "name": "Woodrow Wilson",
+            "file": "File:President Woodrow Wilson Harris & Ewing (3x4 cropped b).jpg",
+            "label": "28th"
+          },
+          {
+            "name": "Warren G. Harding",
+            "file": "File:Warren G Harding portrait as senator June 1920.jpg",
+            "label": "29th"
+          },
+          {
+            "name": "Calvin Coolidge",
+            "file": "File:President Calvin Coolidge, 1924 portrait photograph (3x4 cropped).jpeg",
+            "label": "30th"
+          },
+          {
+            "name": "Herbert Hoover",
+            "file": "File:President Hoover portrait.jpg",
+            "label": "31st"
+          },
+          {
+            "name": "Franklin Delano Roosevelt",
+            "file": "File:FDR 1944 Color Portrait.jpg",
+            "label": "32nd"
+          },
+          {
+            "name": "Harry S. Truman",
+            "file": "File:TRUMAN 58-766-06 (cropped).jpg",
+            "label": "33rd"
+          },
+          {
+            "name": "Dwight D. Eisenhower",
+            "file": "File:Dwight D. Eisenhower, official photo portrait, May 29, 1959.jpg",
+            "label": "34th"
+          },
+          {
+            "name": "John F. Kennedy",
+            "file": "File:John F. Kennedy, White House color photo portrait.jpg",
+            "label": "35th"
+          },
+          {
+            "name": "Lyndon B. Johnson",
+            "file": "File:Lyndon B. Johnson, photo portrait, leaning on chair, color cropped.jpg",
+            "label": "36th"
+          },
+          {
+            "name": "Richard Nixon",
+            "file": "File:Richard Nixon presidential portrait.jpg",
+            "label": "37th"
+          },
+          {
+            "name": "Gerald Ford",
+            "file": "File:Gerald Ford presidential portrait (cropped).jpg",
+            "label": "38th"
+          },
+          {
+            "name": "Jimmy Carter",
+            "file": "File:JimmyCarterPortrait2.jpg",
+            "label": "39th"
+          },
+          {
+            "name": "Ronald Reagan",
+            "file": "File:Ronald Reagan 1981 presidential portrait.jpg",
+            "label": "40th"
+          },
+          {
+            "name": "George H. W. Bush",
+            "file": "File:George H. W. Bush presidential portrait (cropped).jpg",
+            "label": "41st"
+          },
+          {
+            "name": "Bill Clinton",
+            "file": "File:Bill Clinton.jpg",
+            "label": "42nd"
+          },
+          {
+            "name": "George W. Bush",
+            "file": "File:George-W-Bush.jpeg",
+            "label": "43rd"
+          },
+          {
+            "name": "Barack Obama",
+            "file": "File:President Barack Obama.jpg",
+            "label": "44th"
           }
         ]
       },
-      "line": "In 2017, France's line of rulers after Henry IV reached Emmanuel Macron."
-    },
-    {
-      "a": "Emmanuel Macron",
-      "b": "Vladimir Putin",
-      "image": {
-        "file": "File:Vladimir Putin and Emmanuel Macron (2018-05-24) 07.jpg"
-      },
-      "line": "In 2018, Macron shook hands with Vladimir Putin in Saint Petersburg."
-    },
-    {
-      "a": "Vladimir Putin",
-      "b": "Barack Obama",
-      "image": {
-        "file": "File:Vladimir Putin and Barack Obama (2015-09-29) 01.jpg"
-      },
-      "line": "Back in 2015, Putin met Barack Obama at the United Nations."
+      "line": "From 1789, the presidency passed from Washington all the way to Barack Obama.",
+      "fact": "Every president, 1st to 44th",
+      "where": {
+        "place": "White House",
+        "lat": 38.8977,
+        "lon": -77.0365
+      }
     },
     {
       "a": "Barack Obama",
@@ -137,7 +303,13 @@
         "file": "File:Obama Hyneman Savage - Oct 2010.jpg"
       },
       "line": "In 2010, Obama filmed a MythBusters episode with Adam Savage.",
-      "b_face": 2
+      "b_face": 2,
+      "fact": "White House, 2010",
+      "where": {
+        "place": "White House",
+        "lat": 38.8977,
+        "lon": -77.0365
+      }
     },
     {
       "a": "Adam Savage",
@@ -145,7 +317,13 @@
       "image": {
         "file": "File:Jamie Hyneman, Grant Imahara, Adam Savage (7613294308).jpg"
       },
-      "line": "In 2012, Savage shared a Comic-Con stage with fellow MythBuster Grant Imahara."
+      "line": "In 2012, Savage shared a Comic-Con stage with fellow MythBuster Grant Imahara.",
+      "fact": "San Diego Comic-Con, 2012",
+      "where": {
+        "place": "San Diego Comic-Con",
+        "lat": 32.7064,
+        "lon": -117.1621
+      }
     },
     {
       "a": "Grant Imahara",
@@ -153,7 +331,13 @@
       "image": {
         "file": "File:Chris Doohan & Grant Imahara (8852930823).jpg"
       },
-      "line": "In 2013, Imahara posed with Chris Doohan, son of Star Trek's original Scotty."
+      "line": "In 2013, Imahara posed with Chris Doohan, son of Star Trek's original Scotty.",
+      "fact": "Phoenix Comicon, 2013",
+      "where": {
+        "place": "Phoenix Convention Center",
+        "lat": 33.4475,
+        "lon": -112.07
+      }
     },
     {
       "a": "Chris Doohan",
@@ -161,7 +345,13 @@
       "image": {
         "file": "File:Michele Specht, Vic Mignogna, Chuck Huber, Todd Haberkorn & Chris Doohan (18092409509).jpg"
       },
-      "line": "In 2015, Doohan shared a Phoenix Comicon panel with voice actor Todd Haberkorn."
+      "line": "In 2015, Doohan shared a Phoenix Comicon panel with voice actor Todd Haberkorn.",
+      "fact": "Phoenix Comicon, 2015",
+      "where": {
+        "place": "Phoenix Convention Center",
+        "lat": 33.4475,
+        "lon": -112.07
+      }
     },
     {
       "a": "Todd Haberkorn",
@@ -169,7 +359,13 @@
       "image": {
         "file": "File:10.16.1FairyTailCastByLuigiNovi1.jpg"
       },
-      "line": "Back in 2011, Haberkorn signed autographs with his Fairy Tail co-star Colleen Clinkenbeard."
+      "line": "Back in 2011, Haberkorn signed autographs with his Fairy Tail co-star Colleen Clinkenbeard.",
+      "fact": "New York Comic Con, 2011",
+      "where": {
+        "place": "Javits Center, New York",
+        "lat": 40.7577,
+        "lon": -74.0022
+      }
     },
     {
       "a": "Colleen Clinkenbeard",
@@ -185,7 +381,13 @@
         ]
       },
       "line": "And since 2007, Clinkenbeard has voiced One Piece's hero, Luffy.",
-      "b_face": 2
+      "b_face": 2,
+      "fact": "One Piece, since 2007",
+      "where": {
+        "place": "GalaxyCon Raleigh",
+        "lat": 35.772,
+        "lon": -78.6386
+      }
     }
   ],
   "music": "Hip Hop Astrology Beat"
